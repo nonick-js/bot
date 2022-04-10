@@ -12,6 +12,7 @@ http.createServer(function(req, res) {
 const fs = require('node:fs');
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
 const discordModals = require('discord-modals');
+const { send } = require('node:process');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 discordModals(client);
 require('dotenv').config();
@@ -46,6 +47,19 @@ client.on('interactionCreate', async interaction => {
 		}
 	}
 });
+
+// modalを受け取った時の処理
+client.on('modalSubmit', (modal) => {
+    if(modal.customId === 'reactionmodal'){
+		const title = modal.getTextInputValue('textinput-title');
+		const description = modal.getTextInputValue('textinput-description');
+		const embed = new MessageEmbed()
+			.setTitle(`${title}`)
+			.setDescription(`${description}`)
+			.setColor('#365bf0');
+		modal.reply({ embeds: [embed] });
+    }
+})
 
 // BOTにログイン
 client.login(process.env.BOT_TOKEN);
