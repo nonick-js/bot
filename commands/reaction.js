@@ -15,7 +15,8 @@ module.exports = {
                 .setLabel('タイトル')
                 .setStyle('SHORT')
                 .setPlaceholder('ここに入力')
-                .setRequired(true),
+                .setRequired(true))
+            .addComponents(
             new TextInputComponent()
                 .setCustomId('textinput-description')
                 .setLabel('説明')
