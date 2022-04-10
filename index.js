@@ -13,7 +13,6 @@ const fs = require('node:fs');
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
 const discordModals = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-
 discordModals(client);
 require('dotenv').config();
 
@@ -22,9 +21,9 @@ client.once('ready', () => {
 	console.log(`[DiscordBot-NoNick.js]`+'\u001b[32m'+' DiscordBotが起動しました。'+'\u001b[0m');
 });
 
+// コマンドファイルを動的に取得する
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
@@ -42,10 +41,11 @@ client.on('interactionCreate', async interaction => {
 			console.error(error);
 			const embed = new MessageEmbed()
 				.setColor('#F61E2')
-				.setDescription('コマンドの実行中にエラーが発生しました、開発者にご連絡ください。')
+				.setDescription('コマンドの実行中にエラーが発生しました。開発者にご連絡ください。')
 			await interaction.reply({embeds: [embed], ephemeral: true});
 		}
 	}
 });
 
+// BOTにログイン
 client.login(process.env.BOT_TOKEN);
