@@ -1,0 +1,24 @@
+{
+  "name": "discordbot-nonick",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nonick-mc/DiscordBot-NoNICK.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nonick-mc/DiscordBot-NoNICK.js/issues"
+  },
+  "homepage": "https://github.com/nonick-mc/DiscordBot-NoNICK.js#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0"
+  }
+}
