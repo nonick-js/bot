@@ -11,7 +11,6 @@ http.createServer(function(req, res) {
 
 const fs = require('node:fs');
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
-const { serverName } = require('./config.json');
 const discordModals = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -21,7 +20,6 @@ require('dotenv').config();
 // ready nouniku!!(定期)
 client.once('ready', () => {
 	console.log(`[DiscordBot-NoNick.js]`+'\u001b[32m'+' DiscordBotが起動しました。'+'\u001b[0m');
-	client.user.setActivity(`${serverName}`);
 });
 
 client.commands = new Collection();
