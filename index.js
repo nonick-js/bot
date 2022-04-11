@@ -11,6 +11,7 @@ http.createServer(function(req, res) {
 
 const fs = require('node:fs');
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
+const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 discordModals(client);
@@ -43,6 +44,28 @@ client.on('interactionCreate', async interaction => {
 				.setColor('#F61E2')
 				.setDescription('コマンドの実行中にエラーが発生しました。開発者にご連絡ください。')
 			await interaction.reply({embeds: [embed], ephemeral: true});
+		}
+	}
+	if (interaction.isButton()) {
+		if (interaction.customId == "button_0") {
+			if (!interaction.member.permissions.has("MANAGE_ROLES")) {
+				const embed = new MessageEmbed()
+					.setColor('#E84136')
+					.setDescription('あなたにはリアクションロールを管理する権限がありません！')
+				interaction.reply({embeds: [embed], ephemeral: true});
+				return;
+			}
+			const modal_1 = new Modal()
+			.setCustomId('modal_1')
+			.setTitle('ロールを追加')
+			.addComponents(
+			new TextInputComponent()
+				.setCustomId('textinput_1')
+				.setLabel('リアクションロールに追加したいロールの名前を入力してください。')
+				.setStyle('SHORT')
+				.setRequired(true)
+			);
+			showModal(modal_1, {client, interaction});
 		}
 	}
 });
