@@ -10,7 +10,7 @@ http.createServer(function(req, res) {
 */
 
 const fs = require('node:fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
 const discordModals = require('discord-modals');
 const { send } = require('node:process');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -57,7 +57,14 @@ client.on('modalSubmit', (modal) => {
 			.setTitle(`${title}`)
 			.setDescription(`${description}`)
 			.setColor('#365bf0');
-		modal.reply({ embeds: [embed] });
+		const button = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId('button_0')
+					.setLabel('追加')
+					.setStyle('SUCCESS')
+			)
+		modal.reply({ embeds: [embed], components: [button] });
     }
 })
 
