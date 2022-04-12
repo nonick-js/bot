@@ -10,7 +10,7 @@ http.createServer(function(req, res) {
 */
 
 const fs = require('node:fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton, Guild } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -90,6 +90,16 @@ client.on('modalSubmit', (modal) => {
     }
 	if(modal.customId === 'modal_1') {
 		const modal_string1 = modal.getTextInputValue('textinput_1');
+		try {
+			const role1 = Guild.role.name.fetch(modal_string1);
+		}
+		catch (error) {
+			const embed = new MessageEmbed()
+				.setColor('#E84136')
+				.setDescription(`「${modal_string1}」という名前のロールを見つけられませんでした。\n正しいロール名を入力してください。`);
+			modal.reply({embeds: [embed], ephemeral:true});
+			return;
+		}
 		const embed = new MessageEmbed()
 			.setDescription(modal_string1);
 		modal.reply({embeds: [embed], ephemeral: true});
