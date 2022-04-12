@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { MessageEmbed } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 
 module.exports = {
@@ -6,6 +7,13 @@ module.exports = {
 		.setName('reacitonrole')
 		.setDescription('リアクションロールが可能な埋め込みを送信します'),
 	async execute(interaction,client) {
+        if (!interaction.member.permissions.has("MANAGE_ROLES")) {
+            const embed = new MessageEmbed()
+                .setColor('#E84136')
+                .setDescription('あなたにはリアクションロールを管理する権限がありません！')
+            interaction.reply({embeds: [embed], ephemeral: true});
+            return;
+        }
 		const modaltest = new Modal()
             .setCustomId('reactionmodal')
             .setTitle('リアクションロール')

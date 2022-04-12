@@ -88,6 +88,12 @@ client.on('modalSubmit', (modal) => {
 			);
 		modal.reply({ embeds: [embed], components: [button] });
     }
+	if(modal.customId === 'modal_1') {
+		const modal_string1 = modal.getTextInputValue('textinput_1');
+		const embed = new MessageEmbed()
+			.setDescription(modal_string1);
+		modal.reply({embeds: [embed], ephemeral: true});
+	}
 })
 
 // BOTにログイン
