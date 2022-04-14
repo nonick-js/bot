@@ -91,9 +91,9 @@ client.on('modalSubmit', (modal) => {
 	if(modal.customId === 'modal_1') {
 		const modal_string1 = modal.getTextInputValue('textinput_1');
 		try {
-			const role1 = modal.guild.roles.cache.find(role => role.name === `${modal_string1}`);
+			const role1 = modal.guild.roles.cache.find(role => role.name === modal_string1);
+			console.log(role1);
 			const embed = new MessageEmbed()
-			.setDescription(role1);
 			modal.reply({embeds: [embed], ephemeral: true});
 		}
 		catch (error) {
