@@ -9,8 +9,21 @@ module.exports = {
         .addStringOption(option0 =>
 			option0.setName('item')
 				.setDescription('設定する項目を選択してください。')
+                .addChoice('入退室ログ','setting1')
 				.setRequired(true)
 		),
 	async execute(interaction,client) {
+        if (!interaction.member.permissions.has("MANAGE_ROLES")) {
+            const embed = new MessageEmbed()
+                .setColor('#E84136')
+                .setDescription('あなたにはリアクションロールを管理する権限がありません！')
+            interaction.reply({embeds: [embed], ephemeral: true});
+            return;
+        }
+        const command_string1 = interaction.options.getString('setting1');
+        
+        if () {
+
+        }
 	},
 };
