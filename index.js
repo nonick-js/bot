@@ -12,8 +12,9 @@ http.createServer(function(req, res) {
 const fs = require('node:fs');
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton, Guild } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
+const { welcomeCh, welcomeMessage } = require('./config.json');
 const discordModals = require('discord-modals');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES,Intents.FLAGS.GUILD_MEMBERS] });
 discordModals(client);
 require('dotenv').config();
 
@@ -30,6 +31,19 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
+client.on('guildMemberAdd', member => {
+	const embed = new MessageEmbed()
+	.setTitle('WELCOME - ようこそ!')
+	.setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
+	.setThumbnail(member.user.avatarURL())
+	.setColor('#57f287');
+	client.channels.cache.get(welcomeCh).send({embeds: [embed]});
+});
+
+client.on('guildMemberRemove', member => {
+	client.channels.cache.get(welcomeCh).send(`**${member.user.username}** さんがサーバーを退出しました👋`);
+});
+
 // コマンド処理
 client.on('interactionCreate', async interaction => {
 	if (interaction.isCommand()) {
@@ -41,8 +55,8 @@ client.on('interactionCreate', async interaction => {
 		} catch (error) {
 			console.error(error);
 			const embed = new MessageEmbed()
-				.setColor('#F61E2')
-				.setDescription('コマンドの実行中にエラーが発生しました。開発者にご連絡ください。')
+			.setColor('#F61E2')
+			.setDescription('コマンドの実行中にエラーが発生しました。開発者にご連絡ください。')
 			await interaction.reply({embeds: [embed], ephemeral: true});
 		}
 	}
@@ -50,8 +64,8 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.customId == "button_0") {
 			if (!interaction.member.permissions.has("MANAGE_ROLES")) {
 				const embed = new MessageEmbed()
-					.setColor('#E84136')
-					.setDescription('あなたにはリアクションロールを管理する権限がありません！')
+				.setColor('#E84136')
+				.setDescription('あなたにはリアクションロールを管理する権限がありません！')
 				interaction.reply({embeds: [embed], ephemeral: true});
 				return;
 			}
