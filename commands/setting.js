@@ -11,7 +11,7 @@ module.exports = {
                 .addChoice('入退室ログ','setting1')
 				.setRequired(true)
 		),
-	async execute(interaction,client) {
+	async execute(interaction) {
         if (!interaction.member.permissions.has("MANAGE_GUILD")) {
             const embed = new MessageEmbed()
                 .setColor('#E84136')
@@ -51,7 +51,7 @@ module.exports = {
                 .setLabel('設定の初期化')
                 .setStyle('DANGER'),
             );
-            interaction.reply({embeds: [embed], components: [button]});
+            interaction.reply({embeds: [embed], components: [button], ephemeral:true});
         }
 	},
 }; 
