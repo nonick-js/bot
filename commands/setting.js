@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
-const { Modal, TextInputComponent, showModal } = require('discord-modals');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('setting')
@@ -16,7 +15,7 @@ module.exports = {
         if (!interaction.member.permissions.has("MANAGE_GUILD")) {
             const embed = new MessageEmbed()
                 .setColor('#E84136')
-                .setDescription('あなたにはこの設定を管理する権限がありません！')
+                .setDescription('あなたにはこの設定を管理する権限がありません！');
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }

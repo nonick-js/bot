@@ -14,7 +14,6 @@ const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 const discordModals = require('discord-modals');
 const setting_module = require('./modules/setting');
-const { channel } = require('diagnostics_channel');
 discordModals(client);
 require('dotenv').config();
 
@@ -78,10 +77,7 @@ client.on('interactionCreate', async interaction => {
 				setting_module.change_setting("welcome", false);
 				interaction.reply({content: '入退室ログを**オフ**にしました。', ephemeral: true});
 			} else {
-				if(welcomeCh == null) {
-					interaction.reply({content: '**入退室ログを送信するチャンネルIDが指定されていません。**\nセレクトメニュー→「ログを送信するチャンネルの変更」から設定してください。', ephemeral:true})
-					return;
-				}
+				if(welcomeCh == null) {interaction.reply({content: '**入退室ログを送信するチャンネルIDが指定されていません。**\nセレクトメニュー→「ログを送信するチャンネルの変更」から設定してください。', ephemeral:true}); return;}
 				setting_module.change_setting("welcome", true);
 				interaction.reply({content: '入退室ログを**オン**にしました。', ephemeral: true});
 			}
@@ -129,7 +125,7 @@ client.on('interactionCreate', async interaction => {
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
 	if (modal.customId == 'modal_setting1-2') {
-		await modal.deferReply({ ephemeral: true });
+		await modal.deferReply({ephemeral: true});
 		const string = modal.getTextInputValue('textinput');
 		try {
 			const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id;
