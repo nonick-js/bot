@@ -1,5 +1,5 @@
 const fs = require('fs');
-const welcome_default = { "welcomeCh":"953301878517686332", "welcomeMessage":"まずはルールを見よう!", "welcome":true };
+const welcome_default = { "welcomeCh":null, "welcomeMessage":"まずはルールを見よう!", "welcome":false };
 exports.restore = () => {
     const data = JSON.parse(fs.readFileSync('../config.json', 'utf-8'));
     const data_map = new Map(Object.entries(data));

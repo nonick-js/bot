@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
@@ -30,8 +31,8 @@ module.exports = {
             .addComponents(
                 new MessageButton()
                 .setCustomId('setting1-1')
-                .setLabel('有効/無効')
-                .setStyle('SECONDARY'),
+                .setLabel(`有効/無効化`)
+                .setStyle('PRIMARY'),
             )
             .addComponents(
                 new MessageButton()

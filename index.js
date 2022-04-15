@@ -86,18 +86,37 @@ client.on('interactionCreate', async interaction => {
 		}
 
 		if (interaction.customId == 'setting1-1') {
-		
+			
 		}
 		if (interaction.customId == 'setting1-2') {
-			setting_module.change_setting("")
+			const modal = new Modal()
+			.setCustomId('modal_setting1-2')
+            .setTitle('設定 - 入退室ログ')
+            .addComponents(
+            new TextInputComponent()
+                .setCustomId('textinput-description')
+                .setLabel('入退室ログを送信するチャンネルのIDを入力してください。')
+                .setStyle('SHORT')
+                .setRequired(true)
+            );  
+			showModal(modal, {client, interaction});
 		}
 		if (interaction.customId == 'setting1-3') {
 			const modal = new Modal()
+			.setCustomId('modal_setting1-3')
+            .setTitle('設定 - 入退室ログ')
+            .addComponents(
+            new TextInputComponent()
+                .setCustomId('textinput-description')
+                .setLabel('WELCOME埋め込みに表示するメッセージを入力してください。')
+                .setStyle('LONG')
+                .setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
+                .setRequired(true)
+            );  
+			showModal(modal, {client, interaction});
 		}
 		if (interaction.customId == 'setting1-4') {
 			setting_module.restore();
-			// const embed = new MessageEmbed()
-			// .se
 		}
 	}
 });
@@ -120,7 +139,7 @@ client.on('modalSubmit', (modal) => {
 			);
 		modal.reply({ embeds: [embed], components: [button] });
     }
-	if(modal.customId === 'modal_1') {
+	if (modal.customId === 'modal_1') {
 		const modal_string1 = modal.getTextInputValue('textinput_1');
 		try {
 			const role1 = modal.guild.roles.cache.find(role => role.name === `${modal_string1}`);
@@ -134,7 +153,14 @@ client.on('modalSubmit', (modal) => {
 				.setDescription(`「${modal_string1}」という名前のロールを見つけられませんでした。\n正しいロール名を入力してください。`);
 			modal.reply({embeds: [embed], ephemeral:true});
 		}
-	
+	}
+
+	if (modal.customId == 'modal_setting1-2') {
+
+	}
+
+	if (modal.customId == 'modal_setting1-3') {
+		
 	}
 })
 
