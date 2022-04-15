@@ -49,11 +49,11 @@ module.exports = {
 					.addOptions([
 						{
 							label: 'ログを送信するチャンネルの変更',
-							value: 'setting1-1',
+							value: 'setting1-2',
 						},
 						{
 							label: '入退室ログに載せるメッセージの変更',
-							value: 'setting1-2',
+							value: 'setting1-3',
 						}
 					]),
 			);

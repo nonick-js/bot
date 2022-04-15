@@ -116,7 +116,7 @@ client.on('interactionCreate', async interaction => {
 
 	if (interaction.isSelectMenu()) {
 		if (interaction.customId == 'setting1') {
-			if (interaction.values = 'setting1-2') {
+			if (interaction.values == 'setting1-2') {
 				const modal = new Modal()
 				.setCustomId('modal_setting1-2')
 				.setTitle('設定 - 入退室ログ')
@@ -188,13 +188,15 @@ client.on('modalSubmit', async (modal) => {
 			setting_module.change_setting("welcomeCh", messageId);
 			modal.followUp({ content: `入退室ログを送るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
 		} catch (error) {
-			modal.followUp({ content: `入力した名前のチャンネルが見つかりません! 正しいIDにしているか、BOTが見れるチャンネルに設定しているかチェックしてください!`, ephemeral: true });
+			modal.followUp({ content: `**入力した名前のチャンネルが見つかりません!**\n正しいIDにしているか、BOTが見れるチャンネルに設定しているかチェックしてください!`, ephemeral: true });
 		}
-
 	}
 
 	if (modal.customId == 'modal_setting1-3') {
-		
+		await modal.deferReply({ephemeral: true});
+		const string = modal.getTextInputValue('textinput');
+		setting_module.change_setting("welcomeMessage", string);
+		modal.followUp({content: 'メッセージを以下の通りに編集しました。' + Formatters.codeBlock('markdown', string), ephemeral: true});
 	}
 })
 
