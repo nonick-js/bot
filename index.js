@@ -14,6 +14,7 @@ const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSele
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
+const setting_module = require('./modules/setting');
 discordModals(client);
 require('dotenv').config();
 
@@ -31,17 +32,19 @@ for (const file of commandFiles) {
 }
 
 client.on('guildMemberAdd', member => {
-	const { welcomeCh, welcomeMessage } = require('./config.json');
-	const embed = new MessageEmbed()
-	.setTitle('WELCOME - ようこそ!')
-	.setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
-	.setThumbnail(member.user.avatarURL())
-	.setColor('#57f287');
-	client.channels.cache.get(welcomeCh).send({embeds: [embed]});
+	const { welcomeCh, welcomeMessage, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+	if (welcome) {
+		const embed = new MessageEmbed()
+		.setTitle('WELCOME - ようこそ!')
+		.setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
+		.setThumbnail(member.user.avatarURL())
+		.setColor('#57f287');
+		client.channels.cache.get(welcomeCh).send({embeds: [embed]});
+	}
 });
 
 client.on('guildMemberRemove', member => {
-	client.channels.cache.get(welcomeCh).send(`**${member.user.username}** さんがサーバーを退出しました👋`);
+	if (welcome) {client.channels.cache.get(welcomeCh).send(`**${member.user.username}** さんがサーバーを退出しました👋`);}
 });
 
 // コマンド処理
@@ -80,10 +83,21 @@ client.on('interactionCreate', async interaction => {
 				.setRequired(true)
 			);
 			showModal(modal_1, {client, interaction});
+		}
 
 		if (interaction.customId == 'setting1-1') {
-			
+		
 		}
+		if (interaction.customId == 'setting1-2') {
+			setting_module.change_setting("")
+		}
+		if (interaction.customId == 'setting1-3') {
+			const modal = new Modal()
+		}
+		if (interaction.customId == 'setting1-4') {
+			setting_module.restore();
+			// const embed = new MessageEmbed()
+			// .se
 		}
 	}
 });
@@ -120,6 +134,7 @@ client.on('modalSubmit', (modal) => {
 				.setDescription(`「${modal_string1}」という名前のロールを見つけられませんでした。\n正しいロール名を入力してください。`);
 			modal.reply({embeds: [embed], ephemeral:true});
 		}
+	
 	}
 })
 
