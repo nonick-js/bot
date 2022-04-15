@@ -9,11 +9,12 @@ http.createServer(function(req, res) {
 */
 
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton, Guild } = require('discord.js');
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, Formatters } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 const setting_module = require('./modules/setting');
+const { channel } = require('diagnostics_channel');
 discordModals(client);
 require('dotenv').config();
 
@@ -96,11 +97,11 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.customId == 'setting1-enable') {
 			const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (welcome) {
-				setting_module.change_setting("welcome", false );
+				setting_module.change_setting("welcome", false);
 				interaction.reply({content: '入退室ログを**オフ**にしました。', ephemeral: true});
 			} else {
 				if(welcomeCh == null) {
-					interaction.reply({content: '**入退室ログを送信するチャンネルIDが指定されていません。**セレクトメニュー→「ログを送信するチャンネルの変更」から設定してください。', ephemeral:true})
+					interaction.reply({content: '**入退室ログを送信するチャンネルIDが指定されていません。**\nセレクトメニュー→「ログを送信するチャンネルの変更」から設定してください。', ephemeral:true})
 					return;
 				}
 				setting_module.change_setting("welcome", true);
@@ -122,9 +123,9 @@ client.on('interactionCreate', async interaction => {
 				.addComponents(
 				new TextInputComponent()
 					.setCustomId('textinput')
-					.setLabel('入退室ログを送信するチャンネルのIDを入力してください。')
+					.setLabel('入退室ログを送信するチャンネルの名前を入力してください。')
 					.setStyle('SHORT')
-					.setMaxLength(18)
+					.setMaxLength(100)
 					.setRequired(true)
 				);  
 				showModal(modal, {client, interaction});
@@ -148,7 +149,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 // modalを受け取った時の処理
-client.on('modalSubmit', (modal) => {
+client.on('modalSubmit', async (modal) => {
     if(modal.customId === 'reactionmodal'){
 		const title = modal.getTextInputValue('textinput-title');
 		const description = modal.getTextInputValue('textinput-description');
@@ -180,6 +181,15 @@ client.on('modalSubmit', (modal) => {
 	}
 
 	if (modal.customId == 'modal_setting1-2') {
+		await modal.deferReply({ ephemeral: true });
+		const string = modal.getTextInputValue('textinput');
+		try {
+			const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id;
+			setting_module.change_setting("welcomeCh", messageId);
+			modal.followUp({ content: `入退室ログを送るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
+		} catch (error) {
+			modal.followUp({ content: `入力した名前のチャンネルが見つかりません! 正しいIDにしているか、BOTが見れるチャンネルに設定しているかチェックしてください!`, ephemeral: true });
+		}
 
 	}
 
