@@ -141,18 +141,15 @@ client.on('modalSubmit', (modal) => {
     }
 	if (modal.customId === 'modal_1') {
 		const modal_string1 = modal.getTextInputValue('textinput_1');
-		try {
-			const role1 = modal.guild.roles.cache.find(role => role.name === `${modal_string1}`);
-			const embed = new MessageEmbed()
-			.setDescription(role1);
-			modal.reply({embeds: [embed], ephemeral: true});
-		}
-		catch (error) {
+		const role1 = modal.guild.roles.cache.find(role => role.name === `${modal_string1}`).catch(error => {
 			const embed = new MessageEmbed()
 				.setColor('#E84136')
 				.setDescription(`「${modal_string1}」という名前のロールを見つけられませんでした。\n正しいロール名を入力してください。`);
 			modal.reply({embeds: [embed], ephemeral:true});
-		}
+		});
+		const embed = new MessageEmbed()
+		.setDescription(role1);
+		modal.reply({embeds: [embed], ephemeral: true});
 	}
 
 	if (modal.customId == 'modal_setting1-2') {
