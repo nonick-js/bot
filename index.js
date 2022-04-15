@@ -137,11 +137,11 @@ client.on('interactionCreate', async interaction => {
 				.addComponents(
 				new TextInputComponent()
 					.setCustomId('textinput')
-					.setLabel('WELCOME埋め込みに表示するメッセージを入力してください。')
+					.setLabel('入室時埋め込みに表示するメッセージを入力してください。')
 					.setStyle('LONG')
 					.setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
 					.setRequired(true)
-				);  
+				);
 				showModal(modal, {client, interaction});
 			}
 		}

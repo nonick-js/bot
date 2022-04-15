@@ -52,9 +52,9 @@ module.exports = {
 							value: 'setting1-2',
 						},
 						{
-							label: '入退室ログに載せるメッセージの変更',
+							label: '入室時ログに載せるメッセージの変更',
 							value: 'setting1-3',
-						}
+						},
 					]),
 			);
             interaction.reply({embeds: [embed], components: [select, button], ephemeral:true});
