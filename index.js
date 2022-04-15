@@ -117,6 +117,7 @@ client.on('interactionCreate', async interaction => {
 		}
 		if (interaction.customId == 'setting1-4') {
 			setting_module.restore();
+			interaction.reply('💥設定を初期状態に復元しました。');
 		}
 	}
 });
