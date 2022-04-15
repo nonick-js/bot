@@ -85,39 +85,43 @@ client.on('interactionCreate', async interaction => {
 			showModal(modal_1, {client, interaction});
 		}
 
-		if (interaction.customId == 'setting1-1') {
-			
-		}
-		if (interaction.customId == 'setting1-2') {
-			const modal = new Modal()
-			.setCustomId('modal_setting1-2')
-            .setTitle('設定 - 入退室ログ')
-            .addComponents(
-            new TextInputComponent()
-                .setCustomId('textinput-description')
-                .setLabel('入退室ログを送信するチャンネルのIDを入力してください。')
-                .setStyle('SHORT')
-                .setRequired(true)
-            );  
-			showModal(modal, {client, interaction});
-		}
-		if (interaction.customId == 'setting1-3') {
-			const modal = new Modal()
-			.setCustomId('modal_setting1-3')
-            .setTitle('設定 - 入退室ログ')
-            .addComponents(
-            new TextInputComponent()
-                .setCustomId('textinput-description')
-                .setLabel('WELCOME埋め込みに表示するメッセージを入力してください。')
-                .setStyle('LONG')
-                .setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
-                .setRequired(true)
-            );  
-			showModal(modal, {client, interaction});
-		}
+
 		if (interaction.customId == 'setting1-4') {
 			setting_module.restore();
 			interaction.reply('💥設定を初期状態に復元しました。');
+		}
+	}
+
+	if (interaction.isSelectMenu()) {
+		if (interaction.customId == 'setting1') {
+			if (interaction.values = 'setting1-2') {
+				const modal = new Modal()
+				.setCustomId('modal_setting1-2')
+				.setTitle('設定 - 入退室ログ')
+				.addComponents(
+				new TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('入退室ログを送信するチャンネルのIDを入力してください。')
+					.setStyle('SHORT')
+					.setMaxLength(18)
+					.setRequired(true)
+				);  
+				showModal(modal, {client, interaction});
+			}
+			if (interaction.values == 'setting1-3') {
+				const modal = new Modal()
+				.setCustomId('modal_setting1-3')
+				.setTitle('設定 - 入退室ログ')
+				.addComponents(
+				new TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('WELCOME埋め込みに表示するメッセージを入力してください。')
+					.setStyle('LONG')
+					.setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
+					.setRequired(true)
+				);  
+				showModal(modal, {client, interaction});
+			}
 		}
 	}
 });
@@ -140,6 +144,7 @@ client.on('modalSubmit', (modal) => {
 			);
 		modal.reply({ embeds: [embed], components: [button] });
     }
+
 	if (modal.customId === 'modal_1') {
 		const modal_string1 = modal.getTextInputValue('textinput_1');
 		const role1 = modal.guild.roles.cache.find(role => role.name === `${modal_string1}`).catch(error => {

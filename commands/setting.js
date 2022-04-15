@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -24,35 +24,40 @@ module.exports = {
         if (command_string1 == 'setting1') {
             const embed = new MessageEmbed()
             .setTitle('設定 - 入退室ログ')
-            .setDescription('入退室ログの設定を以下のボタンから行えます。')
-            .setColor('#57f287')
+            .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、有効化/無効化を調整したい場合は下のボタンを押そう!')
+            .setColor('#57f287');
 
             const button = new MessageActionRow()
             .addComponents(
                 new MessageButton()
-                .setCustomId('setting1-1')
+                .setCustomId('setting1-enable')
                 .setLabel(`有効/無効化`)
                 .setStyle('PRIMARY'),
             )
             .addComponents(
                 new MessageButton()
-                .setCustomId('setting1-2')
-                .setLabel('送信先の変更')
-                .setStyle('SECONDARY')
-            )
-            .addComponents(
-                new MessageButton()
-                .setCustomId('setting1-3')
-                .setLabel('メッセージの設定')
-                .setStyle('SECONDARY'),
-            )
-            .addComponents(
-                new MessageButton()
-                .setCustomId('setting1-4')
-                .setLabel('設定の初期化')
+                .setCustomId('setting1-restore')
+                .setLabel('初期化')
                 .setStyle('DANGER'),
             );
-            interaction.reply({embeds: [embed], components: [button], ephemeral:true});
+
+            const select = new MessageActionRow() 
+			.addComponents(
+				new MessageSelectMenu()
+					.setCustomId('setting1')
+					.setPlaceholder('ここから選択')
+					.addOptions([
+						{
+							label: 'ログを送信するチャンネルの変更',
+							value: 'setting1-1',
+						},
+						{
+							label: '入退室ログに載せるメッセージの変更',
+							value: 'setting1-2',
+						}
+					]),
+			);
+            interaction.reply({embeds: [embed], components: [select, button], ephemeral:true});
         }
 	},
 }; 
