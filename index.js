@@ -12,7 +12,6 @@ http.createServer(function(req, res) {
 const fs = require('node:fs');
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton, Guild } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
-const { welcomeCh, welcomeMessage } = require('./config.json');
 const discordModals = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES,Intents.FLAGS.GUILD_MEMBERS] });
 discordModals(client);
@@ -32,6 +31,7 @@ for (const file of commandFiles) {
 }
 
 client.on('guildMemberAdd', member => {
+	const { welcomeCh, welcomeMessage } = require('./config.json');
 	const embed = new MessageEmbed()
 	.setTitle('WELCOME - ようこそ!')
 	.setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
