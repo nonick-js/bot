@@ -39,13 +39,19 @@ client.on('guildMemberAdd', member => {
 		.setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
 		.setThumbnail(member.user.avatarURL())
 		.setColor('#57f287');
-		client.channels.cache.get(welcomeCh).send({embeds: [embed]});
+		client.channels.cache.get(welcomeCh).send({embeds: [embed]}).catch(error => {
+			console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しいチャンネルIDを送信してください。');
+		})
 	}
 });
 
 client.on('guildMemberRemove', member => {
 	const { welcomeCh, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-	if (welcome) {client.channels.cache.get(welcomeCh).send(`**${member.user.username}** さんがサーバーを退出しました👋`);}
+	if (welcome) {
+		client.channels.cache.get(welcomeCh).send(`**${member.user.username}** さんがサーバーを退出しました👋`).catch(error => {
+			console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しいチャンネルIDを送信してください。');
+		})
+	}
 });
 
 // コマンド処理
@@ -65,6 +71,7 @@ client.on('interactionCreate', async interaction => {
 		}
 	}
 	if (interaction.isButton()) {
+		// リアクションロール
 		if (interaction.customId == "button_0") {
 			if (!interaction.member.permissions.has("MANAGE_ROLES")) {
 				const embed = new MessageEmbed()
@@ -86,20 +93,24 @@ client.on('interactionCreate', async interaction => {
 			showModal(modal_1, {client, interaction});
 		}
 
+		// 入退室ログ設定
 		if (interaction.customId == 'setting1-enable') {
-			const { welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (welcome) {
 				setting_module.change_setting("welcome", false );
 				interaction.reply({content: '入退室ログを**オフ**にしました。', ephemeral: true});
 			} else {
+				if(welcome == null) {
+					interaction.reply({content: '入退室ログを送信するチャンネルIDが指定されていません。セレクトメニューから設定してください。'})
+					return;
+				}
 				setting_module.change_setting("welcome", true);
 				interaction.reply({content: '入退室ログを**オン**にしました。', ephemeral: true});
 			}
 		}
-
 		if (interaction.customId == 'setting1-restore') {
 			setting_module.restore();
-			interaction.reply('💥設定を初期状態に復元しました。');
+			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
 		}
 	}
 

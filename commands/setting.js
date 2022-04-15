@@ -23,7 +23,7 @@ module.exports = {
         const command_string1 = interaction.options.getString('item');
         if (command_string1 == 'setting1') {
             const embed = new MessageEmbed()
-            .setTitle('設定 - 入退室ログ')
+            .setTitle('🛠 設定 - 入退室ログ')
             .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、有効化/無効化を調整したい場合は下のボタンを押そう!')
             .setColor('#57f287');
 
