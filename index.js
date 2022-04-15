@@ -1,5 +1,4 @@
 //Repl.itでホスティングをする場合は、このコードを有効化する必要がある
-
 /*
 "use strict";
 const http = require('http');
@@ -40,7 +39,7 @@ client.on('guildMemberAdd', member => {
 		.setThumbnail(member.user.avatarURL())
 		.setColor('#57f287');
 		client.channels.cache.get(welcomeCh).send({embeds: [embed]}).catch(error => {
-			console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しいチャンネルIDを送信してください。');
+			console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。');
 		})
 	}
 });
@@ -49,7 +48,7 @@ client.on('guildMemberRemove', member => {
 	const { welcomeCh, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 	if (welcome) {
 		client.channels.cache.get(welcomeCh).send(`**${member.user.username}** さんがサーバーを退出しました👋`).catch(error => {
-			console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しいチャンネルIDを送信してください。');
+			console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。');
 		})
 	}
 });
@@ -100,8 +99,8 @@ client.on('interactionCreate', async interaction => {
 				setting_module.change_setting("welcome", false );
 				interaction.reply({content: '入退室ログを**オフ**にしました。', ephemeral: true});
 			} else {
-				if(welcome == null) {
-					interaction.reply({content: '入退室ログを送信するチャンネルIDが指定されていません。セレクトメニューから設定してください。'})
+				if(welcomeCh == null) {
+					interaction.reply({content: '**入退室ログを送信するチャンネルIDが指定されていません。**セレクトメニュー→「ログを送信するチャンネルの変更」から設定してください。', ephemeral:true})
 					return;
 				}
 				setting_module.change_setting("welcome", true);
