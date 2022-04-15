@@ -9,7 +9,7 @@ http.createServer(function(req, res) {
 }).listen(8080);
 */
 
-const fs = require('node:fs');
+const fs = require('fs');
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageSelectMenu, MessageButton, Guild } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
@@ -80,6 +80,10 @@ client.on('interactionCreate', async interaction => {
 				.setRequired(true)
 			);
 			showModal(modal_1, {client, interaction});
+
+		if (interaction.customId == 'setting1-1') {
+			
+		}
 		}
 	}
 });
