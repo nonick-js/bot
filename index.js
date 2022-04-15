@@ -11,8 +11,8 @@ http.createServer(function(req, res) {
 const fs = require('fs');
 const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, Formatters } = require('discord.js');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
-const discordModals = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
+const discordModals = require('discord-modals');
 const setting_module = require('./modules/setting');
 const { channel } = require('diagnostics_channel');
 discordModals(client);
@@ -71,28 +71,6 @@ client.on('interactionCreate', async interaction => {
 		}
 	}
 	if (interaction.isButton()) {
-		// リアクションロール
-		if (interaction.customId == "button_0") {
-			if (!interaction.member.permissions.has("MANAGE_ROLES")) {
-				const embed = new MessageEmbed()
-				.setColor('#E84136')
-				.setDescription('あなたにはリアクションロールを管理する権限がありません！')
-				interaction.reply({embeds: [embed], ephemeral: true});
-				return;
-			}
-			const modal_1 = new Modal()
-			.setCustomId('modal_1')
-			.setTitle('ロールを追加')
-			.addComponents(
-			new TextInputComponent()
-				.setCustomId('textinput_1')
-				.setLabel('リアクションロールに追加したいロールの名前を入力してください。')
-				.setStyle('SHORT')
-				.setRequired(true)
-			);
-			showModal(modal_1, {client, interaction});
-		}
-
 		// 入退室ログ設定
 		if (interaction.customId == 'setting1-enable') {
 			const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
@@ -150,36 +128,6 @@ client.on('interactionCreate', async interaction => {
 
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
-    if(modal.customId === 'reactionmodal'){
-		const title = modal.getTextInputValue('textinput-title');
-		const description = modal.getTextInputValue('textinput-description');
-		const embed = new MessageEmbed()
-			.setTitle(`${title}`)
-			.setDescription(`${description}`)
-			.setColor('#365bf0');
-		const button = new MessageActionRow()
-			.addComponents(
-				new MessageButton()
-					.setCustomId('button_0')
-					.setLabel('追加')
-					.setStyle('SUCCESS')
-			);
-		modal.reply({ embeds: [embed], components: [button] });
-    }
-
-	if (modal.customId === 'modal_1') {
-		const modal_string1 = modal.getTextInputValue('textinput_1');
-		const role1 = modal.guild.roles.cache.find(role => role.name === `${modal_string1}`).catch(error => {
-			const embed = new MessageEmbed()
-				.setColor('#E84136')
-				.setDescription(`「${modal_string1}」という名前のロールを見つけられませんでした。\n正しいロール名を入力してください。`);
-			modal.reply({embeds: [embed], ephemeral:true});
-		});
-		const embed = new MessageEmbed()
-		.setDescription(role1);
-		modal.reply({embeds: [embed], ephemeral: true});
-	}
-
 	if (modal.customId == 'modal_setting1-2') {
 		await modal.deferReply({ ephemeral: true });
 		const string = modal.getTextInputValue('textinput');
