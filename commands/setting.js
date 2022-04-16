@@ -23,7 +23,7 @@ module.exports = {
         if (command_string1 == 'setting1') {
             const embed = new MessageEmbed()
             .setTitle('🛠 設定 - 入退室ログ')
-            .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、入退室ログの機能をON/OFFに切り替えたい場合は下のボタンを押そう!')
+            .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、入退室ログのON/OFFを切り替えたい場合は下のボタンを押そう!')
             .setColor('#57f287');
 
             const button = new MessageActionRow()

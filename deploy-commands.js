@@ -18,5 +18,5 @@ for (const file of commandFiles) {
 const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN);
 
 rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
-	.then(() => console.log('[DiscordBot-NoNick.js]'+'\u001b[32m'+'アプリケーションコマンドの登録に成功しました。'+'\u001b[0m'))
+	.then(() => console.log('[DiscordBot-NoNick.js]'+'\u001b[32m'+' アプリケーションコマンドの登録に成功しました。'+'\u001b[0m'))
 	.catch(console.error);
