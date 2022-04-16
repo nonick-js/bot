@@ -4,7 +4,7 @@ const { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = req
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('setting')
-		.setDescription('このBOTの設定を行います')
+		.setDescription('このBOTの設定を行います。')
         .addStringOption(option0 =>
 			option0.setName('item')
 				.setDescription('設定する項目を選択してください。')
