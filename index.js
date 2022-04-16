@@ -30,6 +30,7 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
+// メンバーが入ってきた時
 client.on('guildMemberAdd', member => {
 	const { welcomeCh, welcomeMessage, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 	if (welcome) {
@@ -44,6 +45,7 @@ client.on('guildMemberAdd', member => {
 	}
 });
 
+// メンバーが抜けた時
 client.on('guildMemberRemove', member => {
 	const { welcomeCh, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 	if (welcome) {
