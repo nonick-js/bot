@@ -1,17 +1,18 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
+const { userInfo } = require('os');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('timeout')
 		.setDescription('メンバーをタイムアウトします。')
 		.addUserOption(option0 =>
-			option0.setName('name')
+			option0.setName('user')
 				.setDescription('タイムアウトするユーザーの名前を入力してください。')	
 				.setRequired(true)
 		)
-		.addStringOption(option1 => 
-			option1.setName('time')
+		.addNumberOption(option1 => 
+			option1.setName('duration')
 				.setDescription('タイムアウトする時間を分単位で入力してください。')
 				.setRequired(true)
 		)
@@ -23,12 +24,15 @@ module.exports = {
 		if (!interaction.member.permissions.has("MODERATE_MEMBERS")) {
             const embed = new MessageEmbed()
                 .setColor('#E84136')
-                .setDescription('あなたにはこの設定を管理する権限がありません！');
+                .setDescription('あなたにはこのコマンドを使用する権限がありません！');
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }
-		const command_string1 = interaction.options.getString('name');
-		const command_string2 = interaction.options.getString('time');
-		const command_string3 = interaction.options.getString('reason');
+		const command_string1 = interaction.options.getString('user');
+		const command_string2 = interaction.options.getString('duration');
+		const command_string3 = interaction.options.getString('reason').catch(error => {
+			command_string1.timeout(command_string2 *60 *1000);
+		});
+
     }
 }
