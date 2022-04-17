@@ -5,7 +5,7 @@ const { userInfo } = require('os');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('timeout')
-		.setDescription('メンバーをタイムアウトします。')
+		.setDescription('ユーザーをタイムアウトします。 公式のtimeoutコマンドより柔軟な設定が可能です。')
 		.addUserOption(option0 =>
 			option0.setName('user')
 				.setDescription('タイムアウトするユーザーの名前を入力してください。')	
@@ -29,9 +29,11 @@ module.exports = {
             return;
         }
 		const command_string1 = interaction.options.getString('user');
+		const guildmember = interaction.guild.members.fetch(command_string1);
 		const command_string2 = interaction.options.getString('duration');
 		const command_string3 = interaction.options.getString('reason').catch(error => {
-			command_string1.timeout(command_string2 *60 *1000);
+			console.log("デバッグポイント")
+			guildmember.timeout(command_string2 *60 *1000);
 		});
 
     }
