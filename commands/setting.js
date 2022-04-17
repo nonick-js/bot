@@ -7,7 +7,7 @@ module.exports = {
 		.setDescription('このBOTの設定を行います。')
         .addStringOption(option0 =>
 			option0.setName('item')
-				.setDescription('設定する項目を選択してください。')
+			    .setDescription('設定する項目を選択してください。')
                 .addChoice('入退室ログ','setting1')
 				.setRequired(true)
 		),
