@@ -37,10 +37,14 @@ module.exports = {
 		const timeoutMember = interaction.guild.members.cache.get(timeoutUser);
 		const timeoutDuration_d = interaction.options.getNumber('day');
 		const timeoutDuration_m = interaction.options.getNumber('minute');
-		const timeoutReason = interaction.options.getString('reason');
-		const timeoutDuration = (timeoutDuration_d * 60 * 1000 * 24) + (timeoutDuration_m * 60 * 1000);
+		let timeoutReason = interaction.options.getString('reason');
+		if (timeoutReason == null) {
+			timeoutReason = 'なし';
+		}
+		const timeoutDuration = (timeoutDuration_d * 86400000) + (timeoutDuration_m * 60 * 1000);
+
 		console.log(timeoutReason);
-		if (timeoutDuration > 40320000) {
+		if (timeoutDuration > 2419200000) { //28日をこえたら
 			const embed = new MessageEmbed()
 				.setDescription('⛔ **28日**を超えるタイムアウトはできません!')
 				.setColor('RED');
@@ -48,6 +52,6 @@ module.exports = {
 			return;
 		}
 		timeoutMember.timeout(timeoutDuration);
-		await interaction.reply({content: `${timeoutUser}のタイムアウトに成功しました。`, ephemeral:true });
+		await interaction.reply({content: `<@${timeoutUser}> の**タイムアウト**に成功しました。`, ephemeral:true });
     }
 }
