@@ -147,6 +147,37 @@ client.on('interactionCreate', async interaction => {
 				showModal(modal, {client, interaction});
 			}
 		}
+
+		if (interaction.customId == 'timeoutSetting') {
+			if (interaction.values == 'timeoutSetting1') {
+				const modal = new Modal()
+				.setCustomId('timeoutModal1')
+				.setTitle('設定 - timeoutコマンド')
+				.addComponents(
+				new TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('タイムアウトログを送信するチャンネルの名前を入力してください。')
+					.setStyle('SHORT')
+					.setMaxLength(100)
+					.setRequired(true)
+				);  
+				showModal(modal, {client, interaction});
+			}
+			if (interaction.values == 'timeoutSetting2') {
+				const modal = new Modal()
+				.setCustomId('timeoutModal2')
+				.setTitle('設定 - timeoutコマンド')
+				.addComponents(
+				new TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('警告DMに表示するメッセージを入力してください。')
+					.setStyle('LONG')
+					.setPlaceholder('どのサーバーでタイムアウトされたか分かりやすいように、サーバー名を入れることをおすすめします。')
+					.setRequired(true)
+				);
+				showModal(modal, {client, interaction});
+			}
+		}
 	}
 });
 
