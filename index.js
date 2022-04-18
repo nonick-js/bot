@@ -102,17 +102,17 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.customId == 'timeoutSetting-dmEnable') {
 			const { timeoutDm, timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (timeoutDm) {
-				setting_module.change_setting("timeoutLog", false);
+				setting_module.change_setting("timeoutDm", false);
 				interaction.reply({content: 'タイムアウトした人への警告DMを**オフ**にしました。', ephemeral: true});
 			} else {
 				if(timeoutDmString == null) {interaction.reply({content: '**警告DMに送信する内容が指定されていません。**\nセレクトメニュー→「警告DMに送信するメッセージの変更」から設定してください。', ephemeral:true}); return;}
-				setting_module.change_setting("timeoutLog", true);
+				setting_module.change_setting("timeoutDm", true);
 				interaction.reply({content: 'タイムアウトした人への警告DMを**オン**にしました。', ephemeral: true});
 			}
-			if (interaction.customId == 'timeoutSetting-restore') {
+		}
+		if (interaction.customId == 'timeoutSetting-restore') {
 				setting_module.restore_timeout();
 				interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
-			}
 		}
 	}
 
@@ -207,7 +207,7 @@ client.on('modalSubmit', async (modal) => {
 		const string = modal.getTextInputValue('textinput');
 		try {
 			const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id;
-			setting_module.change_setting("welcomeCh", messageId);
+			setting_module.change_setting("timeoutLogCh", messageId);
 			modal.followUp({ content: `タイムアウトログを送るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
 		} catch (error) {
 			modal.followUp({ content: `**入力した名前のチャンネルが見つかりません!**\n正しいIDにしているか、BOTが見れるチャンネルに設定しているかチェックしてください!`, ephemeral: true });
@@ -217,7 +217,7 @@ client.on('modalSubmit', async (modal) => {
 	if (modal.customId == 'timeoutModal2') {
 		await modal.deferReply({ephemeral: true});
 		const string = modal.getTextInputValue('textinput');
-		setting_module.change_setting("welcomeMessage", string);
+		setting_module.change_setting("timeoutDmString", string);
 		modal.followUp({content: 'メッセージを以下の通りに編集しました。' + Formatters.codeBlock('markdown', string), ephemeral: true});
 	}
 
