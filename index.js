@@ -60,7 +60,6 @@ client.on('interactionCreate', async interaction => {
 	if (interaction.isCommand()) {
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
-
 		try {
 			await command.execute(interaction,client);
 		} catch (error) {
@@ -85,7 +84,7 @@ client.on('interactionCreate', async interaction => {
 			}
 		}
 		if (interaction.customId == 'setting1-restore') {
-			setting_module.restore();
+			setting_module.restore_welcome();
 			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
 		}
 	}
