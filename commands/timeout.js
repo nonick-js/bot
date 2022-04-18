@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu, IntegrationApplication } = require('discord.js');
-const { userInfo } = require('os');
+const { MessageEmbed } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('timeout')
@@ -33,7 +32,9 @@ module.exports = {
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }
+		const moderateUser = interaction.user.id;
 		const timeoutUser = interaction.options.getUser('user').id;
+		const timeoutAvaterURL = interaction.options.getUser('user').avatarURL();
 		const timeoutMember = interaction.guild.members.cache.get(timeoutUser);
 		const timeoutDuration_d = interaction.options.getNumber('day');
 		const timeoutDuration_m = interaction.options.getNumber('minute');
@@ -51,6 +52,16 @@ module.exports = {
 			interaction.reply({embeds: [embed], ephemeral: true});
 			return;
 		}
+
+		const embed = new MessageEmbed()
+			.setTitle('⛔ タイムアウト')
+			.setThumbnail(timeoutAvaterURL)
+			.addField(
+				{name: '処罰を受けた人', value: `<@${timeoutUser}>`},
+				{name: 'タイムアウトした理由', value: timeoutReason},
+				{name: '担当者', value: `<@${moderateUser}>`},
+			)
+			.setColor('RED');
 		timeoutMember.timeout(timeoutDuration);
 		await interaction.reply({content: `<@${timeoutUser}> の**タイムアウト**に成功しました。`, ephemeral:true });
     }
