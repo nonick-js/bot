@@ -9,14 +9,16 @@ http.createServer(function(req, res) {
 */
 
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, Formatters } = require('discord.js');
-const { Modal, TextInputComponent, showModal } = require('discord-modals');
+const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 const discordModals = require('discord-modals');
-const interaction_button = require('./interaction/button');
-const interaction_selectmenu = require('./interaction/selectmenu');
 discordModals(client);
 require('dotenv').config();
+
+// interactionモジュール達
+const interaction_button = require('./interaction/button');
+const interaction_selectmenu = require('./interaction/selectmenu');
+const interaction_modal = require('./interaction/modal');
 
 // ready nouniku!!(定期)
 client.once('ready', () => {
@@ -58,6 +60,7 @@ client.on('guildMemberRemove', member => {
 
 // コマンド処理
 client.on('interactionCreate', async interaction => {
+	// スラッシュコマンド
 	if (interaction.isCommand()) {
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
@@ -72,6 +75,7 @@ client.on('interactionCreate', async interaction => {
 		}
 	}
 
+	// ボタン
 	if (interaction.isButton()) {
 		try {
 			await interaction_button.execute(interaction);
@@ -84,6 +88,7 @@ client.on('interactionCreate', async interaction => {
 		}
 	}
 
+	// セレクトメニュー
 	if (interaction.isSelectMenu()) {
 		try {
 			await interaction_selectmenu.execute(interaction,client);
@@ -99,44 +104,15 @@ client.on('interactionCreate', async interaction => {
 
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
-	if (modal.customId == 'modal_setting1-2') {
-		await modal.deferReply({ephemeral: true});
-		const string = modal.getTextInputValue('textinput');
-		try {
-			const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id;
-			setting_module.change_setting("welcomeCh", messageId);
-			modal.followUp({ content: `入退室ログを送るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
-		} catch (error) {
-			modal.followUp({ content: `**入力した名前のチャンネルが見つかりません!**\n正しいIDにしているか、BOTが見れるチャンネルに設定しているかチェックしてください!`, ephemeral: true });
-		}
+	try {
+		await interaction_modal.execute(modal);
+	} catch (error) {
+		console.error(error);
+		const embed = new MessageEmbed()
+			.setColor('#F61E2')
+			.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
+		await interaction.reply({embeds: [embed], ephemeral: true});
 	}
-
-	if (modal.customId == 'modal_setting1-3') {
-		await modal.deferReply({ephemeral: true});
-		const string = modal.getTextInputValue('textinput');
-		setting_module.change_setting("welcomeMessage", string);
-		modal.followUp({content: 'メッセージを以下の通りに編集しました。' + Formatters.codeBlock('markdown', string), ephemeral: true});
-	}
-
-	if (modal.customId == 'timeoutModal1') {
-		await modal.deferReply({ephemeral: true});
-		const string = modal.getTextInputValue('textinput');
-		try {
-			const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id;
-			setting_module.change_setting("timeoutLogCh", messageId);
-			modal.followUp({ content: `タイムアウトログを送るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
-		} catch (error) {
-			modal.followUp({ content: `**入力した名前のチャンネルが見つかりません!**\n正しいIDにしているか、BOTが見れるチャンネルに設定しているかチェックしてください!`, ephemeral: true });
-		}
-	}
-
-	if (modal.customId == 'timeoutModal2') {
-		await modal.deferReply({ephemeral: true});
-		const string = modal.getTextInputValue('textinput');
-		setting_module.change_setting("timeoutDmString", string);
-		modal.followUp({content: 'メッセージを以下の通りに編集しました。' + Formatters.codeBlock('markdown', string), ephemeral: true});
-	}
-
 })
 
 // BOTにログイン
