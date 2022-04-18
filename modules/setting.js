@@ -1,6 +1,6 @@
 const fs = require('fs');
 const welcome_default = { "welcomeCh":null, "welcomeMessage":"まずはルールを見よう!", "welcome":false };
-const timeout_default = { "timeoutLog":false, "timeoutLogCh": null, "timeoutDm": false, "timeoutDmString":null };
+const timeout_default = { "timeoutLog":false, "timeoutLogCh": null, "timeoutDm": false, "timeoutDmString":"あなたはサーバーからタイムアウトされました。" };
 
 exports.restore_welcome = () => {
     const data = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));

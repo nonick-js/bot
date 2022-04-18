@@ -44,7 +44,6 @@ module.exports = {
 		}
 		const timeoutDuration = (timeoutDuration_d * 86400000) + (timeoutDuration_m * 60 * 1000);
 
-		console.log(timeoutReason);
 		if (timeoutDuration > 2419200000) { //28日をこえたら
 			const embed = new MessageEmbed()
 				.setDescription('⛔ **28日**を超えるタイムアウトはできません!')
@@ -53,18 +52,38 @@ module.exports = {
 			return;
 		}
 
-		const embed = new MessageEmbed()
+		timeoutMember.timeout(timeoutDuration);
+		await interaction.reply({content: `<@${timeoutUser}> の**タイムアウト**に成功しました。`, ephemeral:true});
+		const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+		
+		if (timeoutLog) {
+			const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			const embed = new MessageEmbed()
 			.setTitle('⛔ タイムアウト')
 			.setThumbnail(timeoutAvaterURL)
-			.addField(
+			.addFields(
 				{name: '処罰を受けた人', value: `<@${timeoutUser}>`},
 				{name: 'タイムアウトした理由', value: timeoutReason},
-				{name: '担当者', value: `<@${moderateUser}>`},
+				{name: '担当者', value: `<@${moderateUser}>`, inline: true}
 			)
 			.setColor('RED');
-		timeoutMember.timeout(timeoutDuration);
-		await interaction.reply({content: `<@${timeoutUser}> の**タイムアウト**に成功しました。`, ephemeral:true });
+			await interaction.guild.channels.cache.get(timeoutLogCh).send({embeds: [embed]}).catch(error => {
+				console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
+			});
+		}
 
-		const { welcomeCh, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+		if (timeoutDm) {
+			const { timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			const embed = new MessageEmbed()
+				.setTitle('⛔ タイムアウト')
+				.setDescription(timeoutDmString)
+				.setColor('RED')
+				.addFields(
+					{name: 'タイムアウトされた理由', value: timeoutReason}
+				);
+			timeoutMember.send({embeds: [embed]}).catch(error => {
+				interaction.followUp({content: 'タイムアウトした人へのDMに失敗しました。', ephemeral: true});
+			});
+		}
     }
 }
