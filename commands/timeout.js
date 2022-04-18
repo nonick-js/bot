@@ -28,11 +28,11 @@ module.exports = {
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }
-		const command_string0 = interaction.options.getUser('user').id;
-		const command_string1 = interaction.guild.members.cache.get(command_string0)
-		const command_string2 = interaction.options.getNumber('duration');
-		const command_string3 = interaction.options.getString('reason');
-		command_string1.timeout(command_string2 * 60 * 1000);
-		interaction.reply("タイムアウトに成功しました");
+		const timeoutUser = interaction.options.getUser('user').id;
+		const timeoutMember = interaction.guild.members.cache.get(timeoutUser)
+		const timeoutDuration = interaction.options.getNumber('duration');
+		const timeoutReason = interaction.options.getString('reason');
+		timeoutMember.timeout(timeoutDuration * 60 * 1000);
+		await interaction.reply({content: `${timeoutUser}のタイムアウトに成功しました。`, ephemeral:true });
     }
 }
