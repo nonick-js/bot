@@ -47,7 +47,7 @@ module.exports = {
 			interaction.reply({embeds: [embed], ephemeral: true});
 			return;
 		}
-		timeoutMember.timeout(timeoutDuration * 60 * 1000);
+		timeoutMember.timeout(timeoutDuration);
 		await interaction.reply({content: `${timeoutUser}のタイムアウトに成功しました。`, ephemeral:true });
     }
 }
