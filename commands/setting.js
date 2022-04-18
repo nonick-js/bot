@@ -39,7 +39,7 @@ module.exports = {
                             emoji: '📃',
 						},
 						{
-							label: '入室時ログに載せるメッセージの変更',
+							label: '入室時ログに送信するメッセージの変更',
 							value: 'setting1-3',
                             emoji: '📨',
 						},
@@ -81,7 +81,7 @@ module.exports = {
                             emoji: '📃',
 						},
 						{
-							label: '警告DMに載せるメッセージの変更',
+							label: '警告DMに送信するメッセージの変更',
 							value: 'timeoutSetting2',
                             emoji: '📨',
 						},

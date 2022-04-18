@@ -87,6 +87,33 @@ client.on('interactionCreate', async interaction => {
 			setting_module.restore_welcome();
 			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
 		}
+
+		if (interaction.customId == 'timeoutSetting-logEnable') {
+			const { timeoutLog, timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			if (timeoutLog) {
+				setting_module.change_setting("timeoutLog", false);
+				interaction.reply({content: 'タイムアウトログを**オフ**にしました。', ephemeral: true});
+			} else {
+				if(timeoutLogCh == null) {interaction.reply({content: '**タイムアウトログを送信するチャンネルIDが指定されていません。**\nセレクトメニュー→「ログを送信するチャンネルの変更」から設定してください。', ephemeral:true}); return;}
+				setting_module.change_setting("timeoutLog", true);
+				interaction.reply({content: 'タイムアウトログを**オン**にしました。', ephemeral: true});
+			}
+		}
+		if (interaction.customId == 'timeoutSetting-dmEnable') {
+			const { timeoutDm, timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			if (timeoutDm) {
+				setting_module.change_setting("timeoutLog", false);
+				interaction.reply({content: 'タイムアウトした人への警告DMを**オフ**にしました。', ephemeral: true});
+			} else {
+				if(timeoutDmString == null) {interaction.reply({content: '**警告DMに送信する内容が指定されていません。**\nセレクトメニュー→「警告DMに送信するメッセージの変更」から設定してください。', ephemeral:true}); return;}
+				setting_module.change_setting("timeoutLog", true);
+				interaction.reply({content: 'タイムアウトした人への警告DMを**オン**にしました。', ephemeral: true});
+			}
+			if (interaction.customId == 'timeoutSetting-restore') {
+				setting_module.restore_timeout();
+				interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
+			}
+		}
 	}
 
 	if (interaction.isSelectMenu()) {
