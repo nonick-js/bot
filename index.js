@@ -13,7 +13,8 @@ const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButt
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 const discordModals = require('discord-modals');
-const interaction_module = require('./interaction/button');
+const interaction_button = require('./interaction/button');
+const interaction_selectmenu = require('./interaction/selectmenu');
 discordModals(client);
 require('dotenv').config();
 
@@ -65,84 +66,33 @@ client.on('interactionCreate', async interaction => {
 		} catch (error) {
 			console.error(error);
 			const embed = new MessageEmbed()
-			.setColor('#F61E2')
-			.setDescription('コマンドの実行中にエラーが発生しました。開発者にご連絡ください。')
+				.setColor('#F61E2')
+				.setDescription('コマンドの実行中にエラーが発生しました。開発者にご連絡ください。')
 			await interaction.reply({embeds: [embed], ephemeral: true});
 		}
 	}
+
 	if (interaction.isButton()) {
 		try {
-			await interaction_module.execute(interaction);
+			await interaction_button.execute(interaction);
 		} catch (error) {
 			console.error(error);
 			const embed = new MessageEmbed()
-			.setColor('#F61E2')
-			.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
+				.setColor('#F61E2')
+				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
 			await interaction.reply({embeds: [embed], ephemeral: true});
 		}
 	}
 
 	if (interaction.isSelectMenu()) {
-		if (interaction.customId == 'setting1') {
-			if (interaction.values == 'setting1-2') {
-				const modal = new Modal()
-				.setCustomId('modal_setting1-2')
-				.setTitle('設定 - 入退室ログ')
-				.addComponents(
-				new TextInputComponent()
-					.setCustomId('textinput')
-					.setLabel('入退室ログを送信するチャンネルの名前を入力してください。')
-					.setStyle('SHORT')
-					.setMaxLength(100)
-					.setRequired(true)
-				);  
-				showModal(modal, {client, interaction});
-			}
-			if (interaction.values == 'setting1-3') {
-				const modal = new Modal()
-				.setCustomId('modal_setting1-3')
-				.setTitle('設定 - 入退室ログ')
-				.addComponents(
-				new TextInputComponent()
-					.setCustomId('textinput')
-					.setLabel('入室時埋め込みに表示するメッセージを入力してください。')
-					.setStyle('LONG')
-					.setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
-					.setRequired(true)
-				);
-				showModal(modal, {client, interaction});
-			}
-		}
-
-		if (interaction.customId == 'timeoutSetting') {
-			if (interaction.values == 'timeoutSetting1') {
-				const modal = new Modal()
-				.setCustomId('timeoutModal1')
-				.setTitle('設定 - timeoutコマンド')
-				.addComponents(
-				new TextInputComponent()
-					.setCustomId('textinput')
-					.setLabel('タイムアウトログを送信するチャンネルの名前を入力してください。')
-					.setStyle('SHORT')
-					.setMaxLength(100)
-					.setRequired(true)
-				);  
-				showModal(modal, {client, interaction});
-			}
-			if (interaction.values == 'timeoutSetting2') {
-				const modal = new Modal()
-				.setCustomId('timeoutModal2')
-				.setTitle('設定 - timeoutコマンド')
-				.addComponents(
-				new TextInputComponent()
-					.setCustomId('textinput')
-					.setLabel('警告DMに表示するメッセージを入力してください。')
-					.setStyle('LONG')
-					.setPlaceholder('どのサーバーでタイムアウトされたか分かりやすいように、サーバー名を入れることをおすすめします。')
-					.setRequired(true)
-				);
-				showModal(modal, {client, interaction});
-			}
+		try {
+			await interaction_selectmenu.execute(interaction,client);
+		} catch (error) {
+			console.error(error);
+			const embed = new MessageEmbed()
+				.setColor('#F61E2')
+				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
+			await interaction.reply({embeds: [embed], ephemeral: true});
 		}
 	}
 });
