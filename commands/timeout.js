@@ -28,13 +28,11 @@ module.exports = {
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }
-		const command_string1 = interaction.options.getString('user');
-		const guildmember = interaction.guild.members.fetch(command_string1);
-		const command_string2 = interaction.options.getString('duration');
-		const command_string3 = interaction.options.getString('reason').catch(error => {
-			console.log("デバッグポイント")
-			guildmember.timeout(command_string2 *60 *1000);
-		});
-
+		const command_string0 = interaction.options.getUser('user').id;
+		const command_string1 = interaction.guild.members.cache.get(command_string0)
+		const command_string2 = interaction.options.getNumber('duration');
+		const command_string3 = interaction.options.getString('reason');
+		command_string1.timeout(command_string2 * 60 * 1000);
+		interaction.reply("タイムアウトに成功しました");
     }
 }
