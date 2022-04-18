@@ -74,9 +74,11 @@ module.exports = {
 
 		if (timeoutDm) {
 			const { timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			const timeoutServerIcon = interaction.guild.iconURL();
 			const embed = new MessageEmbed()
 				.setTitle('⛔ タイムアウト')
 				.setDescription(timeoutDmString)
+				.setThumbnail(timeoutServerIcon)
 				.setColor('RED')
 				.addFields(
 					{name: 'タイムアウトされた理由', value: timeoutReason}
