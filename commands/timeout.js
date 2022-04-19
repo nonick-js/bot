@@ -40,7 +40,7 @@ module.exports = {
 		const timeoutDuration_m = interaction.options.getNumber('minute');
 		let timeoutReason = interaction.options.getString('reason');
 		if (timeoutReason == null) {
-			timeoutReason = 'なし';
+			timeoutReason = '理由が入力されていません';
 		}
 		const timeoutDuration = (timeoutDuration_d * 86400000) + (timeoutDuration_m * 60 * 1000);
 
@@ -52,7 +52,10 @@ module.exports = {
 			return;
 		}
 
-		timeoutMember.timeout(timeoutDuration);
+		timeoutMember.timeout(timeoutDuration).catch(error => {
+			interaction.reply({content: `<@${timeoutUser}> のタイムアウトに失敗しました。BOTより強い権限を持っている可能性があります。`});
+			return;
+		});
 		await interaction.reply({content: `<@${timeoutUser}> の**タイムアウト**に成功しました。`, ephemeral:true});
 		const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 		
@@ -68,7 +71,7 @@ module.exports = {
 			)
 			.setColor('RED');
 			await interaction.guild.channels.cache.get(timeoutLogCh).send({embeds: [embed]}).catch(error => {
-				console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
+				console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにタイムアウトログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
 			});
 		}
 
