@@ -4,25 +4,25 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('timeout')
-		.setDescription('ユーザーをタイムアウトします。 公式のtimeoutコマンドより柔軟な設定が可能です。')
+		.setDescription('ユーザーをタイムアウト 公式のtimeoutコマンドより柔軟な設定が可能です。')
 		.addUserOption(option0 =>
 			option0.setName('user')
-				.setDescription('タイムアウトするユーザーを選択してください。')	
+				.setDescription('タイムアウト対象のユーザー')	
 				.setRequired(true)
 		)
 		.addNumberOption(option1 =>
 			option1.setName('day')
-				.setDescription('タイムアウトする時間を日単位で入力してください。')
+				.setDescription('タイムアウトする時間 (日単位)')
 				.setRequired(true)
 		)
 		.addNumberOption(option2 => 
 			option2.setName('minute')
-				.setDescription('タイムアウトする時間を分単位で入力してください。')
+				.setDescription('タイムアウトする時間 (分単位)')
 				.setRequired(true)
 		)
 		.addStringOption(option3 =>
 			option3.setName('reason')
-				.setDescription('タイムアウトする理由を入力してください。')
+				.setDescription('タイムアウトする理由')
 		),
 	async execute(interaction) {
 		if (!interaction.member.permissions.has("MODERATE_MEMBERS")) {
