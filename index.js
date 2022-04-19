@@ -20,11 +20,6 @@ const interaction_button = require('./interaction/button');
 const interaction_selectmenu = require('./interaction/selectmenu');
 const interaction_modal = require('./interaction/modal');
 
-// ready nouniku!!(定期)
-client.once('ready', () => {
-	console.log(`[DiscordBot-NoNick.js]`+'\u001b[32m'+' DiscordBotが起動しました。'+'\u001b[0m');
-});
-
 // コマンドファイルを動的に取得する
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -32,6 +27,11 @@ for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
 } 
+
+// ready nouniku!!(定期)
+client.once('ready', () => {
+	console.log(`[DiscordBot-NoNick.js]`+'\u001b[32m'+' DiscordBotが起動しました。'+'\u001b[0m');
+});
 
 // メンバーが入ってきた時
 client.on('guildMemberAdd', member => {
