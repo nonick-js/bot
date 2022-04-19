@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ban')
@@ -27,6 +27,22 @@ module.exports = {
 						.setDescription('BANする理由')
 				),
 		),
-	async execute(interaction) {
+	async execute(interaction,client) {
+		if (!interaction.member.permissions.has("BAN_MEMBERS")) {
+			const embed = new MessageEmbed()
+				.setColor('#E84136')
+				.setDescription('あなたにはこのコマンドを使用する権限がありません！');
+			interaction.reply({embeds: [embed], ephemeral: true});
+			return;
+		}
+
+		if (interaction.options.getSubcommand() === 'id') {
+			const banUser = interaction.options.getString('userid');
+			const banDeleteMessage = interaction.options.getNumber('delete_messages');
+			let banReason = interaction.options.getString('reason');
+			if (!banReason) { banReason = '理由が入力されていません'; }
+			interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage})
+			await interaction.reply('BANに成功しました');
+		}
     }
 }
