@@ -42,8 +42,8 @@ module.exports = {
 			}
 		}
 		if (interaction.customId == 'timeoutSetting-restore') {
-				setting_module.restore_timeout();
-				interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
+			setting_module.restore_timeout();
+			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
 		}
     }
 }

@@ -70,7 +70,7 @@ client.on('interactionCreate', async interaction => {
 			console.error(error);
 			const embed = new MessageEmbed()
 				.setColor('#F61E2')
-				.setDescription('コマンドの実行中にエラーが発生しました。開発者にご連絡ください。')
+				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
 			await interaction.reply({embeds: [embed], ephemeral: true});
 		}
 	}
@@ -111,7 +111,7 @@ client.on('modalSubmit', async (modal) => {
 		const embed = new MessageEmbed()
 			.setColor('#F61E2')
 			.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-		await interaction.reply({embeds: [embed], ephemeral: true});
+		await modal.reply({embeds: [embed], ephemeral: true});
 	}
 })
 
