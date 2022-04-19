@@ -33,3 +33,6 @@ module.exports = {
         interaction.reply({embeds: [embed], components: [button], ephemeral:true});
     }
 }
+
+// このコマンドの動作の改変を禁止します。
+// Copyright © 2022 NoNICK All Rights Reserved.
