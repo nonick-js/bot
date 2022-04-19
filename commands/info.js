@@ -1,3 +1,6 @@
+// このコマンドの動作の改変を禁止します。
+// Copyright © 2022 NoNICK All Rights Reserved.
+
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu, Message } = require('discord.js');
