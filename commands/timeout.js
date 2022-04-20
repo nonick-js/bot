@@ -32,12 +32,13 @@ module.exports = {
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }
-		const moderateUser = interaction.user.id;
-		const timeoutUser = interaction.options.getUser('user').id;
+		const moderateUserId = interaction.user.id;
+		const timeoutUserId = interaction.options.getUser('user').id;
 		const timeoutAvaterURL = interaction.options.getUser('user').avatarURL();
-		const timeoutMember = interaction.guild.members.cache.get(timeoutUser);
+		const timeoutMember = interaction.guild.members.cache.get(timeoutUserId);
 		const timeoutDuration_d = interaction.options.getNumber('day');
 		const timeoutDuration_m = interaction.options.getNumber('minute');
+		const bot_id = interaction.guild.me.id;
 		let timeoutReason = interaction.options.getString('reason');
 		if (timeoutReason == null) {
 			timeoutReason = '理由が入力されていません';
@@ -46,28 +47,37 @@ module.exports = {
 
 		if (timeoutDuration > 2419200000) { //28日をこえたら
 			const embed = new MessageEmbed()
-				.setDescription('⛔ **28日**を超えるタイムアウトはできません!')
+				.setDescription('⛔**28日**を超えるタイムアウトはできません!')
 				.setColor('RED');
 			interaction.reply({embeds: [embed], ephemeral: true});
 			return;
 		}
 
-		timeoutMember.timeout(timeoutDuration).catch(error => {
-			interaction.reply({content: `<@${timeoutUser}> のタイムアウトに失敗しました。BOTより強い権限を持っている可能性があります。`});
+		if (timeoutUserId == bot_id) {
+			interaction.reply({content: '私をタイムアウトするだと...?',ephemeral: true});
 			return;
-		});
-		await interaction.reply({content: `<@${timeoutUser}> の**タイムアウト**に成功しました。`, ephemeral:true});
-		const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+		}
 		
+		timeoutMember.timeout(timeoutDuration)
+			.then(() => {
+				interaction.reply(`⛔<@${timeoutUserId}> をタイムアウトしました。`)
+			})
+			.catch((error) => {
+				interaction.reply({content: `<@${timeoutUserId}> のタイムアウトに失敗しました。BOTより強い権限を持っている可能性があります。`, ephemeral: true})
+				return;
+			});
+
+		
+		const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 		if (timeoutLog) {
 			const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			const embed = new MessageEmbed()
-			.setTitle('⛔ タイムアウト')
+			.setTitle('⛔タイムアウト')
 			.setThumbnail(timeoutAvaterURL)
 			.addFields(
-				{name: '処罰を受けた人', value: `<@${timeoutUser}>`},
-				{name: 'タイムアウトした理由', value: timeoutReason},
-				{name: '担当者', value: `<@${moderateUser}>`, inline: true}
+				{name: '処罰を受けた人', value: `<@${timeoutUserId}>`},
+				{name: 'タイムアウトした理由', value: timeoutReason, inline: true},
+				{name: '担当者', value: `<@${moderateUserId}>`}
 			)
 			.setColor('RED');
 			await interaction.guild.channels.cache.get(timeoutLogCh).send({embeds: [embed]}).catch(error => {
@@ -79,7 +89,7 @@ module.exports = {
 			const { timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			const timeoutServerIcon = interaction.guild.iconURL();
 			const embed = new MessageEmbed()
-				.setTitle('⛔ タイムアウト')
+				.setTitle('⛔タイムアウト')
 				.setDescription(timeoutDmString)
 				.setThumbnail(timeoutServerIcon)
 				.setColor('RED')
