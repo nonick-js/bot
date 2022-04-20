@@ -5,7 +5,6 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ban')
 		.setDescription('[開発中] ユーザーをBANします。')
-		.setDefaultPermission(false)
 		.addSubcommand(subcommand => 
 			subcommand
 				.setName('id')
