@@ -46,6 +46,7 @@ module.exports = {
 				interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage})
 				interaction.reply(`BANに成功しました`);
 			} catch (error) {
+				console.log(error)
 				const embed = new MessageEmbed()
 					.setDescription(`<@${banUser}>をBANできません! BOTより上の権限を持っています!`)
 					.setColor('RED');

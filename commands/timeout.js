@@ -58,10 +58,11 @@ module.exports = {
 			return;
 		}
 		
-		try {
+		try  {
 			timeoutMember.timeout(timeoutDuration);
 			interaction.reply(`⛔<@${timeoutUserId}>を` + `**${timeoutDuration_d}日` + `${timeoutDuration_m}分**`+`タイムアウトしました。`);
 			const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+	
 			if (timeoutLog) {
 				const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 				const embed = new MessageEmbed()
@@ -77,6 +78,7 @@ module.exports = {
 					console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにタイムアウトログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
 				});
 			}
+	
 			if (timeoutDm) {
 				const { timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 				const timeoutServerIcon = interaction.guild.iconURL();
@@ -93,7 +95,6 @@ module.exports = {
 				});
 			}
 		} catch (error) {
-			console.log(error);
 			interaction.reply({content: `<@${timeoutUserId}> のタイムアウトに失敗しました。BOTより強い権限を持っている可能性があります。`, ephemeral: true});
 		}
     }
