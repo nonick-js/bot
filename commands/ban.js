@@ -41,8 +41,16 @@ module.exports = {
 			const banDeleteMessage = interaction.options.getNumber('delete_messages');
 			let banReason = interaction.options.getString('reason');
 			if (!banReason) { banReason = '理由が入力されていません'; }
-			interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage})
-			await interaction.reply('BANに成功しました');
+
+			try {	
+				interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage})
+				interaction.reply(`BANに成功しました`);
+			} catch (error) {
+				const embed = new MessageEmbed()
+					.setDescription(`<@${banUser}>をBANできません! BOTより上の権限を持っています!`)
+					.setColor('RED');
+				interaction.reply({embeds: [embed], ephemeral:true});
+			}
 		}
     }
 }
