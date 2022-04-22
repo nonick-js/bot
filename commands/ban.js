@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, BaseMessageComponent } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ban')
@@ -38,27 +38,27 @@ module.exports = {
 
 		if (interaction.options.getSubcommand() === 'id') {
 			const banUser = interaction.options.getString('userid');
-			if (!isNaN(banUser) || banUser.length !== 18) {
-				const embed = new MessageEmbed()
-					.setDescription('ユーザーIDは**18桁の数字**です。正しい形式で入力してください。')
-					.setColor('RED');
-				interaction.reply({embed: [embed], ephemeral: true});
-				return;
-			}
-
+			const banmember = interaction.guild.members.fetch(interaction.options.getString('userid'));
 			const banDeleteMessage = interaction.options.getNumber('delete_messages');
 			let banReason = interaction.options.getString('reason');
 			if (!banReason) { banReason = '理由が入力されていません'; }
 
-			try {	
-				interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage})
-				interaction.reply(`BANに成功しました`);
-			} catch (error) {
+			if (isNaN(banUser) || banUser.length !== 18) {
 				const embed = new MessageEmbed()
-					.setDescription(`<@${banUser}>をBANできません! BOTより上の権限を持っているか、存在しないユーザーIDです`)
+					.setDescription('ユーザーIDは**18桁の数字**です。正しい形式で入力してください。')
+					.setColor('RED');
+				interaction.reply({embeds: [embed], ephemeral: true});
+				return;
+			}
+
+			if (!banmember.moderatable) {
+				const embed = new MessageEmbed()
+					.setDescription(`<@${banUser}>をBANできません! \nBOTより上の権限を持っているか、存在しないユーザーIDです`)
 					.setColor('RED');
 				interaction.reply({embeds: [embed], ephemeral:true});
+				return;
 			}
+			interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage});
 		}
     }
 }
