@@ -33,6 +33,7 @@ module.exports = {
             return;
         }
 		const moderateUserId = interaction.user.id;
+		const timeoutUserModerate = interaction.options.getUser('user').moderatable
 		const timeoutUserId = interaction.options.getUser('user').id;
 		const timeoutAvaterURL = interaction.options.getUser('user').avatarURL();
 		const timeoutMember = interaction.guild.members.cache.get(timeoutUserId);
@@ -58,44 +59,45 @@ module.exports = {
 			return;
 		}
 		
-		try  {
-			timeoutMember.timeout(timeoutDuration);
-			interaction.reply(`⛔<@${timeoutUserId}>を` + `**${timeoutDuration_d}日` + `${timeoutDuration_m}分**`+`タイムアウトしました。`);
-			const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-	
-			if (timeoutLog) {
-				const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-				const embed = new MessageEmbed()
-				.setTitle('⛔タイムアウト')
-				.setThumbnail(timeoutAvaterURL)
-				.addFields(
-					{name: '処罰を受けた人', value: `<@${timeoutUserId}>`},
-					{name: 'タイムアウトした理由', value: timeoutReason, inline: true},
-					{name: '担当者', value: `<@${moderateUserId}>`}
-				)
-				.setColor('RED');
-				await interaction.guild.channels.cache.get(timeoutLogCh).send({embeds: [embed]}).catch(error => {
-					console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにタイムアウトログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
-				});
-			}
-	
-			if (timeoutDm) {
-				const { timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-				const timeoutServerIcon = interaction.guild.iconURL();
-				const embed = new MessageEmbed()
-					.setTitle('⛔タイムアウト')
-					.setDescription(timeoutDmString)
-					.setThumbnail(timeoutServerIcon)
-					.setColor('RED')
-					.addFields(
-						{name: 'タイムアウトされた理由', value: timeoutReason}
-				);
-				timeoutMember.send({embeds: [embed]}).catch(error => {
-					interaction.followUp({content: 'タイムアウトした人へのDMに失敗しました。', ephemeral: true});
-				});
-			}
-		} catch (error) {
+		if (!timeoutUserModerate) {
 			interaction.reply({content: `<@${timeoutUserId}> のタイムアウトに失敗しました。BOTより強い権限を持っている可能性があります。`, ephemeral: true});
+			return;
 		}
-    }
+
+		timeoutMember.timeout(timeoutDuration);
+		interaction.reply(`⛔<@${timeoutUserId}>を` + `**${timeoutDuration_d}日` + `${timeoutDuration_m}分**`+`タイムアウトしました。`);
+		const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+	
+		if (timeoutLog) {
+			const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			const embed = new MessageEmbed()
+			.setTitle('⛔タイムアウト')
+			.setThumbnail(timeoutAvaterURL)
+			.addFields(
+				{name: '処罰を受けた人', value: `<@${timeoutUserId}>`},
+				{name: 'タイムアウトした理由', value: timeoutReason, inline: true},
+				{name: '担当者', value: `<@${moderateUserId}>`}
+			)
+			.setColor('RED');
+			await interaction.guild.channels.cache.get(timeoutLogCh).send({embeds: [embed]}).catch(error => {
+				console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにタイムアウトログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
+			});
+		}
+	
+		if (timeoutDm) {
+			const { timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			const timeoutServerIcon = interaction.guild.iconURL();
+			const embed = new MessageEmbed()
+				.setTitle('⛔タイムアウト')
+				.setDescription(timeoutDmString)
+				.setThumbnail(timeoutServerIcon)
+				.setColor('RED')
+				.addFields(
+					{name: 'タイムアウトされた理由', value: timeoutReason}
+			);
+			timeoutMember.send({embeds: [embed]}).catch(error => {
+				interaction.followUp({content: 'タイムアウトした人へのDMに失敗しました。', ephemeral: true});
+			});
+		}
+	}
 }
