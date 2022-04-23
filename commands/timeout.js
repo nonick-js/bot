@@ -33,7 +33,6 @@ module.exports = {
             return;
         }
 		const moderateUserId = interaction.user.id;
-		const timeoutUserModerate = interaction.options.getUser('user').moderatable;
 		const timeoutUserId = interaction.options.getUser('user').id;
 		const timeoutAvaterURL = interaction.options.getUser('user').avatarURL();
 		const timeoutMember = interaction.guild.members.cache.get(timeoutUserId);
@@ -54,7 +53,7 @@ module.exports = {
 			return;
 		}
 		
-		if (!timeoutUserModerate) {
+		if (!interaction.options.getUser('user').moderatable) {
 			if (timeoutUserId == bot_id) {
 				interaction.reply({content: '私をタイムアウトするだと...?',ephemeral: true});
 				return;
