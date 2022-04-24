@@ -1,5 +1,4 @@
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     async execute(interaction,client) {
@@ -61,6 +60,23 @@ module.exports = {
 					.setPlaceholder('どのサーバーでタイムアウトされたか分かりやすいように、サーバー名を入れることをおすすめします。')
 					.setRequired(true)
 				);
+				showModal(modal, {client, interaction});
+			}
+		}
+
+		if (interaction.customId == 'banidSetting') {
+			if (interaction.values == 'banidSetting1') {
+				const modal = new Modal()
+				.setCustomId('timeoutModal1')
+				.setTitle('設定 - banidコマンド')
+				.addComponents(
+				new TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('タイムアウトログを送信するチャンネルの名前を入力してください。')
+					.setStyle('SHORT')
+					.setMaxLength(100)
+					.setRequired(true)
+				);  
 				showModal(modal, {client, interaction});
 			}
 		}

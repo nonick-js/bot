@@ -99,10 +99,9 @@ module.exports = {
                 .setCustomId('banidSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    { label: 'ログを送信するチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!。' , value: 'timeoutSetting1', emoji: '966588719635267624' },
-                    { label: '警告DMに送信するメッセージの変更', description: '処分に関する注意を記述しよう', value: 'timeoutSetting2', emoji: '966596708458983484' },
-                ]),
-            ]);
+                    { label: 'ログを送信するチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!。' , value: 'banidSetting1', emoji: '966588719635267624' },
+                    ]),
+                ]);
             const button = new MessageActionRow().addComponents([
                 new MessageButton()
                 .setCustomId('banidSetting-enable')
@@ -126,6 +125,5 @@ module.exports = {
             ]);
             interaction.reply({embeds: [embed], components: [select, button], ephemeral:true});
         }
-
 	},
 }; 
