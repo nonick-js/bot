@@ -53,7 +53,7 @@ module.exports = {
 			interaction.reply({embeds: [embed], ephemeral: true});
 			return;
 		}
-
+		
 		if (timeoutUserId == bot_id) {
 			interaction.reply({content: '私をタイムアウトするだと...?',ephemeral: true});
 			return;
