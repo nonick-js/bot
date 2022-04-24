@@ -33,8 +33,8 @@ module.exports = {
 				.setCustomId('welcomeSetting')
 				.setPlaceholder('ここから選択')
 				.addOptions([
-					{ label: '送信先の変更', description: 'ここに入退室ログが送信されます', value: 'welcomeSetting1', emoji: '966588719635267624' },
-					{ label: 'メッセージの変更', description: '最初に見てほしいチャンネル等を紹介しよう', value: 'welcomeSetting2', emoji: '966596708458983484' },
+					{ label: '送信先の変更', description: 'ここに入退室ログが送信されます。', value: 'welcomeSetting1', emoji: '966588719635267624' },
+					{ label: 'メッセージの変更', description: '最初に見てほしいチャンネル等を紹介しよう!', value: 'welcomeSetting2', emoji: '966596708458983484' },
 				]),
             ]);
             const button = new MessageActionRow().addComponents([
@@ -61,8 +61,8 @@ module.exports = {
                 .setCustomId('timeoutSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    { label: 'ログを送信するチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう' , value: 'timeoutSetting1', emoji: '966588719635267624' },
-					{ label: '警告DMに送信するメッセージの変更', description: '処分に関する注意を記述しよう', value: 'timeoutSetting2', emoji: '966596708458983484' },
+                    { label: 'ログを送信するチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!' , value: 'timeoutSetting1', emoji: '966588719635267624' },
+					{ label: '警告DMに送信するメッセージの変更', description: '処分に関する注意を記述しよう!', value: 'timeoutSetting2', emoji: '966596708458983484' },
 		        ]),
             ]);
             const button = new MessageActionRow().addComponents([
