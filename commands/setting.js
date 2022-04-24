@@ -21,15 +21,15 @@ module.exports = {
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }
-        
         const command_string1 = interaction.options.getString('item');
+
         if (command_string1 == 'welcomeSetting') {
             const embed = new MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
                 .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!')
                 .setColor('#57f287');
             const select = new MessageActionRow().addComponents([
-			new MessageSelectMenu()
+			    new MessageSelectMenu()
 				.setCustomId('welcomeSetting')
 				.setPlaceholder('ここから選択')
 				.addOptions([
@@ -42,7 +42,7 @@ module.exports = {
                 .setCustomId('setting1-enable')
                 .setLabel(`入退室ログ`)
                 .setEmoji('967445747735879770')
-                .setStyle('SUCCESS'),
+                .setStyle('PRIMARY'),
                 new MessageButton()
                 .setCustomId('setting1-restore')
                 .setLabel('初期化')
@@ -56,45 +56,36 @@ module.exports = {
                 .setTitle('🛠 設定 - Timeoutコマンド')
                 .setDescription('Timeoutコマンドの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!')
                 .setColor('#57f287');
-            
-            const select = new MessageActionRow()
-            .addComponents(
-				new MessageSelectMenu()
-					.setCustomId('timeoutSetting')
-					.setPlaceholder('ここから選択')
-					.addOptions([
-						{
-							label: 'ログを送信するチャンネルの変更',
-							value: 'timeoutSetting1',
-                            emoji: '📃',
-						},
-						{
-							label: '警告DMに送信するメッセージの変更',
-							value: 'timeoutSetting2',
-                            emoji: '📨',
-						},
-					]),
-			);
-
-            const button = new MessageActionRow()
-            .addComponents(
+            const select = new MessageActionRow().addComponents([
+                new MessageSelectMenu()
+                .setCustomId('timeoutSetting')
+                .setPlaceholder('ここから選択')
+                .addOptions([
+                    { label: 'ログを送信するチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!。' , value: 'timeoutSetting1', emoji: '966588719635267624' },
+					{ label: '警告DMに送信するメッセージの変更', description: '', value: 'timeoutSetting2', emoji: '966596708458983484' },
+		        ]),
+            ]);
+            const button = new MessageActionRow().addComponents([
                 new MessageButton()
-                    .setCustomId('timeoutSetting-logEnable')
-                    .setLabel('ログを有効化/無効化')
-                    .setStyle('PRIMARY'),
-            )
-            .addComponents(
+                .setCustomId('timeoutSetting-enable')
+                .setLabel('コマンド')
+                .setEmoji('967445747735879770')
+                .setStyle('PRIMARY'),
                 new MessageButton()
-                    .setCustomId('timeoutSetting-dmEnable')
-                    .setLabel('警告DMを有効化/無効化')
-                    .setStyle('PRIMARY'),
-            )
-            .addComponents(
+                .setCustomId('timeoutSetting-logEnable')
+                .setLabel('ログ')
+                .setEmoji('967445747735879770')
+                .setStyle('SECONDARY'),
+                new MessageButton()
+                .setCustomId('timeoutSetting-dmEnable')
+                .setLabel('警告DM')
+                .setEmoji('967445747735879770')
+                .setStyle('SECONDARY'),
                 new MessageButton()
                 .setCustomId('timeoutSetting-restore')
                 .setLabel('初期化')
                 .setStyle('DANGER'),
-            );
+            ]);
             interaction.reply({embeds: [embed], components: [select, button], ephemeral:true});
         }
 	},
