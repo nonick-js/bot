@@ -1,7 +1,7 @@
 const fs = require('fs');
 const welcome_default = { "welcomeCh":null, "welcomeMessage":"まずはルールを見よう!", "welcome":false };
 const timeout_default = { "timeout":true, "timeoutLog":false, "timeoutLogCh": null, "timeoutDm": false, "timeoutDmString":"あなたはサーバーからタイムアウトされました。" };
-const banid_default = { "banid":false, "banidLog":false, "banidLogCh":null }
+const banid_default = { "banid":true, "banidLog":false, "banidLogCh":null }
 
 exports.restore_welcome = () => {
     const data = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
