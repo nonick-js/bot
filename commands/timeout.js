@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Message } = require('discord.js');
+const { time } = require('console');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('timeout')
@@ -24,7 +25,7 @@ module.exports = {
 			option3.setName('reason')
 				.setDescription('タイムアウトする理由')
 		),
-	async execute(interaction) {
+	async execute(interaction) {		
 		if (!interaction.member.permissions.has("MODERATE_MEMBERS")) {
             const embed = new MessageEmbed()
                 .setColor('#E84136')
@@ -32,6 +33,15 @@ module.exports = {
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }
+
+		const { timeout } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+		if (!timeout) {
+			const embed = new MessageEmbed()
+				.setDescription('このコマンドはサーバー管理者によって無効化されています。')
+				.setColor('RED');
+			interaction.reply({embeds: [embed], ephemeral:true}); 
+		}
+
 		const moderateUserId = interaction.user.id;
 		const timeoutUserModerate = interaction.options.getUser('user').moderatable
 		const timeoutUserId = interaction.options.getUser('user').id;

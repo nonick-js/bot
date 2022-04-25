@@ -16,7 +16,7 @@ module.exports = {
 	async execute(interaction) {
         if (!interaction.member.permissions.has("MANAGE_GUILD")) {
             const embed = new MessageEmbed()
-                .setColor('#E84136')
+                .setColor('RED')
                 .setDescription('**あなたにはこの設定を管理する権限がありません！**\n必要な権限: サーバー管理');
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
@@ -26,7 +26,7 @@ module.exports = {
         if (command_string1 == 'welcomeSetting') {
             const embed = new MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
-                .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!')
+                .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!' + Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。'))
                 .setColor('#57f287');
             const select = new MessageActionRow().addComponents([
 			    new MessageSelectMenu()
@@ -40,7 +40,6 @@ module.exports = {
             const button = new MessageActionRow().addComponents([
                 new MessageButton()
                 .setCustomId('setting1-enable')
-                .setLabel(`入退室ログ`)
                 .setEmoji('967445747735879770')
                 .setStyle('PRIMARY'),
                 new MessageButton()
@@ -54,7 +53,7 @@ module.exports = {
         if (command_string1 == 'timeoutSetting') {
             const embed = new MessageEmbed()
                 .setTitle('🛠 設定 - TIMEOUTコマンド')
-                .setDescription('TIMEOUTコマンドの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!' + Formatters.codeBlock('markdown', 'TIMEOUTコマンドとは...\nサーバーにいるメンバーにタイムアウト(ミュート)を設定させるコマンドです。\n公式の機能より細かく設定させることができ、一分単位での調整が可能です。\n'))
+                .setDescription('TIMEOUTコマンドの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!' + Formatters.codeBlock('markdown', '#TIMEOUTコマンドとは...\nサーバーにいるメンバーにタイムアウト(ミュート)を設定させるコマンドです。公式の機能より細かく設定させることができ、一分単位での調整が可能です。\n'))
                 .setColor('GREEN');
             const select = new MessageActionRow().addComponents([
                 new MessageSelectMenu()
@@ -68,18 +67,15 @@ module.exports = {
             const button = new MessageActionRow().addComponents([
                 new MessageButton()
                 .setCustomId('timeoutSetting-enable')
-                .setLabel('コマンド')
                 .setEmoji('967445747735879770')
                 .setStyle('PRIMARY'),
                 new MessageButton()
                 .setCustomId('timeoutSetting-logEnable')
                 .setLabel('ログ')
-                .setEmoji('967445747735879770')
                 .setStyle('SECONDARY'),
                 new MessageButton()
                 .setCustomId('timeoutSetting-dmEnable')
                 .setLabel('警告DM')
-                .setEmoji('967445747735879770')
                 .setStyle('SECONDARY'),
                 new MessageButton()
                 .setCustomId('timeoutSetting-restore')
@@ -92,7 +88,7 @@ module.exports = {
         if (command_string1 == 'banidSetting') {
             const embed = new MessageEmbed()
                 .setTitle('🛠 設定 - BANIDコマンド')
-                .setDescription('BANIDコマンドの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!' + Formatters.codeBlock('markdown','BANIDコマンドとは...\nサーバーにいないユーザーをIDのみでBANできる機能です。\n荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。'))
+                .setDescription('BANIDコマンドの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!' + Formatters.codeBlock('markdown','#BANIDコマンドとは...\nサーバーにいないユーザーをIDのみでBANできる機能です。荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。'))
                 .setColor('GREEN');
             const select = new MessageActionRow().addComponents([
                 new MessageSelectMenu()
@@ -105,18 +101,15 @@ module.exports = {
             const button = new MessageActionRow().addComponents([
                 new MessageButton()
                 .setCustomId('banidSetting-enable')
-                .setLabel('コマンド')
                 .setEmoji('967445747735879770')
                 .setStyle('PRIMARY'),
                 new MessageButton()
                 .setCustomId('banidSetting-logEnable')
                 .setLabel('ログ')
-                .setEmoji('967445747735879770')
                 .setStyle('SECONDARY'),
                 new MessageButton()
                 .setCustomId('banidSetting-dmEnable')
                 .setLabel('警告DM')
-                .setEmoji('967445747735879770')
                 .setStyle('SECONDARY'),
                 new MessageButton()
                 .setCustomId('banidSetting-restore')
