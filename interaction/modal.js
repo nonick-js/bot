@@ -40,5 +40,17 @@ module.exports = {
             setting_module.change_setting("timeoutDmString", string);
             modal.followUp({content: 'メッセージを以下の通りに編集しました。' + Formatters.codeBlock('markdown', string), ephemeral: true});
         }
+
+        if (modal.customId == 'banidModal1') {
+            await modal.deferReply({ephemeral: true});
+            const string = modal.getTextInputValue('textinput');
+            try {
+                const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id;
+                setting_module.change_setting("banidLogCh", messageId);
+                modal.followUp({ content: `BANIDログを送るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
+            } catch (error) {
+                modal.followUp({ content: `**入力した名前のチャンネルが見つかりません!**\n正しいIDにしているか、BOTが見れるチャンネルに設定しているかチェックしてください!`, ephemeral: true });
+            }
+        }
     }
 }
