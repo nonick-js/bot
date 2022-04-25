@@ -36,6 +36,15 @@ module.exports = {
 			return;
 		}
 
+		const { banid } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+		if (!banid) {
+			const embed = new MessageEmbed()
+				.setDescription('このコマンドはサーバー管理者によって無効化されています。')
+				.setColor('RED');
+			interaction.reply({embeds: [embed], ephemeral:true}); 
+			return;
+		}
+
 		if (interaction.options.getSubcommand() === 'id') {
 			const banUser = interaction.options.getString('userid');
 			const banDeleteMessage = interaction.options.getNumber('delete_messages');

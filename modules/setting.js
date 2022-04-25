@@ -23,7 +23,7 @@ exports.restore_timeout = () => {
     fs.writeFileSync('./config.json',JSON.stringify(Object.fromEntries(data_map),null,2));
 }
 
-exports.restore_timeout = () => {
+exports.restore_banid = () => {
     const data = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
     const data_map = new Map(Object.entries(data));
     // リセット

@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, Message } = require('discord.js');
-const { time } = require('console');
+const { MessageEmbed } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('timeout')
@@ -40,6 +39,7 @@ module.exports = {
 				.setDescription('このコマンドはサーバー管理者によって無効化されています。')
 				.setColor('RED');
 			interaction.reply({embeds: [embed], ephemeral:true}); 
+			return;
 		}
 
 		const moderateUserId = interaction.user.id;
