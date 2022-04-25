@@ -108,10 +108,6 @@ module.exports = {
                 .setLabel('ログ')
                 .setStyle('SECONDARY'),
                 new MessageButton()
-                .setCustomId('banidSetting-dmEnable')
-                .setLabel('警告DM')
-                .setStyle('SECONDARY'),
-                new MessageButton()
                 .setCustomId('banidSetting-restore')
                 .setLabel('初期化')
                 .setStyle('DANGER'),

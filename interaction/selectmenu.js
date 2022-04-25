@@ -67,7 +67,7 @@ module.exports = {
 		if (interaction.customId == 'banidSetting') {
 			if (interaction.values == 'banidSetting1') {
 				const modal = new Modal()
-				.setCustomId('timeoutModal1')
+				.setCustomId('banidModal1')
 				.setTitle('設定 - banidコマンド')
 				.addComponents(
 				new TextInputComponent()

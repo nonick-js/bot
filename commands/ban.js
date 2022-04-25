@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ban')
-		.setDescription('[開発中] ユーザーをBANします。')
+		.setDescription('ユーザーをIDでBAN')
 		.addSubcommand(subcommand => 
 			subcommand
 				.setName('id')

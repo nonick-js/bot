@@ -30,10 +30,10 @@ module.exports = {
 			const { timeout } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (timeout) {
 				setting_module.change_setting("timeout", false);
-				interaction.reply({content: '🔴 タイムアウトコマンドを**オフ**にしました。', ephemeral: true});
+				interaction.reply({content: '🔴 TIMEOUTコマンドを**オフ**にしました。', ephemeral: true});
 			} else {
 				setting_module.change_setting("timeout", true);
-				interaction.reply({content: '🟢 タイムアウトコマンドを**オン**にしました。', ephemeral: true});
+				interaction.reply({content: '🟢 TIMEOUTコマンドを**オン**にしました。', ephemeral: true});
 			}
 		}
 		if (interaction.customId == 'timeoutSetting-logEnable') {
@@ -75,21 +75,14 @@ module.exports = {
 			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
 		}
 
-		if (interaction.customId == 'setting1-enable') {
-			const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-			if (welcome) {
-				setting_module.change_setting("welcome", false);
-				interaction.reply({content: '入退室ログを**オフ**にしました。', ephemeral: true});
+		if (interaction.customId == 'banidSetting-enable') {
+			const { banid } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			if (banid) {
+				setting_module.change_setting("banid", false);
+				interaction.reply({content: '🔴 BANIDコマンドを**オフ**にしました。', ephemeral: true});
 			} else {
-				if(welcomeCh == null) {
-					const embed = new MessageEmbed()
-						.setDescription('**入退室ログを送信するチャンネルIDが指定されていません。**\nセレクトメニューから「送信先の変更」で設定してください。')
-						.setColor('RED');
-					interaction.reply({embeds: [embed], ephemeral:true}); 
-					return;
-				}
-				setting_module.change_setting("welcome", true);
-				interaction.reply({content: '入退室ログを**オン**にしました。', ephemeral: true});
+				setting_module.change_setting("banid", true);
+				interaction.reply({content: '🟢 BANIDコマンドを**オン**にしました。', ephemeral: true});
 			}
 		}
     }
