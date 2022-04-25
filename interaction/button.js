@@ -85,5 +85,26 @@ module.exports = {
 				interaction.reply({content: '🟢 BANIDコマンドを**オン**にしました。', ephemeral: true});
 			}
 		}
+		if (interaction.customId == 'banidSetting-logEnable') {
+			const { banidLog, banidLogch } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			if (banidLog) {
+				setting_module.change_setting("banidLog", false);
+				interaction.reply({content: '🔴 BANIDログを**オフ**にしました。', ephemeral: true});
+			} else {
+				if(banidLogch == null) {
+					const embed = new MessageEmbed()
+						.setDescription('**BANIDログを送信するチャンネルIDが指定されていません。**\nセレクトメニューから「送信先の変更」で設定してください。')
+						.setColor('RED');
+					interaction.reply({embeds: [embed], ephemeral:true}); 
+					return;
+				}
+				setting_module.change_setting("banidLog", true);
+				interaction.reply({content: '🟢 BANIDログを**オン**にしました。', ephemeral: true});
+			}
+		}
+		if (interaction.customId == 'banidSetting-restore') {
+			setting_module.restore_banid();
+			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
+		}
     }
 }
