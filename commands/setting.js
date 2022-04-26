@@ -95,7 +95,7 @@ module.exports = {
                 .setCustomId('banidSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    { label: 'ログを送信するチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!。' , value: 'banidSetting1', emoji: '966588719635267624' },
+                    { label: 'ログを送信するチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!' , value: 'banidSetting1', emoji: '966588719635267624' },
                     ]),
                 ]);
             const button = new MessageActionRow().addComponents([
