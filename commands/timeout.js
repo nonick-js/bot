@@ -43,7 +43,6 @@ module.exports = {
 		}
 
 		const moderateUserId = interaction.user.id;
-		const timeoutUserModerate = interaction.options.getUser('user').moderatable
 		const timeoutUserId = interaction.options.getUser('user').id;
 		const timeoutAvaterURL = interaction.options.getUser('user').avatarURL();
 		const timeoutMember = interaction.guild.members.cache.get(timeoutUserId);
@@ -64,13 +63,15 @@ module.exports = {
 			return;
 		}
 		
-		if (timeoutUserId == bot_id) {
-			interaction.reply({content: '私をタイムアウトするだと...?',ephemeral: true});
-			return;
-		}
-		
-		if (!timeoutUserModerate) {
-			interaction.reply({content: `<@${timeoutUserId}> のタイムアウトに失敗しました。BOTより強い権限を持っている可能性があります。`, ephemeral: true});
+		if (!interaction.options.getUser('user').moderatable) {
+			if (timeoutUserId == bot_id) {
+				interaction.reply({content: '私をタイムアウトするだと...?',ephemeral: true});
+				return;
+			}
+			const embed = new MessageEmbed()
+				.setDescription(`<@${timeoutUserId}> のタイムアウトに失敗しました。\nBOTより上の権限を持っているか、サーバーの管理者です。`)
+				.setColor('RED')
+			interaction.reply({embeds: [embed], ephemeral: true});
 			return;
 		}
 
@@ -106,6 +107,8 @@ module.exports = {
 					{name: 'タイムアウトされた理由', value: timeoutReason}
 			);
 			timeoutMember.send({embeds: [embed]}).catch(error => {
+				const embed = new MessageEmbed()
+					.setDescription('タイムアウトした人への警告DMに失敗しました。\nフレンド以外からのメッセージ受信を拒否しています。')
 				interaction.followUp({content: 'タイムアウトした人へのDMに失敗しました。', ephemeral: true});
 			});
 		}

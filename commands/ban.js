@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, BaseMessageComponent } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ban')
@@ -46,21 +46,36 @@ module.exports = {
 		}
 
 		if (interaction.options.getSubcommand() === 'id') {
+			let membererror;
 			const banUser = interaction.options.getString('userid');
+			// ユーザーidの形式でないものを弾く
+			if (isNaN(banUser) || banUser.length !== 18) {
+				const embed = new MessageEmbed()
+					.setDescription('ユーザーIDは**18桁の数字**です。\n正しい形式でIDを入力してください。')
+					.setColor('RED');
+				interaction.reply({embeds: [embed], ephemeral: true});
+				return;
+			}
+			const banmember = interaction.client.users.fetch(banUser).catch(error => {
+				membererror = 1;
+				console.log('デバッグポイント')
+			})
+
+			if (membererror == 1) {
+
+			}
 			const banDeleteMessage = interaction.options.getNumber('delete_messages');
 			let banReason = interaction.options.getString('reason');
 			if (!banReason) { banReason = '理由が入力されていません'; }
-
-			try {	
-				interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage})
-				interaction.reply(`BANに成功しました`);
-			} catch (error) {
-				console.log(error)
+			if (!banmember.moderatable) {
 				const embed = new MessageEmbed()
-					.setDescription(`<@${banUser}>をBANできません! BOTより上の権限を持っています!`)
+					.setDescription(`<@${banUser}>をBANできません! \nBOTより上の権限を持っています!`)
 					.setColor('RED');
 				interaction.reply({embeds: [embed], ephemeral:true});
+				return;
 			}
+
+			interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage});
 		}
     }
 }
