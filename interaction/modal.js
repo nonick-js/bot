@@ -46,6 +46,7 @@ module.exports = {
             const string = modal.getTextInputValue('textinput');
             try {
                 const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id;
+                
                 setting_module.change_setting("banidLogCh", messageId);
                 modal.followUp({ content: `BANIDログを送るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
             } catch (error) {

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Formatters } = require('discord.js');
 const fs = require('fs');
 const setting_module = require('../modules/setting');
 
@@ -8,7 +8,7 @@ module.exports = {
 			const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (welcome) {
 				setting_module.change_setting("welcome", false);
-				interaction.reply({content: '🔴 入退室ログを**オフ**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' 入退室ログを**オフ**にしました。', ephemeral: true});
 			} else {
 				if(welcomeCh == null) {
 					const embed = new MessageEmbed()
@@ -30,17 +30,17 @@ module.exports = {
 			const { timeout } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (timeout) {
 				setting_module.change_setting("timeout", false);
-				interaction.reply({content: '🔴 TIMEOUTコマンドを**オフ**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' TIMEOUTコマンドを**オフ**にしました。', ephemeral: true});
 			} else {
 				setting_module.change_setting("timeout", true);
-				interaction.reply({content: '🟢 TIMEOUTコマンドを**オン**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' TIMEOUTコマンドを**オン**にしました。', ephemeral: true});
 			}
 		}
 		if (interaction.customId == 'timeoutSetting-logEnable') {
 			const { timeoutLog, timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (timeoutLog) {
 				setting_module.change_setting("timeoutLog", false);
-				interaction.reply({content: '🔴 タイムアウトログを**オフ**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' タイムアウトログを**オフ**にしました。', ephemeral: true});
 			} else {
 				if(timeoutLogCh == null) {
 					const embed = new MessageEmbed()
@@ -50,14 +50,14 @@ module.exports = {
 					return;
 				}
 				setting_module.change_setting("timeoutLog", true);
-				interaction.reply({content: '🟢 タイムアウトログを**オン**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' タイムアウトログを**オン**にしました。', ephemeral: true});
 			}
 		}
 		if (interaction.customId == 'timeoutSetting-dmEnable') {
 			const { timeoutDm, timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (timeoutDm) {
 				setting_module.change_setting("timeoutDm", false);
-				interaction.reply({content: '🔴 タイムアウトした人への警告DMを**オフ**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' タイムアウトした人への警告DMを**オフ**にしました。', ephemeral: true});
 			} else {
 				if(timeoutDmString == null) {
 					const embed = new MessageEmbed()
@@ -67,7 +67,7 @@ module.exports = {
 					return;
 				}
 				setting_module.change_setting("timeoutDm", true);
-				interaction.reply({content: '🟢 タイムアウトした人への警告DMを**オン**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' タイムアウトした人への警告DMを**オン**にしました。', ephemeral: true});
 			}
 		}
 		if (interaction.customId == 'timeoutSetting-restore') {
@@ -79,17 +79,17 @@ module.exports = {
 			const { banid } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (banid) {
 				setting_module.change_setting("banid", false);
-				interaction.reply({content: '🔴 BANIDコマンドを**オフ**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' BANIDコマンドを**オフ**にしました。', ephemeral: true});
 			} else {
 				setting_module.change_setting("banid", true);
-				interaction.reply({content: '🟢 BANIDコマンドを**オン**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' BANIDコマンドを**オン**にしました。', ephemeral: true});
 			}
 		}
 		if (interaction.customId == 'banidSetting-logEnable') {
 			const { banidLog, banidLogch } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (banidLog) {
 				setting_module.change_setting("banidLog", false);
-				interaction.reply({content: '🔴 BANIDログを**オフ**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' BANIDログを**オフ**にしました。', ephemeral: true});
 			} else {
 				if(banidLogch == null) {
 					const embed = new MessageEmbed()
