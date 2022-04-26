@@ -70,7 +70,7 @@ module.exports = {
 
 		timeoutMember.timeout(timeoutDuration)
 			.then(() => {
-				interaction.reply(`⛔ <@${timeoutUserId}>を` + `**${timeoutDuration_d}日` + `${timeoutDuration_m}分**`+`タイムアウトしました。`);
+				interaction.reply({content: `⛔ <@${timeoutUserId}>を` + `**${timeoutDuration_d}日` + `${timeoutDuration_m}分**`+`タイムアウトしました。`, ephemeral:true});
 				const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 				if (timeoutLog) {
 					const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));

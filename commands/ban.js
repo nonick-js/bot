@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, BaseMessageComponent } = require('discord.js');
+const { MessageEmbed, Formatters } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ban')
@@ -9,7 +9,7 @@ module.exports = {
 			subcommand
 				.setName('id')
 				.setDescription('ユーザーをIDでBAN')
-				.addStringOption(option0 =>
+				.addUserOption(option0 =>
 					option0.setName('userid')
 						.setDescription('BAN 対象のユーザーID')	
 						.setRequired(true)
@@ -46,36 +46,40 @@ module.exports = {
 		}
 
 		if (interaction.options.getSubcommand() === 'id') {
-			let membererror;
-			const banUser = interaction.options.getString('userid');
-			// ユーザーidの形式でないものを弾く
-			if (isNaN(banUser) || banUser.length !== 18) {
-				const embed = new MessageEmbed()
-					.setDescription('ユーザーIDは**18桁の数字**です。\n正しい形式でIDを入力してください。')
-					.setColor('RED');
-				interaction.reply({embeds: [embed], ephemeral: true});
-				return;
-			}
-			const banmember = interaction.client.users.fetch(banUser).catch(error => {
-				membererror = 1;
-				console.log('デバッグポイント')
-			})
-
-			if (membererror == 1) {
-
-			}
+			const moderateUserId = interaction.user.id;
+			const banUserId = interaction.options.getUser('userid').id;
+			const banUserAvaterURL = interaction.options.getUser('userid').avatarURL();
 			const banDeleteMessage = interaction.options.getNumber('delete_messages');
 			let banReason = interaction.options.getString('reason');
 			if (!banReason) { banReason = '理由が入力されていません'; }
-			if (!banmember.moderatable) {
-				const embed = new MessageEmbed()
-					.setDescription(`<@${banUser}>をBANできません! \nBOTより上の権限を持っています!`)
-					.setColor('RED');
-				interaction.reply({embeds: [embed], ephemeral:true});
-				return;
-			}
 
-			interaction.guild.members.ban(banUser,{reason: banReason, days: banDeleteMessage});
+			interaction.guild.members.ban(banUserId,{reason: banReason, days: banDeleteMessage})
+				.then(() => {
+					interaction.reply({content: `🔨 <@${banUserId}>(` + Formatters.inlineCode(banUserId) + ')をBANしました。', ephemeral:true});
+					const { banidLog } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+					if(banidLog) {
+						const { banidLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+						const embed = new MessageEmbed()
+							.setTitle('🔨BAN')
+							.setThumbnail(banUserAvaterURL)
+							.addFields(
+								{name: '処罰を受けた人', value: `<@${banUserId}>(` +Formatters.inlineCode(banUserId) `)`},
+								{name: 'BANした理由', value: banReason, inline: true},
+								{name: '担当者', value: `<@${moderateUserId}>`}
+							)
+							.setColor('RED');
+							interaction.guild.channels.cache.get(banidLogCh).send({embeds: [embed]})
+							.catch(() => {
+								console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにBANIDログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
+							});
+					}
+				})
+				.catch(() => {
+					const embed = new MessageEmbed()
+						.setDescription(`<@${banUserId}>(` + Formatters.inlineCode(banUserId) + `)のBANに失敗しました。\nBOTより上の権限を持っているか、サーバーの管理者です。`)
+						.setColor('RED');
+					interaction.reply({embeds: [embed], ephemeral:true});
+				});
 		}
     }
 }
