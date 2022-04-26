@@ -24,7 +24,7 @@ module.exports = {
 			option3.setName('reason')
 				.setDescription('タイムアウトする理由')
 		),
-	async execute(interaction) {		
+	async execute(interaction,client) {		
 		if (!interaction.member.permissions.has("MODERATE_MEMBERS")) {
             const embed = new MessageEmbed()
                 .setColor('#E84136')
@@ -68,6 +68,14 @@ module.exports = {
 			return;
 		}
 
+		if (timeoutMember == undefined) {
+			const embed = new MessageEmbed()
+				.setDescription('そのユーザーはこのサーバーにいません!')
+				.setColor('RED')
+			interaction.reply({embeds: [embed], ephemeral:true});
+			return;
+		}
+
 		timeoutMember.timeout(timeoutDuration)
 			.then(() => {
 				interaction.reply({content: `⛔ <@${timeoutUserId}>を` + `**${timeoutDuration_d}日` + `${timeoutDuration_m}分**`+`タイムアウトしました。`, ephemeral:true});
@@ -83,9 +91,10 @@ module.exports = {
 						{name: '担当者', value: `<@${moderateUserId}>`}
 					)
 					.setColor('RED');
-						interaction.guild.channels.cache.get(timeoutLogCh).send({embeds: [embed]}).catch(error => {
-						console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにタイムアウトログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
-					});
+						client.channels.cache.get(timeoutLogCh).send({embeds: [embed]})
+						.catch(() => {
+							console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにタイムアウトログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
+						});
 				}
 				if (timeoutDm) {
 					const { timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
