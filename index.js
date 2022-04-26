@@ -105,7 +105,7 @@ client.on('interactionCreate', async interaction => {
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
 	try {
-		await interaction_modal.execute(modal);
+		await interaction_modal.execute(modal,client);
 	} catch (error) {
 		console.error(error);
 		const embed = new MessageEmbed()

@@ -18,7 +18,7 @@ module.exports = {
 					return;
 				}
 				setting_module.change_setting("welcome", true);
-				interaction.reply({content: '🟢 入退室ログを**オン**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' 入退室ログを**オン**にしました。', ephemeral: true});
 			}
 		}
 		if (interaction.customId == 'setting1-restore') {
@@ -86,20 +86,20 @@ module.exports = {
 			}
 		}
 		if (interaction.customId == 'banidSetting-logEnable') {
-			const { banidLog, banidLogch } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			const { banidLog, banidLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (banidLog) {
 				setting_module.change_setting("banidLog", false);
 				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' BANIDログを**オフ**にしました。', ephemeral: true});
 			} else {
-				if(banidLogch == null) {
+				if(banidLogCh == null) {
 					const embed = new MessageEmbed()
-						.setDescription('**BANIDログを送信するチャンネルIDが指定されていません。**\nセレクトメニューから「送信先の変更」で設定してください。')
+						.setDescription('**BANIDログを送信するチャンネルIDが指定されていません。**\nセレクトメニューから「ログを送信するチャンネルの変更」で設定してください。')
 						.setColor('RED');
 					interaction.reply({embeds: [embed], ephemeral:true}); 
 					return;
 				}
 				setting_module.change_setting("banidLog", true);
-				interaction.reply({content: '🟢 BANIDログを**オン**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' BANIDログを**オン**にしました。', ephemeral: true});
 			}
 		}
 		if (interaction.customId == 'banidSetting-restore') {
