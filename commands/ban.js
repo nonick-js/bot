@@ -63,18 +63,19 @@ module.exports = {
 							.setTitle('🔨BAN')
 							.setThumbnail(banUserAvaterURL)
 							.addFields(
-								{name: '処罰を受けた人', value: `<@${banUserId}>(` +Formatters.inlineCode(banUserId) `)`},
+								{name: '処罰を受けた人', value: `<@${banUserId}>(${banUserId})`},
 								{name: 'BANした理由', value: banReason, inline: true},
 								{name: '担当者', value: `<@${moderateUserId}>`}
 							)
 							.setColor('RED');
-							interaction.guild.channels.cache.get(banidLogCh).send({embeds: [embed]})
+						client.channels.cache.get(banidLogCh).send({embeds: [embed]})
 							.catch(() => {
 								console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにBANIDログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
 							});
 					}
 				})
-				.catch(() => {
+				.catch((error) => {
+					console.log(error)
 					const embed = new MessageEmbed()
 						.setDescription(`<@${banUserId}>(` + Formatters.inlineCode(banUserId) + `)のBANに失敗しました。\nBOTより上の権限を持っているか、サーバーの管理者です。`)
 						.setColor('RED');
