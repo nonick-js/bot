@@ -2,8 +2,8 @@ const { Modal, TextInputComponent, showModal } = require('discord-modals');
 
 module.exports = {
     async execute(interaction,client) {
-        if (interaction.customId == 'setting1') {
-			if (interaction.values == 'setting1-2') {
+        if (interaction.customId == 'welcomeSetting') {
+			if (interaction.values == 'welcomeSetting1') {
 				const modal = new Modal()
 				.setCustomId('modal_setting1-2')
 				.setTitle('設定 - 入退室ログ')
@@ -17,7 +17,7 @@ module.exports = {
 				);  
 				showModal(modal, {client, interaction});
 			}
-			if (interaction.values == 'setting1-3') {
+			if (interaction.values == 'welcomeSetting2') {
 				const modal = new Modal()
 				.setCustomId('modal_setting1-3')
 				.setTitle('設定 - 入退室ログ')
@@ -60,6 +60,23 @@ module.exports = {
 					.setPlaceholder('どのサーバーでタイムアウトされたか分かりやすいように、サーバー名を入れることをおすすめします。')
 					.setRequired(true)
 				);
+				showModal(modal, {client, interaction});
+			}
+		}
+
+		if (interaction.customId == 'banidSetting') {
+			if (interaction.values == 'banidSetting1') {
+				const modal = new Modal()
+				.setCustomId('banidModal1')
+				.setTitle('設定 - banidコマンド')
+				.addComponents(
+				new TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('タイムアウトログを送信するチャンネルの名前を入力してください。')
+					.setStyle('SHORT')
+					.setMaxLength(100)
+					.setRequired(true)
+				);  
 				showModal(modal, {client, interaction});
 			}
 		}

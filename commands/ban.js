@@ -4,7 +4,7 @@ const { MessageEmbed, BaseMessageComponent } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ban')
-		.setDescription('[開発中] ユーザーをBANします。')
+		.setDescription('ユーザーをIDでBAN')
 		.addSubcommand(subcommand => 
 			subcommand
 				.setName('id')
@@ -33,6 +33,15 @@ module.exports = {
 				.setColor('#E84136')
 				.setDescription('あなたにはこのコマンドを使用する権限がありません！');
 			interaction.reply({embeds: [embed], ephemeral: true});
+			return;
+		}
+
+		const { banid } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+		if (!banid) {
+			const embed = new MessageEmbed()
+				.setDescription('このコマンドはサーバー管理者によって無効化されています。')
+				.setColor('RED');
+			interaction.reply({embeds: [embed], ephemeral:true}); 
 			return;
 		}
 

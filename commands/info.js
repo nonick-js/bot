@@ -21,12 +21,6 @@ module.exports = {
         const button = new MessageActionRow()
         .addComponents(
             new MessageButton()
-            .setLabel('Github')
-            .setStyle('LINK')
-            .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js'),
-        )
-        .addComponents(
-            new MessageButton()
             .setLabel('バグ・問題を報告')
             .setStyle('LINK')
             .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues')

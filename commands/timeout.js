@@ -24,7 +24,7 @@ module.exports = {
 			option3.setName('reason')
 				.setDescription('タイムアウトする理由')
 		),
-	async execute(interaction) {
+	async execute(interaction) {		
 		if (!interaction.member.permissions.has("MODERATE_MEMBERS")) {
             const embed = new MessageEmbed()
                 .setColor('#E84136')
@@ -32,6 +32,16 @@ module.exports = {
             interaction.reply({embeds: [embed], ephemeral: true});
             return;
         }
+
+		const { timeout } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+		if (!timeout) {
+			const embed = new MessageEmbed()
+				.setDescription('このコマンドはサーバー管理者によって無効化されています。')
+				.setColor('RED');
+			interaction.reply({embeds: [embed], ephemeral:true}); 
+			return;
+		}
+
 		const moderateUserId = interaction.user.id;
 		const timeoutUserId = interaction.options.getUser('user').id;
 		const timeoutAvaterURL = interaction.options.getUser('user').avatarURL();
