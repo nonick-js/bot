@@ -9,8 +9,8 @@ module.exports = {
 			option0.setName('item')
 			    .setDescription('設定する項目を選択してください。')
                 .addChoice('🚪 入退室ログ','welcomeSetting')
-                .addChoice('🛠 timeoutコマンド', 'timeoutSetting')
-                .addChoice('🛠 banidコマンド', 'banidSetting')
+                .addChoice('💬 timeoutコマンド', 'timeoutSetting')
+                .addChoice('💬 banidコマンド', 'banidSetting')
 				.setRequired(true)
 		),
 	async execute(interaction) {
