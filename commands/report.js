@@ -14,7 +14,7 @@ module.exports = {
 			.addComponents(
 			new TextInputComponent()
 				.setCustomId('textinput')
-				.setLabel('このメッセージはサーバールールやコミュニティガイドラインの何に違反していますか？詳しい情報を教えてください。')
+				.setLabel('このメッセージはサーバールール等の何に違反していますか?詳しい情報を教えてください。')
 				.setPlaceholder('できる限り詳しく入力してください。')
 				.setStyle('LONG')
 				.setRequired(true)
