@@ -1,3 +1,4 @@
+const fs = require('fs');
 const setting_module = require('../modules/setting');
 const { Formatters, MessageEmbed } = require('discord.js');
 const embed_MissingPermission = new MessageEmbed()
@@ -92,14 +93,14 @@ module.exports = {
 
     // reportコンテキストメニュー
         if (modal.customId == 'reportModal') {
-            // const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-            // const reportUser = modal.user
-            // const reportMessage = modal.message.content
-            // const reportReason = modal.getTextInputValue('textinput');
-
             await modal.deferReply({ephemeral: true});
+            const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const reportMember = await guild.members.fetch(modal.user.id);
+            const reportMessage = modal.message.content;
+            const reportReason = modal.getTextInputValue('textinput');
+
             modal.followUp({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", ephemeral:true});
-            // client.channels.cache.get(timeoutLogCh).send()
+            // client.channels.cache.get(reportCh).send()
         }
     }
 }
