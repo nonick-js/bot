@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
+const { guildId } = require('./config.json')
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 const discordModals = require('discord-modals');
 discordModals(client);
@@ -9,6 +10,16 @@ require('dotenv').config();
 const interaction_button = require('./interaction/button');
 const interaction_selectmenu = require('./interaction/selectmenu');
 const interaction_modal = require('./interaction/modal');
+
+// 通報App(Beta)
+async function on_ready() {
+	await client.application.commands.set([
+	  {
+		type: "USER",
+		name: "このメッセージを通報"
+	  }
+	], guildId);
+}
 
 // コマンドファイルを動的に取得する
 client.commands = new Collection();
