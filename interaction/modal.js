@@ -92,13 +92,14 @@ module.exports = {
 
     // reportコンテキストメニュー
         if (modal.customId == 'reportModal') {
-            const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-            const reportUser = modal.user
-            const reportMessage = modal.message.content
-            const reportReason = modal.getTextInputValue('textinput');
+            // const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            // const reportUser = modal.user
+            // const reportMessage = modal.message.content
+            // const reportReason = modal.getTextInputValue('textinput');
 
-            modal.reply({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", ephemeral:true});
-            client.channels.cache.get(timeoutLogCh).send()
+            await modal.deferReply({ephemeral: true});
+            modal.followUp({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", ephemeral:true});
+            // client.channels.cache.get(timeoutLogCh).send()
         }
     }
 }
