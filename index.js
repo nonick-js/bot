@@ -11,23 +11,13 @@ const interaction_button = require('./interaction/button');
 const interaction_selectmenu = require('./interaction/selectmenu');
 const interaction_modal = require('./interaction/modal');
 
-// 通報App(Beta)
-async function on_ready() {
-	await client.application.commands.set([
-	  {
-		type: "USER",
-		name: "このメッセージを通報"
-	  }
-	], guildId);
-}
-
 // コマンドファイルを動的に取得する
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
-} 
+}
 
 try {
 	//Repl.itでホスティングをする場合は、このコードを有効化する必要がある
@@ -86,7 +76,20 @@ try {
 				await interaction.reply({embeds: [embed], ephemeral: true});
 			}
 		}
-
+		// コンテキストメニュー(メッセージ)
+		if (interaction.isMessageContextMenu()) {
+			const command = client.commands.get(interaction.commandName);
+			if (!command) return;
+			try {
+				await command.execute(interaction,client);
+			} catch (error) {
+				console.error(error);
+				const embed = new MessageEmbed()
+					.setColor('#F61E2')
+					.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
+				await interaction.reply({embeds: [embed], ephemeral: true});
+			}
+		}
 		// ボタン
 		if (interaction.isButton()) {
 			try {
