@@ -9,7 +9,7 @@ module.exports = {
         .setType(ApplicationCommandType.Message),
     async execute(interaction,client) {
         const modal = new Modal()
-			.setCustomId('banidModal1')
+			.setCustomId('reportModal')
 			.setTitle('通報')
 			.addComponents(
 			new TextInputComponent()

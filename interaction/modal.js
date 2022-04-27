@@ -1,14 +1,14 @@
 const setting_module = require('../modules/setting');
 const { Formatters, MessageEmbed } = require('discord.js');
+const embed_MissingPermission = new MessageEmbed()
+    .setDescription(`**BOTの権限が不足しています!**\n送信先に指定しようとしているチャンネルの「チャンネルを見る」「メッセージを送信」「埋め込みリンク」権限をBOTに付与してください。`)
+    .setColor('RED');
+const embed_channelNotFound = new MessageEmbed()
+    .setDescription('**チャンネルが存在しません!**\n正しいチャンネル名を入力してください。')
+    .setColor('RED');
 
 module.exports = {
     async execute(modal,client) {
-        const embed_MissingPermission = new MessageEmbed()
-            .setDescription(`**BOTの権限が不足しています!**\n送信先に指定しようとしているチャンネルの「チャンネルを見る」「メッセージを送信」「埋め込みリンク」権限をBOTに付与してください。`)
-            .setColor('RED');
-        const embed_channelNotFound = new MessageEmbed()
-            .setDescription('**チャンネルが存在しません!**\n正しいチャンネル名を入力してください。')
-            .setColor('RED');
 
         if (modal.customId == 'modal_setting1-2') {
             await modal.deferReply({ephemeral: true});
@@ -88,6 +88,17 @@ module.exports = {
             catch {
                 modal.followUp({ embeds: [embed_channelNotFound], ephemeral: true });
             }
+        }
+
+    // reportコンテキストメニュー
+        if (modal.customId == 'reportModal') {
+            const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const reportUser = modal.user
+            const reportMessage = modal.message.content
+            const reportReason = modal.getTextInputValue('textinput');
+
+            modal.reply({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", ephemeral:true});
+            client.channels.cache.get(timeoutLogCh).send()
         }
     }
 }
