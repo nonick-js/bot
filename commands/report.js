@@ -13,7 +13,7 @@ module.exports = {
 		if (reportCh == null) {
 			if (interaction.member.permissions.has("MANAGE_GUILD")) {
 				const embed = new MessageEmbed()
-					.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\n' + Formatters.inlineCode('/setting') + 'で通報機能の設定を開き、受取先を設定してください。')
+					.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\n' + Formatters.inlineCode('/setting') + 'で通報機能の設定を開き、レポートを受け取るチャンネルを設定してください。')
 					.setColor('#526ff5')
 				interaction.reply({embeds: [embed], ephemeral:true});
 				return;
