@@ -93,7 +93,7 @@ try {
 		// ボタン
 		if (interaction.isButton()) {
 			try {
-				await interaction_button.execute(interaction);
+				await interaction_button.execute(interaction,client);
 			} catch (error) {
 				console.error(error);
 				const embed = new MessageEmbed()
