@@ -108,6 +108,29 @@ module.exports = {
 			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
 		}
 
+		if (interaction.customId == 'reportSetting-mentionEnable') {
+			const { reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+			if (reportRoleMention) {
+				setting_module.change_setting("reportRoleMention", false);
+				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' BANIDログを**オフ**にしました。', ephemeral: true});
+			} else {
+				if(reportRole == null) {
+					const embed = new MessageEmbed()
+						.setDescription('**メンションするロールが指定されていません。**\nセレクトメニューから「メンションするロールの変更」で設定してください。')
+						.setColor('RED');
+					interaction.reply({embeds: [embed], ephemeral:true}); 
+					return;
+				}
+				setting_module.change_setting("reportRoleMention", true);
+				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' BANIDログを**オン**にしました。', ephemeral: true});
+			}
+		}
+
+		if (interaction.customId == 'reportSetting-restore') {
+			setting_module.restore_report();
+			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
+		}
+		
 		if(interaction.customId == 'report') {
 			const modal = new Modal()
 				.setCustomId('reportModal')

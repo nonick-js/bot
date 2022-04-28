@@ -62,7 +62,7 @@ module.exports = {
                 .setPlaceholder('ここから選択')
                 .addOptions([
                     { label: 'レポートを受け取るチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!' , value: 'reportSetting1', emoji: '966588719635267624' },
-					{ label: 'ロールの変更', description: 'このロールがメンションされます。', value: 'reportSetting2', emoji: '966588719635263539' },
+					{ label: 'メンションするロールの変更', description: 'このロールがメンションされます。', value: 'reportSetting2', emoji: '966588719635263539' },
 		        ]),
             ])
             const button = new MessageActionRow().addComponents([
