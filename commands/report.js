@@ -60,17 +60,16 @@ module.exports = {
 				{name: "リンク", value: `[メッセージ](${reportedMessage.url})`, inline:true}
 			)
 		
-		if(!!reportedMessage.content) {
+		if(reportedMessage.content) {
 			embed.addField({name: 'メッセージ', value: `${reportedMessage.contnt}`})
 		}
 		
-		if(reportedMessage.attachments.first()) {
-			const reportedMessageFile = reportedMessage.attachments.first();
-			if(reportedMessageFile.height && reportedMessageFile.width) {
-				embed.addField({name: '添付ファイル(一部)', value: `${reportedMessage.contnt}`})
-				embed.setImage(reportedMessageFile.url)
-			}
-		}
+		// if(reportedMessage.attachments.first()) {
+		// 	const reportedMessageFile = reportedMessage.attachments.first();
+		// 	if(reportedMessageFile.height && reportedMessageFile.width) {
+		// 		embed.setImage(reportedMessageFile.url)
+		// 	}
+		// }
 		
 		const button = new MessageActionRow().addComponents(
 			new MessageButton()
