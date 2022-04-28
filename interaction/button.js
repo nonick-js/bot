@@ -111,7 +111,7 @@ module.exports = {
 		if(interaction.customId == 'report') {
 			const modal = new Modal()
 				.setCustomId('reportModal')
-				.setTitle('通報')
+				.setTitle('あと1ステップです')
 				.addComponents(
 				new TextInputComponent()
 					.setCustomId('textinput')

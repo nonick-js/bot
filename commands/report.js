@@ -55,9 +55,8 @@ module.exports = {
 			.setColor('RED')
 			.setThumbnail(reportedUser.avatarURL())
 			.addFields(
-				{name: "送信者", value: `${reportedUser}`, inline:true},
-				{name: "チャンネル", value: `${reportedMessage.channel}`, inline:true},
-				{name: "URL", value: `[リンク](${reportedMessage.url})`, inline:true}
+				{name: "投稿者", value: `${reportedUser}`, inline:true},
+				{name: "投稿先", value: `${reportedMessage.channel} [リンク](${reportedMessage.url})`, inline:true}
 			)
 		
 		if(reportedMessage.content) {
@@ -67,7 +66,6 @@ module.exports = {
 		if(reportedMessage.attachments.first()) {
 			const reportedMessageFile = reportedMessage.attachments.first();
 			if(reportedMessageFile.height && reportedMessageFile.width) {
-				embed.addFields({name: "添付ファイル", value: `添付ファイルは一部のみを表示しています。`})
 				embed.setImage(reportedMessageFile.url)
 			}
 		}
