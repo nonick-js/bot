@@ -2,13 +2,14 @@ const fs = require('fs');
 const { ApplicationCommandType } = require('discord-api-types/v10');
 const { ContextMenuCommandBuilder } = require('@discordjs/builders');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
-const { MessageEmbed, Formatters } = require('discord.js');
+const { MessageEmbed, Formatters, MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
         .setName('サーバー運営に通報')
         .setType(ApplicationCommandType.Message),
     async execute(interaction,client) {
+
 		const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 		if (reportCh == null) {
 			if (interaction.member.permissions.has("MANAGE_GUILD")) {
@@ -47,17 +48,18 @@ module.exports = {
 			return;
 		}
 
-        const modal = new Modal()
-			.setCustomId('reportModal')
-			.setTitle('通報')
-			.addComponents(
-			new TextInputComponent()
-				.setCustomId('textinput')
-				.setLabel('このメッセージはサーバールール等の何に違反していますか?')
-				.setPlaceholder('できる限り詳しく入力してください。')
-				.setStyle('LONG')
-				.setRequired(true)
-			);
-		showModal(modal, {client, interaction});
-    }
+		const embed = new MessageEmbed()
+			.setTitle('⚠ メッセージを通報')
+			.setDescription('このメッセージを通報してもよろしいですか?\n今はなにもなーい')
+			.setColor('RED')
+		
+		const button = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId('report')
+				.setLabel('通報')
+				.setEmoji('969148338597412884')
+				.setStyle('DANGER')
+		)
+		interaction.reply({embeds: [embed], components: [button], ephemeral:true});
+	}
 }
