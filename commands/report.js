@@ -35,8 +35,8 @@ module.exports = {
 			return;
 		}
 
-		const reportedMember = await interaction.guild.members.fetch(interaction.member);
-		if (reportedMember == reportMember) {
+		const reportedMember = await interaction.guild.members.fetch(reportedUser);
+		if (reportedMember == interaction.member) {
 			interaction.reply({content: '自分自身を通報って...(困惑)', ephemeral:true});
 			return;
 		} else if (reportedMember.permissions.has("MANAGE_MESSAGES") ) {
