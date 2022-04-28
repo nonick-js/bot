@@ -9,6 +9,7 @@ module.exports = {
 			option0.setName('item')
 			    .setDescription('設定する項目を選択してください。')
                 .addChoice('🚪 入退室ログ','welcomeSetting')
+                .addChoice('📢 通報機能','reportSetting')
                 .addChoice('💬 timeoutコマンド', 'timeoutSetting')
                 .addChoice('💬 banidコマンド', 'banidSetting')
 				.setRequired(true)
@@ -44,6 +45,33 @@ module.exports = {
                 .setStyle('PRIMARY'),
                 new MessageButton()
                 .setCustomId('setting1-restore')
+                .setLabel('初期化')
+                .setStyle('DANGER'),
+            ]);
+            interaction.reply({embeds: [embed], components: [select, button], ephemeral:true});
+        }
+
+        if (command_string1 == 'reportSetting') {
+            const embed = new MessageEmbed()
+                .setTitle('🛠 設定 - 通報機能')
+                .setDescription('通報機能の設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!' + Formatters.codeBlock('markdown', '通報機能とは...\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。\nモデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。\n'))
+                .setColor('GREEN');
+            const select = new MessageActionRow().addComponents([
+                new MessageSelectMenu()
+                .setCustomId('reportSetting')
+                .setPlaceholder('ここから選択')
+                .addOptions([
+                    { label: 'レポートを受け取るチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!' , value: 'reportSetting1', emoji: '966588719635267624' },
+					// { label: 'メンションするロールの変更', description: 'このロールがメンションされます。', value: 'reportSetting2', emoji: '966588719635263539' },
+		        ]),
+            ])
+            const button = new MessageActionRow().addComponents([
+                new MessageButton()
+                .setCustomId('reportSetting-mentionEnable')
+                .setLabel('メンション')
+                .setStyle('SECONDARY'),
+                new MessageButton()
+                .setCustomId('reportSetting-restore')
                 .setLabel('初期化')
                 .setStyle('DANGER'),
             ]);

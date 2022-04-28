@@ -80,5 +80,36 @@ module.exports = {
 				showModal(modal, {client, interaction});
 			}
 		}
+
+		if (interaction.customId == 'reportSetting') {
+			if (interaction.values == 'reportSetting1') {
+				const modal = new Modal()
+				.setCustomId('reportModal1')
+				.setTitle('設定 - 通報機能')
+				.addComponents(
+				new TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('レポートを受け取るチャンネルの名前を入力してください。')
+					.setStyle('SHORT')
+					.setMaxLength(100)
+					.setRequired(true)
+				);  
+				showModal(modal, {client, interaction});
+			}
+			// if (interaction.values == 'reportSetting2') {
+			// 	const modal = new Modal()
+			// 	.setCustomId('reportModal2')
+			// 	.setTitle('設定 - 通報機能')
+			// 	.addComponents(
+			// 	new TextInputComponent()
+			// 		.setCustomId('textinput')
+			// 		.setLabel('レポート時にメンションするロールの名前を入力してください。')
+			// 		.setStyle('SHORT')
+			// 		.setMaxLength(100)
+			// 		.setRequired(true)
+			// 	);  
+			// 	showModal(modal, {client, interaction});
+			// }
+		}
     }
 }
