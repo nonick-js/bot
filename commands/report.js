@@ -51,7 +51,7 @@ module.exports = {
 
 		const embed = new MessageEmbed()
 			.setTitle('⚠ メッセージを通報')
-			.setDescription('このメッセージを通報してもよろしいですか?' + Formatters.codeBlock('markdown','通報はこのサーバーの運営にのみ送信されます。'))
+			.setDescription('このメッセージを通報してもよろしいですか?' + Formatters.codeBlock('markdown','通報はこのサーバーの運営にのみ送信されます。\n無関係なメッセージや通報の連投は処罰を受ける可能性があります。'))
 			.setColor('RED')
 			.setThumbnail(reportedUser.avatarURL())
 			.addFields(
