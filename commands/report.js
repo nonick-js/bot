@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { ApplicationCommandType } = require('discord-api-types/v10');
 const { ContextMenuCommandBuilder } = require('@discordjs/builders');
-const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const { MessageEmbed, Formatters, MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
@@ -48,10 +47,18 @@ module.exports = {
 			return;
 		}
 
+		const reportedMessage = interaction.targetMessage;
 		const embed = new MessageEmbed()
 			.setTitle('⚠ メッセージを通報')
-			.setDescription('このメッセージを通報してもよろしいですか?\n今はなにもなーい')
+			.setDescription('このメッセージを通報してもよろしいですか?\n無関係や頻繁な通報は処罰につながる恐れがあります。' + Formatters.codeBlock('markdown','通報はこのサーバーの運営にのみ送信されます。\nTrust&Safetyチームへ通報するものではありません。'))
 			.setColor('RED')
+			.setThumbnail(reportedUser.avatarURL())
+			.addFields(
+				{name: "送信者", value: `${reportedUser}`, inline:true},
+				{name: "チャンネル", value: `${reportedMessage.channel}`, inline:true},
+				{name: "リンク", value: `[メッセージ](${reportedMessage.url})`, inline:true},
+				{name: "メッセージ", value: `${reportedMessage.content}`}
+			)
 		
 		const button = new MessageActionRow().addComponents(
 			new MessageButton()
