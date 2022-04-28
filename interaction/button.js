@@ -27,16 +27,6 @@ module.exports = {
 			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
 		}
 
-		if (interaction.customId == 'timeoutSetting-enable') {
-			const { timeout } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-			if (timeout) {
-				setting_module.change_setting("timeout", false);
-				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' TIMEOUTコマンドを**オフ**にしました。', ephemeral: true});
-			} else {
-				setting_module.change_setting("timeout", true);
-				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' TIMEOUTコマンドを**オン**にしました。', ephemeral: true});
-			}
-		}
 		if (interaction.customId == 'timeoutSetting-logEnable') {
 			const { timeoutLog, timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (timeoutLog) {
@@ -76,16 +66,6 @@ module.exports = {
 			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
 		}
 
-		if (interaction.customId == 'banidSetting-enable') {
-			const { banid } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-			if (banid) {
-				setting_module.change_setting("banid", false);
-				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' BANIDコマンドを**オフ**にしました。', ephemeral: true});
-			} else {
-				setting_module.change_setting("banid", true);
-				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' BANIDコマンドを**オン**にしました。', ephemeral: true});
-			}
-		}
 		if (interaction.customId == 'banidSetting-logEnable') {
 			const { banidLog, banidLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (banidLog) {

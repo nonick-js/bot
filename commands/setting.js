@@ -94,10 +94,6 @@ module.exports = {
             ]);
             const button = new MessageActionRow().addComponents([
                 new MessageButton()
-                .setCustomId('timeoutSetting-enable')
-                .setEmoji('967445747735879770')
-                .setStyle('PRIMARY'),
-                new MessageButton()
                 .setCustomId('timeoutSetting-logEnable')
                 .setLabel('ログ')
                 .setStyle('SECONDARY'),
@@ -127,10 +123,6 @@ module.exports = {
                     ]),
                 ]);
             const button = new MessageActionRow().addComponents([
-                new MessageButton()
-                .setCustomId('banidSetting-enable')
-                .setEmoji('967445747735879770')
-                .setStyle('PRIMARY'),
                 new MessageButton()
                 .setCustomId('banidSetting-logEnable')
                 .setLabel('ログ')
