@@ -1,9 +1,10 @@
-const { MessageEmbed, Formatters } = require('discord.js');
 const fs = require('fs');
+const { MessageEmbed, Formatters } = require('discord.js');
+const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const setting_module = require('../modules/setting');
 
 module.exports = {
-    async execute(interaction) {
+    async execute(interaction,client) {
         if (interaction.customId == 'setting1-enable') {
 			const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (welcome) {
@@ -105,6 +106,21 @@ module.exports = {
 		if (interaction.customId == 'banidSetting-restore') {
 			setting_module.restore_banid();
 			interaction.reply({content: '💥 **設定を初期状態に復元しました。**', ephemeral:true});
+		}
+
+		if(interaction.customId == 'report') {
+			const modal = new Modal()
+				.setCustomId('reportModal')
+				.setTitle('通報')
+				.addComponents(
+				new TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('このメッセージはサーバールール等の何に違反していますか?')
+					.setPlaceholder('できる限り詳しく入力してください。')
+					.setStyle('LONG')
+					.setRequired(true)
+				);
+			showModal(modal, {client, interaction});
 		}
     }
 }
