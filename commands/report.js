@@ -48,6 +48,7 @@ module.exports = {
 		}
 
 		const reportedMessage = interaction.targetMessage;
+
 		const embed = new MessageEmbed()
 			.setTitle('⚠ メッセージを通報')
 			.setDescription('このメッセージを通報してもよろしいですか?\n無関係や頻繁な通報は処罰につながる恐れがあります。' + Formatters.codeBlock('markdown','通報はこのサーバーの運営にのみ送信されます。\nTrust&Safetyチームへ通報するものではありません。'))
@@ -56,9 +57,20 @@ module.exports = {
 			.addFields(
 				{name: "送信者", value: `${reportedUser}`, inline:true},
 				{name: "チャンネル", value: `${reportedMessage.channel}`, inline:true},
-				{name: "リンク", value: `[メッセージ](${reportedMessage.url})`, inline:true},
-				{name: "メッセージ", value: `${reportedMessage.content}`}
+				{name: "リンク", value: `[メッセージ](${reportedMessage.url})`, inline:true}
 			)
+		
+		if(!!reportedMessage.content) {
+			embed.addField({name: 'メッセージ', value: `${reportedMessage.contnt}`})
+		}
+		
+		if(reportedMessage.attachments.first()) {
+			const reportedMessageFile = reportedMessage.attachments.first();
+			if(reportedMessageFile.height && reportedMessageFile.width) {
+				embed.addField({name: '添付ファイル(一部)', value: `${reportedMessage.contnt}`})
+				embed.setImage(reportedMessageFile.url)
+			}
+		}
 		
 		const button = new MessageActionRow().addComponents(
 			new MessageButton()
