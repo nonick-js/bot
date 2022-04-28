@@ -10,17 +10,17 @@ module.exports = {
         .setType(ApplicationCommandType.Message),
     async execute(interaction,client) {
 		const reportedUser = interaction.targetMessage.author
-		const reportedMember = await interaction.guild.members.fetch(reportedUser);
-		console.log(client.user)
-
-		if (reportedMember == interaction.member) {
-			interaction.reply({content: '自分自身を通報って...(困惑)', ephemeral:true});
-			return;
-		} else if (reportedUser.bot || reportedUser.system) {
+		if (reportedUser.bot || reportedUser.system) {
 			const embed = new MessageEmbed()
 				.setDescription('BOT、Webhook、システムメッセージを通報することはできません!')
 				.setColor('RED')
 			interaction.reply({embeds: [embed], ephemeral:true});
+			return;
+		}
+
+		const reportedMember = await interaction.guild.members.fetch(reportedUser);
+		if (reportedMember == interaction.member) {
+			interaction.reply({content: '自分自身を通報って...(困惑)', ephemeral:true});
 			return;
 		} else if (reportedMember.permissions.has("MANAGE_MESSAGES") ) {
 			const embed = new MessageEmbed()
