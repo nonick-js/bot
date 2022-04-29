@@ -1,11 +1,11 @@
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 const discordModals = require('discord-modals');
 discordModals(client);
 require('dotenv').config();
 
-// interactionモジュール達
+// モジュールを取得
 const interaction_button = require('./interaction/button');
 const interaction_selectmenu = require('./interaction/selectmenu');
 const interaction_modal = require('./interaction/modal');
@@ -17,6 +17,19 @@ for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
 }
+
+// エラー用埋め込み
+const error_embed = new MessageEmbed()
+	.setTitle('エラー')
+	.setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラー分と共に報告してください。')
+	.setColor('RED')
+	.setTimestamp();
+const button = new MessageActionRow().addComponents(
+	new MessageButton()
+	.setLabel('問題を報告')
+	.setStyle('LINK')
+	.setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new')
+)
 
 //Repl.itでホスティングをする場合は、このコードを有効化する必要がある
 /*
@@ -48,85 +61,84 @@ client.on('guildMemberAdd', member => {
 	}
 });
 
-	// メンバーが抜けた時
-	client.on('guildMemberRemove', member => {
-		const { welcomeCh, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-		if (welcome) {
-			client.channels.cache.get(welcomeCh).send(`**${member.user.username}** さんがサーバーを退出しました👋`).catch(error => {
-				console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。');
-			})
-		}
-	});
+// メンバーが抜けた時
+client.on('guildMemberRemove', member => {
+	const { welcomeCh, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+	if (welcome) {
+		client.channels.cache.get(welcomeCh).send(`**${member.user.username}** さんがサーバーを退出しました👋`).catch(error => {
+			console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルに入退室ログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。');
+		})
+	}
+});
 
-	// コマンド処理
-	client.on('interactionCreate', async interaction => {
-		// スラッシュコマンド
-		if (interaction.isCommand()) {
-			const command = client.commands.get(interaction.commandName);
-			if (!command) return;
-			try {
-				await command.execute(interaction,client);
-			} catch (error) {
-				console.error(error);
-				const embed = new MessageEmbed()
-					.setColor('#F61E2')
-					.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-				await interaction.reply({embeds: [embed], ephemeral: true});
-			}
-		}
-		// コンテキストメニュー(メッセージ)
-		if (interaction.isMessageContextMenu()) {
-			const command = client.commands.get(interaction.commandName);
-			if (!command) return;
-			try {
-				await command.execute(interaction,client);
-			} catch (error) {
-				console.error(error);
-				const embed = new MessageEmbed()
-					.setColor('#F61E2')
-					.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-				await interaction.reply({embeds: [embed], ephemeral: true});
-			}
-		}
-		// ボタン
-		if (interaction.isButton()) {
-			try {
-				await interaction_button.execute(interaction,client);
-			} catch (error) {
-				console.error(error);
-				const embed = new MessageEmbed()
-					.setColor('#F61E2')
-					.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-				await interaction.reply({embeds: [embed], ephemeral: true});
-			}
-		}
-
-		// セレクトメニュー
-		if (interaction.isSelectMenu()) {
-			try {
-				await interaction_selectmenu.execute(interaction,client);
-			} catch (error) {
-				console.error(error);
-				const embed = new MessageEmbed()
-					.setColor('#F61E2')
-					.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-				await interaction.reply({embeds: [embed], ephemeral: true});
-			}
-		}
-	});
-
-	// modalを受け取った時の処理
-	client.on('modalSubmit', async (modal) => {
+// コマンド処理
+client.on('interactionCreate', async interaction => {
+	// スラッシュコマンド
+	if (interaction.isCommand()) {
+		const command = client.commands.get(interaction.commandName);
+		if (!command) return;
 		try {
-			await interaction_modal.execute(modal,client);
+			await command.execute(interaction,client);
 		} catch (error) {
 			console.error(error);
 			const embed = new MessageEmbed()
 				.setColor('#F61E2')
 				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-			await modal.reply({embeds: [embed], ephemeral: true});
+			await interaction.reply({embeds: [embed], ephemeral: true});
+			}
 		}
-	})
+	// コンテキストメニュー(メッセージ)
+	if (interaction.isMessageContextMenu()) {
+		const command = client.commands.get(interaction.commandName);
+		if (!command) return;
+		try {
+			await command.execute(interaction,client);
+		} catch (error) {
+			console.error(error);
+			const embed = new MessageEmbed()
+				.setColor('#F61E2')
+				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
+			await interaction.reply({embeds: [embed], ephemeral: true});
+		}
+	}
+	// ボタン
+	if (interaction.isButton()) {
+		try {
+			await interaction_button.execute(interaction,client);
+		} catch (error) {
+			console.error(error);
+			const embed = new MessageEmbed()
+				.setColor('#F61E2')
+				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
+			await interaction.reply({embeds: [embed], ephemeral: true});
+		}
+	}
 
-	// BOTにログイン
-	client.login(process.env.BOT_TOKEN);
+	// セレクトメニュー
+	if (interaction.isSelectMenu()) {
+		try {
+			await interaction_selectmenu.execute(interaction,client);
+		} catch (error) {
+			console.error(error);
+			const embed = new MessageEmbed()
+				.setColor('#F61E2')
+				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
+			await interaction.reply({embeds: [embed], ephemeral: true});
+		}
+	}
+});
+
+	// modalを受け取った時の処理
+client.on('modalSubmit', async (modal) => {
+	try {
+		await interaction_modal.execute(modal,client);
+	} catch (error) {
+		console.error(error);
+		const embed = new MessageEmbed()
+			.setColor('#F61E2')
+			.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
+		await modal.reply({embeds: [embed], ephemeral: true});
+	}
+})
+
+client.login(process.env.BOT_TOKEN);
