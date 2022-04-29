@@ -1,6 +1,6 @@
 const fs = require('fs');
 const setting_module = require('../modules/setting');
-const { Formatters, MessageEmbed, Message } = require('discord.js');
+const { Formatters, MessageEmbed } = require('discord.js');
 const embed_MissingPermission = new MessageEmbed()
     .setDescription(`**BOTの権限が不足しています!**\n送信先に指定しようとしているチャンネルの「チャンネルを見る」「メッセージを送信」「埋め込みリンク」権限をBOTに付与してください。`)
     .setColor('RED');
@@ -101,7 +101,7 @@ module.exports = {
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [embed]})
                     .then(() => {
-                        setting_module.change_setting("banidLogCh", messageId);
+                        setting_module.change_setting("reportCh", messageId);
                         modal.followUp({ content: `通報を受け取るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
                     })
                     .catch(() => {
@@ -141,7 +141,6 @@ module.exports = {
 
             const reportUser = modal.user;
             const reportReason = modal.getTextInputValue('textinput');
-            console.log(reportedMessageAuthor.avatarURL())
 
             const reportEmbed = new MessageEmbed()
                 .setTitle('⚠ 通報')
@@ -159,9 +158,15 @@ module.exports = {
                 reportEmbed.setImage(embed.image.url);
             }
 
-            const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-            client.channels.cache.get(reportCh).send({embeds: [reportEmbed]});
-            modal.followUp({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", ephemeral:true});
+            const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            if (reportRoleMention) {
+                client.channels.cache.get(reportCh).send({content: `<@&${reportRole}>` ,embeds: [reportEmbed]})
+                modal.followUp({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", ephemeral:true});
+ 
+            } else {
+                client.channels.cache.get(reportCh).send({embeds: [reportEmbed]})
+                modal.followUp({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", ephemeral:true});
+            }            
         }
     }
 }
