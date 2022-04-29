@@ -7,8 +7,7 @@ module.exports = {
     data: new ContextMenuCommandBuilder()
         .setName('サーバー運営に通報')
         .setType(ApplicationCommandType.Message),
-    async execute(interaction,client) {
-
+    async execute(interaction) {
 		const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 		if (reportCh == null) {
 			if (interaction.member.permissions.has("MANAGE_GUILD")) {

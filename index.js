@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js');
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu, Formatters } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 const discordModals = require('discord-modals');
 discordModals(client);
@@ -20,11 +20,10 @@ for (const file of commandFiles) {
 
 // エラー用埋め込み
 const error_embed = new MessageEmbed()
-	.setTitle('エラー')
-	.setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラー分と共に報告してください。')
+	.setTitle('🛑 おっと...')
+	.setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラーコードと共に報告してください。')
 	.setColor('RED')
-	.setTimestamp();
-const button = new MessageActionRow().addComponents(
+const error_button = new MessageActionRow().addComponents(
 	new MessageButton()
 	.setLabel('問題を報告')
 	.setStyle('LINK')
@@ -77,68 +76,42 @@ client.on('interactionCreate', async interaction => {
 	if (interaction.isCommand()) {
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
-		try {
-			await command.execute(interaction,client);
-		} catch (error) {
-			console.error(error);
-			const embed = new MessageEmbed()
-				.setColor('#F61E2')
-				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-			await interaction.reply({embeds: [embed], ephemeral: true});
-			}
-		}
+		await command.execute(interaction,client).catch(error => {
+			error_embed.addFields({name: "エラー", value: `${Formatters.codeBlock(error)}`});
+			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
+		});
+	}
 	// コンテキストメニュー(メッセージ)
 	if (interaction.isMessageContextMenu()) {
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
-		try {
-			await command.execute(interaction,client);
-		} catch (error) {
-			console.error(error);
-			const embed = new MessageEmbed()
-				.setColor('#F61E2')
-				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-			await interaction.reply({embeds: [embed], ephemeral: true});
-		}
+		await command.execute(interaction,client).catch(error => {
+			error_embed.addFields({name: "エラー", value: `${Formatters.codeBlock(error)}`});
+			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
+		});
 	}
 	// ボタン
 	if (interaction.isButton()) {
-		try {
-			await interaction_button.execute(interaction,client);
-		} catch (error) {
-			console.error(error);
-			const embed = new MessageEmbed()
-				.setColor('#F61E2')
-				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-			await interaction.reply({embeds: [embed], ephemeral: true});
-		}
+		await interaction_button.execute(interaction,client).catch(error => {
+			error_embed.addFields({name: "エラー", value: `${Formatters.codeBlock(error)}`});
+			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
+		});
 	}
-
 	// セレクトメニュー
 	if (interaction.isSelectMenu()) {
-		try {
-			await interaction_selectmenu.execute(interaction,client);
-		} catch (error) {
-			console.error(error);
-			const embed = new MessageEmbed()
-				.setColor('#F61E2')
-				.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-			await interaction.reply({embeds: [embed], ephemeral: true});
-		}
+		await interaction_selectmenu.execute(interaction,client).catch(error => {
+			error_embed.addFields({name: "エラー", value: `${Formatters.codeBlock(error)}`});
+			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
+		});
 	}
 });
 
 	// modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
-	try {
-		await interaction_modal.execute(modal,client);
-	} catch (error) {
-		console.error(error);
-		const embed = new MessageEmbed()
-			.setColor('#F61E2')
-			.setDescription('インタラクションの実行中にエラーが発生しました。開発者にご連絡ください。')
-		await modal.reply({embeds: [embed], ephemeral: true});
-	}
+	await interaction_modal.execute(modal,client).catch(error => {
+		error_embed.addFields({name: "エラー", value: `${Formatters.codeBlock(error)}`});
+		modal.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
+	});
 })
 
 client.login(process.env.BOT_TOKEN);
