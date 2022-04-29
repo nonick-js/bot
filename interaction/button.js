@@ -92,7 +92,7 @@ module.exports = {
 			const { reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 			if (reportRoleMention) {
 				setting_module.change_setting("reportRoleMention", false);
-				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' BANIDログを**オフ**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('968351750434193408') + ' レポートメンションを**オフ**にしました。', ephemeral: true});
 			} else {
 				if(reportRole == null) {
 					const embed = new MessageEmbed()
@@ -102,7 +102,7 @@ module.exports = {
 					return;
 				}
 				setting_module.change_setting("reportRoleMention", true);
-				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' BANIDログを**オン**にしました。', ephemeral: true});
+				interaction.reply({content: Formatters.formatEmoji('758380151544217670') + ' レポートメンションを**オン**にしました。', ephemeral: true});
 			}
 		}
 
