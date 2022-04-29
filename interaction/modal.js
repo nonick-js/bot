@@ -113,29 +113,22 @@ module.exports = {
             }
         }
 
-        // if (modal.customId == 'reportModal2') {
-        //     await modal.deferReply({ephemeral: true});
-        //     const string = modal.getTextInputValue('textinput');
-        //     try {
-        //         const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
-        //         const embed = new MessageEmbed()
-        //             .setDescription('✅ 送信された通報がここに受信されます!')
-        //             .setColor('GREEN');
-        //         client.channels.cache.get(messageId).send({embeds: [embed]})
-        //             .then(() => {
-        //                 setting_module.change_setting("banidLogCh", messageId);
-        //                 modal.followUp({ content: `通報を受け取るチャンネルを<#${messageId}>に設定しました。`, ephemeral: true });
-        //             })
-        //             .catch(() => {
-        //                 modal.followUp({ embeds: [embed_MissingPermission], ephemeral: true });
-        //             })
-        //     }
-        //     catch {
-        //         const embed = new MessageEmbed()
-        //             .setDescription('指定されたロールが見つかりませんでした。正しい名前を入力してください。')
-        //         modal.followUp();
-        //     }
-        // }
+        if (modal.customId == 'reportModal2') {
+            await modal.deferReply({ephemeral: true});
+            const string = modal.getTextInputValue('textinput');
+            try {
+                const roleId = modal.guild.roles.cache.find((role) => role.name === string).id
+                setting_module.change_setting("reportRole", roleId);
+                modal.followUp({ content: `✅ 送信された通報に<@&${roleId}>がメンションされます!`, ephemeral: true });
+
+            }
+            catch {
+                const embed = new MessageEmbed()
+                    .setDescription('指定されたロールが見つかりませんでした。正しい名前を入力してください。')
+                    .setColor('RED')
+                modal.followUp({embeds: [embed], ephemeral:true});
+            }
+        }
 
     // reportコンテキストメニュー
         if (modal.customId == 'reportModal') {
