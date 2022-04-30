@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu, Formatters } = require('discord.js');
+const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, Formatters } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
 const discordModals = require('discord-modals');
 discordModals(client);
@@ -10,12 +10,17 @@ const interaction_button = require('./interaction/button');
 const interaction_selectmenu = require('./interaction/selectmenu');
 const interaction_modal = require('./interaction/modal');
 
-// コマンドファイルを動的に取得する
+// コマンド・コンテキストメニューを動的に取得する
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const contextsFiles = fs.readdirSync('./commands/contexts').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
+}
+for (const file of contextsFiles) {
+	const context = require(`./commands/contexts/${file}`);
+	client.commands.set(context.data.name, context);
 }
 
 // エラー用埋め込み
@@ -106,7 +111,7 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-	// modalを受け取った時の処理
+// modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
 	await interaction_modal.execute(modal,client).catch(error => {
 		error_embed.addFields({name: "エラー", value: `${Formatters.codeBlock(error)}`});
