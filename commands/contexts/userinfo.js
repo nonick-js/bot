@@ -10,7 +10,6 @@ module.exports = {
     async execute(interaction) {
         const infoUser = interaction.targetUser
         const infoMember = await interaction.guild.members.fetch(infoUser);
-        console.log(infoMember)
 
         const Usertag = infoUser.tag;
         const UserName = infoUser.username;
@@ -23,15 +22,15 @@ module.exports = {
 
         const embed = new discord.MessageEmbed()
             .addFields(
-                {name: 'アカウント作成日', value: UserCreateTime},
-                {name: 'サーバー参加日', value: MemberJoinTime},
+                {name: 'アカウント作成日', value: `<t:${UserCreateTime}:d>`, inline:true},
+                // {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime), inline:true},
             )
 
         if (UserAvater == MemberAvater) {
-            embed.setAuthor({ name: `${UserName}` + `${Usertag}`});
+            embed.setAuthor({ name: `${Usertag}`});
             embed.setThumbnail(UserAvater);
         } else {
-            embed.setAuthor({ name: `${UserName}` + `${Usertag}`, iconURL: `${UserAvater}` });
+            embed.setAuthor({ name: `${Usertag}`, iconURL: `${UserAvater}` });
             embed.setThumbnail(MemberAvater);
         }
 
