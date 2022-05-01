@@ -17,11 +17,11 @@ const interaction_modal = require('./interaction/modal');
 // コマンド・コンテキストメニューを動的に取得する
 client.commands = new discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const contextsFiles = fs.readdirSync('./commands/contexts').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
 }
+const contextsFiles = fs.readdirSync('./commands/contexts').filter(file => file.endsWith('.js'));
 for (const file of contextsFiles) {
 	const context = require(`./commands/contexts/${file}`);
 	client.commands.set(context.data.name, context);
