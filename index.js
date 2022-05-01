@@ -1,7 +1,11 @@
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, Formatters } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS] });
+const discord = require('discord.js');
 const discordModals = require('discord-modals');
+const client = new discord.Client({
+    intents: Object.values(discord.Intents.FLAGS),
+    allowedMentions: {parse:[]},
+    partials: ['CHANNEL','GUILD_MEMBER','GUILD_SCHEDULED_EVENT','MESSAGE','REACTION','USER'],
+});
 discordModals(client);
 require('dotenv').config();
 
