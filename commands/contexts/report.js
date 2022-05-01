@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { ApplicationCommandType } = require('discord-api-types/v10');
 const { ContextMenuCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, Formatters, MessageActionRow, MessageButton } = require('discord.js');
+const discord = require('discord.js');
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -11,13 +11,13 @@ module.exports = {
 		const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 		if (reportCh == null) {
 			if (interaction.member.permissions.has("MANAGE_GUILD")) {
-				const embed = new MessageEmbed()
+				const embed = new discord.MessageEmbed()
 					.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\n' + Formatters.inlineCode('/setting') + 'で通報機能の設定を開き、レポートを受け取るチャンネルを設定してください。')
 					.setColor('#526ff5')
 				interaction.reply({embeds: [embed], ephemeral:true});
 				return;
 			} else {
-				const embed = new MessageEmbed()
+				const embed = new discord.MessageEmbed()
 					.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。')
 					.setColor('#526ff5')
 				interaction.reply({embeds: [embed], ephemeral:true});
@@ -27,7 +27,7 @@ module.exports = {
 
 		const reportedUser = interaction.targetMessage.author
 		if (reportedUser.bot || reportedUser.system) {
-			const embed = new MessageEmbed()
+			const embed = new discord.MessageEmbed()
 				.setDescription('BOT、Webhook、システムメッセージを通報することはできません!')
 				.setColor('RED')
 			interaction.reply({embeds: [embed], ephemeral:true});
@@ -39,7 +39,7 @@ module.exports = {
 			interaction.reply({content: '自分自身を通報って...(困惑)', ephemeral:true});
 			return;
 		} else if (reportedMember.permissions.has("MANAGE_MESSAGES") ) {
-			const embed = new MessageEmbed()
+			const embed = new discord.MessageEmbed()
 				.setDescription('このコマンドでサーバー運営者を通報することはできません!')
 				.setColor('RED');
 			interaction.reply({embeds: [embed], ephemeral:true});
@@ -48,7 +48,7 @@ module.exports = {
 
 		const reportedMessage = interaction.targetMessage;
 
-		const embed = new MessageEmbed()
+		const embed = new discord.MessageEmbed()
 			.setTitle('⚠ メッセージを通報')
 			.setDescription('このメッセージを通報してもよろしいですか?' + Formatters.codeBlock('markdown','通報はこのサーバーの運営にのみ送信されます。\n無関係なメッセージの通報や通報の連投は処罰を受ける可能性があります。'))
 			.setColor('RED')
@@ -69,8 +69,8 @@ module.exports = {
 			}
 		}
 		
-		const button = new MessageActionRow().addComponents(
-			new MessageButton()
+		const button = new discord.MessageActionRow().addComponents(
+			new discord.MessageButton()
 				.setCustomId('report')
 				.setLabel('通報')
 				.setEmoji('969148338597412884')

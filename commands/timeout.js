@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const discord = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('timeout')
@@ -26,7 +26,7 @@ module.exports = {
 		),
 	async execute(interaction,client) {		
 		if (!interaction.member.permissions.has("MODERATE_MEMBERS")) {
-            const embed = new MessageEmbed()
+            const embed = new discord.MessageEmbed()
                 .setColor('#E84136')
                 .setDescription('あなたにはこのコマンドを使用する権限がありません！');
             interaction.reply({embeds: [embed], ephemeral: true});
@@ -47,7 +47,7 @@ module.exports = {
 		const timeoutDuration = (timeoutDuration_d * 86400000) + (timeoutDuration_m * 60 * 1000);
 
 		if (timeoutDuration > 2419200000) { //28日をこえたら
-			const embed = new MessageEmbed()
+			const embed = new discord.MessageEmbed()
 				.setDescription('⛔ **28日**を超えるタイムアウトはできません!')
 				.setColor('RED');
 			interaction.reply({embeds: [embed], ephemeral: true});
@@ -60,7 +60,7 @@ module.exports = {
 		}
 
 		if (timeoutMember == undefined) {
-			const embed = new MessageEmbed()
+			const embed = new discord.MessageEmbed()
 				.setDescription('そのユーザーはこのサーバーにいません!')
 				.setColor('RED')
 			interaction.reply({embeds: [embed], ephemeral:true});
@@ -73,7 +73,7 @@ module.exports = {
 				const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 				if (timeoutLog) {
 					const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-					const embed = new MessageEmbed()
+					const embed = new discord.MessageEmbed()
 					.setTitle('⛔タイムアウト')
 					.setThumbnail(timeoutAvaterURL)
 					.addFields(
@@ -90,7 +90,7 @@ module.exports = {
 				if (timeoutDm) {
 					const { timeoutDmString } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 					const timeoutServerIcon = interaction.guild.iconURL();
-					const embed = new MessageEmbed()
+					const embed = new discord.MessageEmbed()
 						.setTitle('⛔タイムアウト')
 						.setDescription(timeoutDmString)
 						.setThumbnail(timeoutServerIcon)
@@ -99,7 +99,7 @@ module.exports = {
 							{name: 'タイムアウトされた理由', value: timeoutReason}
 					);
 					timeoutMember.send({embeds: [embed]}).catch(error => {
-						const embed = new MessageEmbed()
+						const embed = new discord.MessageEmbed()
 							.setDescription('タイムアウトした人への警告DMに失敗しました。\nフレンド以外からのメッセージ受信を拒否しています。')
 							.setColor('RED')
 						interaction.followUp({embeds: [embed], ephemeral: true});
@@ -107,7 +107,7 @@ module.exports = {
 				}
 			})
 			.catch(() => {
-				const embed = new MessageEmbed()
+				const embed = new discord.MessageEmbed()
 					.setDescription(`<@${timeoutUserId}> のタイムアウトに失敗しました。\nBOTより上の権限を持っているか、サーバーの管理者です。`)
 					.setColor('RED');
 				interaction.reply({embeds: [embed], ephemeral:true});

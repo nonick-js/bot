@@ -1,22 +1,21 @@
 const fs = require('fs');
 const setting_module = require('../modules/setting');
-const { Formatters, MessageEmbed } = require('discord.js');
-const embed_MissingPermission = new MessageEmbed()
+const discord = require('discord.js');
+const embed_MissingPermission = new discord.discord.MessageEmbed()
     .setDescription(`**BOTの権限が不足しています!**\n送信先に指定しようとしているチャンネルの「チャンネルを見る」「メッセージを送信」「埋め込みリンク」権限をBOTに付与してください。`)
     .setColor('RED');
-const embed_channelNotFound = new MessageEmbed()
+const embed_channelNotFound = new discord.MessageEmbed()
     .setDescription('**チャンネルが存在しません!**\n正しいチャンネル名を入力してください。')
     .setColor('RED');
 
 module.exports = {
     async execute(modal,client) {
-
         if (modal.customId == 'modal_setting1-2') {
             await modal.deferReply({ephemeral: true});
             const string = modal.getTextInputValue('textinput');
             try {
                 const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
-                const embed = new MessageEmbed()
+                const embed = new discord.MessageEmbed()
                     .setDescription('✅ 入退室ログがここに送信されます!')
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [embed]})
@@ -37,7 +36,7 @@ module.exports = {
             await modal.deferReply({ephemeral: true});
             const string = modal.getTextInputValue('textinput');
             setting_module.change_setting("welcomeMessage", string);
-            modal.followUp({content: 'メッセージを以下の通りに編集しました。' + Formatters.codeBlock('markdown', string), ephemeral: true});
+            modal.followUp({content: 'メッセージを以下の通りに編集しました。' + discord.Formatters.codeBlock('markdown', string), ephemeral: true});
         }
         
         if (modal.customId == 'timeoutModal1') {
@@ -45,7 +44,7 @@ module.exports = {
             const string = modal.getTextInputValue('textinput');
             try {
                 const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
-                const embed = new MessageEmbed()
+                const embed = new discord.MessageEmbed()
                     .setDescription('✅ タイムアウトログがここに送信されます!')
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [embed]})
@@ -66,7 +65,7 @@ module.exports = {
             await modal.deferReply({ephemeral: true});
             const string = modal.getTextInputValue('textinput');
             setting_module.change_setting("timeoutDmString", string);
-            modal.followUp({content: 'メッセージを以下の通りに編集しました。' + Formatters.codeBlock('markdown', string), ephemeral: true});
+            modal.followUp({content: 'メッセージを以下の通りに編集しました。' + discord.Formatters.codeBlock('markdown', string), ephemeral: true});
         }
 
         if (modal.customId == 'banidModal1') {
@@ -74,7 +73,7 @@ module.exports = {
             const string = modal.getTextInputValue('textinput');
             try {
                 const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
-                const embed = new MessageEmbed()
+                const embed = new discord.MessageEmbed()
                     .setDescription('✅ BANIDログがここに送信されます!')
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [embed]})
@@ -96,7 +95,7 @@ module.exports = {
             const string = modal.getTextInputValue('textinput');
             try {
                 const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
-                const embed = new MessageEmbed()
+                const embed = new discord.MessageEmbed()
                     .setDescription('✅ 送信された通報がここに受信されます!')
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [embed]})
@@ -123,7 +122,7 @@ module.exports = {
 
             }
             catch {
-                const embed = new MessageEmbed()
+                const embed = new discord.MessageEmbed()
                     .setDescription('指定されたロールが見つかりませんでした。正しい名前を入力してください。')
                     .setColor('RED')
                 modal.followUp({embeds: [embed], ephemeral:true});
@@ -142,9 +141,9 @@ module.exports = {
             const reportUser = modal.user;
             const reportReason = modal.getTextInputValue('textinput');
 
-            const reportEmbed = new MessageEmbed()
+            const reportEmbed = new discord.MessageEmbed()
                 .setTitle('⚠ 通報')
-                .setDescription(`通報者: ${reportUser}\n` + Formatters.codeBlock(`通報理由: ` + `${reportReason}`))
+                .setDescription(`通報者: ${reportUser}\n` + discord.Formatters.codeBlock(`通報理由: ` + `${reportReason}`))
                 .setThumbnail(reportedMessageAuthor.avatarURL())
                 .addFields(
                     {name: '投稿者', value: `${reportedMessageAuthor}`, inline:true},

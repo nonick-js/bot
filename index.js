@@ -9,13 +9,15 @@ const client = new discord.Client({
 discordModals(client);
 require('dotenv').config();
 
+// const { Client, Collection, Intents, MessageEmbed, MessageActionRow, MessageButton, Formatters, discord } = require('discord.js');
+
 // モジュールを取得
 const interaction_button = require('./interaction/button');
 const interaction_selectmenu = require('./interaction/selectmenu');
 const interaction_modal = require('./interaction/modal');
 
 // コマンド・コンテキストメニューを動的に取得する
-client.commands = new Collection();
+client.commands = new discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const contextsFiles = fs.readdirSync('./commands/contexts').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
@@ -27,13 +29,16 @@ for (const file of contextsFiles) {
 	client.commands.set(context.data.name, context);
 }
 
+// ボタン処理を動的に取得する
+
+
 // エラー用埋め込み
-const error_embed = new MessageEmbed()
+const error_embed = new discord.MessageEmbed()
 	.setTitle('🛑 おっと...')
 	.setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラーコードと共に報告してください。')
 	.setColor('RED')
-const error_button = new MessageActionRow().addComponents(
-	new MessageButton()
+const error_button = new discord.MessageActionRow().addComponents(
+	new discord.MessageButton()
 	.setLabel('問題を報告')
 	.setStyle('LINK')
 	.setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new')
@@ -69,7 +74,7 @@ client.once('ready', () => {
 client.on('guildMemberAdd', member => {
 	const { welcomeCh, welcomeMessage, welcome } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 	if (welcome) {
-		const embed = new MessageEmbed()
+		const embed = new discord.MessageEmbed()
 			.setTitle('WELCOME - ようこそ!')
 			.setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
 			.setThumbnail(member.user.avatarURL())

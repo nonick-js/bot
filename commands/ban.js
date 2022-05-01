@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, Formatters } = require('discord.js');
+const discord = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('ban')
@@ -29,7 +29,7 @@ module.exports = {
 		),
 	async execute(interaction,client) {
 		if (!interaction.member.permissions.has("BAN_MEMBERS")) {
-			const embed = new MessageEmbed()
+			const embed = new discord.MessageEmbed()
 				.setColor('#E84136')
 				.setDescription('あなたにはこのコマンドを使用する権限がありません！');
 			interaction.reply({embeds: [embed], ephemeral: true});
@@ -46,11 +46,11 @@ module.exports = {
 
 			interaction.guild.members.ban(banUserId,{reason: banReason, days: banDeleteMessage})
 				.then(() => {
-					interaction.reply({content: `🔨 <@${banUserId}>(` + Formatters.inlineCode(banUserId) + ')をBANしました。', ephemeral:true});
+					interaction.reply({content: `🔨 <@${banUserId}>(` + discord.Formatters.inlineCode(banUserId) + ')をBANしました。', ephemeral:true});
 					const { banidLog } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 					if(banidLog) {
 						const { banidLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-						const embed = new MessageEmbed()
+						const embed = new discord.MessageEmbed()
 							.setTitle('🔨BAN')
 							.setThumbnail(banUserAvaterURL)
 							.addFields(
@@ -67,8 +67,8 @@ module.exports = {
 				})
 				.catch((error) => {
 					console.log(error)
-					const embed = new MessageEmbed()
-						.setDescription(`<@${banUserId}>(` + Formatters.inlineCode(banUserId) + `)のBANに失敗しました。\nBOTより上の権限を持っているか、サーバーの管理者です。`)
+					const embed = new discord.MessageEmbed()
+						.setDescription(`<@${banUserId}>(` + discord.Formatters.inlineCode(banUserId) + `)のBANに失敗しました。\nBOTより上の権限を持っているか、サーバーの管理者です。`)
 						.setColor('RED');
 					interaction.reply({embeds: [embed], ephemeral:true});
 				});
