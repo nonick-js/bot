@@ -53,8 +53,7 @@ http.createServer(function(req, res) {
 
 // ready nouniku!!(定期)
 client.once('ready', () => {
-	console.log(`[DiscordBot-NoNick.js]`+'\u001b[32m'+' DiscordBotが起動しました。'+'\u001b[0m');
-	console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
+	console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]DiscordBotが起動しました。`);
     console.table({
         'Bot User': client.user.tag,
         'Guild(s)': `${client.guilds.cache.size} Servers`,
