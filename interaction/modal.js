@@ -1,7 +1,7 @@
 const fs = require('fs');
 const setting_module = require('../modules/setting');
 const discord = require('discord.js');
-const embed_MissingPermission = new discord.discord.MessageEmbed()
+const embed_MissingPermission = new discord.MessageEmbed()
     .setDescription(`**BOTの権限が不足しています!**\n送信先に指定しようとしているチャンネルの「チャンネルを見る」「メッセージを送信」「埋め込みリンク」権限をBOTに付与してください。`)
     .setColor('RED');
 const embed_channelNotFound = new discord.MessageEmbed()
