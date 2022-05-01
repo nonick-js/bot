@@ -101,8 +101,17 @@ client.on('interactionCreate', async interaction => {
 			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 		});
 	}
-	// コンテキストメニュー(メッセージ)
+	// メッセージコンテキストメニュー
 	if (interaction.isMessageContextMenu()) {
+		const command = client.commands.get(interaction.commandName);
+		if (!command) return;
+		await command.execute(interaction,client).catch(error => {
+			error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
+		});
+	}
+	// ユーザーコンテキストメニュー
+	if (interaction.isUserContextMenu()) {
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
 		await command.execute(interaction,client).catch(error => {
