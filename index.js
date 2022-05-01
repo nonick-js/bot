@@ -21,10 +21,12 @@ for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
 }
-const contextsFiles = fs.readdirSync('./commands/contexts').filter(file => file.endsWith('.js'));
+
+client.contexts = new discord.Collection();
+const contextsFiles = fs.readdirSync('./contexts').filter(file => file.endsWith('.js'));
 for (const file of contextsFiles) {
-	const context = require(`./commands/contexts/${file}`);
-	client.commands.set(context.data.name, context);
+	const context = require(`./contexts/${file}`);
+	client.contexts.set(context.data.name, context);
 }
 
 // エラー用埋め込み
@@ -103,18 +105,18 @@ client.on('interactionCreate', async interaction => {
 	}
 	// メッセージコンテキストメニュー
 	if (interaction.isMessageContextMenu()) {
-		const command = client.commands.get(interaction.commandName);
-		if (!command) return;
-		await command.execute(interaction,client).catch(error => {
+		const context = client.contexts.get(interaction.commandName);
+		if (!context) return;
+		await context.execute(interaction,client).catch(error => {
 			error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
 			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 		});
 	}
 	// ユーザーコンテキストメニュー
 	if (interaction.isUserContextMenu()) {
-		const command = client.commands.get(interaction.commandName);
-		if (!command) return;
-		await command.execute(interaction,client).catch(error => {
+		const context = client.contexts.get(interaction.commandName);
+		if (!context) return;
+		await context.execute(interaction,client).catch(error => {
 			error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
 			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 		});

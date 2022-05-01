@@ -1,4 +1,3 @@
-const fs = require('fs');
 const { ApplicationCommandType } = require('discord-api-types/v10');
 const { ContextMenuCommandBuilder } = require('@discordjs/builders');
 const discord = require('discord.js');
