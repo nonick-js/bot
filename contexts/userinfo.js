@@ -13,16 +13,16 @@ module.exports = {
         const Usertag = infoUser.tag;
         const UserName = infoUser.username;
         const UserAvater = infoUser.displayAvatarURL();
-        const UserCreateTime = infoUser.createdTimestamp;
+        const UserCreateTime = Math.floor(infoUser.createdTimestamp/1000);
 
         const MemberName = infoMember.nickname;
         const MemberAvater = infoMember.displayAvatarURL();
-        const MemberJoinTime = infoMember.joinedTimestamp;
+        const MemberJoinTime = Math.floor(infoMember.joinedTimestamp/1000);
 
         const embed = new discord.MessageEmbed()
             .addFields(
-                {name: 'アカウント作成日', value: `<t:${UserCreateTime}:d>`, inline:true},
-                // {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime), inline:true},
+                {name: 'アカウント作成日', value: discord.Formatters.time(UserCreateTime), inline:true},
+                {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime), inline:true},
             )
 
         if (UserAvater == MemberAvater) {
