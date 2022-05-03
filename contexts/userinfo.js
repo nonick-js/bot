@@ -6,13 +6,12 @@ module.exports = {
     data: new ContextMenuCommandBuilder()
         .setName('このユーザーの情報')
         .setType(ApplicationCommandType.User),
-    async execute(interaction) {
+    async execute(interaction,client) {
         const infoUser = interaction.targetUser
+        const infoUser2 = await client.users.fetch(interaction.targetUser.id)
         const infoMember = await interaction.guild.members.fetch(infoUser);
 
-        const Usertag = infoUser.tag;
-        const UserName = infoUser.username;
-        const UserAvater = infoUser.displayAvatarURL();
+        const UserAvater = infoUser.displayAvatarURL()
         const UserCreateTime = Math.floor(infoUser.createdTimestamp/1000);
 
         const MemberName = infoMember.nickname;
@@ -20,24 +19,26 @@ module.exports = {
         const MemberJoinTime = Math.floor(infoMember.joinedTimestamp/1000);
 
         const embed = new discord.MessageEmbed()
+            .setThumbnail(UserAvater)
+            .setAuthor({name: `${infoUser.tag}`})
             .addFields(
-                {name: 'アカウント作成日', value: discord.Formatters.time(UserCreateTime), inline:true},
-                {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime), inline:true},
+                {name: "ユーザーID", value: discord.Formatters.inlineCode(`${infoUser.id}`)}
             )
+            .setColor(infoMember.roles.highest.color);
 
-        if (UserAvater == MemberAvater) {
-            embed.setAuthor({ name: `${Usertag}`});
-            embed.setThumbnail(UserAvater);
-        } else {
-            embed.setAuthor({ name: `${Usertag}`, iconURL: `${UserAvater}` });
+        if (UserAvater !== MemberAvater) {
+            embed.setAuthor({name: `${infoUser.tag}`, iconURL: `${UserAvater}`});
             embed.setThumbnail(MemberAvater);
         }
-
-        if (MemberName) {
-            embed.setTitle(MemberName);
-        } else {
-            embed.setTitle(UserName);
+    
+        if (infoUser2.bannerURL()) {
+            embed.setImage(infoUser2.bannerURL());
         }
+
+        embed.addFields(
+            {name: 'アカウント作成日', value: discord.Formatters.time(UserCreateTime), inline:true},
+            {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime), inline:true},
+        )
 
         interaction.reply({embeds: [embed], ephemeral: true});
 	}

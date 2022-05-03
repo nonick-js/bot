@@ -98,7 +98,7 @@ client.on('interactionCreate', async interaction => {
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
 		await command.execute(interaction,client).catch(error => {
-			error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+			error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
 			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 		});
 	}
@@ -107,7 +107,7 @@ client.on('interactionCreate', async interaction => {
 		const context = client.contexts.get(interaction.commandName);
 		if (!context) return;
 		await context.execute(interaction,client).catch(error => {
-			error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+			error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
 			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 		});
 	}
@@ -116,7 +116,7 @@ client.on('interactionCreate', async interaction => {
 		const context = client.contexts.get(interaction.commandName);
 		if (!context) return;
 		await context.execute(interaction,client).catch(error => {
-			error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+			error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
 			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 		});
 	}
@@ -124,14 +124,14 @@ client.on('interactionCreate', async interaction => {
 	if (interaction.isButton()) {
 		console.log(interaction.customId)
 		await interaction_button.execute(interaction,client).catch(error => {
-			error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+			error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
 			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 		});
 	}
 	// セレクトメニュー
 	if (interaction.isSelectMenu()) {
 		await interaction_selectmenu.execute(interaction,client).catch(error => {
-			error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+			error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
 			interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 		});
 	}
@@ -140,7 +140,7 @@ client.on('interactionCreate', async interaction => {
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
 	await interaction_modal.execute(modal,client).catch(error => {
-		error_embed.addFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+		error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
 		modal.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
 	});
 })
