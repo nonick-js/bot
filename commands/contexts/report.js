@@ -1,14 +1,23 @@
-const fs = require('fs');
-const { ApplicationCommandType } = require('discord-api-types/v10');
-const { ContextMenuCommandBuilder } = require('@discordjs/builders');
 const discord = require('discord.js');
 
+/**
+* @callback InteractionCallback
+* @param {discord.MessageContextMenuInteraction} interaction
+* @param {discord.Client} client
+* @returns {void}
+*/
+/**
+* @typedef ContextMenuData
+* @prop {string} customid
+* @prop {'BUTTON'|'SELECT_MENU'} type
+*/
+
 module.exports = {
-    data: new ContextMenuCommandBuilder()
-        .setName('サーバー運営に通報')
-        .setType(ApplicationCommandType.Message),
-    async execute(interaction) {
-		const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+    /**@type {discord.ApplicationCommandData|ContextMenuData} */
+    data: {name: 'サーバー運営に通報', type: "MESSAGE"},
+    /**@type {InteractionCallback} */
+    exec: async (interaction) => {
+        const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 		if (reportCh == null) {
             const embed = new discord.MessageEmbed()
 				.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。')
@@ -73,5 +82,5 @@ module.exports = {
 				.setStyle('DANGER')
 		)
 		interaction.reply({embeds: [embed], components: [button], ephemeral:true});
-	}
+    }
 }
