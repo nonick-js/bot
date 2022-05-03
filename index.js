@@ -14,6 +14,7 @@ const interaction_commands = require('./modules/interaction');
 const commands = new interaction_commands('./commands');
 
 // モジュールを取得
+const modals = require('./interaciton/modals');
 const interaciton_error = require('./modules/error');
 
 // ready
@@ -32,62 +33,6 @@ client.on('ready',async () => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
-// コマンド・コンテキストメニューを動的に取得する
-// client.commands = new discord.Collection();
-// const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-// for (const file of commandFiles) {
-// 	const command = require(`./commands/${file}`);
-// 	client.commands.set(command.data.name, command);
-// }
-
-// client.contexts = new discord.Collection();
-// const contextsFiles = fs.readdirSync('./contexts').filter(file => file.endsWith('.js'));
-// for (const file of contextsFiles) {
-// 	const context = require(`./contexts/${file}`);
-// 	client.contexts.set(context.data.name, context);
-// }
-
-// コマンド処理
-// client.on('interactionCreate', async interaction => {
-// 	// スラッシュコマンド
-// 	if (interaction.isCommand()) {
-// 		const command = client.commands.get(interaction.commandName);
-// 		if (!command) return;
-// 		await command.execute(interaction,client).catch(error => {
-// 			interaciton_error.execute(interaction,error);
-// 		});
-// 	}
-// 	// メッセージコンテキストメニュー
-// 	if (interaction.isMessageContextMenu()) {
-// 		const context = client.contexts.get(interaction.commandName);
-// 		if (!context) return;
-// 		await context.execute(interaction,client).catch(error => {
-// 			interaciton_error.interactionError.execute(interaction,error);
-// 		});
-// 	}
-// 	// ユーザーコンテキストメニュー
-// 	if (interaction.isUserContextMenu()) {
-// 		const context = client.contexts.get(interaction.commandName);
-// 		if (!context) return;
-// 		await context.execute(interaction,client).catch(error => {
-// 			interaciton_error.interactionError.execute(interaction,error);
-// 		});
-// 	}
-// 	// ボタン
-// 	if (interaction.isButton()) {
-// 		console.log(interaction.customId)
-// 		await interaction_button.execute(interaction,client).catch(error => {
-// 			interaciton_error.interactionError.execute(interaction,error);
-// 		});
-// 	}
-// 	// セレクトメニュー
-// 	if (interaction.isSelectMenu()) {
-// 		await interaction_selectmenu.execute(interaction,client).catch(error => {
-// 			interaciton_error.interactionError.execute(interaction, error);
-// 		});
-// 	}
-// });
-
 client.on('interactionCreate',async interaction => {
     const cmd = commands.getCommand(interaction);
     try {
@@ -100,8 +45,8 @@ client.on('interactionCreate',async interaction => {
 
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
-	await interaction_modal.execute(modal,client).catch(error => {
-		module_error.modalError.execute(modal, error)
+	await modals.execute(modal,client).catch(error => {
+		interaciton_error.modalError.execute(modal, error)
 	});
 })
 
