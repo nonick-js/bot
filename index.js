@@ -15,7 +15,6 @@ const commands = new interaction_commands('./commands');
 
 // モジュールを取得
 const modals = require('./interaciton/modals');
-const interaciton_error = require('./modules/error');
 
 // ready
 client.on('ready',async () => {
@@ -39,15 +38,40 @@ client.on('interactionCreate',async interaction => {
         cmd.exec(interaction,client);
     }
     catch (err) {
-        interaciton_error.interactionError.execute(interaction,err);
+        const error_embed = new discord.MessageEmbed()
+	        .setTitle('🛑 おっと...')
+	        .setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラーコードと共に報告してください。')
+	        .setColor('RED')
+        const error_button = new discord.MessageActionRow().addComponents(
+            new discord.MessageButton()
+                .setLabel('問題を報告')
+                .setStyle('LINK')
+                .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new')
+        )
+        error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(err)}`});
+	    interaction.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
     }
 });
 
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
-	await modals.execute(modal,client).catch(error => {
-		interaciton_error.modalError.execute(modal, error)
-	});
+    try {
+        await modals.execute(modal,client);
+    }
+	catch (err) {
+        const error_embed = new discord.MessageEmbed()
+	        .setTitle('🛑 おっと...')
+	        .setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラーコードと共に報告してください。')
+	        .setColor('RED')
+        const error_button = new discord.MessageActionRow().addComponents(
+            new discord.MessageButton()
+                .setLabel('問題を報告')
+                .setStyle('LINK')
+                .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new')
+        )
+        error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+	    modal.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
+    }
 })
 
 client.login(process.env.BOT_TOKEN);
