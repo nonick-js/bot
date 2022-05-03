@@ -57,8 +57,8 @@ class Interactions {
         if(interaction.isCommand()) return this.commands.get('CHAT_INPUT').find(v => v.data.name == interaction.commandName);
         if(interaction.isMessageContextMenu()) return this.commands.get('MESSAGE').find(v => v.data.name == interaction.commandName);
         if(interaction.isUserContextMenu()) return this.commands.get('USER').find(v => v.data.name == interaction.commandName);
-        if(interaction.isButton()) return this.commands.get('BUTTON').find(v => v.data.name == interaction.commandName);
-        if(interaction.isSelectMenu()) return this.commands.get('SELECT_MENU').find(v => v.data.name == interaction.commandName);
+        if(interaction.isButton()) return this.commands.get('BUTTON').find(v => v.data.customid == interaction.customId);
+        if(interaction.isSelectMenu()) return this.commands.get('SELECT_MENU').find(v => v.data.customid == interaction.customId);
     }
 
     get commands() {
