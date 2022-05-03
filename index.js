@@ -10,9 +10,9 @@ discordModals(client);
 require('dotenv').config();
 
 // モジュールを取得
-const interaction_button = require('./interaction/button');
-const interaction_selectmenu = require('./interaction/selectmenu');
-const interaction_modal = require('./interaction/modal');
+// const interaction_button = require('./interaction/button');
+// const interaction_selectmenu = require('./interaction/selectmenu');
+// const interaction_modal = require('./interaction/modal');
 const interaciton_error = require('./modules/error');
 
 // ready
@@ -52,7 +52,7 @@ client.on('interactionCreate', async interaction => {
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
 		await command.execute(interaction,client).catch(error => {
-			await interaciton_error.execute(interaction,error);
+			interaciton_error.execute(interaction,error);
 		});
 	}
 	// メッセージコンテキストメニュー
@@ -60,7 +60,7 @@ client.on('interactionCreate', async interaction => {
 		const context = client.contexts.get(interaction.commandName);
 		if (!context) return;
 		await context.execute(interaction,client).catch(error => {
-			await interaciton_error.interactionError.execute(interaction,error);
+			interaciton_error.interactionError.execute(interaction,error);
 		});
 	}
 	// ユーザーコンテキストメニュー
@@ -68,20 +68,20 @@ client.on('interactionCreate', async interaction => {
 		const context = client.contexts.get(interaction.commandName);
 		if (!context) return;
 		await context.execute(interaction,client).catch(error => {
-			await interaciton_error.interactionError.execute(interaction,error);
+			interaciton_error.interactionError.execute(interaction,error);
 		});
 	}
 	// ボタン
 	if (interaction.isButton()) {
 		console.log(interaction.customId)
 		await interaction_button.execute(interaction,client).catch(error => {
-			await interaciton_error.interactionError.execute(interaction,error);
+			interaciton_error.interactionError.execute(interaction,error);
 		});
 	}
 	// セレクトメニュー
 	if (interaction.isSelectMenu()) {
 		await interaction_selectmenu.execute(interaction,client).catch(error => {
-			await interaciton_error.interactionError.execute(interaction, error);
+			interaciton_error.interactionError.execute(interaction, error);
 		});
 	}
 });
@@ -89,7 +89,7 @@ client.on('interactionCreate', async interaction => {
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
 	await interaction_modal.execute(modal,client).catch(error => {
-		await module_error.modalError.execute(modal, error)
+		module_error.modalError.execute(modal, error)
 	});
 })
 
