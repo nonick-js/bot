@@ -75,20 +75,45 @@ module.exports = {
                 .setDescription('通報機能の設定を以下のセレクトメニューから行えます。' + discord.Formatters.codeBlock('markdown', '#通報機能とは...\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。')+'\n**【現在の設定】**')
                 .setColor('GREEN')
                 .addFields(
-                    {name: "通報の送信先" , value: discord.Formatters.channelMention(reportCh), inline: true},
-                    {name: "🔧ロールメンション" , value: discord.Formatters.formatEmoji('968351750014783532')+'有効化中 '+'('+discord.Formatters.roleMention(reportRole)+')', inline: true}
-                )
+                    {name: '通報の送信先' , value: discord.Formatters.channelMention(reportCh), inline: true},
+                    {name: 'メンション機能' , value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中 '+'('+discord.Formatters.roleMention(reportRole)+')', inline: true}
+                );
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('reportSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    { label: '全般設定', value: 'setting-console-report-1' },
-                    { label: 'ロールメンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-console-report-2', emoji: '966719258430160986' },
+                    {label: '全般設定', value: 'setting-console-report-1', emoji: '🌐'},
+                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-console-report-2', emoji: '966719258430160986'},
                 ]),
-            ])
-            if (reportCh == null) embed.spliceFields(0, 1, {name: "通報の送信先" , value: `指定されていません`, inline: true});
-            if (!reportRoleMention) embed.spliceFields(1, 1, {name: "ロールメンション" , value: discord.Formatters.formatEmoji('758380151238033419')+'無効化中', inline: true});
+            ]);
+            if (reportCh == null) embed.spliceFields(0, 1, {name: '通報の送信先' , value: `指定されていません`, inline: true});
+            if (!reportRoleMention) embed.spliceFields(1, 1, {name: 'ロールメンション' , value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline: true});
+            interaction.update({embeds: [embed], components: [select, templatebutton], ephemeral:true});
+        }
+
+        if (interaction.values == 'setting-control-timeout') {
+            const { timeoutLog, timeoutLogCh, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const embed = new discord.MessageEmbed()
+                .setTitle('🛠 設定 - timeoutコマンド')
+                .setDescription('timeoutコマンドの設定を以下のセレクトメニューから行えます。' + discord.Formatters.codeBlock('markdown', '#timeoutコマンドとは...\nサーバーにいるメンバーにタイムアウト(ミュート)を設定させるコマンドです。公式の機能より細かく設定させることができ、一分単位での調整が可能です。')+'\n**【現在の設定】**')
+                .setColor('GREEN')
+                .addFields(
+                    {name: 'ログ機能', value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中 '+'('+discord.Formatters.channelMention(timeoutLogCh)+')', inline: true},
+                    {name: 'DM警告機能', value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中', inline: true}
+                );
+            const select = new discord.MessageActionRow().addComponents([
+                new discord.MessageSelectMenu()
+                .setCustomId('reportSetting')
+                .setPlaceholder('ここから選択')
+                .addOptions([
+                    {label: '全般設定', value: 'setting-console-timeout-1', emoji: '🌐'},
+                    {label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-console-timeout-2', emoji: '966588719635267624'},
+                    {label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-console-timeout-3', emoji: '966588719635267624'}
+                ]),
+            ]);
+            if (!timeoutLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
+            if (!timeoutDm) embed.spliceFields(1, 1, {name: 'DM警告機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
             interaction.update({embeds: [embed], components: [select, templatebutton], ephemeral:true});
         }
     }
