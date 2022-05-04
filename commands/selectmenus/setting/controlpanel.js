@@ -32,8 +32,13 @@ module.exports = {
             const { welcome, welcomeCh, welcomeMessage } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
-                .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!' + discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。'))
-                .setColor('#57f287');
+                .setDescription('入退室ログの設定を以下のボタンから行えます。'+discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。')+'**【現在の設定】**')
+                .setColor('#57f287')
+                .addFields(
+                    {name: '入退室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中', inline:true},
+                    {name: '送信先', value: discord.Formatters.channelMention(welcomeCh), inline: true},
+                    {name: 'メッセージ', value: discord.Formatters.codeBlock(welcomeMessage)}
+                );
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
                 .setCustomId('setting-control-welcome-enable')
@@ -41,7 +46,7 @@ module.exports = {
                 .setStyle('SUCCESS'),
                 new discord.MessageButton()
                 .setCustomId('setting-control-welcome-sendch')
-                .setLabel('送信先')
+                .setLabel('送信先*')
                 .setEmoji('966588719635267624')
                 .setStyle('SECONDARY'),
                 new discord.MessageButton()
@@ -53,9 +58,13 @@ module.exports = {
 
             if (!welcome) {
                 button.components[0].setStyle('DANGER');
-                button.components[0].setLabel('OFF')
+                button.components[0].setLabel('OFF');
+                embed.spliceFields(0, 1, {name: '入退室ログ', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
             }
-            if (welcomeCh == null) button.components[0].setDisabled(true);
+            if (welcomeCh == null) {
+                button.components[0].setDisabled(true);
+                embed.spliceFields(1, 1, {name: '送信先', value: '設定されていません', inline:true});
+            }
             interaction.update({embeds: [embed], components: [button, templatebutton], ephemeral:true});
         }
 
@@ -87,21 +96,8 @@ module.exports = {
                     { label: 'メンションするロールの変更', description: 'このロールがメンションされます。', value: 'reportSetting2', emoji: '966588719635263539' },
                 ]),
             ])
-            const button = new discord.MessageActionRow().addComponents([
-                new discord.MessageButton()
-                .setCustomId('setting-control-back')
-                .setEmoji('971389898076598322')
-                .setStyle('PRIMARY'),
-                // new discord.MessageButton()
-                // .setCustomId('reportSetting-mentionEnable')
-                // .setLabel('メンション')
-                // .setStyle('SECONDARY'),
-                new discord.MessageButton()
-                .setCustomId('reportSetting-restore')
-                .setLabel('初期化')
-                .setStyle('DANGER'),
-            ]);
-            interaction.update({embeds: [embed], components: [select, button], ephemeral:true});
+            // button.components[0].setDisabled(true);
+            interaction.update({embeds: [embed], components: [select, templatebutton], ephemeral:true});
         }
     }
 }
