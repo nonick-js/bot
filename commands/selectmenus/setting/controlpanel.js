@@ -33,7 +33,7 @@ module.exports = {
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
                 .setDescription('入退室ログの設定を以下のボタンから行えます。'+discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。')+'**【現在の設定】**')
-                .setColor('#57f287')
+                .setColor('GREEN')
                 .addFields(
                     {name: '入退室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中', inline:true},
                     {name: '送信先', value: discord.Formatters.channelMention(welcomeCh), inline: true},
@@ -72,31 +72,23 @@ module.exports = {
             const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 通報機能')
-                .setDescription('通報機能の設定を以下のセレクトメニューから行えます。' + discord.Formatters.codeBlock('markdown', '#通報機能とは...\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。\n'))
-                .setColor('GREEN');
-
-            if (reportCh) {
-                embed.addFields({name: "通報の送信先" , value: `<#${reportCh}>`, inline: true})
-            } else {
-                embed.addFields({name: "通報の送信先" , value: `**指定されていません**`, inline: true})
-            }
-
-            if (reportRoleMention) {
-                embed.addFields({name: "ロールメンション" , value: discord.Formatters.formatEmoji('758380151544217670') +` (<@&${reportRole}>)`, inline: true});
-            } else {
-                embed.addFields({name: "ロールメンション" , value: discord.Formatters.formatEmoji('758380151238033419'), inline: true});
-            }
-
+                .setDescription('通報機能の設定を以下のセレクトメニューから行えます。' + discord.Formatters.codeBlock('markdown', '#通報機能とは...\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。')+'\n**【現在の設定】**')
+                .setColor('GREEN')
+                .addFields(
+                    {name: "通報の送信先" , value: discord.Formatters.channelMention(reportCh), inline: true},
+                    {name: "🔧ロールメンション" , value: discord.Formatters.formatEmoji('968351750014783532')+'有効化中 '+'('+discord.Formatters.roleMention(reportRole)+')', inline: true}
+                )
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('reportSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    { label: 'レポートを受け取るチャンネルの変更', description: '運営のみ見れるチャンネルを選択しよう!' , value: 'reportSetting1', emoji: '966588719635267624' },
-                    { label: 'メンションするロールの変更', description: 'このロールがメンションされます。', value: 'reportSetting2', emoji: '966588719635263539' },
+                    { label: '全般設定', value: 'setting-console-report-1' },
+                    { label: 'ロールメンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-console-report-2', emoji: '966719258430160986' },
                 ]),
             ])
-            // button.components[0].setDisabled(true);
+            if (reportCh == null) embed.spliceFields(0, 1, {name: "通報の送信先" , value: `指定されていません`, inline: true});
+            if (!reportRoleMention) embed.spliceFields(1, 1, {name: "ロールメンション" , value: discord.Formatters.formatEmoji('758380151238033419')+'無効化中', inline: true});
             interaction.update({embeds: [embed], components: [select, templatebutton], ephemeral:true});
         }
     }
