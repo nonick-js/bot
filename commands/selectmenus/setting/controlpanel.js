@@ -104,7 +104,7 @@ module.exports = {
                 );
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
-                .setCustomId('reportSetting')
+                .setCustomId('timeoutSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
                     {label: '全般設定', value: 'setting-console-timeout-1', emoji: '🌐'},
@@ -114,6 +114,31 @@ module.exports = {
             ]);
             if (!timeoutLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
             if (!timeoutDm) embed.spliceFields(1, 1, {name: 'DM警告機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
+            interaction.update({embeds: [embed], components: [select, templatebutton], ephemeral:true});
+        }
+
+        if (interaction.values == 'setting-control-ban') {
+            const { banLog, banLogCh, banDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const embed = new discord.MessageEmbed()
+                .setTitle('🛠 設定 - banコマンド')
+                .setDescription('banコマンドの設定を以下のセレクトメニューから行えます。' + discord.Formatters.codeBlock('markdown','#BANコマンドとは...\n公式のBANコマンドを強化したコマンドです。\nサーバーにいないユーザーをIDのみでBANすることもできます。荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。')+'\n**【現在の設定】**')
+                .setColor('GREEN')
+                .addFields(
+                    {name: 'ログ機能', value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中 '+'('+discord.Formatters.channelMention(banLogCh)+')', inline: true},
+                    {name: 'DM警告機能', value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中', inline: true}
+                );
+            const select = new discord.MessageActionRow().addComponents([
+                new discord.MessageSelectMenu()
+                .setCustomId('banSetting')
+                .setPlaceholder('ここから選択')
+                .addOptions([
+                    {label: '全般設定', value: 'setting-console-ban-1', emoji: '🌐'},
+                    {label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-console-ban-2', emoji: '966588719635267624'},
+                    {label: 'DM警告機能', description: 'BANされた人に警告DMを送信', value: 'setting-console-ban-3', emoji: '966588719635267624'}
+                ]),
+            ]);
+            if (!banLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
+            if (!banDm) embed.spliceFields(1, 1, {name: 'DM警告機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
             interaction.update({embeds: [embed], components: [select, templatebutton], ephemeral:true});
         }
     }
