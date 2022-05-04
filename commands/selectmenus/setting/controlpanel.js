@@ -1,5 +1,15 @@
 const fs = require('fs');
 const discord = require('discord.js');
+const templatebutton = new discord.MessageActionRow().addComponents([
+    new discord.MessageButton()
+        .setCustomId('setting-control-back')
+        .setEmoji('971389898076598322')
+        .setStyle('PRIMARY'),
+    new discord.MessageButton()
+        .setCustomId('setting-control-reset')
+        .setLabel('初期化')
+        .setStyle('DANGER')
+])
 
 /**
 * @callback InteractionCallback
@@ -18,6 +28,37 @@ module.exports = {
     data: {customid: 'setting-control-select', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
     exec: async (interaction) => {
+        if (interaction.values == 'setting-control-welcomemessage') {
+            const { welcome, welcomeCh, welcomeMessage } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const embed = new discord.MessageEmbed()
+                .setTitle('🛠 設定 - 入退室ログ')
+                .setDescription('入退室ログの設定を以下のセレクトメニューから行えます。\n設定を初期状態に戻したり、機能のON/OFFを切り替えたい場合は下のボタンを押そう!' + discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。'))
+                .setColor('#57f287');
+            const button = new discord.MessageActionRow().addComponents([
+                new discord.MessageButton()
+                .setCustomId('setting-control-welcome-enable')
+                .setLabel('ON')
+                .setStyle('SUCCESS'),
+                new discord.MessageButton()
+                .setCustomId('setting-control-welcome-sendch')
+                .setLabel('送信先')
+                .setEmoji('966588719635267624')
+                .setStyle('SECONDARY'),
+                new discord.MessageButton()
+                .setCustomId('setting-control-welcome-message')
+                .setLabel('メッセージ')
+                .setEmoji('966596708458983484')
+                .setStyle('SECONDARY')
+            ]);
+
+            if (!welcome) {
+                button.components[0].setStyle('DANGER');
+                button.components[0].setLabel('OFF')
+            }
+            if (welcomeCh == null) button.components[0].setDisabled(true);
+            interaction.update({embeds: [embed], components: [button, templatebutton], ephemeral:true});
+        }
+
         if (interaction.values == 'setting-control-report') {   
             const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
