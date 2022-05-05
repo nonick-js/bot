@@ -38,6 +38,7 @@ client.on('interactionCreate',async interaction => {
         cmd.exec(interaction,client);
     }
     catch (err) {
+        console.log(err);
         const error_embed = new discord.MessageEmbed()
 	        .setTitle('🛑 おっと...')
 	        .setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載し、下のボタンから報告してください。')
@@ -59,6 +60,7 @@ client.on('modalSubmit', async (modal) => {
         await modals.execute(modal,client);
     }
 	catch (err) {
+        console.log(err);
         const error_embed = new discord.MessageEmbed()
 	        .setTitle('🛑 おっと...')
 	        .setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラーコードと共に報告してください。')
