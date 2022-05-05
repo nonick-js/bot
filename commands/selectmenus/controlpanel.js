@@ -72,7 +72,7 @@ module.exports = {
             const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 通報機能')
-                .setDescription('通報機能の設定を以下のセレクトメニューから行えます。' + discord.Formatters.codeBlock('markdown', '#通報機能とは...\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。')+'\n**【現在の設定】**')
+                .setDescription('通報機能の設定を以下のセレクトメニューから行えます。\n**Tips:**コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。' + discord.Formatters.codeBlock('markdown', '#通報機能とは...\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。')+'\n**【現在の設定】**')
                 .setColor('GREEN')
                 .addFields(
                     {name: '通報の送信先' , value: discord.Formatters.channelMention(reportCh), inline: true},
@@ -96,7 +96,7 @@ module.exports = {
             const { timeoutLog, timeoutLogCh, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - timeoutコマンド')
-                .setDescription('timeoutコマンドの設定を以下のセレクトメニューから行えます。' + discord.Formatters.codeBlock('markdown', '#timeoutコマンドとは...\nサーバーにいるメンバーにタイムアウト(ミュート)を設定させるコマンドです。公式の機能より細かく設定させることができ、一分単位での調整が可能です。')+'\n**【現在の設定】**')
+                .setDescription('timeoutコマンドの設定を以下のセレクトメニューから行えます。\n**Tips:**スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。' + discord.Formatters.codeBlock('markdown', '#timeoutコマンドとは...\nサーバーにいるメンバーにタイムアウト(ミュート)を設定させるコマンドです。公式の機能より細かく設定させることができ、一分単位での調整が可能です。')+'\n**【現在の設定】**')
                 .setColor('GREEN')
                 .addFields(
                     {name: 'ログ機能', value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中 '+'('+discord.Formatters.channelMention(timeoutLogCh)+')', inline: true},
@@ -121,7 +121,7 @@ module.exports = {
             const { banLog, banLogCh, banDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - banコマンド')
-                .setDescription('banコマンドの設定を以下のセレクトメニューから行えます。' + discord.Formatters.codeBlock('markdown','#BANコマンドとは...\n公式のBANコマンドを強化したコマンドです。\nサーバーにいないユーザーをIDのみでBANすることもできます。荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。')+'\n**【現在の設定】**')
+                .setDescription('banコマンドの設定を以下のセレクトメニューから行えます。\n**Tips:**スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。' + discord.Formatters.codeBlock('markdown','#BANコマンドとは...\n公式のBANコマンドを強化したコマンドです。\nサーバーにいないユーザーをIDのみでBANすることもできます。荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。')+'\n**【現在の設定】**')
                 .setColor('GREEN')
                 .addFields(
                     {name: 'ログ機能', value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中 '+'('+discord.Formatters.channelMention(banLogCh)+')', inline: true},
