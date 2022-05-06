@@ -18,6 +18,7 @@ module.exports = {
     data: {customid: 'reportSetting', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
     exec: async (interaction) => {
+        console.log(interaction.values)
         if (interaction.values == 'setting-control-report-1') {
             const embed = interaction.message.embeds[0];
             if (!embed) return;
@@ -28,13 +29,9 @@ module.exports = {
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
                     .setCustomId('setting-reportCh')
-                    .setLabel('通報の受取先')
+                    .setLabel('通報の送信先')
                     .setStyle('SECONDARY')
                     .setEmoji('966588719635267624'),
-                new discord.MessageButton()
-                    .setCustomId('setting-control-reset')
-                    .setLabel('初期化')
-                    .setStyle('DANGER')
             ])
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
