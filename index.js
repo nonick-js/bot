@@ -8,7 +8,7 @@ const client = new discord.Client({
 });
 discordModals(client);
 require('dotenv').config();
-const { guildId} = require('./config.json')
+const { guildId } = require('./config.json')
 
 const interaction_commands = require('./modules/interaction');
 const commands = new interaction_commands('./commands');
