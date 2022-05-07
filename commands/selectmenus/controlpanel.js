@@ -126,7 +126,7 @@ module.exports = {
                 .setCustomId('timeoutSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-timeout-1', emoji: '🌐'},
+                    {label: '全般設定', value: 'setting-timeout-1', emoji: '🌐', default:true},
                     {label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-timeout-2', emoji: '966588719635267624'},
                     {label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-timeout-3', emoji: '966588719635267624'}
                 ]),

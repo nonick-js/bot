@@ -53,7 +53,7 @@ module.exports = {
                     .setEmoji('971389898076598322')
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
-                    .setCustomId('setting-enable')
+                    .setCustomId('setting-reportRoleMention')
                     .setLabel('ON')
                     .setStyle('SUCCESS'),
                 new discord.MessageButton()
