@@ -18,7 +18,6 @@ module.exports = {
     data: {customid: 'reportSetting', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
     exec: async (interaction) => {
-        console.log(interaction.values)
         if (interaction.values == 'setting-control-report-1') {
             const embed = interaction.message.embeds[0];
             if (!embed) return;

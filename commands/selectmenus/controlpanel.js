@@ -57,13 +57,12 @@ module.exports = {
             ]);
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
-                .setCustomId('reportSetting')
+                .setCustomId('welcomeSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
                     {label: '全般設定', value: 'setting-control-report-1', emoji: '🌐', default: true},
                 ]),
             ]);
-
             if (!welcome) {
                 button.components[1].setStyle('DANGER');
                 button.components[1].setLabel('OFF');
@@ -93,11 +92,11 @@ module.exports = {
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
                     .setCustomId('setting-reportCh')
-                    .setLabel('通報の受取先')
+                    .setLabel('通報の送信先')
                     .setStyle('SECONDARY')
                     .setEmoji('966588719635267624'),
             ])
-            const select = new discord.MessageActionRow().addComponents([
+            const select1 = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('reportSetting')
                 .setPlaceholder('ここから選択')
@@ -106,9 +105,10 @@ module.exports = {
                     {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-control-report-2', emoji: '966719258430160986'},
                 ]),
             ]);
+
             if (reportCh == null) embed.spliceFields(0, 1, {name: '通報の送信先' , value: `指定されていません`, inline: true});
             if (!reportRoleMention) embed.spliceFields(1, 1, {name: 'ロールメンション' , value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline: true});
-            interaction.update({embeds: [embed], components: [select, button], ephemeral:true});
+            interaction.update({embeds: [embed], components: [select1, button], ephemeral:true});
         }
 
         if (interaction.values == 'setting-control-timeout') {
