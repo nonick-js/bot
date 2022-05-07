@@ -18,26 +18,27 @@ module.exports = {
     data: {customid: 'welcomeSetting', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
     exec: async (interaction, client) => {
-        if (interaction.values == 'setting-control-report-1') {
-            const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-            const embed = interaction.message.embeds[0];
+        const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+        const embed = interaction.message.embeds[0];
+
+        if (interaction.values == 'setting-report-1') {
             if (!embed) return;
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
-                    .setCustomId('setting-control-back')
+                    .setCustomId('setting-back')
                     .setEmoji('971389898076598322')
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
-                    .setCustomId('setting-control-welcome-enable')
+                    .setCustomId('setting-enable')
                     .setLabel('ON')
                     .setStyle('SUCCESS'),
                 new discord.MessageButton()
-                    .setCustomId('setting-control-welcome-sendch')
+                    .setCustomId('setting-welcome-sendch')
                     .setLabel('送信先')
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
                 new discord.MessageButton()
-                    .setCustomId('setting-control-welcome-message')
+                    .setCustomId('setting-welcome-message')
                     .setLabel('メッセージ')
                     .setEmoji('966596708458983484')
                     .setStyle('SECONDARY'),
@@ -47,7 +48,7 @@ module.exports = {
                 .setCustomId('welcomeSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-control-report-1', emoji: '🌐', default: true},
+                    {label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true},
                 ]),
             ]);
             if (!welcome) {

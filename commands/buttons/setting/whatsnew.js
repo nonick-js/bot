@@ -15,7 +15,7 @@ const discord = require('discord.js');
 
 module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: "setting-control-whatsnew", type: "BUTTON"},
+    data: {customid: "setting-whatsnew", type: "BUTTON"},
     /**@type {InteractionCallback} */
     exec: async (interaction) => {
         const { version, whatsnew } = JSON.parse(fs.readFileSync('./version.json', 'utf-8'));

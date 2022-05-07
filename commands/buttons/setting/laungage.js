@@ -14,7 +14,7 @@ const discord = require('discord.js');
 
 module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: "setting-control-laungage", type: "BUTTON"},
+    data: {customid: "setting-laungage", type: "BUTTON"},
     /**@type {InteractionCallback} */
     exec: async (interaction, client) => {
         const embed = new discord.MessageEmbed()

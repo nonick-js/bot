@@ -2,7 +2,7 @@ const fs = require('fs');
 const discord = require('discord.js');
 const templatebutton = new discord.MessageActionRow().addComponents([
     new discord.MessageButton()
-        .setCustomId('setting-control-back')
+        .setCustomId('setting-back')
         .setEmoji('971389898076598322')
         .setStyle('PRIMARY'),
 ])
@@ -21,10 +21,10 @@ const templatebutton = new discord.MessageActionRow().addComponents([
 
 module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: 'setting-control-select', type: 'SELECT_MENU'},
+    data: {customid: 'setting-select', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
     exec: async (interaction) => {
-        if (interaction.values == 'setting-control-welcomemessage') {
+        if (interaction.values == 'setting-welcomemessage') {
             const { welcome, welcomeCh, welcomeMessage } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
@@ -37,20 +37,20 @@ module.exports = {
                 );
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
-                    .setCustomId('setting-control-back')
+                    .setCustomId('setting-back')
                     .setEmoji('971389898076598322')
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
-                    .setCustomId('setting-control-welcome-enable')
+                    .setCustomId('setting-welcome-enable')
                     .setLabel('ON')
                     .setStyle('SUCCESS'),
                 new discord.MessageButton()
-                    .setCustomId('setting-control-welcome-sendch')
+                    .setCustomId('setting-welcome-sendch')
                     .setLabel('送信先')
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
                 new discord.MessageButton()
-                    .setCustomId('setting-control-welcome-message')
+                    .setCustomId('setting-welcome-message')
                     .setLabel('メッセージ')
                     .setEmoji('966596708458983484')
                     .setStyle('SECONDARY'),
@@ -60,7 +60,7 @@ module.exports = {
                 .setCustomId('welcomeSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-control-report-1', emoji: '🌐', default: true},
+                    {label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true},
                 ]),
             ]);
             if (!welcome) {
@@ -75,7 +75,7 @@ module.exports = {
             interaction.update({embeds: [embed], components: [select, button], ephemeral:true});
         }
 
-        if (interaction.values == 'setting-control-report') {   
+        if (interaction.values == 'setting-report') {   
             const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 通報機能')
@@ -87,7 +87,7 @@ module.exports = {
                 );
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
-                    .setCustomId('setting-control-back')
+                    .setCustomId('setting-back')
                     .setEmoji('971389898076598322')
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
@@ -101,8 +101,8 @@ module.exports = {
                 .setCustomId('reportSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-control-report-1', emoji: '🌐', default: true},
-                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-control-report-2', emoji: '966719258430160986'},
+                    {label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true},
+                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986'},
                 ]),
             ]);
 
@@ -111,7 +111,7 @@ module.exports = {
             interaction.update({embeds: [embed], components: [select1, button], ephemeral:true});
         }
 
-        if (interaction.values == 'setting-control-timeout') {
+        if (interaction.values == 'setting-timeout') {
             const { timeoutLog, timeoutLogCh, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - timeoutコマンド')
@@ -126,17 +126,28 @@ module.exports = {
                 .setCustomId('timeoutSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-control-timeout-1', emoji: '🌐'},
-                    {label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-control-timeout-2', emoji: '966588719635267624'},
-                    {label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-control-timeout-3', emoji: '966588719635267624'}
+                    {label: '全般設定', value: 'setting-timeout-1', emoji: '🌐'},
+                    {label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-timeout-2', emoji: '966588719635267624'},
+                    {label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-timeout-3', emoji: '966588719635267624'}
                 ]),
             ]);
+            const button = new discord.MessageActionRow().addComponents([
+                new discord.MessageButton()
+                    .setCustomId('setting-back')
+                    .setEmoji('971389898076598322')
+                    .setStyle('PRIMARY'),
+                new discord.MessageButton()
+                    .setCustomId('none')
+                    .setLabel('有効な設定はありません')
+                    .setStyle('SECONDARY')
+                    .setDisabled(true)
+            ])
             if (!timeoutLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
             if (!timeoutDm) embed.spliceFields(1, 1, {name: 'DM警告機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
-            interaction.update({embeds: [embed], components: [select, templatebutton], ephemeral:true});
+            interaction.update({embeds: [embed], components: [select, button], ephemeral:true});
         }
 
-        if (interaction.values == 'setting-control-ban') {
+        if (interaction.values == 'setting-ban') {
             const { banLog, banLogCh, banDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - banコマンド')
@@ -151,9 +162,9 @@ module.exports = {
                 .setCustomId('banSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-control-ban-1', emoji: '🌐'},
-                    {label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-control-ban-2', emoji: '966588719635267624'},
-                    {label: 'DM警告機能', description: 'BANされた人に警告DMを送信', value: 'setting-control-ban-3', emoji: '966588719635267624'}
+                    {label: '全般設定', value: 'setting-ban-1', emoji: '🌐'},
+                    {label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-ban-2', emoji: '966588719635267624'},
+                    {label: 'DM警告機能', description: 'BANされた人に警告DMを送信', value: 'setting-ban-3', emoji: '966588719635267624'}
                 ]),
             ]);
             if (!banLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});

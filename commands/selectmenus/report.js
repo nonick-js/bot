@@ -18,12 +18,14 @@ module.exports = {
     data: {customid: 'reportSetting', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
     exec: async (interaction) => {
-        if (interaction.values == 'setting-control-report-1') {
-            const embed = interaction.message.embeds[0];
-            if (!embed) return;
+        const { reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+        const embed = interaction.message.embeds[0];
+        if (!embed) return;
+
+        if (interaction.values == 'setting-report-1') {
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
-                    .setCustomId('setting-control-back')
+                    .setCustomId('setting-back')
                     .setEmoji('971389898076598322')
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
@@ -37,23 +39,21 @@ module.exports = {
                 .setCustomId('reportSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-control-report-1', emoji: '🌐', default: true},
-                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-control-report-2', emoji: '966719258430160986'},
+                    {label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true},
+                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986'},
                 ]),
             ]);
             interaction.update({embeds: [embed], components: [select, button], ephemeral: true});
         }
 
-        if (interaction.values == 'setting-control-report-2') {
-            const embed = interaction.message.embeds[0];
-            if (!embed) return;
+        if (interaction.values == 'setting-report-2') {
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
-                    .setCustomId('setting-control-back')
+                    .setCustomId('setting-back')
                     .setEmoji('971389898076598322')
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
-                    .setCustomId('setting-reportRoleMention')
+                    .setCustomId('setting-enable')
                     .setLabel('ON')
                     .setStyle('SUCCESS'),
                 new discord.MessageButton()
@@ -67,12 +67,11 @@ module.exports = {
                 .setCustomId('reportSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-control-report-1', emoji: '🌐'},
-                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-control-report-2', emoji: '966719258430160986', default: true},
+                    {label: '全般設定', value: 'setting-report-1', emoji: '🌐'},
+                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986', default: true},
                 ]),
             ]);
 
-            const { reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             if (!reportRoleMention) {
                 button.components[1].setLabel('OFF');
                 button.components[1].setStyle('DANGER');
