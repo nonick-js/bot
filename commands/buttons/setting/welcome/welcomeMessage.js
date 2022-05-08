@@ -22,12 +22,13 @@ module.exports = {
 			.setCustomId('modal-setting-welcomeMessage')
 			.setTitle('設定 - 入退室ログ')
 			.addComponents(
-			new discordmodals.TextInputComponent()
-				.setCustomId('textinput')
-				.setLabel('入室時埋め込みに表示するメッセージを入力してください。')
-				.setStyle('LONG')
-				.setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
-				.setRequired(true)
+				new discordmodals.TextInputComponent()
+					.setCustomId('textinput')
+					.setLabel('入室時埋め込みに表示するメッセージを入力してください。')
+					.setStyle('LONG')
+					.setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
+					.setMaxLength(1000)
+					.setRequired(true)
 			);
 		discordmodals.showModal(modal, {client, interaction});
     }

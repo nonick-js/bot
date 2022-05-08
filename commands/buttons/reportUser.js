@@ -1,10 +1,11 @@
+const fs = require('fs');
 const discord = require('discord.js');
 const discordmodal = require('discord-modals');
 
 /**
 * @callback InteractionCallback
 * @param {discord.MessageContextMenuInteraction} interaction
-* @param {discord.Client} client
+* @param {...any} [args]
 * @returns {void}
 */
 /**
@@ -15,19 +16,19 @@ const discordmodal = require('discord-modals');
 
 module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: "report", type: "BUTTON"},
+    data: {customid: 'reportUser', type: 'BUTTON'},
     /**@type {InteractionCallback} */
     exec: async (interaction, client) => {
-		const modal = new discordmodal.Modal()
-			.setCustomId('modal-report')
-			.setTitle('メッセージを通報')
+        const modal = new discordmodal.Modal()
+			.setCustomId('modal-reportUser')
+			.setTitle('メンバーを通報')
 			.addComponents(
                 new discordmodal.TextInputComponent()
                     .setCustomId('textinput')
-                    .setLabel('このメッセージはサーバールールの何に違反していますか?')
+                    .setLabel('このユーザーを通報する理由を入力してください。')
                     .setPlaceholder('できる限り詳しく入力してください。')
                     .setStyle('LONG')
-					.setMaxLength(1000)
+                    .setMaxLength(1000)
                     .setRequired(true)
             );
 		discordmodal.showModal(modal, {client, interaction});
