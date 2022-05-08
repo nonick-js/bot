@@ -25,7 +25,7 @@ module.exports = {
 			.addComponents(
             new discordmodals.TextInputComponent()
                 .setCustomId('textinput')
-                .setLabel('/timeoutコマンドのログを送信するチャンネルの名前を入力してください。')
+                .setLabel('タイムアウトコマンドのログを送信するチャンネルの名前を入力してください。')
                 .setStyle('SHORT')
                 .setMaxLength(100)
                 .setRequired(true)
