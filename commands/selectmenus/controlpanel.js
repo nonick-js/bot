@@ -22,12 +22,12 @@ module.exports = {
             const { welcome, welcomeCh, welcomeMessage } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
-                .setDescription('入退室ログの設定を以下のボタンから行えます。'+discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。')+'**【現在の設定】**')
+                .setDescription('入退室ログの設定を以下のボタンから行えます。'+discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。')+'\n**【現在の設定】**')
                 .setColor('GREEN')
                 .addFields(
                     {name: '入退室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中', inline:true},
                     {name: '送信先', value: discord.Formatters.channelMention(welcomeCh), inline: true},
-                    {name: 'メッセージ', value: discord.Formatters.codeBlock(welcomeMessage)}
+                    {name: 'メッセージ', value: welcomeMessage}
                 );
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()

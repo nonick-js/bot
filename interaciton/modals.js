@@ -1,8 +1,50 @@
 const fs = require('fs');
+const setting_module = require('../modules/setting');
 const discord = require('discord.js');
+const embed_MissingPermission = new discord.MessageEmbed()
+    .setDescription(`**BOTの権限が不足しています!**\n送信先に指定しようとしているチャンネルの「チャンネルを見る」「メッセージを送信」「埋め込みリンク」権限をBOTに付与してください。`)
+    .setColor('RED');
+const embed_channelNotFound = new discord.MessageEmbed()
+    .setDescription('**チャンネルが存在しません!**\n正しいチャンネル名を入力してください。')
+    .setColor('RED');
 
 module.exports = {
     async execute(modal,client) {
+        if (modal.customId == 'modal-setting-welcomeCh') {
+            const string = modal.getTextInputValue('textinput');
+            const embed = modal.message.embeds[0];
+            const select = modal.message.components[0];
+            const button = modal.message.components[1];
+            try {
+                const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
+                const successembed = new discord.MessageEmbed()
+                    .setDescription('✅ 入退室ログがここに送信されます!')
+                    .setColor('GREEN');
+                client.channels.cache.get(messageId).send({embeds: [successembed]})
+                    .then(() => {  
+                        setting_module.change_setting("welcomeCh", messageId);
+                        embed.spliceFields(1, 1, {name: '送信先', value: discord.Formatters.channelMention(messageId), inline: true})
+                        modal.update({embeds: [embed], components: [select, button], ephemeral: true})
+                    })
+                    .catch(() => {
+                        modal.followUp({ embeds: [embed_MissingPermission], ephemeral: true });
+                    })
+            } catch {
+                await modal.deferReply({ephemeral: true});
+                modal.followUp({ embeds: [embed_channelNotFound], ephemeral: true });
+            }
+        }
+
+        if (modal.customId == 'modal-setting-welcomeMessage') {
+            const string = modal.getTextInputValue('textinput');
+            const embed = modal.message.embeds[0];
+            const select = modal.message.components[0];
+            const button = modal.message.components[1];
+            setting_module.change_setting("welcomeMessage", string);
+            embed.spliceFields(2, 1, {name: 'メッセージ', value: string});
+            modal.update({embeds: [embed], components: [select, button], ephemeral: true});
+        }
+
         if (modal.customId == 'reportModal') {
             const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = modal.message.embeds[0];
