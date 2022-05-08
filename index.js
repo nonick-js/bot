@@ -71,7 +71,7 @@ client.on('modalSubmit', async (modal) => {
                 .setStyle('LINK')
                 .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new')
         )
-        error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(error)}`});
+        error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(err)}`});
 	    modal.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
     }
 })
