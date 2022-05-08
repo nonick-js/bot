@@ -40,7 +40,7 @@ module.exports = {
                 .setPlaceholder('ここから選択')
                 .addOptions([
                     {label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true},
-                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986'},
+                    {label: 'ロールメンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986'},
                 ]),
             ]);
             interaction.update({embeds: [embed], components: [select, button], ephemeral: true});
@@ -68,7 +68,7 @@ module.exports = {
                 .setPlaceholder('ここから選択')
                 .addOptions([
                     {label: '全般設定', value: 'setting-report-1', emoji: '🌐'},
-                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986', default: true},
+                    {label: 'ロールメンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986', default: true},
                 ]),
             ]);
 

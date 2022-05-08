@@ -77,7 +77,7 @@ module.exports = {
                 .setColor('GREEN')
                 .addFields(
                     {name: '通報の送信先' , value: discord.Formatters.channelMention(reportCh), inline: true},
-                    {name: 'メンション機能' , value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中 '+'('+discord.Formatters.roleMention(reportRole)+')', inline: true}
+                    {name: 'ロールメンション' , value: discord.Formatters.formatEmoji('968351750014783532')+' 有効化中 '+'('+discord.Formatters.roleMention(reportRole)+')', inline: true}
                 );
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
@@ -96,7 +96,7 @@ module.exports = {
                 .setPlaceholder('ここから選択')
                 .addOptions([
                     {label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true},
-                    {label: 'メンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986'},
+                    {label: 'ロールメンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986'},
                 ]),
             ]);
 
