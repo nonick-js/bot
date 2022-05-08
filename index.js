@@ -12,12 +12,14 @@ const { guildId } = require('./config.json')
 
 const interaction_commands = require('./modules/interaction');
 const commands = new interaction_commands('./commands');
+commands.debug = true;
 
 // モジュールを取得
 const modals = require('./interaciton/modals');
 
 // ready
 client.on('ready',async () => {
+    // console.log(commands.commands.map(v => v.map(w => w.data.name??w.data.customid)));
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
     console.table({
         'Bot User': client.user.tag,

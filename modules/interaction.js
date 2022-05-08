@@ -5,7 +5,7 @@ const pathModule = require('path');
 /**
  * @callback InteractionCallback
  * @param {discord.Interaction} interaction
- * @param {discord.Client} client
+ * @param {...any} [args]
  * @returns {void}
  */
 /**
@@ -20,6 +20,8 @@ const pathModule = require('path');
 class Interactions {
     /**@type {commands} */
     #commands = new discord.Collection();
+
+    debug = false;
     /**
      * @constructor
      * @param {string} path
@@ -42,9 +44,11 @@ class Interactions {
             if(!cmd.data?.name) return;
             if(command.some(v => v.name == cmd.data.name)) {
                 const findCmd = command.find(v => v.name == cmd.data.name);
+                if(this.debug) showLog('edit command',cmd.data.name)
                 findCmd.edit(cmd.data);
             }
             else {
+                if(this.debug) showLog('add command',cmd.data.name);
                 client.application.commands.create(cmd.data,guildId);
             }
         }));
@@ -78,6 +82,11 @@ function getAllPath(path,pre=new Set()) {
         if(v.isDirectory()) getAllPath(pathModule.resolve(path,v.name),pre);
     });
     return [...pre];
+}
+
+/**@param {any[]} data */
+function showLog(...data) {
+    console.log('\x1b[1;36m',...data,'\x1b[0m')
 }
 
 module.exports = Interactions;
