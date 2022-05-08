@@ -23,6 +23,9 @@ module.exports = {
         if (!embed) return;
 
         if (interaction.values == 'setting-timeout-1') {
+            // const select = interaction.components[0];
+            // select.components[0].spliceOptions(0, 1, {label: '全般設定', value: 'setting-timeout-1', emoji: '🌐', default: true});
+
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('timeoutSetting')
@@ -33,6 +36,7 @@ module.exports = {
                     {label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-timeout-3', emoji: '966588719635267624'}
                 ]),
             ]);
+
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-back')

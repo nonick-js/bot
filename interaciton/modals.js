@@ -120,5 +120,7 @@ module.exports = {
             }        
             modal.update({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", embeds: [], components: [], ephemeral:true});
         }
+
+        
     }
 }
