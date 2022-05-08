@@ -12,7 +12,7 @@ const { guildId } = require('./config.json')
 
 const interaction_commands = require('./modules/interaction');
 const commands = new interaction_commands('./commands');
-commands.debug = true;
+commands.debug = false;
 
 // モジュールを取得
 const modals = require('./interaciton/modals');
