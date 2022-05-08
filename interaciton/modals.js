@@ -122,6 +122,33 @@ module.exports = {
             }
         }
 
+        if (modal.customId == 'modal-setting-banLogCh') {
+            const { banLog } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const string = modal.getTextInputValue('textinput');
+            const embed = modal.message.embeds[0];
+            const select = modal.message.components[0];
+            const button = modal.message.components[1];
+            try {
+                const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
+                const successembed = new discord.MessageEmbed()
+                    .setDescription('✅ /banコマンドのログがここに送信されます!')
+                    .setColor('GREEN');
+                client.channels.cache.get(messageId).send({embeds: [successembed]})
+                    .then(() => {  
+                        setting_module.change_setting("banLogCh", messageId);
+                        if (banLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中' + '('+ discord.Formatters.channelMention(messageId) +')', inline:true});
+                        button.components[1].setDisabled(false);
+                        modal.update({embeds: [embed], components: [select, button], ephemeral: true})
+                    })
+                    .catch(() => {
+                        modal.reply({ embeds: [embed_MissingPermission], ephemeral: true });
+                    })
+            } catch {
+                await modal.deferReply({ephemeral: true});
+                modal.followUp({ embeds: [embed_channelNotFound], ephemeral: true });
+            }
+        }
+
         if (modal.customId == 'reportModal') {
             const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
             const embed = modal.message.embeds[0];
