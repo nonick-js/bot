@@ -1,30 +1,23 @@
+const fs = require('fs');
 const discord = require('discord.js');
 
 /**
- * @callback InteractionCallback
- * @param {discord.MessageContextMenuInteraction} interaction
- * @param {discord.Client} client
- * @returns {void}
- */
+* @callback InteractionCallback
+* @param {discord.MessageContextMenuInteraction} interaction
+* @param {discord.Client} client
+* @returns {void}
+*/
 /**
- * @typedef ContextMenuData
- * @prop {string} customid
- * @prop {"BUTTON"|"SELECT_MENU"} type
- */
+* @typedef ContextMenuData
+* @prop {string} customid
+* @prop {'BUTTON'|'SELECT_MENU'} type
+*/
 
 module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {name: "setting", description: "BOTのコントロールパネル(設定)を開きます", type: 'CHAT_INPUT'},
+    data: {customid: 'setting-back', type: 'BUTTON'},
     /**@type {InteractionCallback} */
     exec: async (interaction) => {
-        if (!interaction.member.permissions.has("MANAGE_GUILD")) {
-            const embed = new discord.MessageEmbed()
-                .setColor('RED')
-                .setDescription('**あなたにはこの動作を実行する権限がありません！**\n必要な権限: サーバー管理');
-            interaction.reply({embeds: [embed], ephemeral: true});
-            return;
-        }
-        
         const embed = new discord.MessageEmbed()
             .setTitle('🛠 NoNICK.js - 設定')
             .setDescription('NoNICK.jsのコントロールパネルへようこそ!\nここではこのBOTの設定を変更することができます!' + discord.Formatters.codeBlock("markdown", "セレクトメニューから閲覧・変更したい設定を選択しよう!"))
@@ -51,6 +44,6 @@ module.exports = {
                     { label: '/ban コマンド', value: 'setting-ban', emoji: '966596708484149289'}
                 ]),
         );
-        interaction.reply({embeds: [embed], components: [select, button], ephemeral: true});
+        interaction.update({embeds: [embed], components: [select, button], ephemeral: true});
     }
 }
