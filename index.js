@@ -46,6 +46,7 @@ const Configs = sequelize.define('configs', {
 // ready nouniku!!
 client.on('ready',async () => {
     // console.log(commands.commands.map(v => v.map(w => w.data.name??w.data.customid)));
+    Configs.sync();
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
     console.table({
         'Bot User': client.user.tag,
@@ -60,10 +61,29 @@ client.on('ready',async () => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
+client.on('guildCreate',async guild => {
+	try {
+		Configs.create({serverId: guild.id});
+	} catch (err) {
+		console.log(err);
+	}
+    client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
+});
+
+client.on('guildDelete',async guild => {
+    try {
+        Configs.destroy({where:{serverId: guild.id}});
+    } catch (err) {
+		console.log(err);
+    }
+    client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
+})
+
+// Interactionがあったとき
 client.on('interactionCreate',async interaction => {
     const cmd = commands.getCommand(interaction);
     try {
-        cmd.exec(interaction,client);
+        cmd.exec(interaction,client,Configs);
     }
     catch (err) {
         console.log(err);
@@ -85,7 +105,7 @@ client.on('interactionCreate',async interaction => {
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
     try {
-        await modals.execute(modal,client);
+        await modals.execute(modal,client,Configs);
     }
 	catch (err) {
         console.log(err);
