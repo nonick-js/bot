@@ -17,15 +17,15 @@ module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
     data: {customid: 'timeoutSetting', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
-        const { timeoutLog, timeoutLogCh, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+    exec: async (interaction, client, Configs) => {
+        const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+        const timeoutLog = config.get('timeoutLog');
+        const timeoutLogCh = config.get('timeoutLogCh');
+        const timeoutDm = config.get('timeoutLogDm');
         const embed = interaction.message.embeds[0];
         if (!embed) return;
 
         if (interaction.values == 'setting-timeout-1') {
-            // const select = interaction.components[0];
-            // select.components[0].spliceOptions(0, 1, {label: '全般設定', value: 'setting-timeout-1', emoji: '🌐', default: true});
-
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('timeoutSetting')
