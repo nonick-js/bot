@@ -72,7 +72,8 @@ module.exports = {
         }
 
         if (modal.customId == 'modal-setting-reportRole') {
-            const { reportRoleMention } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const config = await Configs.findOne({where: {serverId: modal.guild.id}});
+            const reportRoleMention = config.get('reportRoleMention');
             const string = modal.getTextInputValue('textinput');
             const embed = modal.message.embeds[0];
             const select = modal.message.components[0];
@@ -176,9 +177,9 @@ module.exports = {
                     let content = ' '
                     if (reportRoleMention) content = `<@&${reportRole}>`
                     channel.send({content: content, embeds: [reportEmbed]})
-                        .then( 
+                        .then(() => {
                             modal.update({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", embeds: [], components: [], ephemeral:true})
-                        )
+                        })
                         .catch(() => {
                             Configs.update({reportCh: null}, {where: {serverId: modal.guild.id}})
                             modal.update({content: "🛑 通報の送信中に問題が発生しました。", embeds: [], components: [], ephemeral:true})
@@ -214,9 +215,9 @@ module.exports = {
                     let content = ' '
                     if (reportRoleMention) content = `<@&${reportRole}>`
                     channel.send({content: content, embeds: [reportEmbed]})
-                        .then( 
+                        .then(() => {
                             modal.update({content: "**報告ありがとうございます!** 通報をサーバー運営に送信しました!", embeds: [], components: [], ephemeral:true})
-                        )
+                        })
                         .catch(() => {
                             Configs.update({reportCh: null}, {where: {serverId: modal.guild.id}})
                             modal.update({content: "🛑 通報の送信中に問題が発生しました。", embeds: [], components: [], ephemeral:true})
