@@ -63,7 +63,7 @@ module.exports = {
                 const timeoutDm = config.get('reportRoleMention');
 				
 				if (timeoutLog) {
-					const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+        			const timeoutLogCh = config.get('timeoutLogCh');
 					const embed = new discord.MessageEmbed()
                         .setTitle('⛔タイムアウト')
                         .setThumbnail(timeoutAvaterURL)

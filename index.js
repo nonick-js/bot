@@ -76,7 +76,8 @@ client.on('guildCreate',async guild => {
 	try {
 		Configs.create({serverId: guild.id});
 	} catch (err) {
-		console.log(err);
+        Configs.destroy({where:{serverId: guild.id}});
+        Configs.create({serverId: guild.id});
 	}
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
@@ -89,7 +90,7 @@ client.on('guildDelete',async guild => {
 		console.log(err);
     }
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
-})
+});
 
 // メンバーが参加したとき
 client.on('guildMemberAdd',async member => {
@@ -100,21 +101,21 @@ client.on('guildMemberAdd',async member => {
         const welcomeMessage = config.get('welcomeMessage');
         if (welcome) {
             member.guild.channels.fetch(welcomeCh)
-            .then((channel) => {
-                const embed = new discord.MessageEmbed()
-                    .setTitle('WELCOME!')
-                    .setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
-                    .setThumbnail(member.user.avatarURL())
-                    .setColor('#57f287');
-                channel.send({embeds: [embed]}).catch(() => {
+                .then((channel) => {
+                    const embed = new discord.MessageEmbed()
+                        .setTitle('WELCOME!')
+                        .setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
+                        .setThumbnail(member.user.avatarURL())
+                        .setColor('#57f287');
+                    channel.send({embeds: [embed]}).catch(() => {
+                        Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
+                        Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
+                    });
+                })
+                .catch(() => {
                     Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
                     Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
                 });
-            })
-            .catch(() => {
-                Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-            });
         }
     }
 });
@@ -127,17 +128,17 @@ client.on('guildMemberRemove',async member => {
         const welcomeCh = config.get('welcomeCh');
         if (welcome) {
             member.guild.channels.fetch(welcomeCh)
-            .then((channel) => {
-                channel.send(`**${member.user.username}** さんがサーバーを退出しました👋`)
+                .then((channel) => {
+                    channel.send(`**${member.user.username}** さんがサーバーを退出しました👋`)
+                    .catch(() => {
+                        Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
+                        Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
+                    });
+                })
                 .catch(() => {
                     Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
                     Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
                 });
-            })
-            .catch(() => {
-                Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-            });
         }
     }
 });
@@ -185,6 +186,6 @@ client.on('modalSubmit', async (modal) => {
         error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(err)}`});
 	    modal.reply({embeds: [error_embed], components: [error_button], ephemeral:true});
     }
-})
+});
 
 client.login(process.env.BOT_TOKEN);
