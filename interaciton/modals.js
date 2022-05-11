@@ -1,5 +1,4 @@
 const fs = require('fs');
-const setting_module = require('../modules/setting');
 const discord = require('discord.js');
 const embed_MissingPermission = new discord.MessageEmbed()
     .setDescription(`**BOTの権限が不足しています!**\n送信先に指定しようとしているチャンネルの「チャンネルを見る」「メッセージを送信」「埋め込みリンク」権限をBOTに付与してください。`)
@@ -9,7 +8,7 @@ const embed_channelNotFound = new discord.MessageEmbed()
     .setColor('RED');
 
 module.exports = {
-    async execute(modal,client) {
+    async execute(modal, client, Configs) {
         if (modal.customId == 'modal-setting-welcomeCh') {
             const string = modal.getTextInputValue('textinput');
             const embed = modal.message.embeds[0];
@@ -22,7 +21,7 @@ module.exports = {
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [successembed]})
                     .then(() => {  
-                        setting_module.change_setting("welcomeCh", messageId);
+                        Configs.update({welcomeCh: messageId}, {where: {serverId: modal.guildId}});
                         embed.spliceFields(1, 1, {name: '送信先', value: discord.Formatters.channelMention(messageId), inline: true});
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
@@ -41,7 +40,7 @@ module.exports = {
             const embed = modal.message.embeds[0];
             const select = modal.message.components[0];
             const button = modal.message.components[1];
-            setting_module.change_setting("welcomeMessage", string);
+            Configs.update({welcomeMessage: string}, {where: {serverId: modal.guildId}});
             embed.spliceFields(2, 1, {name: 'メッセージ', value: string});
             modal.update({embeds: [embed], components: [select, button], ephemeral: true});
         }
@@ -58,7 +57,7 @@ module.exports = {
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [successembed]})
                     .then(() => {  
-                        setting_module.change_setting("reportCh", messageId);
+                        Configs.update({reportCh: messageId}, {where: {serverId: modal.guildId}});
                         embed.spliceFields(0, 1, {name: '通報の送信先', value: discord.Formatters.channelMention(messageId), inline: true});
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
@@ -80,7 +79,7 @@ module.exports = {
             const button = modal.message.components[1];
             try {
                 const roleId = modal.guild.roles.cache.find((role) => role.name === string).id
-                setting_module.change_setting("reportRole", roleId);
+                Configs.update({reportRole: roleId}, {where: {serverId: modal.guildId}});
                 button.components[1].setDisabled(false);
                 if (reportRoleMention) embed.spliceFields(1, 1, {name: 'ロールメンション', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中' + '('+ discord.Formatters.roleMention(roleId) +')', inline:true});
                 modal.update({embeds: [embed], components: [select, button], ephemeral:true});
@@ -108,7 +107,7 @@ module.exports = {
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [successembed]})
                     .then(() => {  
-                        setting_module.change_setting("timeoutLogCh", messageId);
+                        Configs.update({timeoutLogCh: messageId}, {where: {serverId: modal.guildId}});
                         if (timeoutLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中' + '('+ discord.Formatters.channelMention(messageId) +')', inline:true});
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
@@ -135,7 +134,7 @@ module.exports = {
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [successembed]})
                     .then(() => {  
-                        setting_module.change_setting("banLogCh", messageId);
+                        Configs.update({banLogCh: messageId}, {where: {serverId: modal.guildId}});
                         if (banLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中' + '('+ discord.Formatters.channelMention(messageId) +')', inline:true});
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
@@ -150,7 +149,11 @@ module.exports = {
         }
 
         if (modal.customId == 'modal-report') {
-            const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+            const reportRoleMention = config.get('reportRoleMention');
+            const reportCh = config.get('reportRoleMention');
+            const reportRole = config.get('reportRoleMention');
+            
             const embed = modal.message.embeds[0];
             const reportedMessageAuthor = await client.users.fetch(embed.fields[0].value.replace(/^../g, '').replace(/.$/, ''))
             const reportedMessageCh = embed.fields[1].value;
@@ -176,7 +179,11 @@ module.exports = {
         }
 
         if (modal.customId == 'modal-reportUser') {
-            const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+            const reportRoleMention = config.get('reportRoleMention');
+            const reportCh = config.get('reportRoleMention');
+            const reportRole = config.get('reportRoleMention');
+            
             const embed = modal.message.embeds[0];
             const reportedUser = await client.users.fetch(embed.fields[0].value.replace(/^../g, '').replace(/.$/, ''))
             const reportUser = modal.user;

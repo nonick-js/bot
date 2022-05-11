@@ -17,8 +17,10 @@ module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
     data: {customid: 'reportSetting', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
-    exec: async (interaction) => {
-        const { reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+    exec: async (interaction ,client ,Configs) => {
+        const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+        const reportRoleMention = config.get('reportRoleMention');
+        const reportRole = config.get('reportRole');
         const embed = interaction.message.embeds[0];
         if (!embed) return;
 

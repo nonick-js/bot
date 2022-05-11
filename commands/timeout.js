@@ -22,7 +22,7 @@ module.exports = {
         {name: 'reason', description: 'タイムアウトする理由', type: 'STRING'}
     ]},
     /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
+    exec: async (interaction, client, Configs) => {
         if (!interaction.member.permissions.has("MODERATE_MEMBERS")) {
             const embed = new discord.MessageEmbed()
                 .setColor('#E84136')
@@ -56,9 +56,12 @@ module.exports = {
 		}
 
 		timeoutMember.timeout(timeoutDuration)
-			.then(() => {
+			.then(async () => {
 				interaction.reply({content: `⛔ <@${timeoutUserId}>を` + `**${timeoutDuration_d}日` + `${timeoutDuration_m}分**`+`タイムアウトしました。`, ephemeral:true});
-				const { timeoutLog, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+				const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+                const timeoutLog = config.get('reportRoleMention');
+                const timeoutDm = config.get('reportRoleMention');
+				
 				if (timeoutLog) {
 					const { timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 					const embed = new discord.MessageEmbed()

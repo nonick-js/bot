@@ -17,9 +17,12 @@ module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
     data: {customid: 'setting-select', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (interaction, client, Configs) => {
+        const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
         if (interaction.values == 'setting-welcomemessage') {
-            const { welcome, welcomeCh, welcomeMessage } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const welcome = config.get('welcome');
+            const welcomeCh = config.get('welcomeCh');
+            const welcomeMessage = config.get('welcomeMessage');
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
                 .setDescription('入退室ログの設定を以下のボタンから行えます。'+discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。')+'\n**【現在の設定】**')
@@ -69,8 +72,10 @@ module.exports = {
             interaction.update({embeds: [embed], components: [select, button], ephemeral:true});
         }
 
-        if (interaction.values == 'setting-report') {   
-            const { reportCh, reportRoleMention, reportRole } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+        if (interaction.values == 'setting-report') {
+            const reportCh = config.get('reportCh');
+            const reportRoleMention = config.get('reportRoleMention');
+            const reportRole = config.get('reportRole');
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 通報機能')
                 .setDescription('通報機能の設定を以下のセレクトメニューから行えます。\n**Tips:**コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。' + discord.Formatters.codeBlock('markdown', '#通報機能とは...\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。')+'\n**【現在の設定】**')
@@ -106,7 +111,9 @@ module.exports = {
         }
 
         if (interaction.values == 'setting-timeout') {
-            const { timeoutLog, timeoutLogCh, timeoutDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const timeoutLog = config.get('timeoutLog');
+            const timeoutLogCh = config.get('timeoutLogCH');
+            const timeoutDm= config.get('timeoutDm');
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - timeoutコマンド')
                 .setDescription('timeoutコマンドの設定を以下のセレクトメニューから行えます。\n**Tips:**スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。' + discord.Formatters.codeBlock('markdown', '#timeoutコマンドとは...\nサーバーにいるメンバーにタイムアウト(ミュート)を設定させるコマンドです。公式の機能より細かく設定させることができ、一分単位での調整が可能です。')+'\n**【現在の設定】**')
@@ -142,7 +149,9 @@ module.exports = {
         }
 
         if (interaction.values == 'setting-ban') {
-            const { banLog, banLogCh, banDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const banLog = config.get('banLog');
+            const banLogCh = config.get('banLogCh');
+            const banDm = config.get('banDm');
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - banコマンド')
                 .setDescription('banコマンドの設定を以下のセレクトメニューから行えます。\n**Tips:**スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。' + discord.Formatters.codeBlock('markdown','#BANコマンドとは...\n公式のBANコマンドを強化したコマンドです。\nサーバーにいないユーザーをIDのみでBANすることもできます。荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。')+'\n**【現在の設定】**')

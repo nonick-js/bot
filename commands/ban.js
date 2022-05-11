@@ -25,7 +25,7 @@ module.exports = {
         {name: "reason", description: 'BANする理由', type: 'STRING'}
     ]},
     /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
+    exec: async (interaction, client, Configs) => {
         if (!interaction.member.permissions.has("BAN_MEMBERS")) {
 			const embed = new discord.MessageEmbed()
 				.setColor('#E84136')
@@ -41,9 +41,11 @@ module.exports = {
         if (!banReason) banReason = '理由が入力されていません';
 
         interaction.guild.members.ban(banUserId,{reason: banReason, days: banDeleteMessage})
-            .then(() => {
+            .then( async () => {
+                const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+                const banidLog = config.get('banidLog');
+
                 interaction.reply({content: `🔨 <@${banUserId}>(` + discord.Formatters.inlineCode(banUserId) + ')をBANしました。', ephemeral:true});
-                const { banidLog } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
                 if(banidLog) {
                     const { banidLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
                     const embed = new discord.MessageEmbed()

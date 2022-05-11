@@ -17,8 +17,10 @@ module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
     data: {customid: 'welcomeSetting', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
-        const { welcome, welcomeCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+    exec: async (interaction, client, Configs) => {
+        const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+        const welcome = config.get('welcome');
+        const welcomeCh = config.get('welcomeCh');
         const embed = interaction.message.embeds[0];
 
         if (interaction.values == 'setting-report-1') {
