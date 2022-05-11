@@ -27,7 +27,7 @@ module.exports = {
 					.setLabel('入室時埋め込みに表示するメッセージを入力してください。')
 					.setStyle('LONG')
 					.setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
-					.setMaxLength(1000)
+					.setMaxLength(150)
 					.setRequired(true)
 			);
 		discordmodals.showModal(modal, {client, interaction});
