@@ -1,10 +1,18 @@
 const fs = require('fs');
+const Sequelize = require('sequelize');
 const discord = require('discord.js');
 const discordModals = require('discord-modals');
 const client = new discord.Client({
     intents: Object.values(discord.Intents.FLAGS),
     allowedMentions: {parse:[]},
     partials: ['CHANNEL','GUILD_MEMBER','GUILD_SCHEDULED_EVENT','MESSAGE','REACTION','USER'],
+});
+const sequelize = new Sequelize('database', 'user', 'password', {
+	host: 'localhost',
+	dialect: 'sqlite',
+	logging: false,
+	// SQLite only
+	storage: 'sql/config.sqlite',
 });
 discordModals(client);
 require('dotenv').config();
@@ -17,7 +25,25 @@ commands.debug = false;
 // モジュールを取得
 const modals = require('./interaciton/modals');
 
-// ready
+// sqliteのテーブルの作成
+const Configs = sequelize.define('configs', {
+	serverId: {type: Sequelize.STRING, unique: true},
+    laungage: {type: Sequelize.STRING, defaultValue: "ja_JP"},
+    welcome: {type: Sequelize.BOOLEAN, defaultValue: false},
+    welcomeCh: {type: Sequelize.STRING, defaultValue: null},
+    welcomeMessage: {type: Sequelize.TEXT, defaultValue: "まずはルールを確認しよう!"},
+    reportCh: {type: Sequelize.STRING, defaultValue: null},
+    reportRoleMention: {type: Sequelize.BOOLEAN, defaultValue: false},
+    reportRole: {type: Sequelize.STRING, defaultValue: null},
+    timeoutLog: {type: Sequelize.BOOLEAN, defaultValue: false},
+    timeoutLogCh: {type: Sequelize.STRING, defaultValue: null},
+    timeoutDM: {type: Sequelize.BOOLEAN, defaultValue: false},
+    banLog: {type: Sequelize.BOOLEAN, defaultValue: false},
+    banLogCh: {type: Sequelize.STRING, defaultValue: null},
+    banDm: {type: Sequelize.BOOLEAN, defaultValue: false},
+});
+
+// ready nouniku!!
 client.on('ready',async () => {
     // console.log(commands.commands.map(v => v.map(w => w.data.name??w.data.customid)));
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
