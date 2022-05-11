@@ -1,6 +1,5 @@
 const fs = require('fs');
 const discord = require('discord.js');
-const setting_module = require('../../../modules/setting');
 
 /**
 * @callback InteractionCallback
@@ -18,8 +17,10 @@ module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
     data: {customid: 'setting-timeoutLog', type: 'BUTTON'},
     /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
-        const { timeoutLog, timeoutLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+    exec: async (interaction, client, Configs) => {
+        const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+        const timeoutLog = config.get('timeoutLog');
+        const timeoutLogCh = config.get('timeoutLogCh');
         const embed = interaction.message.embeds[0];
         const select = interaction.message.components[0];
         const button = interaction.message.components[1];

@@ -1,6 +1,5 @@
 const fs = require('fs');
 const discord = require('discord.js');
-const setting_module = require('../../../modules/setting');
 
 /**
 * @callback InteractionCallback
