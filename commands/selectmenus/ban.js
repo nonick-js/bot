@@ -17,8 +17,11 @@ module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
     data: {customid: 'banSetting', type: 'SELECT_MENU'},
     /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
-        const { banLog, banLogCh, banDm } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+    exec: async (interaction, client, Configs) => {
+        const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+        const banLog = config.get('banLog');
+        const banLogCh = config.get('banLogCh');
+        const banDm = config.get('banDm');
         const embed = interaction.message.embeds[0];
         if (!embed) return;
 
