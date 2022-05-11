@@ -43,6 +43,16 @@ const Configs = sequelize.define('configs', {
     banDm: {type: Sequelize.BOOLEAN, defaultValue: false},
 });
 
+//Repl.itでホスティングをする場合は、このコードを有効化する必要がある
+/*
+"use strict";
+const http = require('http');
+http.createServer(function(req, res) {
+	res.write("ready nouniku!!");
+	res.end();
+}).listen(8080);
+*/
+
 // ready nouniku!!
 client.on('ready',async () => {
     // console.log(commands.commands.map(v => v.map(w => w.data.name??w.data.customid)));
@@ -61,6 +71,7 @@ client.on('ready',async () => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
+// サーバーに参加した時
 client.on('guildCreate',async guild => {
 	try {
 		Configs.create({serverId: guild.id});
@@ -70,6 +81,7 @@ client.on('guildCreate',async guild => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
+// サーバーから退出させられた時
 client.on('guildDelete',async guild => {
     try {
         Configs.destroy({where:{serverId: guild.id}});
@@ -79,7 +91,54 @@ client.on('guildDelete',async guild => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 })
 
-// Interactionがあったとき
+// メンバーが参加したとき
+client.on('guildMemberAdd',async member => {
+    const config = await Configs.findOne({where: {serverId: member.guild.id}});
+    const welcome = config.get('welcome');
+    const welcomeCh = config.get('welcomeCh');
+    const welcomeMessage = config.get('welcomeMessage');
+    if (welcome) {
+        member.guild.channels.fetch(welcomeCh)
+        .then((channel) => {
+            const embed = new discord.MessageEmbed()
+                .setTitle('WELCOME!')
+                .setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
+                .setThumbnail(member.user.avatarURL())
+                .setColor('#57f287');
+            channel.send({embeds: [embed]}).catch(() => {
+                Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
+                Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
+            });
+        })
+        .catch(() => {
+            Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
+            Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
+        });
+    }
+});
+
+// メンバーが抜けた時
+client.on('guildMemberRemove',async member => {
+    const config = await Configs.findOne({where: {serverId: member.guild.id}});
+    const welcome = config.get('welcome');
+    const welcomeCh = config.get('welcomeCh');
+    if (welcome) {
+        member.guild.channels.fetch(welcomeCh)
+        .then((channel) => {
+            channel.send(`**${member.user.username}** さんがサーバーを退出しました👋`)
+            .catch(() => {
+                Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
+                Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
+            });
+        })
+        .catch(() => {
+            Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
+            Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
+        });
+    }
+});
+
+// Interaction処理
 client.on('interactionCreate',async interaction => {
     const cmd = commands.getCommand(interaction);
     try {
