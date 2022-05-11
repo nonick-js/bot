@@ -88,8 +88,8 @@ client.on('interactionCreate',async interaction => {
     catch (err) {
         console.log(err);
         const error_embed = new discord.MessageEmbed()
-	        .setTitle('🛑 おっと...')
-	        .setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載し、下のボタンから報告してください。')
+	        .setTitle('🛑 エラー')
+	        .setDescription('何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載して下のボタンから報告してください。')
 	        .setColor('RED')
         const error_button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
@@ -110,8 +110,8 @@ client.on('modalSubmit', async (modal) => {
 	catch (err) {
         console.log(err);
         const error_embed = new discord.MessageEmbed()
-	        .setTitle('🛑 おっと...')
-	        .setDescription('処理の実行中に問題が発生しました。\n何度も同じエラーが発生する場合、以下のボタンからエラーコードと共に報告してください。')
+	        .setTitle('🛑 エラー')
+	        .setDescription('何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載して下のボタンから報告してください。')
 	        .setColor('RED')
         const error_button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
