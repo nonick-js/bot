@@ -63,7 +63,7 @@ module.exports = {
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
                     })
-                    .catch(() => {
+                    .catch(async () => {
                         await modal.deferReply({ephemeral: true});
                         modal.followUp({ embeds: [embed_MissingPermission], ephemeral: true });
                     })
