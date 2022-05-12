@@ -73,10 +73,19 @@ module.exports = {
                             {name: '担当者', value: `<@${moderateUserId}>`}
                         )
                         .setColor('RED');
-					client.channels.cache.get(timeoutLogCh).send({embeds: [embed]})
+
+					interaction.guild.channels.fetch(timeoutLogCh)
+						.then((channel) => {
+							channel.send({embeds: [embed]})
+								.catch(() => {
+									Configs.update({timeoutLog: false}, {where: {serverId: member.guild.id}});
+                    				Configs.update({timeoutLogCh: null}, {where: {serverId: member.guild.id}});
+								});
+						})
 						.catch(() => {
-							console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにタイムアウトログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
-						});
+							Configs.update({timeoutLog: false}, {where: {serverId: member.guild.id}});
+                    		Configs.update({timeoutLogCh: null}, {where: {serverId: member.guild.id}});
+						})
 				}
 				if (timeoutDm) {
 					const timeoutServerIcon = interaction.guild.iconURL();
@@ -88,12 +97,13 @@ module.exports = {
 						.addFields(
 							{name: 'タイムアウトされた理由', value: timeoutReason}
 					);
-					timeoutMember.send({embeds: [embed]}).catch(error => {
-						const embed = new discord.MessageEmbed()
-							.setDescription('タイムアウトした人への警告DMに失敗しました。\nフレンド以外からのメッセージ受信を拒否しています。')
-							.setColor('RED')
-						interaction.followUp({embeds: [embed], ephemeral: true});
-					});
+					timeoutMember.send({embeds: [embed]})
+						.catch(() => {
+							const embed = new discord.MessageEmbed()
+								.setDescription('タイムアウトした人への警告DMに失敗しました。\nフレンド以外からのメッセージ受信を拒否しています。')
+								.setColor('RED')
+							interaction.followUp({embeds: [embed], ephemeral: true});
+						});
 				}
 			})
 			.catch(() => {
