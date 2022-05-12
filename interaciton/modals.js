@@ -26,8 +26,9 @@ module.exports = {
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
                     })
-                    .catch(() => {
-                        modal.reply({ embeds: [embed_MissingPermission], ephemeral: true });
+                    .catch(async () => {
+                        await modal.deferReply({ephemeral: true});
+                        modal.followUp({ embeds: [embed_MissingPermission], ephemeral: true });
                     })
             } catch {
                 await modal.deferReply({ephemeral: true});
@@ -63,6 +64,7 @@ module.exports = {
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
                     })
                     .catch(() => {
+                        await modal.deferReply({ephemeral: true});
                         modal.followUp({ embeds: [embed_MissingPermission], ephemeral: true });
                     })
             } catch {
@@ -85,8 +87,7 @@ module.exports = {
                 if (reportRoleMention) embed.spliceFields(1, 1, {name: 'ロールメンション', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中' + '('+ discord.Formatters.roleMention(roleId) +')', inline:true});
                 modal.update({embeds: [embed], components: [select, button], ephemeral:true});
             }
-            catch (err) {
-                console.log(err)
+            catch {
                 const embed = new discord.MessageEmbed()
                     .setDescription('指定されたロールが見つかりませんでした。正しい名前を入力してください。\n注意:大文字小文字、空白も正しく入力する必要があります。')
                     .setColor('RED')
@@ -96,7 +97,8 @@ module.exports = {
         }
 
         if (modal.customId == 'modal-setting-timeoutLogCh') {
-            const { timeoutLog } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const config = await Configs.findOne({where: {serverId: modal.guild.id}});
+            const timeoutLog = config.get('timeoutLog');
             const string = modal.getTextInputValue('textinput');
             const embed = modal.message.embeds[0];
             const select = modal.message.components[0];
@@ -113,7 +115,8 @@ module.exports = {
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
                     })
-                    .catch(() => {
+                    .catch(async () => {
+                        await modal.deferReply({ephemeral: true});
                         modal.reply({ embeds: [embed_MissingPermission], ephemeral: true });
                     })
             } catch {
@@ -123,7 +126,8 @@ module.exports = {
         }
 
         if (modal.customId == 'modal-setting-banLogCh') {
-            const { banLog } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+            const config = await Configs.findOne({where: {serverId: modal.guild.id}});
+            const banLog = config.get('banLog');
             const string = modal.getTextInputValue('textinput');
             const embed = modal.message.embeds[0];
             const select = modal.message.components[0];
@@ -140,8 +144,9 @@ module.exports = {
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
                     })
-                    .catch(() => {
-                        modal.reply({ embeds: [embed_MissingPermission], ephemeral: true });
+                    .catch(async () => {
+                        await modal.deferReply({ephemeral: true});
+                        modal.followUp({ embeds: [embed_MissingPermission], ephemeral: true });
                     })
             } catch {
                 await modal.deferReply({ephemeral: true});
