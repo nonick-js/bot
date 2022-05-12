@@ -53,6 +53,9 @@ http.createServer(function(req, res) {
 }).listen(8080);
 */
 
+// debug
+client.on("debug", ( e ) => console.log(e));
+
 // ready nouniku!!
 client.on('ready',async () => {
     // console.log(commands.commands.map(v => v.map(w => w.data.name??w.data.customid)));
