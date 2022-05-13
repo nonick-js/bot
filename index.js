@@ -148,6 +148,8 @@ client.on('guildMemberRemove',async member => {
 
 // Interaction処理
 client.on('interactionCreate',async interaction => {
+    // データがなければ作成する
+    Configs.findOrCreate({where:{serverId: interaction.guild.id}});
     const cmd = commands.getCommand(interaction);
     try {
         // データがなければ作成する
@@ -173,6 +175,8 @@ client.on('interactionCreate',async interaction => {
 
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
+    // データがなければ作成する
+    Configs.findOrCreate({where:{serverId: modal.guild.id}});
     try {
         // データがなければ作成する
         Configs.findOrCreate({where:{serverId: modal.guild.id}});
