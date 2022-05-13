@@ -59,7 +59,7 @@ http.createServer(function(req, res) {
 // ready nouniku!!
 client.on('ready',async () => {
     // console.log(commands.commands.map(v => v.map(w => w.data.name??w.data.customid)));
-    Configs.sync();
+    Configs.sync({alter: true});
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
     console.table({
         'Bot User': client.user.tag,
@@ -85,9 +85,7 @@ client.on('guildCreate',async guild => {
 client.on('guildDelete',async guild => {
     try {
         Configs.destroy({where:{serverId: guild.id}});
-    } catch (err) {
-		console.log(err);
-    }
+    } catch {}
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
