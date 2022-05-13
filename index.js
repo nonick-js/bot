@@ -54,7 +54,7 @@ http.createServer(function(req, res) {
 */
 
 // debug
-client.on("debug", ( e ) => console.log(e));
+// client.on("debug", ( e ) => console.log(e));
 
 // ready nouniku!!
 client.on('ready',async () => {
