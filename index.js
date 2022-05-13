@@ -53,7 +53,7 @@ http.createServer(function(req, res) {
 }).listen(8080);
 */
 
-// debug
+// デバッグモード
 // client.on("debug", ( e ) => console.log(e));
 
 // ready nouniku!!
@@ -76,12 +76,8 @@ client.on('ready',async () => {
 
 // サーバーに参加した時
 client.on('guildCreate',async guild => {
-	try {
-		Configs.create({serverId: guild.id});
-	} catch (err) {
-        Configs.destroy({where:{serverId: guild.id}});
-        Configs.create({serverId: guild.id});
-	}
+	// データがなければ作成する
+    Configs.findOrCreate({where:{serverId: guild.id}});
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
@@ -97,6 +93,8 @@ client.on('guildDelete',async guild => {
 
 // メンバーが参加したとき
 client.on('guildMemberAdd',async member => {
+    // データがなければ作成する
+    Configs.findOrCreate({where:{serverId: member.guild.id}});
     if (member !== member.guild.me) {
         const config = await Configs.findOne({where: {serverId: member.guild.id}});
         const welcome = config.get('welcome');
@@ -125,6 +123,8 @@ client.on('guildMemberAdd',async member => {
 
 // メンバーが抜けた時
 client.on('guildMemberRemove',async member => {
+    // データがなければ作成する
+    Configs.findOrCreate({where:{serverId: member.guild.id}});
     if (member !== member.guild.me) {
         const config = await Configs.findOne({where: {serverId: member.guild.id}});
         const welcome = config.get('welcome');
@@ -150,6 +150,8 @@ client.on('guildMemberRemove',async member => {
 client.on('interactionCreate',async interaction => {
     const cmd = commands.getCommand(interaction);
     try {
+        // データがなければ作成する
+        Configs.findOrCreate({where:{serverId: interaction.guild.id}});
         cmd.exec(interaction,client,Configs);
     }
     catch (err) {
@@ -172,6 +174,8 @@ client.on('interactionCreate',async interaction => {
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
     try {
+        // データがなければ作成する
+        Configs.findOrCreate({where:{serverId: modal.guild.id}});
         await modals.execute(modal,client,Configs);
     }
 	catch (err) {
