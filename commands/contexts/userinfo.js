@@ -19,10 +19,11 @@ module.exports = {
     exec: async (interaction, client) => {
         const infoUser = interaction.targetUser
         const infoMember = await interaction.guild.members.fetch(infoUser);
-        const UserAvater = infoUser.displayAvatarURL()
+        const UserAvater = infoUser.displayAvatarURL();
         const nickAvater = infoMember.displayAvatarURL();
         const UserCreateTime = Math.floor(infoUser.createdTimestamp/1000);
         const MemberJoinTime = Math.floor(infoMember.joinedTimestamp/1000);
+		const MemberBoostTime = Math.floor(infoMember.premiumSinceTimestamp/1000);
         let nickName = infoMember.nickname;
 
         if(nickName == null) nickName = "なし";
@@ -48,7 +49,7 @@ module.exports = {
         const embed = new discord.MessageEmbed()
             .setThumbnail(UserAvater)
             .setAuthor({name: `${infoUser.tag}`})
-            .setDescription(`ニックネーム: **${nickName}**\nユーザーID:`+discord.Formatters.inlineCode(`${infoUser.id}`))
+            .setDescription(discord.Formatters.formatEmoji('973880625566212126') + `ニックネーム: **${nickName}**\n` + discord.Formatters.formatEmoji('973880625641705522') + 'ユーザーID: ' + discord.Formatters.inlineCode(`${infoUser.id}`))
             .addFields(
                 {name: 'アカウント作成日', value: discord.Formatters.time(UserCreateTime, 'D'), inline:true},
                 {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime, 'D'), inline:true},
@@ -56,6 +57,7 @@ module.exports = {
             )
             .setColor(infoMember.roles.highest.color);
 
+		if (MemberBoostTime !== 0) embed.addFields({name: "🎉SERVER BOOST", value: discord.Formatters.time(MemberBoostTime, 'D')+`からブーストしています!`})
         if (embed.color == 0) embed.setColor('WHITE');
         if (UserAvater !== nickAvater) {
             embed.setAuthor({name: `${infoUser.tag}`, iconURL: `${UserAvater}`});
