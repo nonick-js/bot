@@ -25,9 +25,14 @@ module.exports = {
         const MemberJoinTime = Math.floor(infoMember.joinedTimestamp/1000);
         let nickName = infoMember.nickname;
 
-        console.log(infoMember.roles.highest.color)
-
         if(nickName == null) nickName = "なし";
+        let roles;
+        infoMember.roles.cache.forEach(role => {
+            if (roles == undefined) roles = `<@&${role.id}> `;
+            else if (role.name !== "@everyone") {
+                roles = roles + `<@&${role.id}> `;
+            }
+        });
 
         const embed = new discord.MessageEmbed()
             .setThumbnail(UserAvater)
@@ -36,6 +41,7 @@ module.exports = {
             .addFields(
                 {name: 'アカウント作成日', value: discord.Formatters.time(UserCreateTime, 'D'), inline:true},
                 {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime, 'D'), inline:true},
+                {name: 'ロール', value: roles}
             )
             .setColor(infoMember.roles.highest.color);
         if (infoMember.roles.highest.color = 0) embed.setColor('WHITE');
