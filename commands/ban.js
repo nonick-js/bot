@@ -53,11 +53,12 @@ module.exports = {
         interaction.guild.members.ban(banUserId,{reason: banReason, days: banDeleteMessage})
             .then( async () => {
                 const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
-                const banidLog = config.get('banidLog');
+                const banLog = config.get('banLog');
+                const banDm = config.get('banDm');
 
                 interaction.reply({content: `🔨 <@${banUserId}>(` + discord.Formatters.inlineCode(banUserId) + ')をBANしました。', ephemeral:true});
-                if(banidLog) {
-                    const banidLogCh = config.get('banidLogCh');
+                if(banLog) {
+                    const banLogCh = config.get('banidLogCh');
                     const embed = new discord.MessageEmbed()
                         .setTitle('🔨BAN')
                         .setThumbnail(banUserAvaterURL)
@@ -67,7 +68,7 @@ module.exports = {
                             {name: '担当者', value: `<@${moderateUserId}>`}
                         )
                         .setColor('RED');
-                    interaction.guild.channels.fetch(banidLogCh)
+                    interaction.guild.channels.fetch(banLogCh)
                         .then((channel) => {
                             channel.send({embeds: [embed]})
                                 .catch(() => {
@@ -79,6 +80,24 @@ module.exports = {
                             Configs.update({banidLog: false}, {where: {serverId: member.guild.id}});
                     		Configs.update({banidLogCh: null}, {where: {serverId: member.guild.id}});
                         });
+				}
+                if (banDm) {
+					const banServerIcon = interaction.guild.iconURL();
+					const embed = new discord.MessageEmbed()
+						.setTitle('🛑BAN')
+						.setDescription(`あなたは**${interaction.guild.name}**からBANされました`)
+						.setThumbnail(banServerIcon)
+						.setColor('RED')
+						.addFields(
+							{name: 'BANされた理由', value: banReason}
+					);
+					interaction.options.getUser('user').send({embeds: [embed]})
+						.catch(() => {
+							const embed = new discord.MessageEmbed()
+								.setDescription('BANした人への警告DMに失敗しました。\nフレンド以外からのメッセージ受信を拒否しています。')
+								.setColor('RED')
+							interaction.followUp({embeds: [embed], ephemeral: true});
+						});
 				}
 			})
 			.catch(() => {
