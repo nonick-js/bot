@@ -34,12 +34,16 @@ module.exports = {
                 return 1;
             }
         })
-        roleCollection.forEach(role => {
-            if (roles == undefined) roles = `<@&${role.id}> `;
-            else if (role.name !== "@everyone") {
-                roles = roles + `<@&${role.id}> `;
-            }
-        });
+        if (roleCollection.size !== 1) {
+            roleCollection.forEach(role => {
+                if (roles == undefined) roles = `<@&${role.id}> `;
+                else if (role.name !== "@everyone") {
+                    roles = roles + `<@&${role.id}> `;
+                }
+            });
+        } else {
+			roles = "なし";
+		}
 
         const embed = new discord.MessageEmbed()
             .setThumbnail(UserAvater)
@@ -51,6 +55,7 @@ module.exports = {
                 {name: 'ロール', value: roles}
             )
             .setColor(infoMember.roles.highest.color);
+
         if (embed.color == 0) embed.setColor('WHITE');
         if (UserAvater !== nickAvater) {
             embed.setAuthor({name: `${infoUser.tag}`, iconURL: `${UserAvater}`});
