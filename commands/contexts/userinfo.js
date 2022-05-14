@@ -27,7 +27,14 @@ module.exports = {
 
         if(nickName == null) nickName = "なし";
         let roles;
-        infoMember.roles.cache.forEach(role => {
+        const roleCollection = infoMember.roles.cache.sort(function(beforeRole, afterRole) {
+            if (beforeRole.position > afterRole.position) {
+                return -1;
+            } else {
+                return 1;
+            }
+        })
+        roleCollection.forEach(role => {
             if (roles == undefined) roles = `<@&${role.id}> `;
             else if (role.name !== "@everyone") {
                 roles = roles + `<@&${role.id}> `;
@@ -44,7 +51,7 @@ module.exports = {
                 {name: 'ロール', value: roles}
             )
             .setColor(infoMember.roles.highest.color);
-        if (infoMember.roles.highest.color = 0) embed.setColor('WHITE');
+        if (embed.color == 0) embed.setColor('WHITE');
         if (UserAvater !== nickAvater) {
             embed.setAuthor({name: `${infoUser.tag}`, iconURL: `${UserAvater}`});
             embed.setThumbnail(nickAvater);
