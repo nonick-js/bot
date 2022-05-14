@@ -18,34 +18,31 @@ module.exports = {
     /**@type {InteractionCallback} */
     exec: async (interaction, client) => {
         const infoUser = interaction.targetUser
-        const infoUser2 = await client.users.fetch(interaction.targetUser.id)
         const infoMember = await interaction.guild.members.fetch(infoUser);
-
         const UserAvater = infoUser.displayAvatarURL()
+        const nickAvater = infoMember.displayAvatarURL();
         const UserCreateTime = Math.floor(infoUser.createdTimestamp/1000);
-
-        const MemberName = infoMember.nickname;
-        const MemberAvater = infoMember.displayAvatarURL();
         const MemberJoinTime = Math.floor(infoMember.joinedTimestamp/1000);
+        let nickName = infoMember.nickname;
+
+        console.log(infoMember.roles.highest.color)
+
+        if(nickName == null) nickName = "なし";
 
         const embed = new discord.MessageEmbed()
             .setThumbnail(UserAvater)
             .setAuthor({name: `${infoUser.tag}`})
+            .setDescription(`ニックネーム: **${nickName}**\nユーザーID:`+discord.Formatters.inlineCode(`${infoUser.id}`))
             .addFields(
-                {name: "ユーザーID", value: discord.Formatters.inlineCode(`${infoUser.id}`)}
+                {name: 'アカウント作成日', value: discord.Formatters.time(UserCreateTime, 'D'), inline:true},
+                {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime, 'D'), inline:true},
             )
             .setColor(infoMember.roles.highest.color);
-
-        if (UserAvater !== MemberAvater) {
+        if (infoMember.roles.highest.color = 0) embed.setColor('WHITE');
+        if (UserAvater !== nickAvater) {
             embed.setAuthor({name: `${infoUser.tag}`, iconURL: `${UserAvater}`});
-            embed.setThumbnail(MemberAvater);
+            embed.setThumbnail(nickAvater);
         }
-
-        embed.addFields(
-            {name: 'アカウント作成日', value: discord.Formatters.time(UserCreateTime), inline:true},
-            {name: 'サーバー参加日', value: discord.Formatters.time(MemberJoinTime), inline:true},
-        )
-
         interaction.reply({embeds: [embed], ephemeral: true});
     }
 }
