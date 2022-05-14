@@ -35,10 +35,20 @@ module.exports = {
 
         const moderateUserId = interaction.user.id;
         const banUserId = interaction.options.getUser('user').id;
+        const banMember = interaction.guild.members.cache.get(banUserId);
         const banUserAvaterURL = interaction.options.getUser('user').avatarURL();
         const banDeleteMessage = interaction.options.getNumber('delete_messages');
         let banReason = interaction.options.getString('reason');
         if (!banReason) banReason = '理由が入力されていません';
+
+        if (banMember !== undefined) {
+            if (interaction.member.roles.highest.comparePositionTo(banMember.roles.highest) !== 1) {
+				const embed = new discord.MessageEmbed()
+					.setDescription('自分より上の役職のメンバーをbanさせることはできません!')
+					.setColor('RED')
+				return interaction.reply({embeds: [embed], ephemeral: true});
+			}
+        }
 
         interaction.guild.members.ban(banUserId,{reason: banReason, days: banDeleteMessage})
             .then( async () => {
