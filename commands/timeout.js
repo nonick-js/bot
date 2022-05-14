@@ -33,7 +33,7 @@ module.exports = {
 		const moderateUserId = interaction.user.id;
 		const timeoutUserId = interaction.options.getUser('user').id;
 		const timeoutAvaterURL = interaction.options.getUser('user').avatarURL();
-		const timeoutMember = interaction.guild.members.cache.get(timeoutUserId);
+		const timeoutMember = await interaction.guild.members.fetch(timeoutUserId);
 		const timeoutDuration_d = interaction.options.getNumber('day');
 		const timeoutDuration_m = interaction.options.getNumber('minute');
 		const bot_id = interaction.guild.me.id;
@@ -53,6 +53,14 @@ module.exports = {
 				.setDescription('そのユーザーはこのサーバーにいません!')
 				.setColor('RED')
 			return interaction.reply({embeds: [embed], ephemeral:true});
+		}
+		if (moderateUserId !== interaction.guild.ownerId) {
+			if (interaction.member.roles.highest.comparePositionTo(timeoutMember.roles.highest) !== 1) {
+				const embed = new discord.MessageEmbed()
+					.setDescription('自分より上の役職のメンバーをタイムアウトさせることはできません!')
+					.setColor('RED')
+				return interaction.reply({embeds: [embed], ephemeral: true});
+			}
 		}
 
 		timeoutMember.timeout(timeoutDuration)
