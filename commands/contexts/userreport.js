@@ -17,10 +17,10 @@ module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
     data: {name: 'メンバーを通報', type: 'USER'},
     /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
+    exec: async (interaction, client, Configs) => {
 		const reportedUser = interaction.targetUser;
-
-        const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+		const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+        const reportCh = config.get('reportCh');
 		if (reportCh == null) {
             const embed = new discord.MessageEmbed()
 				.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。')

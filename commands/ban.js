@@ -35,10 +35,20 @@ module.exports = {
 
         const moderateUserId = interaction.user.id;
         const banUserId = interaction.options.getUser('user').id;
+        const banMember = interaction.guild.members.cache.get(banUserId);
         const banUserAvaterURL = interaction.options.getUser('user').avatarURL();
         const banDeleteMessage = interaction.options.getNumber('delete_messages');
         let banReason = interaction.options.getString('reason');
         if (!banReason) banReason = '理由が入力されていません';
+
+        if (banMember !== undefined) {
+            if (interaction.member.roles.highest.comparePositionTo(banMember.roles.highest) !== 1) {
+				const embed = new discord.MessageEmbed()
+					.setDescription('自分より上の役職のメンバーをbanさせることはできません!')
+					.setColor('RED')
+				return interaction.reply({embeds: [embed], ephemeral: true});
+			}
+        }
 
         interaction.guild.members.ban(banUserId,{reason: banReason, days: banDeleteMessage})
             .then( async () => {
@@ -47,7 +57,7 @@ module.exports = {
 
                 interaction.reply({content: `🔨 <@${banUserId}>(` + discord.Formatters.inlineCode(banUserId) + ')をBANしました。', ephemeral:true});
                 if(banidLog) {
-                    const { banidLogCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+                    const banidLogCh = config.get('banidLogCh');
                     const embed = new discord.MessageEmbed()
                         .setTitle('🔨BAN')
                         .setThumbnail(banUserAvaterURL)
@@ -57,10 +67,18 @@ module.exports = {
                             {name: '担当者', value: `<@${moderateUserId}>`}
                         )
                         .setColor('RED');
-                    client.channels.cache.get(banidLogCh).send({embeds: [embed]})
+                    interaction.guild.channels.fetch(banidLogCh)
+                        .then((channel) => {
+                            channel.send({embeds: [embed]})
+                                .catch(() => {
+                                    Configs.update({banidLog: false}, {where: {serverId: member.guild.id}});
+                    		        Configs.update({banidLogCh: null}, {where: {serverId: member.guild.id}});
+                                })
+                        })
                         .catch(() => {
-                        console.log(`[DiscordBot-NoNick.js]`+'\u001b[31m'+' [ERROR]'+'\u001b[0m'+`[DiscordBot-NoNick.js]` + `\u001b[31m'+' [ERROR]'+'\u001b[0m'+' 指定したチャンネルにBANIDログを送れませんでした。「/setting」で正しい・BOTが送信できるチャンネルIDを送信してください。`);
-                    });
+                            Configs.update({banidLog: false}, {where: {serverId: member.guild.id}});
+                    		Configs.update({banidLogCh: null}, {where: {serverId: member.guild.id}});
+                        });
 				}
 			})
 			.catch(() => {
