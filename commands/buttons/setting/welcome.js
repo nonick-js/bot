@@ -19,7 +19,7 @@ module.exports = {
     /**@type {InteractionCallback} */
     exec: async (interaction, client, Configs) => {
         const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
-        const welcome = config.get('reportRoleMention');
+        const welcome = config.get('welcome');
         const embed = interaction.message.embeds[0];
         const select = interaction.message.components[0];
         const button = interaction.message.components[1];

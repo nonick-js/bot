@@ -26,12 +26,12 @@ module.exports = {
         const button = interaction.message.components[1];
 
         if (timeoutLog) {
-            setting_module.change_setting("timeoutLog", false);
+            Configs.update({timeoutLog: false}, {where: {serverId: interaction.guild.id}});
             embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
             button.components[1].setLabel('OFF');
             button.components[1].setStyle('DANGER');
         } else {
-            setting_module.change_setting("timeoutLog", true);
+            Configs.update({timeoutLog: true}, {where: {serverId: interaction.guild.id}});
             embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中' + '('+ discord.Formatters.channelMention(timeoutLogCh) +')', inline:true});
             button.components[1].setLabel('ON');
             button.components[1].setStyle('SUCCESS');

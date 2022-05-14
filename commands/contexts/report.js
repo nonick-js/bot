@@ -17,8 +17,9 @@ module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
     data: {name: 'サーバー運営に通報', type: "MESSAGE"},
     /**@type {InteractionCallback} */
-    exec: async (interaction) => {
-        const { reportCh } = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+    exec: async (interaction, client, Configs) => {
+		const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+        const reportCh = config.get('reportCh');
 		if (reportCh == null) {
             const embed = new discord.MessageEmbed()
 				.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。')
