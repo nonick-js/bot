@@ -67,8 +67,8 @@ module.exports = {
 			.then(async () => {
 				interaction.reply({content: `⛔ <@${timeoutUserId}>を` + `**${timeoutDuration_d}日` + `${timeoutDuration_m}分**`+`タイムアウトしました。`, ephemeral:true});
 				const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
-                const timeoutLog = config.get('reportRoleMention');
-                const timeoutDm = config.get('reportRoleMention');
+                const timeoutLog = config.get('timeoutLog');
+                const timeoutDm = config.get('timeoutDm');
 				
 				if (timeoutLog) {
         			const timeoutLogCh = config.get('timeoutLogCh');
