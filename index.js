@@ -4,7 +4,7 @@ const discord = require('discord.js');
 const discordModals = require('discord-modals');
 const client = new discord.Client({
     intents: Object.values(discord.Intents.FLAGS),
-    allowedMentions: {parse:[]},
+    allowedMentions: {parse:['roles']},
     partials: ['CHANNEL','GUILD_MEMBER','GUILD_SCHEDULED_EVENT','MESSAGE','REACTION','USER'],
 });
 const sequelize = new Sequelize('database', 'user', 'password', {
