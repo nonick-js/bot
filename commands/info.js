@@ -19,7 +19,7 @@ module.exports = {
     /**@type {InteractionCallback} */
     exec: async (interaction) => {
         const bot_name = interaction.guild.me.user.username;
-        const bot_avatarURL = interaction.guild.me.user.avatarURL();
+        const bot_avatarURL = interaction.guild.me.user.displayAvatarURL();
         const embed = new discord.MessageEmbed()
             .setTitle(bot_name)
             .setURL("https://github.com/nonick-mc/DiscordBot-NoNick.js/wiki")
