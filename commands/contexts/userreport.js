@@ -49,7 +49,7 @@ module.exports = {
 			.setTitle('⚠ メンバーを通報')
 			.setDescription('このメンバーを通報してもよろしいですか?' + discord.Formatters.codeBlock('markdown','通報はこのサーバーの運営にのみ送信されます。\n無関係なユーザーの通報や通報の連投は処罰を受ける可能性があります。'))
 			.setColor('RED')
-			.setThumbnail(reportedUser.avatarURL())
+			.setThumbnail(reportedUser.displayAvatarURL())
 			.addFields(
 				{name: "対象者", value: `${reportedUser}`, inline:true},
 			)

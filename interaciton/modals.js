@@ -168,7 +168,7 @@ module.exports = {
             const reportEmbed = new discord.MessageEmbed()
                 .setTitle('⚠ 通報 (メッセージ)')
                 .setDescription(`通報者: ${reportUser}\n` + discord.Formatters.codeBlock(`${reportReason}`))
-                .setThumbnail(reportedMessageAuthor.avatarURL())
+                .setThumbnail(reportedMessageAuthor.displayAvatarURL())
                 .addFields(
                     {name: '投稿者', value: `${reportedMessageAuthor}`, inline:true},
                     {name: '投稿先', value: `${reportedMessageCh}`, inline:true }
@@ -209,7 +209,7 @@ module.exports = {
             const reportEmbed = new discord.MessageEmbed()
                 .setTitle('⚠ 通報 (メンバー)')
                 .setDescription(`通報者: ${reportUser}\n` + discord.Formatters.codeBlock(`${reportReason}`))
-                .setThumbnail(reportedUser.avatarURL())
+                .setThumbnail(reportedUser.displayAvatarURL())
                 .addFields(
                     {name: '対象者', value: `${reportedUser}`, inline:true}
                 )

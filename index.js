@@ -104,7 +104,7 @@ client.on('guildMemberAdd',async member => {
                     const embed = new discord.MessageEmbed()
                         .setTitle('WELCOME!')
                         .setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
-                        .setThumbnail(member.user.avatarURL())
+                        .setThumbnail(member.user.displayAvatarURL())
                         .setColor('#57f287');
                     channel.send({embeds: [embed]}).catch(() => {
                         Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
