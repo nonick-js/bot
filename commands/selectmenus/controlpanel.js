@@ -112,7 +112,7 @@ module.exports = {
 
         if (interaction.values == 'setting-timeout') {
             const timeoutLog = config.get('timeoutLog');
-            const timeoutLogCh = config.get('timeoutLogCH');
+            const timeoutLogCh = config.get('timeoutLogCh');
             const timeoutDm= config.get('timeoutDm');
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - timeoutコマンド')
