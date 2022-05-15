@@ -57,7 +57,7 @@ module.exports = {
             )
             .setColor(infoMember.roles.highest.color);
 
-		if (MemberBoostTime !== 0) embed.addFields({name: "🎉SERVER BOOST", value: discord.Formatters.time(MemberBoostTime, 'D')+`からブーストしています!`})
+		if (MemberBoostTime !== 0) embed.addFields({name: "🎉SERVER BOOST", value: '最後にブーストした日:'+discord.Formatters.time(MemberBoostTime, 'D')})
         if (embed.color == 0) embed.setColor('WHITE');
         if (UserAvater !== nickAvater) {
             embed.setAuthor({name: `${infoUser.tag}`, iconURL: `${UserAvater}`});
