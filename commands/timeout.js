@@ -32,7 +32,7 @@ module.exports = {
 
 		const moderateUserId = interaction.user.id;
 		const timeoutUserId = interaction.options.getUser('user').id;
-		const timeoutAvaterURL = interaction.options.getUser('user').avatarURL();
+		const timeoutAvaterURL = interaction.options.getUser('user').displayAvatarURL();
 		const timeoutMember = interaction.guild.members.cache.get(timeoutUserId);
 		const timeoutDuration_d = interaction.options.getNumber('day');
 		const timeoutDuration_m = interaction.options.getNumber('minute');
