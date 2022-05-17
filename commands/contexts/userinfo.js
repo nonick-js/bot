@@ -37,10 +37,8 @@ module.exports = {
         })
         if (roleCollection.size !== 1) {
             roleCollection.forEach(role => {
-                if (roles == undefined) roles = `<@&${role.id}> `;
-                else if (role.name !== "@everyone") {
-                    roles = roles + `<@&${role.id}> `;
-                }
+                if (roles == undefined) {roles = `<@&${role.id}> `;}
+                else if (role.name !== "@everyone") {roles = roles + `<@&${role.id}> `;}
             });
         } else {
 			roles = "なし";
@@ -57,8 +55,8 @@ module.exports = {
             )
             .setColor(infoMember.roles.highest.color);
 
-		if (MemberBoostTime !== 0) embed.addFields({name: "🎉SERVER BOOST", value: '最後にブーストした日:'+discord.Formatters.time(MemberBoostTime, 'D')})
-        if (embed.color == 0) embed.setColor('WHITE');
+		if (MemberBoostTime !== 0) {embed.addFields({name: "🎉SERVER BOOST", value: '最後にブーストした日:'+discord.Formatters.time(MemberBoostTime, 'D')});}
+        if (embed.color == 0) {embed.setColor('WHITE');}
         if (UserAvater !== nickAvater) {
             embed.setAuthor({name: `${infoUser.tag}`, iconURL: `${UserAvater}`});
             embed.setThumbnail(nickAvater);

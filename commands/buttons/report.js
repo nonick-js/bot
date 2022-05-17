@@ -22,13 +22,13 @@ module.exports = {
 			.setCustomId('modal-report')
 			.setTitle('メッセージを通報')
 			.addComponents(
-                new discordmodal.TextInputComponent()
-                    .setCustomId('textinput')
-                    .setLabel('このメッセージはサーバールールの何に違反していますか?')
-                    .setPlaceholder('できる限り詳しく入力してください。')
-                    .setStyle('LONG')
-					.setMaxLength(1000)
-                    .setRequired(true)
+            new discordmodal.TextInputComponent()
+                .setCustomId('textinput')
+                .setLabel('このメッセージはサーバールールの何に違反していますか?')
+                .setPlaceholder('できる限り詳しく入力してください。')
+                .setStyle('LONG')
+                .setMaxLength(1000)
+                .setRequired(true)
             );
 		discordmodal.showModal(modal, {client, interaction});
     }
