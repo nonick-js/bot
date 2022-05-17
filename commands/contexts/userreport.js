@@ -25,7 +25,10 @@ module.exports = {
             const embed = new discord.MessageEmbed()
 				.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。')
 				.setColor('#526ff5')
-			if (interaction.member.permissions.has("MANAGE_GUILD")) embed.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\n' + discord.Formatters.inlineCode('/setting') + 'で通報機能の設定を開き、レポートを受け取るチャンネルを設定してください。');
+			if (interaction.member.permissions.has("MANAGE_GUILD")) {
+				embed.setDescription('⚠ **この機能を使用するには追加で設定が必要です。**\n' + discord.Formatters.inlineCode('/setting') + 'で通報機能の設定を開き、レポートを受け取るチャンネルを設定してください。');
+				embed.setImage('https://cdn.discordapp.com/attachments/958791423161954445/976117804879192104/unknown.png');
+			}
 			return interaction.reply({embeds: [embed], ephemeral:true});
 		}
 
@@ -37,7 +40,7 @@ module.exports = {
 		}
 
 		const reportedMember = await interaction.guild.members.fetch(reportedUser);
-		if (reportedMember == interaction.member) return interaction.reply({content: '自分自身を通報って...(困惑)', ephemeral:true});
+		if (reportedMember == interaction.member) return interaction.reply({content: '自分自身を通報していますよ...', ephemeral:true});
 		if (reportedMember.permissions.has("MANAGE_MESSAGES") ) {
 			const embed = new discord.MessageEmbed()
 				.setDescription('このコマンドでサーバー運営者を通報することはできません!')
