@@ -20,10 +20,10 @@ module.exports = {
         description: "入退室ログの設定",
         type: "CHAT_INPUT",
         options: [
-            {name: "welcome", description: "入室ログ", type: "BOOLEAN"},
+            {name: "welcome", description: "入室ログを 有効/無効 にする", type: "BOOLEAN"},
             {name: "welcomech", description: "入室ログを送信するチャンネル", type: "CHANNEL"},
             {name: "welcomemessage", description: "入室ログに埋め込むメッセージ", type: "STRING"},
-            {name: "leave", description: "退室ログ", type: "BOOLEAN"},
+            {name: "leave", description: "退室ログを 有効/無効 にする", type: "BOOLEAN"},
             {name: "leavech", description: "退室ログを送信するチャンネル", type: "CHANNEL"},
         ]
     },
