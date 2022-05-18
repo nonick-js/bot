@@ -32,6 +32,8 @@ const Configs = sequelize.define('configs', {
     welcome: {type: Sequelize.BOOLEAN, defaultValue: false},
     welcomeCh: {type: Sequelize.STRING, defaultValue: null},
     welcomeMessage: {type: Sequelize.TEXT, defaultValue: "まずはルールを確認しよう!"},
+    leave: {type: Sequelize.BOOLEAN, defaultValue: false},
+    leaveCh: {type: Sequelize.STRING, defaultValue: null},
     reportCh: {type: Sequelize.STRING, defaultValue: null},
     reportRoleMention: {type: Sequelize.BOOLEAN, defaultValue: false},
     reportRole: {type: Sequelize.STRING, defaultValue: null},
@@ -75,7 +77,7 @@ client.on('ready',async () => {
 
 // サーバーに参加した時
 client.on('guildCreate',async guild => {
-    Configs.findOrCreate({where:{serverId: guild.id}});
+    await Configs.findOrCreate({where:{serverId: guild.id}});
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
@@ -86,7 +88,7 @@ client.on('guildDelete',async guild => {
 
 // メンバーが参加したとき
 client.on('guildMemberAdd',async member => {
-    Configs.findOrCreate({where:{serverId: member.guild.id}});
+    await Configs.findOrCreate({where:{serverId: member.guild.id}});
     if (member !== member.guild.me) {
         const config = await Configs.findOne({where: {serverId: member.guild.id}});
         const welcome = config.get('welcome');
@@ -115,7 +117,7 @@ client.on('guildMemberAdd',async member => {
 
 // メンバーが抜けた時
 client.on('guildMemberRemove',async member => {
-    Configs.findOrCreate({where:{serverId: member.guild.id}});
+    await Configs.findOrCreate({where:{serverId: member.guild.id}});
     if (member !== member.guild.me) {
         const config = await Configs.findOne({where: {serverId: member.guild.id}});
         const welcome = config.get('welcome');
@@ -150,7 +152,7 @@ const error_button = new discord.MessageActionRow().addComponents(
 
 // Interaction処理
 client.on('interactionCreate',async interaction => {
-    Configs.findOrCreate({where:{serverId: interaction.guild.id}});
+    await Configs.findOrCreate({where:{serverId: interaction.guild.id}});
     const cmd = commands.getCommand(interaction);
     try {
         Configs.findOrCreate({where:{serverId: interaction.guild.id}});
@@ -165,7 +167,7 @@ client.on('interactionCreate',async interaction => {
 
 // modalを受け取った時の処理
 client.on('modalSubmit', async (modal) => {
-    Configs.findOrCreate({where:{serverId: modal.guild.id}});
+    await Configs.findOrCreate({where:{serverId: modal.guild.id}});
     try {
         Configs.findOrCreate({where:{serverId: modal.guild.id}});
         await modals.execute(modal,client,Configs);
