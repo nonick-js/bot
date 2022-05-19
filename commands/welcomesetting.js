@@ -29,8 +29,14 @@ module.exports = {
     },
     /**@type {InteractionCallback} */
     exec: async (interaction, client, Configs) => {
-		const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
+        if (!interaction.member.permissions.has("BAN_MEMBERS")) {
+			const embed = new discord.MessageEmbed()
+				.setColor('#E84136')
+				.setDescription('あなたにはこのコマンドを使用する権限がありません！');
+			return interaction.reply({embeds: [embed], ephemeral: true});
+		}
 
+		const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
         const i_welcome = interaction.options.getBoolean('welcome');
         const i_welcomeCh = interaction.options.getChannel('welcomech');
         const i_welcomeMessage = interaction.options.getString('welcomemessage');
@@ -38,7 +44,13 @@ module.exports = {
         const i_leaveCh = interaction.options.getChannel('leavech');
 
         if (i_welcomeMessage !== null) {Configs.update({welcomeMessage: i_welcomeMessage}, {where: {serverId: interaction.guild.id}});}
-        if (i_leaveCh !== null ) {Configs.update({leaveCh: i_leaveCh.id}, {where: {serverId: interaction.guild.id}});}
+        if (i_leaveCh !== null ) {
+            if (i_leaveCh.type == "GUILD_CATEGORY") {
+                const embed = new discord.MessageEmbed()
+                    .setDescription('⚠ そのチャンネルは')
+            }
+            Configs.update({leaveCh: i_leaveCh.id}, {where: {serverId: interaction.guild.id}});
+        }
         if (i_welcomeCh !== null) {Configs.update({welcomeCh: i_welcomeCh.id}, {where: {serverId: interaction.guild.id}});}
         if (i_welcome !== null) {
 		    const config_re = await Configs.findOne({where: {serverId: interaction.guild.id}});
