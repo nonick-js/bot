@@ -15,7 +15,7 @@ const discordmodal = require('discord-modals');
 
 module.exports = {
     /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: "embed", description: "埋め込みメッセージを送信" ,type: "CHAT_INPUT"},
+    data: {name: "embed", description: "埋め込みメッセージを送信" ,type: "CHAT_INPUT"},
     /**@type {InteractionCallback} */
     exec: async (interaction, client) => {
 		const modal = new discordmodal.Modal()
