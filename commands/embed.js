@@ -26,12 +26,14 @@ module.exports = {
                     .setCustomId('title')
                     .setLabel('タイトル')
                     .setMaxLength(256)
+                    .setRequired(true)
                     .setStyle('SHORT'),
                 new discordmodal.TextInputComponent()
                     .setCustomId('description')
                     .setLabel('説明')
                     .setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
-                    .setMaxLength(4096)
+                    .setMaxLength(4000)
+                    .setRequired(true)
                     .setStyle('LONG'),
                 new discordmodal.TextInputComponent()
                     .setCustomId('color')
