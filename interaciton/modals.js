@@ -233,5 +233,25 @@ module.exports = {
                     modal.update({content: "🛑 通報の送信中に問題が発生しました。", embeds: [], components: [], ephemeral:true});
                 })
         }
+
+        if(modal.customId == 'modal-embed') {
+            const title = modal.getTextInputValue('title');
+            const description = modal.getTextInputValue('description');
+            const color = modal.getTextInputValue('color');
+            const footer = modal.getTextInputValue('footer');
+
+            const embed = new discord.MessageEmbed()
+
+            if (title != null) embed.setTitle(title);
+            if (description != null) embed.setDescription(description);
+            if (color != null) embed.setColor(`#${color}`)
+            if (footer != null) embed.setFooter({text: footer});
+
+            const image = modal.getTextInputValue('image');
+            if (image != null) {
+                if (image.indexOf('http://') == 0 || image.indexOf('https://') == 0) embed.setImage(image);
+            }
+            modal.reply({embeds: [embed]});
+        }
     }
 }
