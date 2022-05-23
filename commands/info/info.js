@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const { version } = require('../version.json');
+const { version } = require('../../version.json');
 
 /**
 * @callback InteractionCallback
