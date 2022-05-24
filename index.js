@@ -18,12 +18,14 @@ discordModals(client);
 require('dotenv').config();
 const { guildId } = require('./config.json')
 
-const interaction_commands = require('./modules/interaction');
 const commands = new interaction_commands('./commands');
 commands.debug = false;
 
 // モジュールを取得
+const interaction_commands = require('./modules/interaction');
 const modals = require('./interaciton/modals');
+const guildMemberAdd = require('./events/guildMemberAdd');
+const guildMemberRemove = require('./events/guildMemberRemove');
 
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
@@ -44,6 +46,18 @@ const Configs = sequelize.define('configs', {
     banLogCh: {type: Sequelize.STRING, defaultValue: null},
     banDm: {type: Sequelize.BOOLEAN, defaultValue: false},
 });
+
+// エラー用テンプレ
+const error_embed = new discord.MessageEmbed()
+    .setTitle('🛑 エラー')
+    .setDescription('何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載して下のボタンから報告してください。')
+    .setColor('RED');
+const error_button = new discord.MessageActionRow().addComponents(
+    new discord.MessageButton()
+        .setLabel('問題を報告')
+        .setStyle('LINK')
+        .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new')
+);
 
 //Repl.itでホスティングをする場合は、このコードを有効化する必要がある
 /*
@@ -75,82 +89,41 @@ client.on('ready',async () => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
-// サーバーに参加した時
 client.on('guildCreate',async guild => {
     await Configs.findOrCreate({where:{serverId: guild.id}});
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
-// サーバーから退出させられた時
 client.on('guildDelete',async guild => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
-// メンバーが参加したとき
 client.on('guildMemberAdd',async member => {
-    await Configs.findOrCreate({where:{serverId: member.guild.id}});
-    if (member !== member.guild.me) {
-        const config = await Configs.findOne({where: {serverId: member.guild.id}});
-        const welcome = config.get('welcome');
-        const welcomeCh = config.get('welcomeCh');
-        const welcomeMessage = config.get('welcomeMessage');
-        if (welcome) {
-            member.guild.channels.fetch(welcomeCh)
-            .then((channel) => {
-                const embed = new discord.MessageEmbed()
-                    .setTitle('WELCOME!')
-                    .setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
-                    .setThumbnail(member.user.displayAvatarURL())
-                    .setColor('#57f287');
-                channel.send({embeds: [embed]}).catch(() => {
-                    Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                    Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-                });
-            })
-            .catch(() => {
-                Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-            });
-        }
+    try {
+        guildMemberAdd.execute(member,client,Configs);
+    }
+    catch(err) {
+        await client.users.fetch('735110742222831657')
+        .then(user => {
+            error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(err)}`});
+            user.send({embeds: [error_embed], components: [error_button]});
+        })
     }
 });
 
-// メンバーが抜けた時
 client.on('guildMemberRemove',async member => {
-    await Configs.findOrCreate({where:{serverId: member.guild.id}});
-    if (member !== member.guild.me) {
-        const config = await Configs.findOne({where: {serverId: member.guild.id}});
-        const welcome = config.get('welcome');
-        const welcomeCh = config.get('welcomeCh');
-        if (welcome) {
-            member.guild.channels.fetch(welcomeCh)
-            .then((channel) => {
-                channel.send(`**${member.user.username}** さんがサーバーを退出しました👋`)
-                .catch(() => {
-                    Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                    Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-                });
-            })
-            .catch(() => {
-                Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-            });
-        }
+    try {
+        guildMemberRemove.execute(member,client,Configs);
+    }
+    catch(err) {
+        await client.users.fetch('735110742222831657')
+        .then(user => {
+            error_embed.setFields({name: "エラー", value: `${discord.Formatters.codeBlock(err)}`});
+            user.send({embeds: [error_embed], components: [error_button]});
+        })
     }
 });
 
-const error_embed = new discord.MessageEmbed()
-    .setTitle('🛑 エラー')
-    .setDescription('何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載して下のボタンから報告してください。')
-    .setColor('RED');
-const error_button = new discord.MessageActionRow().addComponents(
-    new discord.MessageButton()
-        .setLabel('問題を報告')
-        .setStyle('LINK')
-        .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new')
-);
-
-// Interaction処理
 client.on('interactionCreate',async interaction => {
     await Configs.findOrCreate({where:{serverId: interaction.guild.id}});
     const cmd = commands.getCommand(interaction);
@@ -165,8 +138,7 @@ client.on('interactionCreate',async interaction => {
     }
 });
 
-// modalを受け取った時の処理
-client.on('modalSubmit', async (modal) => {
+client.on('modalSubmit', async modal => {
     await Configs.findOrCreate({where:{serverId: modal.guild.id}});
     try {
         Configs.findOrCreate({where:{serverId: modal.guild.id}});

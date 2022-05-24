@@ -1,29 +1,25 @@
 const discord = require('discord.js');
 const btn = new discord.MessageActionRow().addComponents([
 	new discord.MessageButton()
-    .setCustomId('previousbtn')
-    .setLabel('Previous')
-    .setEmoji('◀️')
-    .setStyle('DANGER'),
+    	.setCustomId('previousbtn')
+		.setEmoji('◀️')
+		.setStyle('DANGER'),
 	new discord.MessageButton()
-  	.setCustomId('nextbtn')
-  	.setLabel('Next')
+  		.setCustomId('nextbtn')
 		.setEmoji('▶')
-  	.setStyle('SUCCESS')
+  		.setStyle('SUCCESS')
 ]);
 const dbtn = new discord.MessageActionRow().addComponents([
 	new discord.MessageButton()
 		.setDisabled(true)
-    .setCustomId('previousbtn')
-    .setLabel('Previous')
-    .setEmoji('◀️')
-    .setStyle('DANGER'),
+		.setCustomId('previousbtn')
+		.setEmoji('◀️')
+		.setStyle('DANGER'),
 	new discord.MessageButton()
 		.setDisabled(true)
-  	.setCustomId('nextbtn')
-  	.setLabel('Next')
+  		.setCustomId('nextbtn')
 		.setEmoji('▶')
-  	.setStyle('SUCCESS')
+  		.setStyle('SUCCESS')
 ]);
 module.exports = {
 	/**
