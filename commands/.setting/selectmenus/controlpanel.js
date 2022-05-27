@@ -23,14 +23,15 @@ module.exports = {
             const welcome = config.get('welcome');
             const welcomeCh = config.get('welcomeCh');
             const welcomeMessage = config.get('welcomeMessage');
+            const leaveCh = config.get('leaveCh');
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
                 .setDescription('入退室ログの設定を以下のボタンから行えます。'+discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。')+'\n**【現在の設定】**')
                 .setColor('GREEN')
                 .addFields(
-                    {name: '入退室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中', inline:true},
-                    {name: '送信先', value: discord.Formatters.channelMention(welcomeCh), inline: true},
-                    {name: 'メッセージ', value: welcomeMessage}
+                    {name: '入退ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中'+discord.Formatters.channelMention(welcomeCh), inline:true},
+                    {name: '退室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中'+discord.Formatters.channelMention(leaveCh), inline:true},
+                    {name: '入室ログメッセージ', value: welcomeMessage}
                 );
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
@@ -67,7 +68,7 @@ module.exports = {
             }
             if (welcomeCh == null) {
                 button.components[1].setDisabled(true);
-                embed.spliceFields(1, 1, {name: '送信先', value: '設定されていません', inline:true});
+                embed.spliceFields(2, 1, {name: '送信先', value: '設定されていません', inline:true});
             }
             interaction.update({embeds: [embed], components: [select, button], ephemeral:true});
         }
