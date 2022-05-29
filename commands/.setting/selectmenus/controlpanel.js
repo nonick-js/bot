@@ -23,13 +23,14 @@ module.exports = {
             const welcome = config.get('welcome');
             const welcomeCh = config.get('welcomeCh');
             const welcomeMessage = config.get('welcomeMessage');
+            const leave = config.get('leave');
             const leaveCh = config.get('leaveCh');
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - 入退室ログ')
                 .setDescription('入退室ログの設定を以下のボタンから行えます。'+discord.Formatters.codeBlock('markdown','#入退室ログとは...\nサーバーに新しくメンバーが参加した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。')+'\n**【現在の設定】**')
                 .setColor('GREEN')
                 .addFields(
-                    {name: '入退ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中'+discord.Formatters.channelMention(welcomeCh), inline:true},
+                    {name: '入室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中'+discord.Formatters.channelMention(welcomeCh), inline:true},
                     {name: '退室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中'+discord.Formatters.channelMention(leaveCh), inline:true},
                     {name: '入室ログメッセージ', value: welcomeMessage}
                 );
@@ -58,14 +59,16 @@ module.exports = {
                 .setCustomId('welcomeSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true},
+                    {label: '入室ログ', value: 'setting-welcome-1', description: 'メンバー参加時にメッセージを送信' , emoji: '966588719635267624', default: true},
+                    {label: '退室ログ', value: 'setting-welcome-2', description: 'メンバー退室時にメッセージを送信' , emoji: '966588719635267624'}
                 ]),
             ]);
             if (!welcome) {
                 button.components[1].setStyle('DANGER');
                 button.components[1].setLabel('OFF');
-                embed.spliceFields(0, 1, {name: '入退室ログ', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
+                embed.spliceFields(0, 1, {name: '入室ログ', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});
             }
+            if (!leave) {embed.spliceFields(1, 1, {name: '退室ログ', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});}
             if (welcomeCh == null) {
                 button.components[1].setDisabled(true);
                 embed.spliceFields(2, 1, {name: '送信先', value: '設定されていません', inline:true});
