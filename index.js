@@ -120,10 +120,10 @@ client.on('guildMemberRemove',async member => {
     await Configs.findOrCreate({where:{serverId: member.guild.id}});
     if (member !== member.guild.me) {
         const config = await Configs.findOne({where: {serverId: member.guild.id}});
-        const welcome = config.get('welcome');
-        const welcomeCh = config.get('welcomeCh');
-        if (welcome) {
-            member.guild.channels.fetch(welcomeCh)
+        const leave = config.get('welcome');
+        const leaveCh = config.get('welcomeCh');
+        if (leave) {
+            member.guild.channels.fetch(leaveCh)
             .then((channel) => {
                 channel.send(`**${member.user.username}** さんがサーバーを退出しました👋`)
                 .catch(() => {

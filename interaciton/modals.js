@@ -9,7 +9,9 @@ const embed_channelNotFound = new discord.MessageEmbed()
 
 module.exports = {
     async execute(modal, client, Configs) {
+        const config = await Configs.findOne({where: {serverId: modal.guild.id}});
         if (modal.customId == 'modal-setting-welcomeCh') {
+            const welcome = config.get('welcome');
             const string = modal.getTextInputValue('textinput');
             const embed = modal.message.embeds[0];
             const select = modal.message.components[0];
@@ -17,12 +19,40 @@ module.exports = {
             try {
                 const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
                 const successembed = new discord.MessageEmbed()
-                    .setDescription('✅ 入退室ログがここに送信されます!')
+                    .setDescription('✅ 入室ログがここに送信されます!')
                     .setColor('GREEN');
                 client.channels.cache.get(messageId).send({embeds: [successembed]})
                     .then(() => {  
                         Configs.update({welcomeCh: messageId}, {where: {serverId: modal.guildId}});
-                        embed.spliceFields(1, 1, {name: '送信先', value: discord.Formatters.channelMention(messageId), inline: true});
+                        if (welcome) {embed.spliceFields(0, 1, {name: '入室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中('+discord.Formatters.channelMention(welcomeCh)+')', inline:true});}
+                        button.components[1].setDisabled(false);
+                        modal.update({embeds: [embed], components: [select, button], ephemeral: true});
+                    })
+                    .catch(async () => {
+                        await modal.deferReply({ephemeral: true});
+                        modal.followUp({ embeds: [embed_MissingPermission], ephemeral: true });
+                    })
+            } catch {
+                await modal.deferReply({ephemeral: true});
+                modal.followUp({ embeds: [embed_channelNotFound], ephemeral: true });
+            }
+        }
+
+        if (modal.customId == 'modal-setting-leaveCh') {
+            const leave = config.get('welcome');
+            const string = modal.getTextInputValue('textinput');
+            const embed = modal.message.embeds[0];
+            const select = modal.message.components[0];
+            const button = modal.message.components[1];
+            try {
+                const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
+                const successembed = new discord.MessageEmbed()
+                    .setDescription('✅ 退室ログがここに送信されます!')
+                    .setColor('GREEN');
+                client.channels.cache.get(messageId).send({embeds: [successembed]})
+                    .then(() => {  
+                        Configs.update({leaveCh: messageId}, {where: {serverId: modal.guildId}});
+                        if (leave) {embed.spliceFields(0, 1, {name: '退室ログ', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中('+discord.Formatters.channelMention(welcomeCh)+')', inline:true});}
                         button.components[1].setDisabled(false);
                         modal.update({embeds: [embed], components: [select, button], ephemeral: true})
                     })

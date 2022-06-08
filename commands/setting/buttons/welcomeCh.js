@@ -21,11 +21,11 @@ module.exports = {
     exec: async (interaction, client) => {
         const modal = new discordmodals.Modal()
 			.setCustomId('modal-setting-welcomeCh')
-			.setTitle('設定 - 入退室ログ')
+			.setTitle('設定 - 入室ログ')
 			.addComponents(
 			new discordmodals.TextInputComponent()
 				.setCustomId('textinput')
-				.setLabel('入退室ログを送信するチャンネルの名前を入力してください。')
+				.setLabel('入室ログを送信するチャンネルの名前を入力してください。')
 				.setStyle('SHORT')
 				.setMaxLength(100)
 				.setRequired(true)

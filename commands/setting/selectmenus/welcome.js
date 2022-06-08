@@ -52,8 +52,8 @@ module.exports = {
                 .setCustomId('welcomeSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '入室ログ', value: 'setting-welcome-1', description: 'メンバー参加時にメッセージを送信' , emoji: '966588719635267624'},
-                    {label: '退室ログ', value: 'setting-welcome-2', description: 'メンバー退室時にメッセージを送信' , emoji: '966588719635267624', default: true}
+                    {label: '入室ログ', value: 'setting-welcome-1', description: 'メンバー参加時にメッセージを送信' , emoji: '966588719635267624', default: true},
+                    {label: '退室ログ', value: 'setting-welcome-2', description: 'メンバー退室時にメッセージを送信' , emoji: '966588719635267624'}
                 ]),
             ]);
             if (!welcome) {
@@ -86,8 +86,8 @@ module.exports = {
                 .setCustomId('welcomeSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    {label: '入室ログ', value: 'setting-welcome-1', description: 'メンバー参加時にメッセージを送信' , emoji: '966588719635267624', default: true},
-                    {label: '退室ログ', value: 'setting-welcome-2', description: 'メンバー退室時にメッセージを送信' , emoji: '966588719635267624'}
+                    {label: '入室ログ', value: 'setting-welcome-1', description: 'メンバー参加時にメッセージを送信' , emoji: '966588719635267624'},
+                    {label: '退室ログ', value: 'setting-welcome-2', description: 'メンバー退室時にメッセージを送信' , emoji: '966588719635267624', default: true}
                 ]),
             ]);
             if (!leave) {

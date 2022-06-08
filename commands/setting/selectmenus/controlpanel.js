@@ -57,7 +57,6 @@ module.exports = {
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('welcomeSetting')
-                .setPlaceholder('ここから選択')
                 .addOptions([
                     {label: '入室ログ', value: 'setting-welcome-1', description: 'メンバー参加時にメッセージを送信' , emoji: '966588719635267624', default: true},
                     {label: '退室ログ', value: 'setting-welcome-2', description: 'メンバー退室時にメッセージを送信' , emoji: '966588719635267624'}
@@ -71,7 +70,7 @@ module.exports = {
             if (!leave) {embed.spliceFields(1, 1, {name: '退室ログ', value: discord.Formatters.formatEmoji('758380151238033419')+' 無効化中', inline:true});}
             if (welcomeCh == null) {
                 button.components[1].setDisabled(true);
-                embed.spliceFields(2, 1, {name: '送信先', value: '設定されていません', inline:true});
+                embed.spliceFields(2, 1, {name: '入室ログメッセージ', value: '設定されていません', inline:true});
             }
             interaction.update({embeds: [embed], components: [select, button], ephemeral:true});
         }
