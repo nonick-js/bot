@@ -24,6 +24,8 @@ commands.debug = false;
 
 // モジュールを取得
 const modals = require('./interaciton/modals');
+const guildMemberAdd = require('./events/guildMemberAdd');
+const guildMemberRemove = require('./events/guildMemberRemove');
 
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
@@ -82,61 +84,18 @@ client.on('guildCreate',async guild => {
 });
 
 // サーバーから退出させられた時
-client.on('guildDelete',async guild => {
+client.on('guildDelete',async () => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
 // メンバーが参加したとき
 client.on('guildMemberAdd',async member => {
-    await Configs.findOrCreate({where:{serverId: member.guild.id}});
-    if (member !== member.guild.me) {
-        const config = await Configs.findOne({where: {serverId: member.guild.id}});
-        const welcome = config.get('welcome');
-        const welcomeCh = config.get('welcomeCh');
-        const welcomeMessage = config.get('welcomeMessage');
-        if (welcome) {
-            member.guild.channels.fetch(welcomeCh)
-            .then((channel) => {
-                const embed = new discord.MessageEmbed()
-                    .setTitle('WELCOME!')
-                    .setDescription(`**<@${member.id}>**さん\n**${member.guild.name}** へようこそ!\n${welcomeMessage}\n\n現在のメンバー数:**${member.guild.memberCount}**人`)
-                    .setThumbnail(member.user.displayAvatarURL())
-                    .setColor('#57f287');
-                channel.send({embeds: [embed]}).catch(() => {
-                    Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                    Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-                });
-            })
-            .catch(() => {
-                Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-            });
-        }
-    }
+    guildMemberAdd.execute(client, member, Configs);
 });
 
 // メンバーが抜けた時
 client.on('guildMemberRemove',async member => {
-    await Configs.findOrCreate({where:{serverId: member.guild.id}});
-    if (member !== member.guild.me) {
-        const config = await Configs.findOne({where: {serverId: member.guild.id}});
-        const leave = config.get('welcome');
-        const leaveCh = config.get('welcomeCh');
-        if (leave) {
-            member.guild.channels.fetch(leaveCh)
-            .then((channel) => {
-                channel.send(`**${member.user.username}** さんがサーバーを退出しました👋`)
-                .catch(() => {
-                    Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                    Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-                });
-            })
-            .catch(() => {
-                Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-            });
-        }
-    }
+    guildMemberRemove.execute(client, member, Configs);
 });
 
 const error_embed = new discord.MessageEmbed()
