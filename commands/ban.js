@@ -27,17 +27,21 @@ module.exports = {
     exec: async (interaction, client, Configs) => {
         if (!interaction.member.permissions.has('BAN_MEMBERS')) {
 			const embed = new discord.MessageEmbed()
-				.setColor('#E84136')
-				.setDescription([
+                .setDescription([
                     '❌ あなたにはこのコマンドを使用する権限がありません！',
                     '必要な権限: `メンバーをBAN`',
-                ].join('\n'));
+                ].join('\n'))
+                .setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
+		/** コマンドを実行したユーザー */
         const moderateUser = interaction.user;
+		/** BAN対象のユーザー */
         const banUser = interaction.options.getUser('user');
+		/** BAN対象のメンバー */
         const banMember = interaction.guild.members.cache.get(banUser.id);
+
         const banDeleteMessage = interaction.options.getNumber('delete_messages');
         const banReason = interaction.options.getString('reason') ? interaction.options.getString('reason') : '理由が入力されていません' ;
 
@@ -47,10 +51,8 @@ module.exports = {
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
         }
-
-        if (banUser == moderateUser) {
-            return interaction.reply({ content: '自分自身をBANするの!?', ephemeral:true })
-        }
+        if (banUser == moderateUser) return interaction.reply({ content: '自分自身をBANするの!?', ephemeral:true });
+        if (banUser == client.user) return interaction.reply({ content: '僕をBAN...? 自滅しろってのか!?', ephemeral: true });
 
         interaction.guild.members.ban(banUser.id, { reason: banReason, days: banDeleteMessage })
             .then(async () => {
@@ -66,7 +68,7 @@ module.exports = {
                         .setThumbnail(banUser.displayAvatarURL())
                         .addFields(
                             { name: '処罰を受けた人', value: `<@${banUser.id}>(${discord.Formatters.inlineCode(banUser.id)})` },
-                            { name: 'BANした理由', value: banReason, inline: true },
+                            { name: 'BANした理由', value: banReason },
                         )
                         .setFooter({ text: `担当者: ${moderateUser.tag}`, iconURL: moderateUser.displayAvatarURL() })
                         .setColor('RED');
