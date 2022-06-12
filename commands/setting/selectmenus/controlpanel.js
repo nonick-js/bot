@@ -172,9 +172,8 @@ module.exports = {
                 .setCustomId('banSetting')
                 .setPlaceholder('ここから選択')
                 .addOptions([
-                    { label: '全般設定', value: 'setting-ban-1', emoji: '🌐', default:true },
-                    { label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-ban-2', emoji: '966588719635267624' },
-                    { label: 'DM警告機能', description: 'BANされた人に警告DMを送信', value: 'setting-ban-3', emoji: '966588719635267624' },
+                    { label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-ban-1', emoji: '966588719635267624', default:true },
+                    { label: 'DM警告機能', description: 'BANされた人に警告DMを送信', value: 'setting-ban-2', emoji: '966588719635267624' },
                 ]),
             ]);
             const button = new discord.MessageActionRow().addComponents([
@@ -183,10 +182,15 @@ module.exports = {
                     .setEmoji('971389898076598322')
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
-                    .setCustomId('none')
-                    .setLabel('有効な設定はありません')
-                    .setStyle('SECONDARY')
-                    .setDisabled(true),
+                    .setCustomId('setting-banLog')
+                    .setLabel(banLog ? '無効化' : '有効化')
+                    .setStyle(banLog ? 'DANGER' : 'SUCCESS')
+                    .setDisabled(banLogCh == null ? true : false),
+                new discord.MessageButton()
+                    .setCustomId('setting-banLogCh')
+                    .setLabel('送信先')
+                    .setEmoji('966588719635267624')
+                    .setStyle('SECONDARY'),
             ]);
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
         }

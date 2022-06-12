@@ -90,35 +90,6 @@ module.exports = {
             }
         }
 
-        if (modal.customId == 'modal-setting-banLogCh') {
-            const config = await Configs.findOne({where: {serverId: modal.guild.id}});
-            const banLog = config.get('banLog');
-            const string = modal.getTextInputValue('textinput');
-            const embed = modal.message.embeds[0];
-            const select = modal.message.components[0];
-            const button = modal.message.components[1];
-            try {
-                const messageId = modal.guild.channels.cache.find((channel) => channel.name === string).id  
-                const successembed = new discord.MessageEmbed()
-                    .setDescription('✅ /banコマンドのログがここに送信されます!')
-                    .setColor('GREEN');
-                client.channels.cache.get(messageId).send({embeds: [successembed]})
-                    .then(() => {  
-                        Configs.update({banLogCh: messageId}, {where: {serverId: modal.guildId}});
-                        if (banLog) embed.spliceFields(0, 1, {name: 'ログ機能', value: discord.Formatters.formatEmoji('758380151544217670')+' 有効化中' + '('+ discord.Formatters.channelMention(messageId) +')', inline:true});
-                        button.components[1].setDisabled(false);
-                        modal.update({embeds: [embed], components: [select, button], ephemeral: true})
-                    })
-                    .catch(async () => {
-                        await modal.deferReply({ephemeral: true});
-                        modal.followUp({ embeds: [embed_MissingPermission], ephemeral: true });
-                    })
-            } catch {
-                await modal.deferReply({ephemeral: true});
-                modal.followUp({ embeds: [embed_channelNotFound], ephemeral: true });
-            }
-        }
-
         if (modal.customId == 'modal-report') {
             const config = await Configs.findOne({where: {serverId: modal.guild.id}});
             const reportRoleMention = config.get('reportRoleMention');
