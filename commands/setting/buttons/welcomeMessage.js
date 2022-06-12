@@ -1,5 +1,4 @@
 const discord = require('discord.js');
-const discordmodals = require('discord-modals');
 
 /**
 * @callback InteractionCallback
@@ -14,22 +13,24 @@ const discordmodals = require('discord-modals');
 */
 
 module.exports = {
-    /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: 'setting-welcomeMessage', type: 'BUTTON'},
-    /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
-        const modal = new discordmodals.Modal()
+    /** @type {discord.ApplicationCommandData|ContextMenuData} */
+    data: { customid: 'setting-welcomeMessage', type: 'BUTTON' },
+    /* *@type {InteractionCallback} */
+    exec: async (interaction) => {
+		const modal = new discord.Modal()
 			.setCustomId('modal-setting-welcomeMessage')
-			.setTitle('設定 - 入退室ログ')
+			.setTitle('Welcomeメッセージ')
 			.addComponents(
-			new discordmodals.TextInputComponent()
-				.setCustomId('textinput')
-				.setLabel('入室時埋め込みに表示するメッセージを入力してください。')
-				.setStyle('LONG')
-				.setPlaceholder('<#チャンネルID> <@ユーザーID> <@&ロールID> で埋め込み内でメンションができます。')
-				.setMaxLength(150)
-				.setRequired(true)
+				new discord.MessageActionRow().addComponents(
+					new discord.TextInputComponent()
+						.setCustomId('firstTextInput')
+						.setLabel('入室ログに表示するメッセージを入力してください。')
+						.setStyle('PARAGRAPH')
+						.setPlaceholder('<#チャンネルID>や<@ユーザーID>、<@&ロールID> と入力することでそれぞれメンションが可能です!')
+						.setMaxLength(1000)
+						.setRequired(true),
+				),
 			);
-		discordmodals.showModal(modal, {client, interaction});
-    }
-}
+		interaction.showModal(modal);
+    },
+};

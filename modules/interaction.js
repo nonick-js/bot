@@ -63,6 +63,7 @@ class Interactions {
         if(interaction.isUserContextMenu()) return this.commands.get('USER').find(v => v.data.name == interaction.commandName);
         if(interaction.isButton()) return this.commands.get('BUTTON').find(v => v.data.customid == interaction.customId);
         if(interaction.isSelectMenu()) return this.commands.get('SELECT_MENU').find(v => v.data.customid == interaction.customId);
+        if(interaction.isModalSubmit()) return this.commands.get('MODAL').find(v => v.data.customid == interaction.customId);
 
     }
 

@@ -1,27 +1,43 @@
-const fs = require('fs');
 const discord = require('discord.js');
 
+/**
+ * @callback MemberRemoveCallback
+ * @param {discord.Client} client
+ * @param {discord.GuildMember} member
+ * @returns {void}
+ */
+
 module.exports = {
+    /** @type {MemberRemoveCallback} */
     async execute(client, member, Configs) {
-        await Configs.findOrCreate({where:{serverId: member.guild.id}});
-        if (member !== member.guild.me) {
-            const config = await Configs.findOne({where: {serverId: member.guild.id}});
-            const leave = config.get('welcome');
-            const leaveCh = config.get('welcomeCh');
-            if (leave) {
-                member.guild.channels.fetch(leaveCh)
+        await Configs.findOrCreate({ where: { serverId: member.guild.id } });
+        const config = await Configs.findOne({ where: { serverId: member.guild.id } });
+        const leave = config.get('leave');
+
+        if (leave && member !== member.guild.me) {
+            const leaveCh = config.get('leaveCh');
+            member.guild.channels.fetch(leaveCh)
                 .then((channel) => {
-                    channel.send(`**${member.user.username}** さんがサーバーを退出しました👋`)
-                    .catch(() => {
-                        Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                        Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
-                    });
+                    if (member.user.bot) {
+                        const embed = new discord.MessageEmbed()
+                            .setAuthor({ name: `${member.user.username} が廃止されました`, iconURL: member.displayAvatarURL() })
+                            .setColor('RED');
+                        channel.send({ embeds: [embed] }).catch(() => {
+                            Configs.update({ leave: false }, { where: { serverId: member.guild.id } });
+                            Configs.update({ leaveCh: null }, { where: { serverId: member.guild.id } });
+                        });
+                    }
+                    else {
+                        channel.send(`**${member.user.tag}** さんがサーバーを退出しました👋`).catch(() => {
+                            Configs.update({ leave: false }, { where: { serverId: member.guild.id } });
+                            Configs.update({ leaveCh: null }, { where: { serverId: member.guild.id } });
+                        });
+                    }
                 })
                 .catch(() => {
-                    Configs.update({welcome: false}, {where: {serverId: member.guild.id}});
-                    Configs.update({welcomeCh: null}, {where: {serverId: member.guild.id}});
+                    Configs.update({ leave: false }, { where: { serverId: member.guild.id } });
+                    Configs.update({ leaveCh: null }, { where: { serverId: member.guild.id } });
                 });
-            }
         }
-    }
-}
+    },
+};
