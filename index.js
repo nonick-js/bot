@@ -29,7 +29,7 @@ const guildMemberRemove = require('./events/guildMemberRemove');
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
 	serverId: { type: Sequelize.STRING, unique: true },
-    laungage: { type: Sequelize.STRING, defaultValue: 'ja_JP' },
+    laungage: { type: Sequelize.STRING, defaultValue: null },
     welcome: { type: Sequelize.BOOLEAN, defaultValue: false },
     welcomeCh: { type: Sequelize.STRING, defaultValue: null },
     welcomeMessage: { type: Sequelize.TEXT, defaultValue: 'まずはルールを確認しよう!' },
@@ -72,7 +72,8 @@ client.on('ready', async () => {
         'Plattform': `${process.platform} | ${process.arch}`,
         'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
-	commands.register(client, guildId);
+    // スラッシュコマンドを登録
+	// commands.register(client, guildId);
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 

@@ -22,9 +22,9 @@ module.exports = {
         const banLogCh = config.get('banLogCh');
         const banDm = config.get('banDm');
 
-        /** メッセージ元の埋め込み */
+        /** @type {discord.MessageEmbed} */
         const embed = interaction.message.embeds[0];
-        /** メッセージ元のセレクトメニュー */
+        /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
 
         if (interaction.values == 'setting-ban-1') {

@@ -18,12 +18,12 @@ module.exports = {
     /** @type {InteractionCallback} */
     exec: async (interaction) => {
 		const modal = new discord.Modal()
-			.setCustomId('modal-setting-leaveCh')
+			.setCustomId('setting-Channel')
 			.setTitle('退室ログ')
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
-						.setCustomId('firstTextInput')
+						.setCustomId('leaveCh,1')
 						.setLabel('退室ログを送信するチャンネルの名前を入力してください。')
 						.setStyle('SHORT')
 						.setMaxLength(100)

@@ -18,12 +18,12 @@ module.exports = {
     /** @type {InteractionCallback} */
     exec: async (interaction) => {
         const modal = new discord.Modal()
-            .setCustomId('modal-setting-banLogCh')
+            .setCustomId('setting-Channel')
             .setTitle('ログの送信先')
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
-                        .setCustomId('firstTextInput')
+                        .setCustomId('banLogCh,0')
                         .setLabel('BANコマンドのログを送信するチャンネルの名前を入力してください。')
                         .setStyle('SHORT')
                         .setMaxLength(100)

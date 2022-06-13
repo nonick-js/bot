@@ -18,12 +18,12 @@ module.exports = {
     /** @type {InteractionCallback} */
     exec: async (interaction) => {
 		const modal = new discord.Modal()
-			.setCustomId('modal-setting-welcomeCh')
+			.setCustomId('setting-Channel')
 			.setTitle('入室ログ')
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
-						.setCustomId('firstTextInput')
+						.setCustomId('welcomeCh,0')
 						.setLabel('入室ログを送信するチャンネルの名前を入力してください。')
 						.setStyle('SHORT')
 						.setMaxLength(100)

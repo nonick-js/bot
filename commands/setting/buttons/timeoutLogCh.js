@@ -1,6 +1,4 @@
-const fs = require('fs');
 const discord = require('discord.js');
-const discordmodals = require('discord-modals')
 
 /**
 * @callback InteractionCallback
@@ -15,21 +13,23 @@ const discordmodals = require('discord-modals')
 */
 
 module.exports = {
-    /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: 'setting-timeoutLogCh', type: 'BUTTON'},
-    /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
-        const modal = new discordmodals.Modal()
-			.setCustomId('modal-setting-timeoutLogCh')
-			.setTitle('設定 - /timeout')
-			.addComponents(
-            new discordmodals.TextInputComponent()
-                .setCustomId('textinput')
-                .setLabel('タイムアウトコマンドのログを送信するチャンネルの名前を入力してください。')
-                .setStyle('SHORT')
-                .setMaxLength(100)
-                .setRequired(true)
-			);  
-		discordmodals.showModal(modal, {client, interaction});
-    }
-}
+    /** @type {discord.ApplicationCommandData|ContextMenuData} */
+    data: { customid: 'setting-timeoutLogCh', type: 'BUTTON' },
+    /** @type {InteractionCallback} */
+    exec: async (interaction) => {
+        const modal = new discord.Modal()
+            .setCustomId('setting-Channel')
+            .setTitle('Timeoutログ')
+            .addComponents(
+                new discord.MessageActionRow().addComponents(
+                    new discord.TextInputComponent()
+                        .setCustomId('timeoutLogCh,0')
+                        .setLabel('タイムアウトコマンドのログを送信するチャンネルの名前を入力してください。')
+                        .setStyle('SHORT')
+                        .setMaxLength(100)
+                        .setRequired(true),
+                ),
+            );
+        interaction.showModal(modal);
+    },
+};

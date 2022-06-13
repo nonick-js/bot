@@ -20,8 +20,12 @@ module.exports = {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const welcome = config.get('welcome');
         const welcomeCh = config.get('welcomeCh');
+
+        /** @type {discord.MessageEmbed} */
         const embed = interaction.message.embeds[0];
+        /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
+        /** @type {discord.MessageActionRow} */
         const button = interaction.message.components[1];
 
         if (welcome) {
