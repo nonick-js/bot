@@ -23,6 +23,7 @@
     "discord-player": "^5.2.2",
     "discord.js": "^13.8.0",
     "dotenv": "^16.0.0",
+    "ffmpeg-static": "^4.4.1",
     "sequelize": "^6.19.0",
     "sqlite3": "^5.0.8"
   },
