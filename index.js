@@ -98,7 +98,7 @@ client.on('guildMemberRemove', async member => {
 });
 
 const error_embed = new discord.MessageEmbed()
-    .setTitle('🛑 エラー')
+    .setTitle('🛑 エラー!')
     .setDescription('何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載して下のボタンから報告してください。')
     .setColor('RED');
 const error_button = new discord.MessageActionRow().addComponents(
