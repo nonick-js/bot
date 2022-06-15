@@ -13,13 +13,13 @@ const discord = require('discord.js');
 */
 
 module.exports = {
-    /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: "setting-laungage", type: "BUTTON"},
-    /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
+    /** @type {discord.ApplicationCommandData|ContextMenuData} */
+    data: { customid: 'setting-laungage', type: 'BUTTON' },
+    /** @type {InteractionCallback} */
+    exec: async (interaction) => {
         const embed = new discord.MessageEmbed()
-            .setDescription("この機能は現在開発中です! 実装をお待ち下さい。")
-            .setColor("BLUE");
-        interaction.reply({embeds: [embed], ephemeral: true});
-    }
-}
+            .setDescription('この機能は現在開発中です! 実装をお待ち下さい。')
+            .setColor('BLUE');
+        interaction.reply({ embeds: [embed], ephemeral: true });
+    },
+};

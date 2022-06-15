@@ -1,6 +1,4 @@
-const fs = require('fs');
 const discord = require('discord.js');
-const discordmodals = require('discord-modals')
 
 /**
 * @callback InteractionCallback
@@ -15,21 +13,23 @@ const discordmodals = require('discord-modals')
 */
 
 module.exports = {
-    /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: 'setting-reportCh', type: 'BUTTON'},
-    /**@type {InteractionCallback} */
-    exec: async (interaction, client) => {
-        const modal = new discordmodals.Modal()
-			.setCustomId('modal-setting-reportCh')
-			.setTitle('設定 - 通報機能')
+    /** @type {discord.ApplicationCommandData|ContextMenuData} */
+    data: { customid: 'setting-reportCh', type: 'BUTTON' },
+    /** @type {InteractionCallback} */
+    exec: async (interaction) => {
+		const modal = new discord.Modal()
+			.setCustomId('setting-Channel')
+			.setTitle('通報機能')
 			.addComponents(
-			new discordmodals.TextInputComponent()
-				.setCustomId('textinput')
-				.setLabel('通報を受け取るチャンネルの名前を入力してください。')
-				.setStyle('SHORT')
-				.setMaxLength(100)
-				.setRequired(true)
-			);  
-		discordmodals.showModal(modal, {client, interaction});
-    }
-}
+				new discord.MessageActionRow().addComponents(
+					new discord.TextInputComponent()
+						.setCustomId('reportCh,0')
+						.setLabel('受け取った通報を送信するチャンネルの名前を入力してください。')
+						.setStyle('SHORT')
+						.setMaxLength(100)
+						.setRequired(true),
+				),
+			);
+		interaction.showModal(modal);
+    },
+};

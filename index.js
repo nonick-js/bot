@@ -22,7 +22,6 @@ const commands = new interaction_commands('./commands');
 commands.debug = false;
 
 // モジュールを取得
-const modals = require('./interaciton/modals');
 const guildMemberAdd = require('./events/guildMemberAdd');
 const guildMemberRemove = require('./events/guildMemberRemove');
 
@@ -73,7 +72,7 @@ client.on('ready', async () => {
         'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
     // スラッシュコマンドを登録
-	// commands.register(client, guildId);
+	commands.register(client, guildId);
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
@@ -120,20 +119,6 @@ client.on('interactionCreate', async interaction => {
         console.log(err);
         error_embed.setFields({ name: 'エラー', value: `${discord.Formatters.codeBlock(err)}` });
         interaction.reply({ embeds: [error_embed], components: [error_button], ephemeral:true });
-    }
-});
-
-// modalを受け取った時の処理
-client.on('modalSubmit', async (modal) => {
-    await Configs.findOrCreate({ where:{ serverId: modal.guild.id } });
-    try {
-        Configs.findOrCreate({ where:{ serverId: modal.guild.id } });
-        await modals.execute(modal, client, Configs);
-    }
-	catch (err) {
-        console.log(err);
-        error_embed.setFields({ name: 'エラー', value: `${discord.Formatters.codeBlock(err)}` });
-        modal.reply({ embeds: [error_embed], components: [error_button], ephemeral:true });
     }
 });
 

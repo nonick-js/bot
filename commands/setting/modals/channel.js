@@ -27,7 +27,8 @@ module.exports = {
         const button = interaction.message.components[1];
 
         const name = embed.fields[parseInt(settingInfo[1], 10)].name;
-        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+        const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
+        const configCh = config.get(settingInfo[0].slice(0, -2));
 
         try {
             const channel = interaction.guild.channels.cache.find(v => v.name === textInput);
@@ -37,14 +38,12 @@ module.exports = {
             channel.send({ embeds: [successembed] })
                 .then(() => {
                     Configs.update({ [settingInfo[0]]: channel.id }, { where: { serverId: interaction.guildId } });
-                    if (config.get(settingInfo[0].slice(0, -2))) {
-                        if (config.get(settingInfo[0].slice(0, -2)) == 'report') {
-                            embed.spliceFields(0, 1, { name: name, value: `${discord.Formatters.channelMention(channel.id)}`, inline:true });
-                        } else {
-                            embed.spliceFields(0, 1, { name: name, value: `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.channelMention(channel.id)})`, inline:true });
-                        }
+                    if (settingInfo[0].slice(0, -2) == 'report') {
+                        embed.spliceFields(parseInt(settingInfo[1], 10), 1, { name: name, value: `${discord.Formatters.channelMention(channel.id)}`, inline:true });
+                    } else {
+                        if (configCh) embed.spliceFields(parseInt(settingInfo[1], 10), 1, { name: name, value: `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.channelMention(channel.id)})`, inline:true });
+                        button.components[1].setDisabled(false);
                     }
-                    button.components[1].setDisabled(false);
                     interaction.update({ embeds: [embed], components: [select, button], ephemeral: true });
                 })
                 .catch(() => {
