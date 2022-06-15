@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const discord = require('discord.js');
-const discordModals = require('discord-modals');
 const client = new discord.Client({
     intents: Object.values(discord.Intents.FLAGS),
     allowedMentions: { parse:['roles'] },
@@ -13,7 +12,6 @@ const sequelize = new Sequelize({
 	// SQLite only
 	storage: 'sql/config.sqlite',
 });
-discordModals(client);
 require('dotenv').config();
 const { guildId } = require('./config.json');
 
