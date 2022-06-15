@@ -2,7 +2,7 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.MessageContextMenuInteraction} interaction
+* @param {discord.SelectMenuInteraction} interaction
 * @param {discord.Client} client
 * @returns {void}
 */
@@ -196,6 +196,40 @@ module.exports = {
                     .setLabel('送信先')
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
+            ]);
+            interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+        }
+        else if (interaction.values == 'setting-linkOpen') {
+            const linkOpen = config.get('linkOpen');
+
+            const embed = new discord.MessageEmbed()
+                .setTitle('🛠 設定 - リンク展開')
+                .setDescription([
+                    'banコマンドの設定を以下のセレクトメニューから行えます。',
+                    discord.Formatters.codeBlock('markdown', '#リンク展開とは...\nDiscordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。\n流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。'),
+                    '**【現在の設定】**',
+                ].join('\n'))
+                .setColor('GREEN')
+                .addFields(
+                    { name: 'リンク展開', value: linkOpen ? `${discord.Formatters.formatEmoji('968351750014783532')}有効` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
+                );
+            const select = new discord.MessageActionRow().addComponents([
+                new discord.MessageSelectMenu()
+                    .setCustomId('linkOpenSetting')
+                    .setPlaceholder('ここから選択')
+                    .addOptions([
+                        { label: '全般設定', value: 'setting-linkOpen-1', emoji: '966588719635267624', default:true },
+                    ]),
+            ]);
+            const button = new discord.MessageActionRow().addComponents([
+                new discord.MessageButton()
+                    .setCustomId('setting-back')
+                    .setEmoji('971389898076598322')
+                    .setStyle('PRIMARY'),
+                new discord.MessageButton()
+                    .setCustomId('setting-linkOpen')
+                    .setLabel(linkOpen ? '無効化' : '有効化')
+                    .setStyle(linkOpen ? 'DANGER' : 'SUCCESS'),
             ]);
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
         }
