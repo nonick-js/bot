@@ -42,6 +42,7 @@ const Configs = sequelize.define('configs', {
     banLog: { type: Sequelize.BOOLEAN, defaultValue: false },
     banLogCh: { type: Sequelize.STRING, defaultValue: null },
     banDm: { type: Sequelize.BOOLEAN, defaultValue: false },
+    linkOpen: { type: Sequelize.BOOLEAN, defaultValue: false },
 });
 
 // Repl.itでホスティングをする場合は、このコードを有効化する必要がある
