@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const discord = require('discord.js');
+const discord_player = require('discord-player');
 const client = new discord.Client({
     intents: Object.values(discord.Intents.FLAGS),
     allowedMentions: { parse:['roles'] },
@@ -14,6 +15,7 @@ const sequelize = new Sequelize({
 });
 require('dotenv').config();
 const { guildId } = require('./config.json');
+const player = new discord_player.Player(client);
 
 const interaction_commands = require('./modules/interaction');
 const commands = new interaction_commands('./commands');
@@ -95,6 +97,10 @@ client.on('guildMemberRemove', async member => {
     guildMemberRemove.execute(client, member, Configs);
 });
 
+player.on('trackStart', (queue, track) => {
+    queue.metadata.channel.send({ content: `▶ 再生中 🔗${track.url}` });
+});
+
 const error_embed = new discord.MessageEmbed()
     .setTitle('🛑 エラー!')
     .setDescription('何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載して下のボタンから報告してください。')
@@ -107,11 +113,11 @@ const error_button = new discord.MessageActionRow().addComponents(
 
 // Interaction処理
 client.on('interactionCreate', async interaction => {
-    await Configs.findOrCreate({ where:{ serverId: interaction.guild.id } });
+    await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
     const cmd = commands.getCommand(interaction);
     try {
-        Configs.findOrCreate({ where:{ serverId: interaction.guild.id } });
-        cmd.exec(interaction, client, Configs);
+        Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
+        cmd.exec(interaction, client, Configs, player);
     }
     catch (err) {
         console.log(err);
