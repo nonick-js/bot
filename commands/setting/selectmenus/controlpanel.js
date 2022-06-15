@@ -45,8 +45,8 @@ module.exports = {
                     .setStyle('PRIMARY'),
                 new discord.MessageButton()
                     .setCustomId('setting-welcome')
-                    .setLabel(welcome ? '有効化' : '無効化')
-                    .setStyle(welcome ? 'SUCCESS' : 'DANGER')
+                    .setLabel(welcome ? '無効化' : '有効化')
+                    .setStyle(welcome ? 'DANGER' : 'SUCCESS')
                     .setDisabled(welcomeCh == null ? true : false),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeCh')

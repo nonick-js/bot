@@ -25,7 +25,7 @@ module.exports = {
                     new discord.TextInputComponent()
                         .setCustomId('reportRole,1')
                         .setLabel('通報受け取り時にメンションするロールの名前を入力してください。')
-                        .setStyle('PARAGRAPH')
+                        .setStyle('SHORT')
                         .setMaxLength(100)
                         .setRequired(true),
                 ),
