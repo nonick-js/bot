@@ -1,8 +1,5 @@
 node_modules
 .env
 config.json
-config copy.json
-やること.txt
-configs
 config.sqlite
-Procfile
+.eslint.json
