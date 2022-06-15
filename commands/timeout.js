@@ -32,9 +32,9 @@ module.exports = {
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
-		/** コマンドを実行したユーザー */
+		/** @type {discord.User} */
 		const moderateUser = interaction.user;
-		/** タイムアウト対象のメンバー */
+		/** @type {discord.GuildMember} */
 		const timeoutMember = interaction.guild.members.cache.get(interaction.options.getUser('user').id);
 
 		const timeoutReason = interaction.options.getString('reason') !== null ? interaction.options.getString('reason') : '理由が入力されていません';
@@ -42,13 +42,6 @@ module.exports = {
 		const timeoutDuration_m = interaction.options.getNumber('minute');
 		const timeoutDuration = (timeoutDuration_d * 86400000) + (timeoutDuration_m * 60000);
 
-		// 28日をこえたら
-		if (timeoutDuration > 2419000000) {
-			const embed = new discord.MessageEmbed()
-				.setDescription('❌ `28日`を超えるタイムアウトはできません!')
-				.setColor('RED');
-			return interaction.reply({ embeds: [embed], ephemeral: true });
-		}
 		if (!timeoutMember) {
 			const embed = new discord.MessageEmbed()
 				.setDescription('❌ そのユーザーはこのサーバーにいません!')
@@ -62,6 +55,13 @@ module.exports = {
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 		if (timeoutMember == interaction.guild.me) return interaction.reply({ content: '代わりに君をタイムアウトしようかな?', ephemeral: true });
+		// 28日をこえたら
+		if (timeoutDuration > 2419000000) {
+			const embed = new discord.MessageEmbed()
+				.setDescription('❌ `28日`を超えるタイムアウトはできません!')
+				.setColor('RED');
+			return interaction.reply({ embeds: [embed], ephemeral: true });
+		}
 
 		timeoutMember.timeout(timeoutDuration)
 			.then(async () => {
