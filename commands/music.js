@@ -77,6 +77,7 @@ module.exports = {
         }
 
         if (interaction.options.getSubcommand() == 'queue') {
+            /** @type {discord_player.Queue} */
             const queue = player.getQueue(interaction.guildId);
             if (!queue) {
                 const embed = new discord.MessageEmbed()
@@ -96,7 +97,8 @@ module.exports = {
                 .setColor('WHITE')
                 .addFields(
                     { name: '再生中', value: nowPlaying },
-                );
+                )
+                .setFooter({ text: queue.repeatMode == 0 ? '▶️ 通常再生' : queue.repeatMode == 1 ? '🔂 1曲ループ再生' : '🔁 キューループ再生' });
             if (queueString !== '') embed.addFields({ name: 'キュー', value: queueString });
             interaction.reply({ embeds: [embed], ephemeral: true });
         }
@@ -122,6 +124,7 @@ module.exports = {
             const queue = player.getQueue(interaction.guildId);
             const amount = interaction.options.getNumber('amount');
 
+            // eslint-disable-next-line use-isnan
             if (amount < 1 || amount > 200) {
                 const embed = new discord.MessageEmbed()
                     .setDescription(`❌ 音量は${discord.Formatters.inlineCode('1')}から${discord.Formatters.inlineCode('200')}までの間で指定してください!`)
