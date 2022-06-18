@@ -42,7 +42,17 @@ module.exports = {
 
         if (interaction.options.getSubcommand() == 'play') {
             const query = interaction.options.get('url').value;
-            const queue = player.createQueue(interaction.guild, { metadata: { channel: interaction.channel } });
+            const queue = player.createQueue(interaction.guild, {
+                ytdlOptions: {
+                quality: 'highest',
+                filter: 'audioonly',
+                highWaterMark: 1 << 25,
+                dlChunkSize: 0,
+                },
+                metadata: {
+                channel: interaction.channel,
+                },
+                });
 
             try {
                 if (!queue.connection) await queue.connect(interaction.member.voice.channel);
@@ -50,7 +60,6 @@ module.exports = {
                 queue.destroy();
                 return await interaction.reply({ content: '❌ ボイスチャンネルにアクセスできません!', ephemeral: true });
             }
-
             await interaction.deferReply();
             const track = await player.search(query, { requestedBy: interaction.user }).then(x => x.tracks[0]);
             if (!track) {
@@ -119,7 +128,6 @@ module.exports = {
                     .setColor('RED');
                 return interaction.reply({ embeds: [embed], ephemeral: true });
             }
-
             queue.setVolume(amount);
             interaction.reply(`🔊 音量を${discord.Formatters.inlineCode(amount)}に変更しました`);
         }

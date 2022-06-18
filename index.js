@@ -24,6 +24,8 @@ commands.debug = false;
 // モジュールを取得
 const guildMemberAdd = require('./events/guildMemberAdd');
 const guildMemberRemove = require('./events/guildMemberRemove');
+const trackStart = require('./events/trackStart/index');
+const connectionError = require('./events/connectionError/index');
 
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
@@ -59,7 +61,7 @@ http.createServer(function(req, res) {
 // client.on("debug", ( e ) => console.log(e));
 
 // ready nouniku!!
-client.on('ready', async () => {
+client.on('ready', () => {
     Configs.sync({ alter: true });
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
     console.table({
@@ -83,22 +85,26 @@ client.on('guildCreate', async guild => {
 });
 
 // サーバーから退出させられた時
-client.on('guildDelete', async () => {
+client.on('guildDelete', () => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
 // メンバーが参加したとき
-client.on('guildMemberAdd', async member => {
+client.on('guildMemberAdd', member => {
     guildMemberAdd.execute(client, member, Configs);
 });
 
 // メンバーが抜けた時
-client.on('guildMemberRemove', async member => {
+client.on('guildMemberRemove', member => {
     guildMemberRemove.execute(client, member, Configs);
 });
 
 player.on('trackStart', (queue, track) => {
-    queue.metadata.channel.send({ content: `▶ 再生中 🔗${track.url}` });
+    trackStart.execute(client, queue, track);
+});
+
+player.on('connectionError', (queue, error) => {
+    connectionError.execute(client, queue, error);
 });
 
 const error_embed = new discord.MessageEmbed()
