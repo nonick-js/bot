@@ -18,9 +18,9 @@ module.exports = {
         { name: 'play', description: 'Youtube・Spotify・SoundCloud上の音楽を再生します', type: 'SUB_COMMAND', options: [
             { name: 'url', description: '動画・音楽のURL', type:'STRING', required: true },
         ] },
+        { name: 'stop', description: 'プレイヤーを停止します', type: 'SUB_COMMAND' },
         { name: 'queue', description: '現在のキューを表示します', type: 'SUB_COMMAND' },
         { name: 'skip', description: '今流している曲をスキップして次のキューを再生します', type: 'SUB_COMMAND' },
-        { name: 'stop', description: 'プレイヤーを停止します', type: 'SUB_COMMAND' },
         { name: 'volume', description: '音量を設定します', type: 'SUB_COMMAND', options: [
             { name: 'amount', description: '音量 (1~200)', type: 'NUMBER', required: true },
         ] },
@@ -85,6 +85,7 @@ module.exports = {
                     .setColor('RED');
                 return interaction.reply({ embeds: [embed], ephemeral: true });
             }
+
             const track = queue.tracks;
             let queueString = '';
             const nowPlaying = `💿 **${queue.current.title}**\n🔗 ${queue.current.url}\n${queue.createProgressBar()}`;
@@ -116,14 +117,27 @@ module.exports = {
         }
 
         if (interaction.options.getSubcommand() == 'stop') {
+            const queue = player.getQueue(interaction.guildId);
+            if (!queue) {
+                const embed = new discord.MessageEmbed()
+                    .setDescription('キューがありません!')
+                    .setColor('RED');
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
             player.deleteQueue(interaction.guild);
             interaction.reply({ content: '⏹ プレイヤーを停止しました' });
         }
 
         if (interaction.options.getSubcommand() == 'volume') {
             const queue = player.getQueue(interaction.guildId);
-            const amount = interaction.options.getNumber('amount');
+            if (!queue) {
+                const embed = new discord.MessageEmbed()
+                    .setDescription('キューがありません!')
+                    .setColor('RED');
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
 
+            const amount = interaction.options.getNumber('amount');
             // eslint-disable-next-line use-isnan
             if (amount < 1 || amount > 200) {
                 const embed = new discord.MessageEmbed()
