@@ -22,9 +22,10 @@ const commands = new interaction_commands('./commands');
 commands.debug = false;
 
 // モジュールを取得
-const guildMemberAdd = require('./events/guildMemberAdd');
-const guildMemberRemove = require('./events/guildMemberRemove');
+const guildMemberAdd = require('./events/guildMemberAdd/index');
+const guildMemberRemove = require('./events/guildMemberRemove/index');
 const trackStart = require('./events/trackStart/index');
+const messageCreate = require('./events/messageCreate/index');
 const connectionError = require('./events/connectionError/index');
 
 // sqliteのテーブルの作成
@@ -45,6 +46,7 @@ const Configs = sequelize.define('configs', {
     banLog: { type: Sequelize.BOOLEAN, defaultValue: false },
     banLogCh: { type: Sequelize.STRING, defaultValue: null },
     banDm: { type: Sequelize.BOOLEAN, defaultValue: false },
+    linkOpen: { type: Sequelize.BOOLEAN, defaultValue: false },
 });
 
 // Repl.itでホスティングをする場合は、このコードを有効化する必要がある
@@ -99,6 +101,11 @@ client.on('guildMemberRemove', member => {
     guildMemberRemove.execute(client, member, Configs);
 });
 
+// メッセージがどこかで送信された時
+client.on('messageCreate', async message => {
+    messageCreate.execute(client, message, Configs);
+});
+
 player.on('trackStart', (queue, track) => {
     trackStart.execute(client, queue, track);
 });
@@ -106,16 +113,6 @@ player.on('trackStart', (queue, track) => {
 player.on('connectionError', (queue, error) => {
     connectionError.execute(client, queue, error);
 });
-
-const error_embed = new discord.MessageEmbed()
-    .setTitle('🛑 エラー!')
-    .setDescription('何度も同じエラーが発生する場合、以下のボタンからエラーコードと直前の動作を記載して下のボタンから報告してください。')
-    .setColor('RED');
-const error_button = new discord.MessageActionRow().addComponents(
-    new discord.MessageButton()
-        .setLabel('問題を報告')
-        .setStyle('LINK')
-        .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new'));
 
 // Interaction処理
 client.on('interactionCreate', async interaction => {
@@ -127,8 +124,6 @@ client.on('interactionCreate', async interaction => {
     }
     catch (err) {
         console.log(err);
-        error_embed.setFields({ name: 'エラー', value: `${discord.Formatters.codeBlock(err)}` });
-        interaction.reply({ embeds: [error_embed], components: [error_button], ephemeral:true });
     }
 });
 

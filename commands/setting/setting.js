@@ -53,6 +53,7 @@ module.exports = {
                 .addOptions([
                     { label: '入退室ログ', value: 'setting-welcomemessage', emoji: '966596708458983484' },
                     { label: '通報機能', value: 'setting-report', emoji: '966596708458983484' },
+                    { label: 'リンク展開', value: 'setting-linkOpen', emoji: '966596708458983484' },
                     { label: '/timeout コマンド', value: 'setting-timeout', emoji: '966596708484149289' },
                     { label: '/ban コマンド', value: 'setting-ban', emoji: '966596708484149289' },
                 ]),
