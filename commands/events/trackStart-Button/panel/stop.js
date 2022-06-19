@@ -42,7 +42,7 @@ module.exports = {
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
-        player.deleteQueue(interaction.guild);
+        queue.destroy(true);
         interaction.update({ components: [button, button1], ephemeral: true });
         // eslint-disable-next-line no-empty-function
         await queue.metadata.channel.send('⏹ プレイヤーを停止しました').catch(() => {});

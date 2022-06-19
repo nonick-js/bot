@@ -1,4 +1,6 @@
 const discord = require('discord.js');
+// eslint-disable-next-line no-unused-vars
+const discord_player = require('discord-player');
 
 /**
 * @callback InteractionCallback
@@ -16,23 +18,39 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { name: 'music', description: '音楽を再生', type: 'CHAT_INPUT', options: [
         { name: 'play', description: 'Youtube・Spotify・SoundCloud上の音楽を再生します', type: 'SUB_COMMAND', options: [
-            { name: 'url', description: '動画・音楽のURL', type:'STRING', required: true },
+            { name: 'url', description: '動画・音楽のURL (URL以外を入力すると動画を検索します)', type:'STRING', required: true },
         ] },
         { name: 'stop', description: 'プレイヤーを停止します', type: 'SUB_COMMAND' },
+        { name: 'panel', description: '現在の再生パネルを表示します', type: 'SUB_COMMAND' },
         { name: 'queue', description: '現在のキューを表示します', type: 'SUB_COMMAND' },
+        { name: 'queuedelete', description: '指定した位置にあるトラックをキューから削除します', type: 'SUB_COMMAND', options: [
+            { name: 'track', description: '削除するトラックの位置', type: 'NUMBER', required: true },
+        ] },
         { name: 'skip', description: '今流している曲をスキップして次のキューを再生します', type: 'SUB_COMMAND' },
+        { name: 'previous', description: '前に再生されたトラックを再生します', type: 'SUB_COMMAND' },
+        { name: 'loop', description: 'キューのループ設定を変更します', type: 'SUB_COMMAND', options: [
+            { name: 'set', description: 'ループ設定', type: 'NUMBER', required: true, choices: [
+                { name: '🎵 通常再生', value: 0 },
+                { name: '🔂 1曲ループ再生', value: 1 },
+                { name: '🔁 キューループ再生', value: 2 },
+            ] },
+        ] },
         { name: 'volume', description: '音量を設定します', type: 'SUB_COMMAND', options: [
             { name: 'amount', description: '音量 (1~200)', type: 'NUMBER', required: true },
         ] },
     ] },
     /** @type {InteractionCallback} */
     exec: async (interaction, client, Configs, player) => {
+        /** @type {discord_player.Queue} */
+        const queue = player.getQueue(interaction.guildId);
+
         if (!interaction.member.voice.channelId) {
             const embed = new discord.MessageEmbed()
                 .setDescription('❌ ボイスチャンネルに参加してください!')
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
+
         if (interaction.guild.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.me.voice.channelId) {
             const embed = new discord.MessageEmbed()
                 .setDescription('❌ 現在再生中のボイスチャンネルに参加してください!')
@@ -42,24 +60,18 @@ module.exports = {
 
         if (interaction.options.getSubcommand() == 'play') {
             const query = interaction.options.get('url').value;
-            const queue = player.createQueue(interaction.guild, {
-                ytdlOptions: {
-                quality: 'highest',
-                filter: 'audioonly',
-                highWaterMark: 1 << 25,
-                dlChunkSize: 0,
-                },
-                metadata: {
-                channel: interaction.channel,
-                },
-                });
+            const newqueue = player.createQueue(interaction.guild, {
+                ytdlOptions: { quality: 'highest', filter: 'audioonly', highWaterMark: 1 << 25, dlChunkSize: 0 },
+                metadata: { channel: interaction.channel },
+            });
 
             try {
-                if (!queue.connection) await queue.connect(interaction.member.voice.channel);
+                if (!newqueue.connection) await newqueue.connect(interaction.member.voice.channel);
             } catch {
-                queue.destroy();
+                newqueue.destroy();
                 return await interaction.reply({ content: '❌ ボイスチャンネルにアクセスできません!', ephemeral: true });
             }
+
             await interaction.deferReply();
             const track = await player.search(query, { requestedBy: interaction.user }).then(x => x.tracks[0]);
             if (!track) {
@@ -68,7 +80,7 @@ module.exports = {
                     .setColor('RED');
                 return await interaction.followUp({ embeds: [embed], ephemeral: true });
             }
-            queue.play(track);
+            newqueue.play(track);
             const embed = new discord.MessageEmbed()
                 .setTitle('キューに追加されました!')
                 .setDescription(`💿${track.title}\n🔗${track.url}`)
@@ -76,9 +88,52 @@ module.exports = {
             return await interaction.followUp({ embeds: [embed] });
         }
 
+        if (interaction.options.getSubcommand() == 'stop') {
+            if (!queue) {
+                const embed = new discord.MessageEmbed()
+                    .setDescription('キューがありません!')
+                    .setColor('RED');
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
+            queue.destroy(true);
+            interaction.reply({ content: '⏹ プレイヤーを停止しました' });
+        }
+
+        if (interaction.options.getSubcommand() == 'panel') {
+            if (!queue) {
+                const embed = new discord.MessageEmbed()
+                    .setDescription('キューがありません!')
+                    .setColor('RED');
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
+
+            const track = queue.current;
+            const button = new discord.MessageActionRow().addComponents(
+                new discord.MessageButton()
+                    .setCustomId('music-prev')
+                    .setEmoji('⏮️')
+                    .setStyle('PRIMARY'),
+                new discord.MessageButton()
+                    .setCustomId('music-pause')
+                    .setEmoji('⏯️')
+                    .setStyle('PRIMARY'),
+                new discord.MessageButton()
+                    .setCustomId('music-skip')
+                    .setEmoji('⏭️')
+                    .setStyle('PRIMARY'),
+                new discord.MessageButton()
+                    .setCustomId('music-volume')
+                    .setEmoji('🔊')
+                    .setStyle('SECONDARY'),
+                new discord.MessageButton()
+                    .setCustomId('music-panel')
+                    .setEmoji('966596708458983484')
+                    .setStyle('SUCCESS'),
+            );
+            interaction.reply({ content: `▶ 再生中 🔗${track.url}`, components: [button], ephemeral: true });
+        }
+
         if (interaction.options.getSubcommand() == 'queue') {
-            /** @type {discord_player.Queue} */
-            const queue = player.getQueue(interaction.guildId);
             if (!queue) {
                 const embed = new discord.MessageEmbed()
                     .setDescription('現在キューはありません!')
@@ -104,8 +159,30 @@ module.exports = {
             interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
+        if (interaction.options.getSubcommand() == 'queuedelete') {
+            if (!queue) {
+                const embed = new discord.MessageEmbed()
+                    .setDescription('キューがありません!')
+                    .setColor('RED');
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
+
+            const number = interaction.options.getNumber('track');
+            try {
+                /** @type {discord_player.Track} */
+                const track = queue.remove(number);
+                // eslint-disable-next-line no-empty-function
+                await queue.metadata.channel.send(`🗑️ **${track.name}**をキューから削除しました`).catch(() => {});
+            }
+            catch {
+                const embed = new discord.MessageEmbed()
+                    .setDescription('❌ 無効な値が送信されました!')
+                    .setColor('RED');
+                interaction.reply({ embeds: [embed], ephemeral: true });
+            }
+        }
+
         if (interaction.options.getSubcommand() == 'skip') {
-            const queue = player.getQueue(interaction.guildId);
             if (!queue) {
                 const embed = new discord.MessageEmbed()
                     .setDescription('キューがありません!')
@@ -116,20 +193,20 @@ module.exports = {
             queue.skip();
         }
 
-        if (interaction.options.getSubcommand() == 'stop') {
-            const queue = player.getQueue(interaction.guildId);
+        if (interaction.options.getSubcommand() == 'loop') {
             if (!queue) {
                 const embed = new discord.MessageEmbed()
-                    .setDescription('キューがありません!')
+                    .setDescription('❌ 現在キューはありません!')
                     .setColor('RED');
                 return interaction.reply({ embeds: [embed], ephemeral: true });
             }
-            player.deleteQueue(interaction.guild);
-            interaction.reply({ content: '⏹ プレイヤーを停止しました' });
+
+            const type = interaction.options.getNumber('set');
+            queue.setRepeatMode(type);
+            interaction.reply(type == 0 ? '▶️ キューのループ再生を**オフ**にしました' : (type == 1 ? '🔂 1曲ループ再生を**オン**にしました' : '🔁 キューループ再生を**オン**にしました'));
         }
 
         if (interaction.options.getSubcommand() == 'volume') {
-            const queue = player.getQueue(interaction.guildId);
             if (!queue) {
                 const embed = new discord.MessageEmbed()
                     .setDescription('キューがありません!')

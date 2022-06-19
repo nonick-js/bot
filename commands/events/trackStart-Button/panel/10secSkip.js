@@ -22,7 +22,6 @@ module.exports = {
         /** @type {discord_player.Queue} */
         const queue = player.getQueue(interaction.guildId);
         const button = interaction.message.components[0];
-        const button1 = interaction.message.components[1];
         if (!queue) {
             const embed = new discord.MessageEmbed()
                 .setDescription('❌ 現在キューはありません!')
@@ -44,7 +43,7 @@ module.exports = {
 
         const time = queue.streamTime + 10000 > queue.current.durationMS ? queue.current.durationMS : queue.streamTime;
         await queue.seek(time);
-        interaction.update({ components: [button, button1], ephemeral: true });
+        interaction.update({ components: [button], ephemeral: true });
         // eslint-disable-next-line no-empty-function
         await queue.metadata.channel.send('⏩ `10`秒スキップしました').catch(() => {});
     },

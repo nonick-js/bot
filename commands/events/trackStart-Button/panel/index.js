@@ -35,35 +35,10 @@ module.exports = {
                 .setEmoji('🔁')
                 .setStyle('SECONDARY'),
             new discord.MessageButton()
-                .setCustomId('music-shuffle')
-                .setEmoji('🔀')
-                .setStyle('SECONDARY'),
-        );
-        const button2 = new discord.MessageActionRow().addComponents(
-            new discord.MessageButton()
-                .setCustomId('none1')
-                .setLabel('ㅤ')
-                .setStyle('SECONDARY')
-                .setDisabled(true),
-            new discord.MessageButton()
-                .setCustomId('none2')
-                .setLabel('ㅤ')
-                .setStyle('SECONDARY')
-                .setDisabled(true),
-            new discord.MessageButton()
-                .setCustomId('none3')
-                .setLabel('ㅤ')
-                .setStyle('SECONDARY')
-                .setDisabled(true),
-            new discord.MessageButton()
-                .setCustomId('music-queue')
-                .setEmoji('📄')
-                .setStyle('SECONDARY'),
-            new discord.MessageButton()
                 .setCustomId('music-stop')
                 .setEmoji('⏹️')
                 .setStyle('DANGER'),
         );
-        interaction.reply({ components: [button, button2], ephemeral: true });
+        interaction.reply({ components: [button], ephemeral: true });
     },
 };

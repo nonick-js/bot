@@ -23,7 +23,6 @@ module.exports = {
         /** @type {discord_player.Queue} */
         const queue = player.getQueue(interaction.guildId);
         const button = interaction.message.components[0];
-        const button1 = interaction.message.components[1];
         if (!queue) {
             const embed = new discord.MessageEmbed()
                 .setDescription('❌ 現在キューはありません!')
@@ -44,7 +43,7 @@ module.exports = {
         }
 
         queue.setRepeatMode(queue.repeatMode == 2 ? 0 : 2);
-        interaction.update({ components: [button, button1], ephemeral: true });
+        interaction.update({ components: [button], ephemeral: true });
         // eslint-disable-next-line no-empty-function
         await queue.metadata.channel.send(`🔁 ループ再生を**${queue.repeatMode == 0 ? 'オフ' : 'オン' }**にしました`).catch(() => {});
     },
