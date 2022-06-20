@@ -82,6 +82,8 @@ client.on('ready', () => {
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 
+const { blackList_guild, blackList_user } = require('./config.json');
+
 // サーバーに参加した時
 client.on('guildCreate', async guild => {
     await Configs.findOrCreate({ where:{ serverId: guild.id } });
@@ -95,17 +97,23 @@ client.on('guildDelete', () => {
 
 // メンバーが参加したとき
 client.on('guildMemberAdd', member => {
-    guildMemberAdd.execute(client, member, Configs);
+    if (!blackList_guild.includes(member.guild.id) || !blackList_user.includes(member.guild.ownerId)) {
+        guildMemberAdd.execute(client, member, Configs);
+    }
 });
 
 // メンバーが抜けた時
 client.on('guildMemberRemove', member => {
-    guildMemberRemove.execute(client, member, Configs);
+    if (!blackList_guild.includes(member.guild.id) || !blackList_user.includes(member.guild.ownerId)) {
+        guildMemberRemove.execute(client, member, Configs);
+    }
 });
 
 // メッセージがどこかで送信された時
 client.on('messageCreate', async message => {
-    messageCreate.execute(client, message, Configs);
+    if (!blackList_guild.includes(message.guild.id) || !blackList_user.includes(message.guild.ownerId)) {
+        messageCreate.execute(client, message, Configs);
+    }
 });
 
 player.on('trackStart', (queue, track) => {
@@ -118,6 +126,16 @@ player.on('connectionError', (queue, error) => {
 
 // Interaction処理
 client.on('interactionCreate', async interaction => {
+    if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
+        const embed = new discord.MessageEmbed()
+            .setDescription([
+                `🚫 このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。`,
+                '禁止された理由や詳細は`nonick-mc#1017`までお問い合わせください。',
+            ].join('\n'))
+            .setColor('RED');
+        return interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
     await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
     const cmd = commands.getCommand(interaction);
     try {

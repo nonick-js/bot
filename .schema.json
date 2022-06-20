@@ -16,6 +16,16 @@
         "type": "string",
         "pattern": "[0-9]{18}",
         "description": "コマンドを登録するギルドID"
+      },
+      "blackList_guild": {
+        "type": "array",
+        "pattern": "[0-9]{18}",
+        "description": "ブラックリストに登録するギルドのID"
+      },
+      "blackList_user": {
+        "type": "array",
+        "pattern": "[0-9]{18}",
+        "description": "ブラックリストに登録するユーザーのID (このユーザーがオーナーのサーバーをブラックリストに登録します)"
       }
     }
 }
