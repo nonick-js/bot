@@ -14,12 +14,12 @@ const discord = require('discord.js');
 
 module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'setting-timeoutLog', type: 'BUTTON' },
+    data: { customid: 'setting-dj', type: 'BUTTON' },
     /** @type {InteractionCallback} */
     exec: async (interaction, client, Configs) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-        const timeoutLog = config.get('timeoutLog');
-        const timeoutLogCh = config.get('timeoutLogCh');
+        const dj = config.get('dj');
+        const djRole = config.get('djRole');
 
         /** @type {discord.MessageEmbed} */
         const embed = interaction.message.embeds[0];
@@ -28,15 +28,15 @@ module.exports = {
         /** @type {discord.MessageActionRow} */
         const button = interaction.message.components[1];
 
-        if (timeoutLog) {
-            Configs.update({ timeoutLog: false }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(0, 1, { name: 'ログ機能', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true });
+        if (dj) {
+            Configs.update({ dj: false }, { where: { serverId: interaction.guild.id } });
+            embed.spliceFields(0, 1, { name: 'DJモード', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true });
             button.components[1]
                 .setLabel('有効化')
                 .setStyle('SUCCESS');
         } else {
-            Configs.update({ timeoutLog: true }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(0, 1, { name: 'ログ機能', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.channelMention(timeoutLogCh)})`, inline:true });
+            Configs.update({ dj: true }, { where: { serverId: interaction.guild.id } });
+            embed.spliceFields(0, 1, { name: 'DJモード', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.roleMention(djRole)})`, inline:true });
             button.components[1]
                 .setLabel('無効化')
                 .setStyle('DANGER');

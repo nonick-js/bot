@@ -14,7 +14,7 @@ const sequelize = new Sequelize({
 	storage: 'sql/config.sqlite',
 });
 require('dotenv').config();
-const { guildId } = require('./config.json');
+const { guildId, guildCommand } = require('./config.json');
 const player = new discord_player.Player(client);
 
 const interaction_commands = require('./modules/interaction');
@@ -47,6 +47,8 @@ const Configs = sequelize.define('configs', {
     banLogCh: { type: Sequelize.STRING, defaultValue: null },
     banDm: { type: Sequelize.BOOLEAN, defaultValue: false },
     linkOpen: { type: Sequelize.BOOLEAN, defaultValue: false },
+    dj: { type: Sequelize.BOOLEAN, defaultValue: false },
+    djRole: { type: Sequelize.STRING, defaultValue: null },
 });
 
 // Repl.itでホスティングをする場合は、このコードを有効化する必要がある
@@ -75,8 +77,8 @@ client.on('ready', () => {
         'Plattform': `${process.platform} | ${process.arch}`,
         'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
-    // スラッシュコマンドを登録
-	commands.register(client, guildId);
+    if (guildCommand) commands.register(client, guildId);
+    else commands.register(client);
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
 

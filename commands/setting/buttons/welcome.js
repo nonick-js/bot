@@ -30,14 +30,14 @@ module.exports = {
 
         if (welcome) {
             Configs.update({ welcome: false }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(0, 1, { name: '入室ログ', value: `${discord.Formatters.formatEmoji('758380151238033419')} 無効`, inline:true });
+            embed.spliceFields(0, 1, { name: '入室ログ', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true });
             button.components[1]
                 .setLabel('有効化')
                 .setStyle('SUCCESS');
         }
         else {
             Configs.update({ welcome: true }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(0, 1, { name: '入室ログ', value: `${discord.Formatters.formatEmoji('758380151544217670')} 有効(${discord.Formatters.channelMention(welcomeCh)})`, inline:true });
+            embed.spliceFields(0, 1, { name: '入室ログ', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.channelMention(welcomeCh)})`, inline:true });
             button.components[1]
                 .setLabel('無効化')
                 .setStyle('DANGER');

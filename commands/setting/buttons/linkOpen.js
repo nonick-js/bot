@@ -29,14 +29,14 @@ module.exports = {
 
         if (linkOpen) {
             Configs.update({ linkOpen: false }, { where: { serverId: interaction.guildId } });
-            embed.spliceFields(0, 1, { name: 'リンク展開', value: `${discord.Formatters.formatEmoji('758380151238033419')} 無効`, inline:true });
+            embed.spliceFields(0, 1, { name: 'リンク展開', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true });
             button.components[1]
                 .setLabel('有効化')
                 .setStyle('SUCCESS');
         }
         else {
             Configs.update({ linkOpen: true }, { where: { serverId: interaction.guildId } });
-            embed.spliceFields(0, 1, { name: 'リンク展開', value: `${discord.Formatters.formatEmoji('758380151544217670')} 有効`, inline:true });
+            embed.spliceFields(0, 1, { name: 'リンク展開', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効`, inline:true });
             button.components[1]
                 .setLabel('無効化')
                 .setStyle('DANGER');

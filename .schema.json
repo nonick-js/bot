@@ -1,0 +1,21 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "$schema":true,
+      "clientId": {
+        "type": "string",
+        "pattern": "[0-9]{18}",
+        "description": "BOTのクライアントID"
+      },
+      "guildCommand": {
+        "type": "boolean",
+        "description": "trueにするとギルドコマンド、falseにするとグローバルコマンドとして登録します"
+      },
+      "guildId": {
+        "type": "string",
+        "pattern": "[0-9]{18}",
+        "description": "コマンドを登録するギルドID"
+      }
+    }
+}

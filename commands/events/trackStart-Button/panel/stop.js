@@ -23,6 +23,16 @@ module.exports = {
         const queue = player.getQueue(interaction.guildId);
         const button = interaction.message.components[0];
         const button1 = interaction.message.components[1];
+        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+        const dj = config.get('dj');
+        const djRole = config.get('djRole');
+
+        if (dj && !interaction.member.roles.cache.has(djRole) && !interaction.member.permissions.has('ADMINISTRATOR')) {
+            const embed = new discord.MessageEmbed()
+                .setDescription(`❌ この機能は${discord.Formatters.roleMention(djRole)}を持つメンバーのみが使用できます!`)
+                .setColor('RED');
+            return interaction.reply({ embeds: [embed], ephemeral: true });
+        }
         if (!queue) {
             const embed = new discord.MessageEmbed()
                 .setDescription('❌ 現在キューはありません!')
