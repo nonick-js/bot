@@ -1,9 +1,16 @@
 const discord = require('discord.js');
 const pagination = require('../../modules/pagination');
+/**
+ * @callback messageCreateCallback
+ * @param {discord.Client} client
+ * @param {discord.Message} message
+ */
 
 module.exports = {
+    /** @type {messageCreateCallback} */
     async execute(client, message, Configs) {
-        const config = await Configs.findOne({ where: { serverId: message.guildId } });
+        if (message.author == client.user) return;
+        const config = await Configs.findOne({ where: { serverId: message.guild.id } });
         const linkOpen = config.get('linkOpen');
 
         if (linkOpen) {

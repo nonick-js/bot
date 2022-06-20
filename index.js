@@ -96,15 +96,17 @@ client.on('guildDelete', () => {
 });
 
 // メンバーが参加したとき
-client.on('guildMemberAdd', member => {
+client.on('guildMemberAdd', async member => {
     if (!blackList_guild.includes(member.guild.id) || !blackList_user.includes(member.guild.ownerId)) {
+        await Configs.findOrCreate({ where:{ serverId: member.guild.id } });
         guildMemberAdd.execute(client, member, Configs);
     }
 });
 
 // メンバーが抜けた時
-client.on('guildMemberRemove', member => {
+client.on('guildMemberRemove', async member => {
     if (!blackList_guild.includes(member.guild.id) || !blackList_user.includes(member.guild.ownerId)) {
+        await Configs.findOrCreate({ where:{ serverId: member.guild.id } });
         guildMemberRemove.execute(client, member, Configs);
     }
 });
@@ -112,6 +114,7 @@ client.on('guildMemberRemove', member => {
 // メッセージがどこかで送信された時
 client.on('messageCreate', async message => {
     if (!blackList_guild.includes(message.guild.id) || !blackList_user.includes(message.guild.ownerId)) {
+        await Configs.findOrCreate({ where:{ serverId: message.guildId } });
         messageCreate.execute(client, message, Configs);
     }
 });
@@ -136,7 +139,6 @@ client.on('interactionCreate', async interaction => {
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
-    await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
     const cmd = commands.getCommand(interaction);
     try {
         Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
