@@ -22,7 +22,6 @@ module.exports = {
         /** @type {discord_player.Queue} */
         const queue = player.getQueue(interaction.guildId);
         const button = interaction.message.components[0];
-        const button1 = interaction.message.components[1];
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const dj = config.get('dj');
         const djRole = config.get('djRole');
@@ -52,9 +51,9 @@ module.exports = {
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
-        queue.destroy(true);
-        interaction.update({ components: [button, button1], ephemeral: true });
+        interaction.update({ components: [button], ephemeral: true });
         // eslint-disable-next-line no-empty-function
         await queue.metadata.channel.send('⏹ プレイヤーを停止しました').catch(() => {});
+        queue.destroy(true);
     },
 };
