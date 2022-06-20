@@ -178,11 +178,17 @@ module.exports = {
             }
 
             const number = interaction.options.getNumber('track');
+            if (number < 1) {
+                const embed = new discord.MessageEmbed()
+                    .setDescription('❌ 無効な値が送信されました!')
+                    .setColor('RED');
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
             try {
                 /** @type {discord_player.Track} */
-                const track = queue.remove(number);
+                queue.remove(number - 1);
                 // eslint-disable-next-line no-empty-function
-                await queue.metadata.channel.send(`🗑️ **${track.name}**をキューから削除しました`).catch(() => {});
+                interaction.reply(`🗑️ ${number}つ先の音楽をキューから削除しました`);
             }
             catch {
                 const embed = new discord.MessageEmbed()
