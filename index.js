@@ -141,7 +141,7 @@ client.on('interactionCreate', async interaction => {
 
     const cmd = commands.getCommand(interaction);
     try {
-        Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
+        await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
         cmd.exec(interaction, client, Configs, player);
     }
     catch (err) {
