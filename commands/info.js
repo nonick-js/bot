@@ -1,5 +1,4 @@
 const discord = require('discord.js');
-const { version } = require('../version.json');
 
 /**
 * @callback InteractionCallback
@@ -21,15 +20,15 @@ module.exports = {
         const embed = new discord.MessageEmbed()
             .setTitle(client.user.username)
             .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/wiki')
-            .setDescription('「分かりやすい」をモットーにした**完全無料の多機能BOT**\nこんな機能が使えるよ!' + discord.Formatters.codeBlock('\n・入退室ログ機能\n・TIMEOUTコマンド\n・通報機能\n・ユーザーの情報閲覧機能') + 'さらなる機能も開発中...')
-            .setFooter({ text: `NoNICK.js v${version}`, iconURL: 'https://cdn.discordapp.com/attachments/958791423161954445/965619643677040681/-3.png' })
-            .setColor('WHITE')
-            .setThumbnail(client.user.displayAvatarURL());
+            .setImage('https://media.discordapp.net/attachments/958791423161954445/989779285852168242/3e9aba98d28eaa52.png?width=1178&height=662')
+            .setDescription('「使いやすい」をモットーにした**完全無料の多機能BOT!**\n誰でも簡単にBOTを使えるような開発をしています!\n\n🔹**搭載中の機能**\n`入退室ログ` `通報機能` `リアクションロール` `音楽再生機能` `timeoutコマンド` `banコマンド`')
+            .setFooter({ text: '開発者・nonick-mc#1017', iconURL: 'https://media.discordapp.net/attachments/958791423161954445/975266759529623652/-3.png?width=663&height=663' })
+            .setColor('WHITE');
         const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
-            .setLabel('バグ・問題を報告')
-            .setStyle('LINK')
-            .setURL('https://github.com/nonick-mc/DiscordBot-NoNick.js/issues/new'),
+                .setLabel('サポートサーバー')
+                .setStyle('LINK')
+                .setURL('https://discord.gg/fVcjCNn733'),
         );
         interaction.reply({ embeds: [embed], components: [button], ephemeral:true });
     },
