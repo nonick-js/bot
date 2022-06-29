@@ -21,7 +21,15 @@ module.exports = {
     exec: async (interaction, client, Configs, player) => {
         /** @type {discord_player.Queue} */
         const queue = player.getQueue(interaction.guildId);
+        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+        const { dj, djRole } = config.get();
 
+        if (dj && !interaction.member.roles.cache.has(djRole) && !interaction.member.permissions.has('ADMINISTRATOR')) {
+            const embed = new discord.MessageEmbed()
+                .setDescription(`❌ この機能は${discord.Formatters.roleMention(djRole)}を持つメンバーのみが使用できます!`)
+                .setColor('RED');
+            return interaction.reply({ embeds: [embed], ephemeral: true });
+        }
         const modal = new discord.Modal()
             .setCustomId('setvolume')
             .setTitle('音量設定')

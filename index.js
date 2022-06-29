@@ -14,7 +14,7 @@ const sequelize = new Sequelize({
 	storage: 'sql/config.sqlite',
 });
 require('dotenv').config();
-const { guildId, guildCommand } = require('./config.json');
+const { guildId, guildCommand, blackList_guild, blackList_user } = require('./config.json');
 const player = new discord_player.Player(client);
 
 const interaction_commands = require('./modules/interaction');
@@ -81,53 +81,16 @@ client.on('ready', () => {
     else commands.register(client);
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
+client.on('guildCreate', () => client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`));
+client.on('guildDelete', () => client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`));
 
-const { blackList_guild, blackList_user } = require('./config.json');
+client.on('guildMemberAdd', member => moduleExecute(member, guildMemberAdd));
+client.on('guildMemberRemove', member => moduleExecute(member, guildMemberRemove));
+client.on('messageCreate', message => moduleExecute(message, messageCreate));
 
-// サーバーに参加した時
-client.on('guildCreate', async guild => {
-    await Configs.findOrCreate({ where:{ serverId: guild.id } });
-    client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
-});
+player.on('trackStart', (queue, track) => trackStart.execute(client, queue, track));
+player.on('connectionError', (queue, error) => connectionError.execute(client, queue, error));
 
-// サーバーから退出させられた時
-client.on('guildDelete', () => {
-    client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
-});
-
-// メンバーが参加したとき
-client.on('guildMemberAdd', async member => {
-    if (!blackList_guild.includes(member.guild.id) || !blackList_user.includes(member.guild.ownerId)) {
-        await Configs.findOrCreate({ where:{ serverId: member.guild.id } });
-        guildMemberAdd.execute(client, member, Configs);
-    }
-});
-
-// メンバーが抜けた時
-client.on('guildMemberRemove', async member => {
-    if (!blackList_guild.includes(member.guild.id) || !blackList_user.includes(member.guild.ownerId)) {
-        await Configs.findOrCreate({ where:{ serverId: member.guild.id } });
-        guildMemberRemove.execute(client, member, Configs);
-    }
-});
-
-// メッセージがどこかで送信された時
-client.on('messageCreate', async message => {
-    if (!blackList_guild.includes(message.guild.id) || !blackList_user.includes(message.guild.ownerId)) {
-        await Configs.findOrCreate({ where:{ serverId: message.guildId } });
-        messageCreate.execute(client, message, Configs);
-    }
-});
-
-player.on('trackStart', (queue, track) => {
-    trackStart.execute(client, queue, track);
-});
-
-player.on('connectionError', (queue, error) => {
-    connectionError.execute(client, queue, error);
-});
-
-// Interaction処理
 client.on('interactionCreate', async interaction => {
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
@@ -148,5 +111,15 @@ client.on('interactionCreate', async interaction => {
         console.log(err);
     }
 });
+
+async function moduleExecute(param, module) {
+    if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
+    await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
+    try {
+        module.execute(client, param, Configs);
+    } catch (e) {
+        console.log(`[エラー!] サーバーID:${param.guild.id}\n${e}`);
+    }
+}
 
 client.login(process.env.BOT_TOKEN);
