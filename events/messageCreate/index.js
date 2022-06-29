@@ -9,7 +9,7 @@ const pagination = require('../../modules/pagination');
 module.exports = {
     /** @type {messageCreateCallback} */
     async execute(client, message, Configs) {
-        if (message.author == client.user) return;
+        if (message.author.bot) return;
         const config = await Configs.findOne({ where: { serverId: message.guild.id } });
         const linkOpen = config.get('linkOpen');
 

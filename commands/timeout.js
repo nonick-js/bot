@@ -2,7 +2,7 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.MessageContextMenuInteraction} interaction
+* @param {discord.CommandInteraction} interaction
 * @param {...any} [args]
 * @returns {void}
 */
@@ -22,6 +22,9 @@ module.exports = {
     ] },
     /** @type {InteractionCallback} */
     exec: async (interaction, client, Configs) => {
+		const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+		const { timeoutLog, timeoutLogCh, timeoutDm } = config.get();
+
         if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
             const embed = new discord.MessageEmbed()
 				.setDescription([
@@ -42,6 +45,7 @@ module.exports = {
 		const timeoutDuration_m = interaction.options.getNumber('minute');
 		const timeoutDuration = (timeoutDuration_d * 86400000) + (timeoutDuration_m * 60000);
 
+		if (timeoutMember == interaction.guild.me) return interaction.reply({ content: '代わりに君をタイムアウトしようかな?', ephemeral: true });
 		if (!timeoutMember) {
 			const embed = new discord.MessageEmbed()
 				.setDescription('❌ そのユーザーはこのサーバーにいません!')
@@ -54,8 +58,6 @@ module.exports = {
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
-		if (timeoutMember == interaction.guild.me) return interaction.reply({ content: '代わりに君をタイムアウトしようかな?', ephemeral: true });
-		// 28日をこえたら
 		if (timeoutDuration > 2419000000) {
 			const embed = new discord.MessageEmbed()
 				.setDescription('❌ `28日`を超えるタイムアウトはできません!')
@@ -63,20 +65,16 @@ module.exports = {
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
-		timeoutMember.timeout(timeoutDuration)
-			.then(async () => {
+		timeoutMember.timeout(timeoutDuration, timeoutReason)
+			.then(() => {
 				interaction.reply({ content: `⛔ <@${timeoutMember.id}>を**${discord.Formatters.inlineCode(Math.floor((timeoutDuration / 86400000)))}日${discord.Formatters.inlineCode(Math.floor((timeoutDuration % 86400000) / 60000))}分**タイムアウトしました。`, ephemeral:true });
-				const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-                const timeoutLog = config.get('timeoutLog');
-                const timeoutDm = config.get('timeoutDm');
 
 				if (timeoutLog) {
-					const timeoutLogCh = config.get('timeoutLogCh');
 					const embed = new discord.MessageEmbed()
                         .setTitle('⛔タイムアウト')
                         .setThumbnail(timeoutMember.displayAvatarURL())
                         .addFields(
-                            { name: '処罰を受けた人', value: `<@${timeoutMember.id}>(${discord.Formatters.inlineCode(timeoutMember.id)})` },
+                            { name: '処罰を受けた人', value: `${timeoutMember}(${discord.Formatters.inlineCode(timeoutMember.id)})` },
 							{ name: 'タイムアウトが解除される時間', value: `${timeoutMember.communicationDisabledUntil}` },
                             { name: 'タイムアウトした理由', value: timeoutReason },
                         )
@@ -84,17 +82,8 @@ module.exports = {
                         .setFooter({ text: `担当者: ${moderateUser.tag}`, iconURL: moderateUser.displayAvatarURL() });
 
 					interaction.guild.channels.fetch(timeoutLogCh)
-						.then((channel) => {
-							channel.send({ embeds: [embed] })
-								.catch(() => {
-									Configs.update({ timeoutLog: false }, { where: { serverId: interaction.guild.id } });
-									Configs.update({ timeoutLogCh: null }, { where: { serverId: interaction.guild.id } });
-								});
-						})
-						.catch(() => {
-							Configs.update({ timeoutLog: false }, { where: { serverId: interaction.guild.id } });
-							Configs.update({ timeoutLogCh: null }, { where: { serverId: interaction.guild.id } });
-						});
+						.then((channel) => channel.send({ embeds: [embed] }).catch(() => Configs.update({ timeoutLog: false, timeoutLogCh: null }, { where: { serverId: interaction.guildId } })))
+						.catch(() => Configs.update({ timeoutLog: false, timeoutLogCh: null }, { where: { serverId: interaction.guildId } }));
 				}
 				if (timeoutDm) {
 					const embed = new discord.MessageEmbed()
@@ -108,10 +97,10 @@ module.exports = {
 					);
 					timeoutMember.user.send({ embeds: [embed] })
 						.catch(() => {
-							const permissionError = new discord.MessageEmbed()
+							const error = new discord.MessageEmbed()
 								.setDescription('⚠️ タイムアウトした人への警告DMに失敗しました。\nメッセージ受信を拒否しています。')
 								.setColor('RED');
-							interaction.followUp({ embeds: [permissionError], ephemeral: true });
+							interaction.followUp({ embeds: [error], ephemeral: true });
 						});
 				}
 			}).catch(() => {

@@ -10,22 +10,17 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {MemberAddCallback} */
     async execute(client, member, Configs) {
-        await Configs.findOrCreate({ where:{ serverId: member.guild.id } });
         const config = await Configs.findOne({ where: { serverId: member.guild.id } });
-        const welcome = config.get('welcome');
+        const { welcome, welcomeCh, welcomeMessage } = config.get();
 
-        if (welcome && member !== member.guild.me) {
-            const welcomeCh = config.get('welcomeCh');
-            const welcomeMessage = config.get('welcomeMessage');
-
+        if (welcome && member.user !== client.user) {
             member.guild.channels.fetch(welcomeCh)
                 .then((channel) => {
                     const embed = new discord.MessageEmbed();
                     if (member.user.bot) {
                         embed.setAuthor({ name: `${member.user.username} が導入されました!`, iconURL: member.user.displayAvatarURL() })
                         .setColor('BLUE');
-                    }
-                    else {
+                    } else {
                         embed.setTitle('WELCOME!')
                         .setDescription([
                             `<@${member.id}>**(${member.user.tag})** さん`,
@@ -37,16 +32,9 @@ module.exports = {
                         .setColor('GREEN')
                         .setTimestamp();
                     }
-                    channel.send({ embeds: [embed] }).catch(() => {
-                        Configs.update({ welcome: false }, { where: { serverId: member.guild.id } });
-                        Configs.update({ welcomeCh: null }, { where: { serverId: member.guild.id } });
-                    });
-
+                    channel.send({ embeds: [embed] }).catch(() => Configs.update({ welcome: false, welcomeCh: null }, { where: { serverId: member.guild.id } }));
                 })
-                .catch(() => {
-                    Configs.update({ welcome: false }, { where: { serverId: member.guild.id } });
-                    Configs.update({ welcomeCh: null }, { where: { serverId: member.guild.id } });
-                });
+                .catch(() => Configs.update({ welcome: false, welcomeCh: null }, { where: { serverId: member.guild.id } }));
         }
     },
 };
