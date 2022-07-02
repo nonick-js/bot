@@ -49,6 +49,8 @@ BOT_TOKEN = ここにBOTのトークンを入力
     "clientId":"クライアントID",
     "guildCommand": true,
     "guildId":"ギルドID",
+    "debugMode": false,
+    "replitMode": false,
     "blackList_guild": ["ブラックリストに登録するギルドID"],
     "blackList_user": ["ブラックリストに登録するユーザーID"]
 }
