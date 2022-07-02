@@ -2,7 +2,7 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.MessageContextMenuInteraction} interaction
+* @param {discord.SelectMenuInteraction} interaction
 * @param {discord.Client} client
 * @returns {void}
 */
@@ -18,6 +18,7 @@ module.exports = {
     /** @type {InteractionCallback} */
     exec: async (interaction, client, Configs) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+
         if (interaction.values == 'setting-welcomemessage') {
             const welcome = config.get('welcome');
             const welcomeCh = config.get('welcomeCh');
@@ -38,6 +39,7 @@ module.exports = {
                     { name: '退室ログ', value: leave ? `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.channelMention(leaveCh)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true },
                     { name: '入室ログメッセージ', value: `${welcomeMessage}` },
                 );
+
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-back')
@@ -59,6 +61,7 @@ module.exports = {
                     .setEmoji('966596708458983484')
                     .setStyle('SECONDARY'),
             ]);
+
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                     .setCustomId('welcomeSetting')
@@ -69,7 +72,8 @@ module.exports = {
             ]);
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
         }
-        else if (interaction.values == 'setting-report') {
+
+        if (interaction.values == 'setting-report') {
             const reportCh = config.get('reportCh');
             const reportRoleMention = config.get('reportRoleMention');
             const reportRole = config.get('reportRole');
@@ -87,6 +91,7 @@ module.exports = {
                     { name: '通報の送信先', value: reportCh == null ? '指定されていません' : `${discord.Formatters.channelMention(reportCh)}`, inline: true },
                     { name: 'ロールメンション', value: reportRoleMention ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.roleMention(reportRole)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
                 );
+
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-back')
@@ -98,6 +103,7 @@ module.exports = {
                     .setStyle('SECONDARY')
                     .setEmoji('966588719635267624'),
             ]);
+
             const select1 = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('reportSetting')
@@ -109,7 +115,8 @@ module.exports = {
             ]);
             interaction.update({ embeds: [embed], components: [select1, button], ephemeral:true });
         }
-        else if (interaction.values == 'setting-timeout') {
+
+        if (interaction.values == 'setting-timeout') {
             const timeoutLog = config.get('timeoutLog');
             const timeoutLogCh = config.get('timeoutLogCh');
             const timeoutDm = config.get('timeoutDm');
@@ -127,6 +134,7 @@ module.exports = {
                     { name: 'ログ機能', value: timeoutLog ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.channelMention(timeoutLogCh)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
                     { name: 'DM警告機能', value: timeoutDm ? `${discord.Formatters.formatEmoji('968351750014783532')}有効` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
                 );
+
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('timeoutSetting')
@@ -136,6 +144,7 @@ module.exports = {
                     { label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-timeout-2', emoji: '966588719635267624' },
                 ]),
             ]);
+
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-back')
@@ -154,7 +163,8 @@ module.exports = {
             ]);
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
         }
-        else if (interaction.values == 'setting-ban') {
+
+        if (interaction.values == 'setting-ban') {
             const banLog = config.get('banLog');
             const banLogCh = config.get('banLogCh');
             const banDm = config.get('banDm');
@@ -172,6 +182,7 @@ module.exports = {
                     { name: 'ログ機能', value: banLog ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.channelMention(banLogCh)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
                     { name: 'DM警告機能', value: banDm ? `${discord.Formatters.formatEmoji('968351750014783532')}有効` : `${discord.Formatters.formatEmoji('758380151238033419')} 無効`, inline: true },
                 );
+
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('banSetting')
@@ -181,6 +192,7 @@ module.exports = {
                     { label: 'DM警告機能', description: 'BANされた人に警告DMを送信', value: 'setting-ban-2', emoji: '966588719635267624' },
                 ]),
             ]);
+
             const button = new discord.MessageActionRow().addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-back')
@@ -198,6 +210,92 @@ module.exports = {
                     .setStyle('SECONDARY'),
             ]);
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+        }
+
+        if (interaction.values == 'setting-linkOpen') {
+            const linkOpen = config.get('linkOpen');
+
+            const embed = new discord.MessageEmbed()
+                .setTitle('🛠 設定 - リンク展開')
+                .setDescription([
+                    'banコマンドの設定を以下のセレクトメニューから行えます。',
+                    discord.Formatters.codeBlock('markdown', '#リンク展開とは...\nDiscordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。\n流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。'),
+                    '**【現在の設定】**',
+                ].join('\n'))
+                .setColor('GREEN')
+                .addFields(
+                    { name: 'リンク展開', value: linkOpen ? `${discord.Formatters.formatEmoji('968351750014783532')}有効` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
+                );
+
+            const select = new discord.MessageActionRow().addComponents([
+                new discord.MessageSelectMenu()
+                    .setCustomId('linkOpenSetting')
+                    .setPlaceholder('ここから選択')
+                    .addOptions([
+                        { label: '全般設定', value: 'setting-linkOpen-1', emoji: '966588719635267624', default:true },
+                    ]),
+            ]);
+
+            const button = new discord.MessageActionRow().addComponents([
+                new discord.MessageButton()
+                    .setCustomId('setting-back')
+                    .setEmoji('971389898076598322')
+                    .setStyle('PRIMARY'),
+                new discord.MessageButton()
+                    .setCustomId('setting-linkOpen')
+                    .setLabel(linkOpen ? '無効化' : '有効化')
+                    .setStyle(linkOpen ? 'DANGER' : 'SUCCESS'),
+            ]);
+            interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+        }
+
+        if (interaction.values == 'setting-music') {
+            const dj = config.get('dj');
+            const djRole = config.get('djRole');
+
+            const embed = new discord.MessageEmbed()
+            .setTitle('🛠 設定 - リンク展開')
+            .setDescription([
+                'musicコマンドの設定を以下のセレクトメニューから行えます。',
+                discord.Formatters.codeBlock('markdown', [
+                    '# musicコマンドとは...',
+                    'YoutubeやSpotify、SoundCloudにある音楽をVCで再生することができます。',
+                    'ボイスチャット内で音楽を再生させたい時に役立ちます。',
+                ].join('\n')),
+                '**【現在の設定】**',
+            ].join('\n'))
+            .setColor('GREEN')
+            .addFields(
+                { name: 'DJモード', value: dj ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.roleMention(djRole)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
+                { name: '❓DJモードとは', value: 'musicコマンドや再生パネルの使用を、指定したロールを持つメンバーと管理者権限をもつメンバーのみ許可します。\n大規模なサーバーで使用する場合やVC荒らしを防止するために、**この設定を有効にすることをおすすめします。**', inline: true },
+            );
+
+            const select = new discord.MessageActionRow().addComponents([
+                new discord.MessageSelectMenu()
+                    .setCustomId('musicSetting')
+                    .setPlaceholder('ここから選択')
+                    .addOptions([
+                        { label: 'DJモード', value: 'setting-music', emoji: '966719258430160986', default:true },
+                    ]),
+            ]);
+
+            const button = new discord.MessageActionRow().addComponents([
+                new discord.MessageButton()
+                    .setCustomId('setting-back')
+                    .setEmoji('971389898076598322')
+                    .setStyle('PRIMARY'),
+                new discord.MessageButton()
+                    .setCustomId('setting-dj')
+                    .setLabel(dj ? '無効化' : '有効化')
+                    .setStyle(dj ? 'DANGER' : 'SUCCESS')
+                    .setDisabled(djRole ? false : true),
+                new discord.MessageButton()
+                    .setCustomId('setting-djRole')
+                    .setLabel('ロールの変更')
+                    .setEmoji('966719258430160986')
+                    .setStyle('SECONDARY'),
+            ]);
+            interaction.update({ embeds: [embed], components: [select, button], ephemeral: true });
         }
     },
 };

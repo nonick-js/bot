@@ -1,4 +1,4 @@
 {
-    "version":"1.2 beta2",
-    "whatsnew": "**NoNICK.jsが複数サーバーでの稼働に対応しました!**\nBOTを扱う技術がなくても、機材がなくても、自分の好きなサーバーにBOTを導入できます!"
+    "version":"2.0",
+    "whatsnew": "**音楽再生機能・リアクションロール・ユーザー情報機能が追加!\n[詳細はこちら](https://github.com/nonick-mc/DiscordBot-NoNick.js/releases/tag/2.0)**"
 }

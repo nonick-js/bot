@@ -45,9 +45,7 @@ module.exports = {
             .then(reportchannel => {
                 const content = reportRoleMention ? `<@&${reportRole}>` : ' ';
                 reportchannel.send({ content: content, embeds: [reportEmbed] })
-                    .then(() => {
-                        interaction.update({ content: '✅ **報告ありがとうございます!** 通報をサーバー運営に送信しました!', embeds: [], components: [], ephemeral:true });
-                    })
+                    .then(() => interaction.update({ content: '✅ **報告ありがとうございます!** 通報をサーバー運営に送信しました!', embeds: [], components: [], ephemeral:true }))
                     .catch(() => {
                         Configs.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
                         interaction.update({ content: '❌ 通報の送信中に問題が発生しました。', embeds: [], components: [], ephemeral:true });

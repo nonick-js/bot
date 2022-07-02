@@ -29,13 +29,13 @@ module.exports = {
 
         if (banDm) {
             Configs.update({ banDm: false }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(1, 1, { name: 'DM警告機能', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効化中`, inline:true });
+            embed.spliceFields(1, 1, { name: 'DM警告機能', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true });
             button.components[1]
                 .setLabel('有効化')
                 .setStyle('SUCCESS');
         } else {
             Configs.update({ banDm: true }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(1, 1, { name: 'DM警告機能', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効化中`, inline:true });
+            embed.spliceFields(1, 1, { name: 'DM警告機能', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効`, inline:true });
             button.components[1]
                 .setLabel('無効化')
                 .setStyle('DANGER');

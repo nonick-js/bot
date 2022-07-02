@@ -14,36 +14,57 @@
 * **banコマンド** ... メンバーをサーバーからBANできる機能です。IDのみでのBANも可能なので、荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。
 
 # ✨Requirement
-このBOTの動作には以下のライブラリが必要です。
+このBOTの動作には以下のnpmライブラリが必要です。
 
-* discord.js@13.6.0
-* @discordjs/builders@0.12.0
-* @discordjs/rest@0.3.0
-* discord-api-types@0.30.0
+* @discordjs/opus@0.5.3
+* discord-api-types@0.31.2
+* discord-player@5.2.2
+* discord.js@13.8.0
 * dotenv@16.0.0
-* discord-modals@1.3.5
+* eslint@8.17.0
+* ffmpeg-static@5.0.0
+* sequelize@6.19.0
+* sqlite3@5.0.8
 
 # 🔮Installation
-以下のコマンドをコンソールに入力することで必要なライブラリをインストールできます。
+Release欄から必要に応じたバージョンのソースコードをダウンロードしましょう。  
+また、以下のコマンドをコンソールに入力することで必要なライブラリをインストールできます。(node.jsが必要です)
 ```npm
 npm i
 ```
 
 # 💻Usage
-このBOTを起動する前に、Release欄にある`config.json`をダウンロードし、`index.js`と同じディレクトリに配置する必要があります。 
+このBOTを起動する前に、BOTのトークンを保存する`.env`とBOTの設定を保存する`config.json`の２つのファイルを用意する必要があります。
 
-また、新規作成した`.env` にはDiscordBOTのtokenを入力します。
-
+① `.env.sample`を開き、中に書いてある指示に従ってBOTのTOKENを入力し、保存します。  
+その後、ファイル名を`.env`に変更します。  
 (注意:tokenは漏洩するとサーバー荒らし等に使用される場合があるため、取り扱いには十分注意してください。)
 ```
-BOT_TOKEN=DiscordBOTのtoken
+BOT_TOKEN = ここにBOTのトークンを入力
 ```
+② `config.json` を`index.js`と同じディレクトリに作成し、以下のコードを入力し、保存します。
+```json
+{
+    "$schema": "./.schema.json",
+    "clientId":"クライアントID",
+    "guildCommand": true,
+    "guildId":"ギルドID",
+    "debugMode": false,
+    "replitMode": false,
+    "blackList_guild": ["ブラックリストに登録するギルドID"],
+    "blackList_user": ["ブラックリストに登録するユーザーID"]
+}
+```
+ヒント: `"$schema": "./.schema.json"`をjsonファイルに追加すると、設定項目の候補表示が有効になります。
 
+③ 以上の設定が終わったら、ターミナルで `node .` と入力することでBOTの起動が可能です。
 # 🎓License
+
+このプログラムを使用する際は、MITライセンスに加えて以下の禁止事項を守る必要があります。
 ### 禁止事項
-* このプログラムの全体のコピーを**公開BOT(誰でもサーバーに追加できるBOT)として稼働させること**、もしくは**商用利用**すること
+* 自作発言
 * NoNICK.jsのなりすましや悪意あるコードの挿入等、このプログラムを悪用すること
-* infoコマンド等、このプログラム内に存在するクレジット表記の改変・削除すること
+* infoコマンド等、このBOT内に存在するクレジット表記の改変・削除をすること
 
 # Note
 * カスタマイズしたDiscordBOTの動作不良に関しては問い合わせても対応できかねます。
