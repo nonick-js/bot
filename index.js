@@ -10,11 +10,10 @@ const sequelize = new Sequelize({
 	host: 'localhost',
 	dialect: 'sqlite',
 	logging: false,
-	// SQLite only
 	storage: 'sql/config.sqlite',
 });
 require('dotenv').config();
-const { guildId, guildCommand, blackList_guild, blackList_user } = require('./config.json');
+const { guildId, guildCommand, blackList_guild, blackList_user, debugMode, replitMode } = require('./config.json');
 const player = new discord_player.Player(client);
 
 const interaction_commands = require('./modules/interaction');
@@ -31,7 +30,7 @@ const connectionError = require('./events/connectionError/index');
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
 	serverId: { type: Sequelize.STRING, unique: true },
-    laungage: { type: Sequelize.STRING, defaultValue: null },
+    laungage: { type: Sequelize.STRING, defaultValue: 'ja_JP' },
     welcome: { type: Sequelize.BOOLEAN, defaultValue: false },
     welcomeCh: { type: Sequelize.STRING, defaultValue: null },
     welcomeMessage: { type: Sequelize.TEXT, defaultValue: 'まずはルールを確認しよう!' },
@@ -51,18 +50,16 @@ const Configs = sequelize.define('configs', {
     djRole: { type: Sequelize.STRING, defaultValue: null },
 });
 
-// Repl.itでホスティングをする場合は、このコードを有効化する必要がある
-/*
-"use strict";
-const http = require('http');
-http.createServer(function(req, res) {
-	res.write("ready nouniku!!");
-	res.end();
-}).listen(8080);
-*/
+if (replitMode) {
+    'use strict';
+    const http = require('http');
+    http.createServer(function(req, res) {
+        res.write('ready nouniku!!');
+        res.end();
+    }).listen(8080);
+}
 
-// デバッグモード
-// client.on("debug", ( e ) => console.log(e));
+client.on('debug', (e) => {if (debugMode) console.log(e);});
 
 // ready nouniku!!
 client.on('ready', () => {
@@ -90,6 +87,8 @@ client.on('messageCreate', message => moduleExecute(message, messageCreate));
 
 player.on('trackStart', (queue, track) => trackStart.execute(client, queue, track));
 player.on('connectionError', (queue, error) => connectionError.execute(client, queue, error));
+player.on('botDisconnect', queue => queue.destroy());
+player.on('channelEmpty', queue => queue.destroy());
 
 client.on('interactionCreate', async interaction => {
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {

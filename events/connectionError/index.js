@@ -15,6 +15,7 @@ module.exports = {
             .setTitle('エラー!')
             .setDescription(discord.Formatters.codeBlock(error))
             .setColor('RED');
-        queue.metadata.channel.send({ embeds: [embed] }).catch();
+        // eslint-disable-next-line no-empty-function
+        queue.metadata.channel.send({ embeds: [embed] }).catch(() => {});
     },
 };
