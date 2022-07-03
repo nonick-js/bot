@@ -218,7 +218,7 @@ module.exports = {
             const embed = new discord.MessageEmbed()
                 .setTitle('🛠 設定 - リンク展開')
                 .setDescription([
-                    'banコマンドの設定を以下のセレクトメニューから行えます。',
+                    'リンク展開の設定を以下のセレクトメニューから行えます。',
                     discord.Formatters.codeBlock('markdown', '#リンク展開とは...\nDiscordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。\n流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。'),
                     '**【現在の設定】**',
                 ].join('\n'))
