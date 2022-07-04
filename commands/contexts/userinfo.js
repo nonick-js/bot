@@ -21,7 +21,7 @@ module.exports = {
         const user = interaction.targetUser;
         const member = await interaction.guild.members.fetch(user);
 
-        const nickName = member.nickname == null ? 'なし' : member.nickname;
+        const nickName = member.nickname ?? 'なし';
         const createTime = Math.floor(user.createdTimestamp / 1000);
         const joinTime = Math.floor(member.joinedTimestamp / 1000);
 		const boostTime = Math.floor(member.premiumSinceTimestamp / 1000);

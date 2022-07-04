@@ -18,51 +18,48 @@ module.exports = {
     /** @type {InteractionCallback} */
     exec: async (interaction, client, Configs) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-        const banLog = config.get('banLog');
-        const banLogCh = config.get('banLogCh');
-        const banDm = config.get('banDm');
+        const { banLog, banLogCh, banDm } = config.get();
 
         /** @type {discord.MessageEmbed} */
         const embed = interaction.message.embeds[0];
+        if (!embed) return;
         /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
+        /** @type {discord.MessageActionRow} */
+        const button = new discord.MessageActionRow().addComponents(
+            new discord.MessageButton()
+                .setCustomId('setting-back')
+                .setEmoji('971389898076598322')
+                .setStyle('PRIMARY'),
+        );
 
         if (interaction.values == 'setting-ban-1') {
-            const button = new discord.MessageActionRow().addComponents([
-                new discord.MessageButton()
-                    .setCustomId('setting-back')
-                    .setEmoji('971389898076598322')
-                    .setStyle('PRIMARY'),
+            button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-banLog')
                     .setLabel(banLog ? '無効化' : '有効化')
                     .setStyle(banLog ? 'DANGER' : 'SUCCESS')
-                    .setDisabled(banLogCh == null ? true : false),
+                    .setDisabled(banLogCh ? false : true),
                 new discord.MessageButton()
                     .setCustomId('setting-banLogCh')
                     .setLabel('送信先')
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
-            ]);
-            select.components[0]
-                .spliceOptions(0, 1, { label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-ban-1', emoji: '966588719635267624', default: true })
-                .spliceOptions(1, 1, { label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-ban-2', emoji: '966588719635267624' });
+            );
+            select.components[0].options[0].default = true;
+            select.components[0].options[1].default = false;
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
         }
-        else if (interaction.values == 'setting-ban-2') {
-            const button = new discord.MessageActionRow().addComponents([
-                new discord.MessageButton()
-                    .setCustomId('setting-back')
-                    .setEmoji('971389898076598322')
-                    .setStyle('PRIMARY'),
+
+        if (interaction.values == 'setting-ban-2') {
+            button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-banDm')
                     .setLabel(banDm ? '無効化' : '有効化')
                     .setStyle(banDm ? 'DANGER' : 'SUCCESS'),
-            ]);
-            select.components[0]
-                .spliceOptions(0, 1, { label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-ban-1', emoji: '966588719635267624' })
-                .spliceOptions(1, 1, { label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-ban-2', emoji: '966588719635267624', default: true });
+            );
+            select.components[0].options[0].default = false;
+            select.components[0].options[1].default = true;
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
         }
     },

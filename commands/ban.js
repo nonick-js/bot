@@ -42,9 +42,9 @@ module.exports = {
         const banUser = interaction.options.getUser('user');
         const banMember = interaction.guild.members.cache.get(banUser.id);
         const banDeleteMessage = interaction.options.getNumber('delete_messages');
-        const banReason = interaction.options.getString('reason') ? interaction.options.getString('reason') : '理由が入力されていません' ;
+        const banReason = interaction.options.getString('reason') ?? '理由が入力されていません' ;
 
-        if (banMember && moderateUser.id !== interaction.guild.ownerId && interaction.member.roles.highest.comparePositionTo(banMember.roles.highest) !== 1) {
+        if (banMember && moderateUser.id !== interaction.guild.ownerId && !(interaction.member.roles.highest.comparePositionTo(banMember.roles.highest) <= 1)) {
             const embed = new discord.MessageEmbed()
 				.setDescription('❌ 最上位の役職が自分より上か同じメンバーをBANさせることはできません!')
 				.setColor('RED');

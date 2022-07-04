@@ -1,4 +1,3 @@
-const fs = require('fs');
 const discord = require('discord.js');
 
 /**
@@ -14,72 +13,55 @@ const discord = require('discord.js');
 */
 
 module.exports = {
-    /**@type {discord.ApplicationCommandData|ContextMenuData} */
-    data: {customid: 'reportSetting', type: 'SELECT_MENU'},
-    /**@type {InteractionCallback} */
-    exec: async (interaction ,client ,Configs) => {
-        const config = await Configs.findOne({where: {serverId: interaction.guild.id}});
-        const reportRoleMention = config.get('reportRoleMention');
-        const reportRole = config.get('reportRole');
+    /** @type {discord.ApplicationCommandData|ContextMenuData} */
+    data: { customid: 'reportSetting', type: 'SELECT_MENU' },
+    /** @type {InteractionCallback} */
+    exec: async (interaction, client, Configs) => {
+        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+        const { reportRole, reportRoleMention } = config.get();
+
+        /** @type {discord.MessageEmbed} */
         const embed = interaction.message.embeds[0];
         if (!embed) return;
+        /** @type {discord.MessageActionRow} */
+        const select = interaction.message.components[0];
+        /** @type {discord.MessageActionRow} */
+        const button = new discord.MessageActionRow().addComponents(
+            new discord.MessageButton()
+                .setCustomId('setting-back')
+                .setEmoji('971389898076598322')
+                .setStyle('PRIMARY'),
+        );
 
         if (interaction.values == 'setting-report-1') {
-            const button = new discord.MessageActionRow().addComponents([
-                new discord.MessageButton()
-                    .setCustomId('setting-back')
-                    .setEmoji('971389898076598322')
-                    .setStyle('PRIMARY'),
+            button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-reportCh')
                     .setLabel('通報の送信先')
                     .setStyle('SECONDARY')
                     .setEmoji('966588719635267624'),
-            ])
-            const select = new discord.MessageActionRow().addComponents([
-                new discord.MessageSelectMenu()
-                .setCustomId('reportSetting')
-                .setPlaceholder('ここから選択')
-                .addOptions([
-                    {label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true},
-                    {label: 'ロールメンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986'},
-                ]),
-            ]);
-            interaction.update({embeds: [embed], components: [select, button], ephemeral: true});
+            );
+            select.components[0].options[0].default = true;
+            select.components[0].options[1].default = false;
+            interaction.update({ embeds: [embed], components: [select, button], ephemeral: true });
         }
 
         if (interaction.values == 'setting-report-2') {
-            const button = new discord.MessageActionRow().addComponents([
-                new discord.MessageButton()
-                    .setCustomId('setting-back')
-                    .setEmoji('971389898076598322')
-                    .setStyle('PRIMARY'),
+            button .addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-reportRoleMention')
-                    .setLabel('ON')
-                    .setStyle('SUCCESS'),
+                    .setLabel(reportRoleMention ? '無効化' : '有効化')
+                    .setStyle(reportRoleMention ? 'DANGER' : 'SUCCESS')
+                    .setDisabled(reportRole ? false : true),
                 new discord.MessageButton()
                     .setCustomId('setting-reportRole')
                     .setLabel('Mentionするロール')
                     .setEmoji('966719258430160986')
-                    .setStyle('SECONDARY')
-            ])
-            const select = new discord.MessageActionRow().addComponents([
-                new discord.MessageSelectMenu()
-                .setCustomId('reportSetting')
-                .setPlaceholder('ここから選択')
-                .addOptions([
-                    {label: '全般設定', value: 'setting-report-1', emoji: '🌐'},
-                    {label: 'ロールメンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986', default: true},
-                ]),
-            ]);
-
-            if (!reportRoleMention) {
-                button.components[1].setLabel('OFF');
-                button.components[1].setStyle('DANGER');
-            }
-            if (reportRole == null) button.components[1].setDisabled(true);
-            interaction.update({embeds: [embed], components: [select, button], ephemeral: true});
+                    .setStyle('SECONDARY'),
+            );
+            select.components[0].options[0].default = false;
+            select.components[0].options[1].default = true;
+            interaction.update({ embeds: [embed], components: [select, button], ephemeral: true });
         }
-    }
-}
+    },
+};

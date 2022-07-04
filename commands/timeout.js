@@ -40,19 +40,18 @@ module.exports = {
 		/** @type {discord.GuildMember} */
 		const timeoutMember = interaction.guild.members.cache.get(interaction.options.getUser('user').id);
 
-		const timeoutReason = interaction.options.getString('reason') !== null ? interaction.options.getString('reason') : '理由が入力されていません';
+		const timeoutReason = interaction.options.getString('reason') ?? '理由が入力されていません';
 		const timeoutDuration_d = interaction.options.getNumber('day');
 		const timeoutDuration_m = interaction.options.getNumber('minute');
 		const timeoutDuration = (timeoutDuration_d * 86400000) + (timeoutDuration_m * 60000);
 
-		if (timeoutMember == interaction.guild.me) return interaction.reply({ content: '代わりに君をタイムアウトしようかな?', ephemeral: true });
 		if (!timeoutMember) {
 			const embed = new discord.MessageEmbed()
 				.setDescription('❌ そのユーザーはこのサーバーにいません!')
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral:true });
 		}
-		if (moderateUser.id !== interaction.guild.ownerId && interaction.member.roles.highest.comparePositionTo(timeoutMember.roles.highest) !== 1) {
+		if (moderateUser.id !== interaction.guild.ownerId && !(interaction.member.roles.highest.comparePositionTo(timeoutMember.roles.highest) <= 1)) {
 			const embed = new discord.MessageEmbed()
 				.setDescription('❌ 最上位の役職が自分より上か同じメンバーをタイムアウトさせることはできません!')
 				.setColor('RED');
@@ -64,6 +63,7 @@ module.exports = {
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
+		if (timeoutMember == interaction.guild.me) return interaction.reply({ content: '代わりに君をタイムアウトしようかな?', ephemeral: true });
 
 		timeoutMember.timeout(timeoutDuration, timeoutReason)
 			.then(() => {
