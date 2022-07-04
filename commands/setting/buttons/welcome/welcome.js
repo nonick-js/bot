@@ -34,8 +34,7 @@ module.exports = {
             button.components[1]
                 .setLabel('有効化')
                 .setStyle('SUCCESS');
-        }
-        else {
+        } else {
             Configs.update({ welcome: true }, { where: { serverId: interaction.guild.id } });
             embed.spliceFields(0, 1, { name: '入室ログ', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.channelMention(welcomeCh)})`, inline:true });
             button.components[1]

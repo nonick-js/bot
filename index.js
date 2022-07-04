@@ -78,6 +78,7 @@ client.on('ready', () => {
     else commands.register(client);
     client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
 });
+
 client.on('guildCreate', () => client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`));
 client.on('guildDelete', () => client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`));
 

@@ -15,7 +15,7 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-welcomeMessage', type: 'BUTTON' },
-    /* *@type {InteractionCallback} */
+    /** @type {InteractionCallback} */
     exec: async (interaction) => {
 		const modal = new discord.Modal()
 			.setCustomId('modal-setting-welcomeMessage')

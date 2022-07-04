@@ -18,9 +18,7 @@ module.exports = {
     /** @type {InteractionCallback} */
     exec: async (interaction, client, Configs) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
-        const reportRoleMention = config.get('reportRoleMention');
-        const reportCh = config.get('reportCh');
-        const reportRole = config.get('reportRole');
+        const { reportRole, reportRoleMention, reportCh } = config.get();
 
         const embed = interaction.message.embeds[0];
         const user = await client.users.fetch(embed.fields[0].value.replace(/^../g, '').replace(/.$/, ''));
