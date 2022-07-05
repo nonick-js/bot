@@ -20,9 +20,6 @@ module.exports = {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { timeoutLog, timeoutLogCh, timeoutDm } = config.get();
 
-        /** @type {discord.MessageEmbed} */
-        const embed = interaction.message.embeds[0];
-        if (!embed) return;
         /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
         /** @type {discord.MessageActionRow} */
@@ -48,7 +45,7 @@ module.exports = {
             );
             select.components[0].options[0].default = true;
             select.components[0].options[1].default = false;
-            interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+            interaction.update({ components: [select, button], ephemeral:true });
         }
 
         if (interaction.values == 'setting-timeout-2') {
@@ -61,7 +58,7 @@ module.exports = {
             );
             select.components[0].options[0].default = false;
             select.components[0].options[0].default = true;
-            interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+            interaction.update({ components: [select, button], ephemeral:true });
         }
     },
 };
