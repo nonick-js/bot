@@ -16,7 +16,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { name: 'setting', description: 'BOTのコントロールパネル(設定)を開きます', type: 'CHAT_INPUT' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction) => {
         if (!interaction.member.permissions.has('MANAGE_GUILD')) {
             const embed = new discord.MessageEmbed()
                 .setColor('RED')
@@ -42,7 +42,7 @@ module.exports = {
                 .setEmoji('966588719643631666')
                 .setStyle('PRIMARY'),
             new discord.MessageButton()
-                .setCustomId('setting-laungage')
+                .setCustomId('setting-language')
                 .setEmoji('🌐')
                 .setStyle('SECONDARY'),
         );

@@ -92,31 +92,35 @@ player.on('botDisconnect', queue => queue.destroy());
 player.on('channelEmpty', queue => queue.destroy());
 
 client.on('interactionCreate', async interaction => {
+    await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
+    const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+    const laungage = require(`./language/${config.get('laungage')}`);
+
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
-            .setDescription([
-                `🚫 このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。`,
-                '禁止された理由や詳細は`nonick-mc#1017`までお問い合わせください。',
-            ].join('\n'))
+            .setDescription(laungage('BLACKLIST_MESSAGE', client.user.username))
             .setColor('RED');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     const cmd = commands.getCommand(interaction);
     try {
-        await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
-        cmd.exec(interaction, client, Configs, player);
+        cmd.exec(client, interaction, Configs, laungage, player);
     }
-    catch (err) {
-        console.log(err);
+    catch (e) {
+        console.log(e);
     }
 });
 
 async function moduleExecute(param, module) {
     if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
+
     await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
+    const config = await Configs.findOne({ where: { serverId: param.guild.id } });
+    const laungage = require(`./language/${config.get('laungage')}`);
+
     try {
-        module.execute(client, param, Configs);
+        module.execute(client, param, Configs, laungage);
     } catch (e) {
         console.log(`[エラー!] サーバーID:${param.guild.id}\n${e}`);
     }
