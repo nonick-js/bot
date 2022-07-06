@@ -2,8 +2,8 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.SelectMenuInteraction} interaction
 * @param {discord.Client} client
+* @param {discord.SelectMenuInteraction} interaction
 * @returns {void}
 */
 /**
@@ -16,7 +16,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-select', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
+    exec: async (client, interaction, Configs, language) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()

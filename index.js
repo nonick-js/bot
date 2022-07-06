@@ -30,7 +30,7 @@ const connectionError = require('./events/connectionError/index');
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
 	serverId: { type: Sequelize.STRING, unique: true },
-    laungage: { type: Sequelize.STRING, defaultValue: 'ja_JP' },
+    language: { type: Sequelize.STRING, defaultValue: 'ja_JP' },
     welcome: { type: Sequelize.BOOLEAN, defaultValue: false },
     welcomeCh: { type: Sequelize.STRING, defaultValue: null },
     welcomeMessage: { type: Sequelize.TEXT, defaultValue: 'まずはルールを確認しよう!' },
@@ -94,7 +94,7 @@ player.on('channelEmpty', queue => queue.destroy());
 client.on('interactionCreate', async interaction => {
     await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
     const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-    const laungage = require(`./language/${config.get('laungage')}`);
+    const laungage = require(`./language/${config.get('language')}`);
 
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
@@ -117,7 +117,7 @@ async function moduleExecute(param, module) {
 
     await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
     const config = await Configs.findOne({ where: { serverId: param.guild.id } });
-    const laungage = require(`./language/${config.get('laungage')}`);
+    const laungage = require(`./language/${config.get('language')}`);
 
     try {
         module.execute(client, param, Configs, laungage);
