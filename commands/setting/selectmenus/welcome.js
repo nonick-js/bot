@@ -16,14 +16,14 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'welcomeSetting', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
+    exec: async (client, interaction, Configs, language) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { welcome, welcomeCh, leave, leaveCh } = config.get();
 
         /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
         /** @type {discord.MessageActionRow} */
-        const button = new discord.MessageActionRow.addComponents(
+        const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
             .setCustomId('setting-back')
             .setEmoji('971389898076598322')
@@ -34,41 +34,42 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-welcome')
-                    .setLabel(welcome ? '無効化' : '有効化')
+                    .setLabel(welcome ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
                     .setStyle(welcome ? 'DANGER' : 'SUCCESS')
                     .setDisabled(welcomeCh ? false : true),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeCh')
-                    .setLabel('送信先')
+                    .setLabel(language('SETTING_BUTTON_CH'))
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeMessage')
-                    .setLabel('メッセージ')
+                    .setLabel(language('SETTING_BUTTON_MESSAGE'))
                     .setEmoji('966596708458983484')
                     .setStyle('SECONDARY'),
             );
-            select.components[0].options[0].default = true;
-            select.components[0].options[1].default = false;
-            interaction.update({ components: [select, button], ephemeral:true });
         }
 
         if (interaction.values == 'setting-welcome-2') {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-leave')
-                    .setLabel(leave ? '無効化' : '有効化')
+                    .setLabel(leave ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
                     .setStyle(leave ? 'DANGER' : 'SUCCESS')
                     .setDisabled(leaveCh ? false : true),
                 new discord.MessageButton()
                     .setCustomId('setting-leaveCh')
-                    .setLabel('送信先')
+                    .setLabel(language('SETTING_BUTTON_CH'))
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
             );
-            select.components[0].options[0].default = false;
-            select.components[0].options[1].default = true;
-            interaction.update({ components: [select, button], ephemeral:true });
         }
+
+        for (let i = 0; i < select.components[0].options.length; i++) {
+            select.components[0].options[i].default = false;
+        }
+        const index = select.components[0].options.findIndex(v => v.value == interaction.values[0]);
+        select.components[0].options[index].default = true;
+        interaction.update({ components: [select, button], ephemeral:true });
     },
 };

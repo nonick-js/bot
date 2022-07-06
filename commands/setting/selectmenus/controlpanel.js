@@ -28,40 +28,36 @@ module.exports = {
         if (interaction.values == 'setting-welcomemessage') {
             const { welcome, welcomeCh, welcomeMessage, leave, leaveCh } = config.get();
             const embed = new discord.MessageEmbed()
-                .setTitle('🛠 設定 - 入退室ログ')
-                .setDescription([
-                    '入退室ログの設定を以下のボタンから行えます。',
-                    discord.Formatters.codeBlock('markdown', '#入退室ログとは...\nサーバーに新しくメンバーが参加した時や退室した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。'),
-                    '**【現在の設定】**',
-                ].join('\n'))
+                .setTitle(language('SETTING_WELCOMEMESSAGE_EMBED_TITLE'))
+                .setDescription(language('SETTING_WELCOMEMESSAGE_EMBED_DESCRIPTION'))
                 .setColor('GREEN')
                 .addFields(
-                    { name: '入室ログ', value: welcome ? `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.channelMention(welcomeCh)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true },
-                    { name: '退室ログ', value: leave ? `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.channelMention(leaveCh)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true },
-                    { name: '入室ログメッセージ', value: welcomeMessage || '設定されていません' },
+                    { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_1')}`, value: welcome ? `${language('SETTING_CHANNEL_ENABLE', welcomeCh)}` : `${language('SETTING_DISABLE')}`, inline:true },
+                    { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_2')}`, value: leave ? `${language('SETTING_CHANNEL_ENABLE', leaveCh)}` : `${language('SETTING_DISABLE')}`, inline:true },
+                    { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_3')}`, value: welcomeMessage || 'SETTING_NONE' },
                 );
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                     .setCustomId('welcomeSetting')
                     .addOptions([
-                        { label: '入室ログ', value: 'setting-welcome-1', description: 'メンバー参加時にメッセージを送信', emoji: '966588719635267624', default: true },
-                        { label: '退室ログ', value: 'setting-welcome-2', description: 'メンバー退室時にメッセージを送信', emoji: '966588719635267624' },
+                        { label: `${language('SETTING_WELCOMEMESSAGE_SELECT_TITLE_1')}`, value: 'setting-welcome-1', description: `${language('SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_1')}`, emoji: '966588719635267624', default: true },
+                        { label: `${language('SETTING_WELCOMEMESSAGE_SELECT_TITLE_2')}`, value: 'setting-welcome-2', description: `${language('SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_2')}`, emoji: '966588719635267624' },
                     ]),
             ]);
             button.addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-welcome')
-                    .setLabel(welcome ? '無効化' : '有効化')
+                    .setLabel(welcome ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
                     .setStyle(welcome ? 'DANGER' : 'SUCCESS')
                     .setDisabled(welcomeCh ? false : true),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeCh')
-                    .setLabel('送信先')
+                    .setLabel(language('SETTING_BUTTON_CH'))
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeMessage')
-                    .setLabel('メッセージ')
+                    .setLabel(language('SETTING_BUTTON_MESSAGE'))
                     .setEmoji('966596708458983484')
                     .setStyle('SECONDARY'),
             ]);
