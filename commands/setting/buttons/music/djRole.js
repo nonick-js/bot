@@ -16,15 +16,15 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-djRole', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         const modal = new discord.Modal()
             .setCustomId('setting-djRole')
-            .setTitle('DJロール')
+            .setTitle(language('SETTING_MUSIC_DJROLE_MODAL_TITLE'))
             .setComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('textinput')
-                        .setLabel('DJロールとして使用するロールの名前を入力してください。')
+                        .setLabel(language('SETTING_MUSIC_DJROLE_MODAL_LABEL'))
                         .setMaxLength(100)
                         .setStyle('SHORT')
                         .setRequired(true),

@@ -117,36 +117,27 @@ module.exports = {
             const { dj, djRole } = config.get();
 
             const embed = new discord.MessageEmbed()
-            .setTitle('🛠 設定 - 音楽再生')
-            .setDescription([
-                'musicコマンドの設定を以下のセレクトメニューから行えます。',
-                discord.Formatters.codeBlock('markdown', [
-                    '# musicコマンドとは...',
-                    'YoutubeやSpotify、SoundCloudにある音楽をVCで再生することができます。',
-                    'ボイスチャット内で音楽を再生させたい時に便利です。',
-                ].join('\n')),
-                '**【現在の設定】**',
-            ].join('\n'))
+            .setTitle(language('SETTING_MUSIC_EMBED_TITLE'))
+            .setDescription(language('SETTING_MUSIC_EMBED_DESCRIPTION'))
             .setColor('GREEN')
             .addFields(
-                { name: 'DJモード', value: dj ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.roleMention(djRole)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
-                { name: '❓DJモードとは', value: 'musicコマンドや再生パネルの使用を、指定したロールを持つメンバーと管理者権限をもつメンバーのみ許可します。\n大規模なサーバーで使用する場合やVC荒らしを防止するために、**この設定を有効にすることをおすすめします。**', inline: true },
+                { name: `${language('SETTING_MUSIC_EMBED_FIELD_1')}`, value: dj ? `${language('SETTING_ROLE_ENABLE', djRole)}` : `${language('SETTING_DISABLE')}`, inline: true },
+                { name: `${language('SETTING_MUSIC_EMBED_FIELD_2')}`, value: `${language('SETTING_MUSIC_EMBED_FIELD_2_VALUE')}` },
             );
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                     .setCustomId('musicSetting')
-                    .setPlaceholder('ここから選択')
-                    .addOptions({ label: 'DJモード', value: 'setting-music', emoji: '966719258430160986', default:true }),
+                    .addOptions({ label: `${language('SETTING_MUSIC_SELECT_TITLE_1')}`, value: 'setting-music', emoji: '966719258430160986', default:true }),
             ]);
             button.addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-dj')
-                    .setLabel(dj ? '無効化' : '有効化')
+                    .setLabel(dj ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
                     .setStyle(dj ? 'DANGER' : 'SUCCESS')
                     .setDisabled(djRole ? false : true),
                 new discord.MessageButton()
                     .setCustomId('setting-djRole')
-                    .setLabel('ロールの変更')
+                    .setLabel(language('SETTING_BUTTON_ROLE'))
                     .setEmoji('966719258430160986')
                     .setStyle('SECONDARY'),
             ]);

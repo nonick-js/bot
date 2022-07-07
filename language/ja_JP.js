@@ -16,7 +16,7 @@ const languageData = {
     'SETTING_BUTTON_CH': '送信先',
     'SETTING_BUTTON_MESSAGE': 'メッセージ',
     'SETTING_BUTTON_ROLE': 'ロール',
-    'SETTING_NONE': '設定されていません',
+    'SETTING_NONE': '__設定されていません__',
     'SETTING_CH_SUCCESS_DESCRIPTION': (name) => `✅ **${name}**がここに送信されます!`,
     'SETTING_ERROR_TITLE': 'エラー!',
     'SETTING_ERROR_NOTPERMISSION': '⚠️ **BOTの権限が不足しています!**\n必要な権限: `チャンネルを見る` `メッセージを送信` `埋め込みリンク`',
@@ -28,7 +28,7 @@ const languageData = {
 
     'SETTING_WELCOMEMESSAGE': '入退室ログ',
     'SETTING_WELCOMEMESSAGE_EMBED_TITLE': '🛠 設定 - 入退室ログ',
-    'SETTING_WELCOMEMESSAGE_EMBED_DESCRIPTION': '```サーバーに新しくメンバーが参加した時や退室した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。\n```\n**【現在の設定】**',
+    'SETTING_WELCOMEMESSAGE_EMBED_DESCRIPTION': '```サーバーに新しくメンバーが参加した時や退室した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。```\n**【現在の設定】**',
     'SETTING_WELCOMEMESSAGE_EMBED_FIELD_1': '入室ログ',
     'SETTING_WELCOMEMESSAGE_EMBED_FIELD_2': '退室ログ',
     'SETTING_WELCOMEMESSAGE_EMBED_FIELD_3': '入室ログメッセージ',
@@ -46,7 +46,7 @@ const languageData = {
 
     'SETTING_REPORT': '通報機能',
     'SETTING_REPORT_EMBED_TITLE': '🛠 設定 - 通報機能',
-    'SETTING_REPORT_EMBED_DESCRIPTION': '**Tips**: コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。\n```\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。\n```\n**【現在の設定】**',
+    'SETTING_REPORT_EMBED_DESCRIPTION': '**Tips**: コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。\n```メンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。```\n**【現在の設定】**',
     'SETTING_REPORT_EMBED_FIELD_1': '通報の送信先',
     'SETTING_REPORT_EMBED_FIELD_2': 'ロールメンション',
     'SETTING_REPORT_SELECT_TITLE_1': '全般設定',
@@ -62,6 +62,16 @@ const languageData = {
     'SETTING_MESSAGELINKEXPANSION_EMBED_DESCRIPTION': '```\nDiscordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。\n流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。\n```\n**【現在の設定】**',
     'SETTING_MESSAGELINKEXPANSION_EMBED_FIELD_1': 'リンク展開',
     'SETTING_MESSAGELINKEXPANSION_SELECT_TITLE_1': '全般設定',
+
+    'SETTING_MUSIC': '音楽再生',
+    'SETTING_MUSIC_EMBED_TITLE': '🛠 設定 - 音楽再生',
+    'SETTING_MUSIC_EMBED_DESCRIPTION': '**Tips**: スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。\n```YoutubeやSpotify、SoundCloudにある音楽をVCで再生することができます。ボイスチャット内で音楽を再生させたい時に便利です。```\n\n**【現在の設定】**',
+    'SETTING_MUSIC_EMBED_FIELD_1': 'DJモード',
+    'SETTING_MUSIC_EMBED_FIELD_2': '❓DJモードとは',
+    'SETTING_MUSIC_EMBED_FIELD_2_VALUE': 'musicコマンドや再生パネルの使用を、指定したロールを持つメンバーと管理者権限をもつメンバーのみ許可します。\n大規模なサーバーで使用する場合やVC荒らしを防止するために、**この設定を有効にすることをおすすめします。**',
+    'SETTING_MUSIC_SELECT_TITLE_1': 'DJモード',
+    'SETTING_MUSIC_DJROLE_MODAL_TITLE': 'DJモード',
+    'SETTING_MUSIC_DJROLE_MODAL_LABEL': 'ロール名',
 
     'SETTING_LANGUAGE_TITLE': '🌍 言語設定',
     'SETTING_LANGUAGE_DESCRIPTION': '使用する言語を選択してください。',

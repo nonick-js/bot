@@ -46,7 +46,7 @@ module.exports = {
                     { label: `${language('SETTING_WELCOMEMESSAGE')}`, value: 'setting-welcomemessage', emoji: '🚪' },
                     { label: `${language('SETTING_REPORT')}`, value: 'setting-report', emoji: '📢' },
                     { label: `${language('SETTING_MESSAGELINKEXPANSION')}`, value: 'setting-linkOpen', emoji: '🔗' },
-                    { label: '/music', value: 'setting-music', emoji: '966596708484149289' },
+                    { label: `${language('SETTING_MUSIC')}`, value: 'setting-music', emoji: '🎵' },
                 ]),
         );
         interaction.reply({ embeds: [embed], components: [select, button], ephemeral: true });
