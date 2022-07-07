@@ -8,6 +8,7 @@ const languageData = {
 
     'SETTING_PERMISSION_ERROR': '❌ **You are not authorized to do this!**\nRequired Permissions: `Manage Server`',
     'SETTING_DISABLE': `${discord.Formatters.formatEmoji('758380151238033419')} Disable`,
+    'SETTING_ENABLE': `${discord.Formatters.formatEmoji('758380151544217670')} Enable`,
     'SETTING_CHANNEL_ENABLE': (ch) => `${discord.Formatters.formatEmoji('758380151544217670')} Enable (<#${ch}>)`,
     'SETTING_ROLE_ENABLE': (role) => `${discord.Formatters.formatEmoji('758380151544217670')} Enable (<@&${role}>)`,
     'SETTING_BUTTON_ENABLE': 'Enable',
@@ -51,11 +52,16 @@ const languageData = {
     'SETTING_REPORT_SELECT_TITLE_1': 'General setting',
     'SETTING_REPORT_SELECT_TITLE_2': 'Role Mention',
     'SETTING_REPORT_SELECT_DESCRIPTION_2': 'Mention role upon receipt of report',
-
     'SETTING_REPORT_REPORTCH_MODAL_TITLE': 'Report Receive Channel',
     'SETTING_REPORT_REPORTCH_MODAL_LABEL': 'channel name',
     'SETTING_REPORT_REPORTROLE_MODAL_TITLE': 'Role Mention',
     'SETTING_REPORT_REPORTROLE_MODAL_LABEL': 'role name',
+
+    'SETTING_MESSAGELINKEXPANSION': 'Message Link Expansion',
+    'SETTING_MESSAGELINKEXPANSION_EMBED_TITLE': '🛠 Setting - Message Link Expansion',
+    'SETTING_MESSAGELINKEXPANSION_EMBED_DESCRIPTION': '```\nThis function displays the linked message when you send a Discord message link.\nThis is useful when you want to chat about past messages.\n```\n**【Current settings】**',
+    'SETTING_MESSAGELINKEXPANSION_EMBED_FIELD_1': 'Message Link Expansion',
+    'SETTING_MESSAGELINKEXPANSION_SELECT_TITLE_1': 'General Setting',
 
     'SETTING_LANGUAGE_TITLE': '🌍 Language Setting',
     'SETTING_LANGUAGE_DESCRIPTION': 'Please select the language you wish to use.',

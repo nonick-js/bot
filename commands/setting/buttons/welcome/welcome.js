@@ -14,7 +14,7 @@ const discord = require('discord.js');
 */
 
 module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
+    /** @type { discord.ApplicationCommandData|ContextMenuData } */
     data: { customid: 'setting-welcome', type: 'BUTTON' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {

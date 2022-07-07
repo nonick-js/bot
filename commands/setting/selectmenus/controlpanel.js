@@ -32,9 +32,9 @@ module.exports = {
                 .setDescription(language('SETTING_WELCOMEMESSAGE_EMBED_DESCRIPTION'))
                 .setColor('GREEN')
                 .addFields(
-                    { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_1')}`, value: welcome ? `${language('SETTING_CHANNEL_ENABLE', welcomeCh)}` : `${language('SETTING_DISABLE')}`, inline:true },
-                    { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_2')}`, value: leave ? `${language('SETTING_CHANNEL_ENABLE', leaveCh)}` : `${language('SETTING_DISABLE')}`, inline:true },
-                    { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_3')}`, value: welcomeMessage || 'SETTING_NONE' },
+                    { name: `${language('SETTING_WELCOMEMESSAGE_EMBED_FIELD_1')}`, value: welcome ? `${language('SETTING_CHANNEL_ENABLE', welcomeCh)}` : `${language('SETTING_DISABLE')}`, inline:true },
+                    { name: `${language('SETTING_WELCOMEMESSAGE_EMBED_FIELD_2')}`, value: leave ? `${language('SETTING_CHANNEL_ENABLE', leaveCh)}` : `${language('SETTING_DISABLE')}`, inline:true },
+                    { name: `${language('SETTING_WELCOMEMESSAGE_EMBED_FIELD_3')}`, value: welcomeMessage || 'SETTING_NONE' },
                 );
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
@@ -71,8 +71,8 @@ module.exports = {
                 .setDescription(language('SETTING_REPORT_EMBED_DESCRIPTION'))
                 .setColor('GREEN')
                 .addFields(
-                    { name: `${language('SETTING_REPORT_FIELD_1')}`, value: reportCh ? `${language('SETTING_CHANNEL_ENABLE', reportCh)}` : `${language('SETTING_NONE')}`, inline: true },
-                    { name: `${language('SETTING_REPORT_FIELD_2')}`, value: reportRoleMention ? `${language('SETTING_ROLE_ENABLE', reportRole)})` : `${language('SETTING_DISABLE')}`, inline: true },
+                    { name: `${language('SETTING_REPORT_EMBED_FIELD_1')}`, value: reportCh ? `${language('SETTING_CHANNEL_ENABLE', reportCh)}` : `${language('SETTING_NONE')}`, inline: true },
+                    { name: `${language('SETTING_REPORT_EMBED_FIELD_2')}`, value: reportRoleMention ? `${language('SETTING_ROLE_ENABLE', reportRole)})` : `${language('SETTING_DISABLE')}`, inline: true },
                 );
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
@@ -173,24 +173,19 @@ module.exports = {
         if (interaction.values == 'setting-linkOpen') {
             const linkOpen = config.get('linkOpen');
             const embed = new discord.MessageEmbed()
-                .setTitle('🛠 設定 - リンク展開')
-                .setDescription([
-                    'リンク展開の設定を以下のセレクトメニューから行えます。',
-                    discord.Formatters.codeBlock('markdown', '#リンク展開とは...\nDiscordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。\n流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。'),
-                    '**【現在の設定】**',
-                ].join('\n'))
+                .setTitle(language('SETTING_MESSAGELINKEXPANSION_EMBED_TITLE'))
+                .setDescription(language('SETTING_MESSAGELINKEXPANSION_EMBED_DESCRIPTION'))
                 .setColor('GREEN')
-                .addFields({ name: 'リンク展開', value: linkOpen ? `${discord.Formatters.formatEmoji('968351750014783532')}有効` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true });
+                .addFields({ name: language('SETTING_MESSAGELINKEXPANSION_EMBED_FIELD_1'), value: linkOpen ? `${language('SETTING_ENABLE')}` : `${language('SETTING_DISABLE')}`, inline: true });
             const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                     .setCustomId('linkOpenSetting')
-                    .setPlaceholder('ここから選択')
-                    .addOptions({ label: '全般設定', value: 'setting-linkOpen-1', emoji: '966588719635267624', default:true }),
+                    .addOptions({ label: `${language('SETTING_MESSAGELINKEXPANSION_SELECT_TITLE_1')}`, value: 'setting-linkOpen-1', emoji: '966588719635267624', default:true }),
             ]);
             button.addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-linkOpen')
-                    .setLabel(linkOpen ? '無効化' : '有効化')
+                    .setLabel(linkOpen ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
                     .setStyle(linkOpen ? 'DANGER' : 'SUCCESS'),
             ]);
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
