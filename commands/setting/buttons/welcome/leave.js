@@ -30,13 +30,13 @@ module.exports = {
 
         if (leave) {
             Configs.update({ leave: false }, { where: { serverId: interaction.guildId } });
-            embed.fields[1] = { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_2')}`, value: `${language('SETTING_DISABLE')}`, inline: true };
+            embed.fields[1].value = language('SETTING_DISABLE');
             button.components[1]
                 .setLabel(language('SETTING_BUTTON_ENABLE'))
                 .setStyle('SUCCESS');
         } else {
             Configs.update({ leave: true }, { where: { serverId: interaction.guildId } });
-            embed.fields[1] = { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_2')}`, value: `${language('SETTING_CHANNEL_ENABLE', leaveCh)}`, inline: true };
+            embed.fields[1].value = language('SETTING_CHANNEL_ENABLE', leaveCh);
             button.components[1]
                 .setLabel(language('SETTING_BUTTON_DISABLE'))
                 .setStyle('DANGER');

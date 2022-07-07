@@ -16,7 +16,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reportSetting', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
+    exec: async (client, interaction, Configs, language) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { reportRole, reportRoleMention } = config.get();
 
@@ -34,31 +34,32 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-reportCh')
-                    .setLabel('通報の送信先')
+                    .setLabel(language('SETTING_BUTTON_CH'))
                     .setStyle('SECONDARY')
                     .setEmoji('966588719635267624'),
             );
-            select.components[0].options[0].default = true;
-            select.components[0].options[1].default = false;
-            interaction.update({ components: [select, button], ephemeral: true });
         }
 
         if (interaction.values == 'setting-report-2') {
             button .addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-reportRoleMention')
-                    .setLabel(reportRoleMention ? '無効化' : '有効化')
+                    .setLabel(reportRoleMention ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
                     .setStyle(reportRoleMention ? 'DANGER' : 'SUCCESS')
                     .setDisabled(reportRole ? false : true),
                 new discord.MessageButton()
                     .setCustomId('setting-reportRole')
-                    .setLabel('Mentionするロール')
+                    .setLabel(language('SETTING_BUTTON_ROLE'))
                     .setEmoji('966719258430160986')
                     .setStyle('SECONDARY'),
             );
-            select.components[0].options[0].default = false;
-            select.components[0].options[1].default = true;
-            interaction.update({ components: [select, button], ephemeral: true });
         }
+
+        for (let i = 0; i < select.components[0].options.length; i++) {
+            select.components[0].options[i].default = false;
+        }
+        const index = select.components[0].options.findIndex(v => v.value == interaction.values[0]);
+        select.components[0].options[index].default = true;
+        interaction.update({ components: [select, button], ephemeral: true });
     },
 };

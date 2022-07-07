@@ -28,22 +28,21 @@ module.exports = {
         /** @type {discord.MessageActionRow} */
         const button = interaction.message.components[1];
 
-        const name = embed.fields[parseInt(settingInfo[1], 10)].name;
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const configCh = config.get(settingInfo[0].slice(0, -2));
 
         try {
-            const channel = interaction.guild.channels.cache.find(v => v.name === textInput);
+            const channel = interaction.guild.channels.cache.find(v => v.name == textInput);
             const successembed = new discord.MessageEmbed()
-                .setDescription(language('SETTING_CH_SUCCESS_DESCRIPTION', name))
+                .setDescription(language('SETTING_CH_SUCCESS_DESCRIPTION', embed.fields[parseInt(settingInfo[1], 10)].name))
                 .setColor('GREEN');
             channel.send({ embeds: [successembed] })
                 .then(() => {
                     Configs.update({ [settingInfo[0]]: channel.id }, { where: { serverId: interaction.guildId } });
                     if (settingInfo[0].slice(0, -2) == 'report') {
-                        embed.fields[parseInt(settingInfo[1], 10)] = { name: name, value: `${discord.Formatters.channelMention(channel.id)}`, inline:true };
+                        embed.fields[parseInt(settingInfo[1], 10)].value = discord.Formatters.channelMention(channel.id);
                     } else {
-                        if (configCh) embed.fields[parseInt(settingInfo[1], 10)] = { name: `${language('SETTING_CHANNEL_ENABLE', channel.id)}`, inline: true };
+                        if (configCh) embed.fields[parseInt(settingInfo[1], 10)].value = language('SETTING_CHANNEL_ENABLE', channel.id);
                         button.components[1].setDisabled(false);
                     }
                     interaction.update({ embeds: [embed], components: [select, button] });
@@ -53,7 +52,7 @@ module.exports = {
                         .setTitle(language('SETTING_ERROR_TITLE'))
                         .setDescription(language('SETTING_ERROR_NOTPERMISSION'))
                         .setColor('RED');
-                    interaction.update({ embeds: [embed, MissingPermission], components: [select, button] });
+                    interaction.update({ embeds: [embed, MissingPermission] });
                 });
         }
         catch {

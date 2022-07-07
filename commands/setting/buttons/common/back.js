@@ -18,8 +18,8 @@ module.exports = {
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
         const embed = new discord.MessageEmbed()
-            .setTitle(language('SETTING_HOME_TITLE'))
-            .setDescription(language('SETTING_HOME_DESCRIPTION'))
+            .setTitle(language('SETTING_HOME_TITLE', client.user.username))
+            .setDescription(language('SETTING_HOME_DESCRIPTION', client.user.username))
             .setColor('GREEN');
         const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()

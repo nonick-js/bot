@@ -19,8 +19,7 @@ module.exports = {
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-        const welcome = config.get('welcome');
-        const welcomeCh = config.get('welcomeCh');
+        const { welcome, welcomeCh } = config.get();
 
         /** @type {discord.MessageEmbed} */
         const embed = interaction.message.embeds[0];
@@ -30,14 +29,14 @@ module.exports = {
         const button = interaction.message.components[1];
 
         if (welcome) {
-            Configs.update({ welcome: false }, { where: { serverId: interaction.guild.id } });
-            embed.fields[0] = { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_1')}`, value: `${language('SETTING_DISABLE')}`, inline: true };
+            Configs.update({ welcome: false }, { where: { serverId: interaction.guildId } });
+            embed.fields[0].value = language('SETTING_DISABLE');
             button.components[1]
                 .setLabel(language('SETTING_BUTTON_ENABLE'))
                 .setStyle('SUCCESS');
         } else {
-            Configs.update({ welcome: true }, { where: { serverId: interaction.guild.id } });
-            embed.fields[0] = { name: `${language('SETTING_WELCOMEMESSAGE_FIELD_1')}`, value: `${language('SETTING_CHANNEL_ENABLE', welcomeCh)}`, inline: true };
+            Configs.update({ welcome: true }, { where: { serverId: interaction.guildId } });
+            embed.fields[0].value = language('SETTING_CHANNEL_ENABLE', welcomeCh);
             button.components[1]
                 .setLabel(language('SETTING_BUTTON_DISABLE'))
                 .setStyle('DANGER');

@@ -61,41 +61,35 @@ module.exports = {
                     .setEmoji('966596708458983484')
                     .setStyle('SECONDARY'),
             ]);
-            interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+            interaction.update({ embeds: [embed], components: [select, button] });
         }
 
         if (interaction.values == 'setting-report') {
             const { reportCh, reportRoleMention, reportRole } = config.get();
             const embed = new discord.MessageEmbed()
-                .setTitle('🛠 設定 - 通報機能')
-                .setDescription([
-                    '通報機能の設定を以下のセレクトメニューから行えます。',
-                    '`Tips:`コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。',
-                    discord.Formatters.codeBlock('markdown', '#通報機能とは...\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。'),
-                    '**【現在の設定】**',
-                ].join('\n'))
+                .setTitle(language('SETTING_REPORT_EMBED_TITLE'))
+                .setDescription(language('SETTING_REPORT_EMBED_DESCRIPTION'))
                 .setColor('GREEN')
                 .addFields(
-                    { name: '通報の送信先', value: reportCh == null ? '指定されていません' : `${discord.Formatters.channelMention(reportCh)}`, inline: true },
-                    { name: 'ロールメンション', value: reportRoleMention ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.roleMention(reportRole)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
+                    { name: `${language('SETTING_REPORT_FIELD_1')}`, value: reportCh ? `${language('SETTING_CHANNEL_ENABLE', reportCh)}` : `${language('SETTING_NONE')}`, inline: true },
+                    { name: `${language('SETTING_REPORT_FIELD_2')}`, value: reportRoleMention ? `${language('SETTING_ROLE_ENABLE', reportRole)})` : `${language('SETTING_DISABLE')}`, inline: true },
                 );
-            const select1 = new discord.MessageActionRow().addComponents([
+            const select = new discord.MessageActionRow().addComponents([
                 new discord.MessageSelectMenu()
                 .setCustomId('reportSetting')
-                .setPlaceholder('ここから選択')
                 .addOptions([
-                    { label: '全般設定', value: 'setting-report-1', emoji: '🌐', default: true },
-                    { label: 'ロールメンション機能', description: '通報受け取り時にロールをメンション', value: 'setting-report-2', emoji: '966719258430160986' },
+                    { label: `${language('SETTING_REPORT_SELECT_TITLE_1')}`, value: 'setting-report-1', emoji: '🌐', default: true },
+                    { label: `${language('SETTING_REPORT_SELECT_TITLE_2')}`, description: `${language('SETTING_REPORT_SELECT_DESCRIPTION_2')}`, value: 'setting-report-2', emoji: '966719258430160986' },
                 ]),
             ]);
             button.addComponents([
                 new discord.MessageButton()
                     .setCustomId('setting-reportCh')
-                    .setLabel('通報の送信先')
+                    .setLabel(language('SETTING_BUTTON_CH'))
                     .setStyle('SECONDARY')
                     .setEmoji('966588719635267624'),
             ]);
-            interaction.update({ embeds: [embed], components: [select1, button], ephemeral:true });
+            interaction.update({ embeds: [embed], components: [select, button] });
         }
 
         if (interaction.values == 'setting-timeout') {

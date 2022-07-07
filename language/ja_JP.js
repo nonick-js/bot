@@ -9,15 +9,18 @@ const languageData = {
     'SETTING_PERMISSION_ERROR': '❌ **あなたにはこれを実行する権限がありません！**\n必要な権限: `サーバー管理`',
     'SETTING_DISABLE': `${discord.Formatters.formatEmoji('758380151238033419')} 無効`,
     'SETTING_CHANNEL_ENABLE': (ch) => `${discord.Formatters.formatEmoji('758380151544217670')} 有効 (<#${ch}>)`,
+    'SETTING_ROLE_ENABLE': (role) => `${discord.Formatters.formatEmoji('758380151544217670')} 有効 (<@&${role}>)`,
     'SETTING_BUTTON_ENABLE': '有効化',
     'SETTING_BUTTON_DISABLE': '無効化',
     'SETTING_BUTTON_CH': '送信先',
     'SETTING_BUTTON_MESSAGE': 'メッセージ',
+    'SETTING_BUTTON_ROLE': 'ロール',
     'SETTING_NONE': '設定されていません',
     'SETTING_CH_SUCCESS_DESCRIPTION': (name) => `✅ **${name}**がここに送信されます!`,
     'SETTING_ERROR_TITLE': 'エラー!',
     'SETTING_ERROR_NOTPERMISSION': '⚠️ **BOTの権限が不足しています!**\n必要な権限: `チャンネルを見る` `メッセージを送信` `埋め込みリンク`',
     'SETTING_ERROR_CHANNELNOTFOUND': (name) => `⚠️ ${discord.Formatters.inlineCode(name)}という名前のチャンネルは存在しません!`,
+    'SETTING_ERROR_ROLENOTFOUND': (name) => `⚠️ ${discord.Formatters.inlineCode(name)}という名前のロールは存在しません!`,
 
     'SETTING_HOME_TITLE': (username) => `🛠 ${username} - 設定`,
     'SETTING_HOME_DESCRIPTION': (username) => `${username}のコントロールパネルへようこそ!\nここではこのBOTの設定を変更することができます!\n\`\`\`\nセレクトメニューから閲覧・変更したい設定を選択しよう!\n\`\`\``,
@@ -31,7 +34,7 @@ const languageData = {
     'SETTING_WELCOMEMESSAGE_WELCOME_MODAL_TITLE': '入室ログ',
     'SETTING_WELCOMEMESSAGE_WELCOME_MODAL_LABEL': '送信先のチャンネル名',
     'SETTING_WELCOMEMESSAGE_LEAVE_MODAL_TITLE': '退室ログ',
-    'SETTING_WELCOMEMESSAGE_LEAVE_MODAL_LABEL': '送信先のチャンネル名',
+    'SETTING_WELCOMEMESSAGE_LEAVE_MODAL_LABEL': 'チャンネル名',
     'SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_TITLE': 'Welcomeメッセージ',
     'SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_LABEL': '入室ログに表示するメッセージを入力してください。',
     'SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_PLACEHOLDER': '<#チャンネルID>や<@ユーザーID>、<@&ロールID> と入力することでそれぞれメンションが可能です!',
@@ -41,6 +44,20 @@ const languageData = {
     'SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_2': 'メンバー退室時にメッセージを送信',
 
     'SETTING_REPORT': '通報機能',
+    'SETTING_REPORT_EMBED_TITLE': '🛠 設定 - 通報機能',
+    'SETTING_REPORT_EMBED_DESCRIPTION': '**Tips**: コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。\n```\nメンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。\n```\n**【現在の設定】**',
+    'SETTING_REPORT_FIELD_1': '通報の送信先',
+    'SETTING_REPORT_FIELD_2': 'ロールメンション',
+    'SETTING_REPORT_SELECT_TITLE_1': '全般設定',
+    'SETTING_REPORT_SELECT_TITLE_2': 'ロールメンション機能',
+    'SETTING_REPORT_SELECT_DESCRIPTION_2': '通報受け取り時にロールをメンション',
+
+    'SETTING_REPORT_REPORTCH_MODAL_TITLE': '送信先',
+    'SETTING_REPORT_REPORTCH_MODAL_LABEL': 'チャンネル名',
+    'SETTING_REPORT_REPORTROLE_MODAL_TITLE': 'ロールメンション',
+    'SETTING_REPORT_REPORTROLE_MODAL_LABEL': 'ロール名',
+
+
     'SETTING_MESSAGELINKEXPANSION': 'リンク展開',
 
     'SETTING_LANGUAGE_TITLE': '🌍 言語設定',

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 
 /**
@@ -16,27 +17,30 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-reportRoleMention', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
-        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-        const reportRoleMention = config.get('reportRoleMention');
-        const reportRole = config.get('reportRole');
+    exec: async (client, interaction, Configs, language) => {
+        const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
+        const { reportRole, reportRoleMention } = config.get();
+
+        /** @type {discord.MessageEmbed} */
         const embed = interaction.message.embeds[0];
+        /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
+        /** @type {discord.MessageActionRow} */
         const button = interaction.message.components[1];
 
         if (reportRoleMention) {
-            Configs.update({ reportRoleMention: false }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(1, 1, { name: 'ロールメンション', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true });
+            Configs.update({ reportRoleMention: false }, { where: { serverId: interaction.guildId } });
+            embed.fields[1].value = language('SETTING_DISABLE');
             button.components[1]
-                .setLabel('有効化')
+                .setLabel(language('SETTING_BUTTON_ENABLE'))
                 .setStyle('SUCCESS');
         } else {
-            Configs.update({ reportRoleMention: true }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(1, 1, { name: 'ロールメンション', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.roleMention(reportRole)})`, inline:true });
+            Configs.update({ reportRoleMention: true }, { where: { serverId: interaction.guildId } });
+            embed.fields[1].value = language('SETTING_ROLE_ENABLE', reportRole);
             button.components[1]
-                .setLabel('無効化')
+                .setLabel(language('SETTING_BUTTON_DISABLE'))
                 .setStyle('DANGER');
         }
-        interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+        interaction.update({ embeds: [embed], components: [select, button] });
     },
 };
