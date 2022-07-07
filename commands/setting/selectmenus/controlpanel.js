@@ -92,84 +92,6 @@ module.exports = {
             interaction.update({ embeds: [embed], components: [select, button] });
         }
 
-        if (interaction.values == 'setting-timeout') {
-            const { timeoutLog, timeoutLogCh, timeoutDm } = config.get();
-            const embed = new discord.MessageEmbed()
-                .setTitle('🛠 設定 - timeoutコマンド')
-                .setDescription([
-                    'timeoutコマンドの設定を以下のセレクトメニューから行えます。',
-                    '`Tips:`スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。',
-                    discord.Formatters.codeBlock('markdown', '#timeoutコマンドとは...\nサーバーにいるメンバーにタイムアウト(ミュート)を設定させるコマンドです。公式の機能より細かく設定させることができ、一分単位での調整が可能です。'),
-                    '**【現在の設定】**',
-                ].join('\n'))
-                .setColor('GREEN')
-                .addFields(
-                    { name: 'ログ機能', value: timeoutLog ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.channelMention(timeoutLogCh)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
-                    { name: 'DM警告機能', value: timeoutDm ? `${discord.Formatters.formatEmoji('968351750014783532')}有効` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
-                );
-            const select = new discord.MessageActionRow().addComponents([
-                new discord.MessageSelectMenu()
-                .setCustomId('timeoutSetting')
-                .setPlaceholder('ここから選択')
-                .addOptions([
-                    { label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-timeout-1', emoji: '966588719635267624', default: true },
-                    { label: 'DM警告機能', description: 'タイムアウトされた人に警告DMを送信', value: 'setting-timeout-2', emoji: '966588719635267624' },
-                ]),
-            ]);
-            button.addComponents([
-                new discord.MessageButton()
-                    .setCustomId('setting-timeoutLog')
-                    .setLabel(timeoutLog ? '無効化' : '有効化')
-                    .setStyle(timeoutLog ? 'DANGER' : 'SUCCESS')
-                    .setDisabled(timeoutLogCh ? false : true),
-                new discord.MessageButton()
-                    .setCustomId('setting-timeoutLogCh')
-                    .setLabel('送信先')
-                    .setEmoji('966588719635267624')
-                    .setStyle('SECONDARY'),
-            ]);
-            interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
-        }
-
-        if (interaction.values == 'setting-ban') {
-            const { banLog, banLogCh, banDm } = config.get();
-            const embed = new discord.MessageEmbed()
-                .setTitle('🛠 設定 - banコマンド')
-                .setDescription([
-                    'banコマンドの設定を以下のセレクトメニューから行えます。',
-                    '`Tips:`スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。',
-                    discord.Formatters.codeBlock('markdown', '#BANコマンドとは...\n公式のBANコマンドを強化したコマンドです。\nサーバーにいないユーザーをIDのみでBANすることもできます。荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。'),
-                    '**【現在の設定】**',
-                ].join('\n'))
-                .setColor('GREEN')
-                .addFields(
-                    { name: 'ログ機能', value: banLog ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.channelMention(banLogCh)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
-                    { name: 'DM警告機能', value: banDm ? `${discord.Formatters.formatEmoji('968351750014783532')}有効` : `${discord.Formatters.formatEmoji('758380151238033419')} 無効`, inline: true },
-                );
-            const select = new discord.MessageActionRow().addComponents([
-                new discord.MessageSelectMenu()
-                .setCustomId('banSetting')
-                .setPlaceholder('ここから選択')
-                .addOptions([
-                    { label: 'ログ機能', description: 'コマンドの実行ログを送信', value: 'setting-ban-1', emoji: '966588719635267624', default:true },
-                    { label: 'DM警告機能', description: 'BANされた人に警告DMを送信', value: 'setting-ban-2', emoji: '966588719635267624' },
-                ]),
-            ]);
-            button.addComponents([
-                new discord.MessageButton()
-                    .setCustomId('setting-banLog')
-                    .setLabel(banLog ? '無効化' : '有効化')
-                    .setStyle(banLog ? 'DANGER' : 'SUCCESS')
-                    .setDisabled(banLogCh ? false : true),
-                new discord.MessageButton()
-                    .setCustomId('setting-banLogCh')
-                    .setLabel('送信先')
-                    .setEmoji('966588719635267624')
-                    .setStyle('SECONDARY'),
-            ]);
-            interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
-        }
-
         if (interaction.values == 'setting-linkOpen') {
             const linkOpen = config.get('linkOpen');
             const embed = new discord.MessageEmbed()
@@ -195,7 +117,7 @@ module.exports = {
             const { dj, djRole } = config.get();
 
             const embed = new discord.MessageEmbed()
-            .setTitle('🛠 設定 - リンク展開')
+            .setTitle('🛠 設定 - 音楽再生')
             .setDescription([
                 'musicコマンドの設定を以下のセレクトメニューから行えます。',
                 discord.Formatters.codeBlock('markdown', [

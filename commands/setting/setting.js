@@ -47,8 +47,6 @@ module.exports = {
                     { label: `${language('SETTING_REPORT')}`, value: 'setting-report', emoji: '📢' },
                     { label: `${language('SETTING_MESSAGELINKEXPANSION')}`, value: 'setting-linkOpen', emoji: '🔗' },
                     { label: '/music', value: 'setting-music', emoji: '966596708484149289' },
-                    { label: '/timeout', value: 'setting-timeout', emoji: '966596708484149289' },
-                    { label: '/ban', value: 'setting-ban', emoji: '966596708484149289' },
                 ]),
         );
         interaction.reply({ embeds: [embed], components: [select, button], ephemeral: true });
