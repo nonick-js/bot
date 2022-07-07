@@ -17,7 +17,7 @@ module.exports = {
     data: { customid: 'setting-select', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
-        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+        const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
             .setCustomId('setting-back')
@@ -134,6 +134,7 @@ module.exports = {
                     .setCustomId('setting-dj')
                     .setLabel(dj ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
                     .setStyle(dj ? 'DANGER' : 'SUCCESS')
+                    .setEmoji('🌐')
                     .setDisabled(djRole ? false : true),
                 new discord.MessageButton()
                     .setCustomId('setting-djRole')

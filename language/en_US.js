@@ -73,7 +73,7 @@ const languageData = {
     'SETTING_MUSIC_DJROLE_MODAL_TITLE': 'DJ Mode',
     'SETTING_MUSIC_DJROLE_MODAL_LABEL': 'role name',
 
-    'SETTING_LANGUAGE_TITLE': '🌍 Language Setting',
+    'SETTING_LANGUAGE_TITLE': '🌐 Language Setting',
     'SETTING_LANGUAGE_DESCRIPTION': 'Please select the language you wish to use.',
 };
 

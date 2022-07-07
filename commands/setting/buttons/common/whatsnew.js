@@ -23,6 +23,6 @@ module.exports = {
             .setTitle('What\'s New')
             .setDescription(discord.Formatters.inlineCode(`現在のバージョン: v${version}`) + `\n${whatsnew}`)
             .setColor('BLUE');
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.reply({ embeds: [embed] });
     },
 };

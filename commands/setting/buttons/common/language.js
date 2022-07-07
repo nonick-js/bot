@@ -36,6 +36,6 @@ module.exports = {
                     { label: 'English, US', value: 'en_US', description: 'Translation may not be 100% accurate.', emoji: '🇺🇸', default: config.get('language') == 'en_US' ? true : false },
                 ]),
         );
-        interaction.update({ embeds: [embed], components: [select, button], ephemeral: true });
+        interaction.update({ embeds: [embed], components: [select, button] });
     },
 };
