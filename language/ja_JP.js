@@ -2,10 +2,12 @@ const discord = require('discord.js');
 const languageData = {
     'BLACKLIST_MESSAGE': (username) => `🚫 このサーバーでの**${username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`,
 
+    // infoコマンド
     'INFO_DESCRIPTION': '「使いやすい」をモットーにした**完全無料の多機能BOT!**\n誰でも簡単にBOTを使えるような開発をしています!\n\n🔹**搭載中の機能**\n`入退室ログ` `通報機能` `リアクションロール` `音楽再生機能` `timeoutコマンド` `banコマンド`',
     'INFO_FOOTER_TEXT': '開発者・nonick-mc#1017',
     'INFO_BUTTON_LABEL': 'サポートサーバー',
 
+    // settingコマンド
     'SETTING_PERMISSION_ERROR': '❌ **あなたにはこれを実行する権限がありません！**\n必要な権限: `サーバー管理`',
     'SETTING_DISABLE': `${discord.Formatters.formatEmoji('758380151238033419')} 無効`,
     'SETTING_ENABLE': `${discord.Formatters.formatEmoji('758380151544217670')} 有効`,
@@ -23,7 +25,8 @@ const languageData = {
     'SETTING_ERROR_CHANNELNOTFOUND': (name) => `⚠️ ${discord.Formatters.inlineCode(name)}という名前のチャンネルは存在しません!`,
     'SETTING_ERROR_ROLENOTFOUND': (name) => `⚠️ ${discord.Formatters.inlineCode(name)}という名前のロールは存在しません!`,
     'SETTING_HOME_TITLE': (username) => `🛠 ${username} - 設定`,
-    'SETTING_HOME_DESCRIPTION': (username) => `${username}のコントロールパネルへようこそ!\nここではこのBOTの設定を変更することができます!\n\`\`\`\nセレクトメニューから閲覧・変更したい設定を選択しよう!\n\`\`\``,
+    'SETTING_HOME_DESCRIPTION': (username) => `${username}のコントロールパネルへようこそ!\nここではこのBOTの設定を変更することができます!\n\`\`\`セレクトメニューから閲覧・変更したい設定を選択しよう!\`\`\``,
+
     'SETTING_WELCOMEMESSAGE': '入退室ログ',
     'SETTING_WELCOMEMESSAGE_EMBED_TITLE': '🛠 設定 - 入退室ログ',
     'SETTING_WELCOMEMESSAGE_EMBED_DESCRIPTION': '```サーバーに新しくメンバーが参加した時や退室した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。```\n**【現在の設定】**',
@@ -41,9 +44,10 @@ const languageData = {
     'SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_1': 'メンバー参加時にメッセージを送信',
     'SETTING_WELCOMEMESSAGE_SELECT_TITLE_2': '退室ログ',
     'SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_2': 'メンバー退室時にメッセージを送信',
+
     'SETTING_REPORT': '通報機能',
     'SETTING_REPORT_EMBED_TITLE': '🛠 設定 - 通報機能',
-    'SETTING_REPORT_EMBED_DESCRIPTION': '**Tips**: コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。\n```メンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。```\n**【現在の設定】**',
+    'SETTING_REPORT_EMBED_DESCRIPTION': '**Tips**: コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。```メンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。```\n**【現在の設定】**',
     'SETTING_REPORT_EMBED_FIELD_1': '通報の送信先',
     'SETTING_REPORT_EMBED_FIELD_2': 'ロールメンション',
     'SETTING_REPORT_SELECT_TITLE_1': '全般設定',
@@ -53,14 +57,16 @@ const languageData = {
     'SETTING_REPORT_REPORTCH_MODAL_LABEL': 'チャンネル名',
     'SETTING_REPORT_REPORTROLE_MODAL_TITLE': 'ロールメンション',
     'SETTING_REPORT_REPORTROLE_MODAL_LABEL': 'ロール名',
+
     'SETTING_MESSAGELINKEXPANSION': 'リンク展開',
     'SETTING_MESSAGELINKEXPANSION_EMBED_TITLE': '🛠 設定 - リンク展開',
-    'SETTING_MESSAGELINKEXPANSION_EMBED_DESCRIPTION': '```\nDiscordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。\n流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。\n```\n**【現在の設定】**',
+    'SETTING_MESSAGELINKEXPANSION_EMBED_DESCRIPTION': '```Discordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。\n流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。```\n**【現在の設定】**',
     'SETTING_MESSAGELINKEXPANSION_EMBED_FIELD_1': 'リンク展開',
     'SETTING_MESSAGELINKEXPANSION_SELECT_TITLE_1': '全般設定',
+
     'SETTING_MUSIC': '音楽再生',
     'SETTING_MUSIC_EMBED_TITLE': '🛠 設定 - 音楽再生',
-    'SETTING_MUSIC_EMBED_DESCRIPTION': '**Tips**: スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。\n```YoutubeやSpotify、SoundCloudにある音楽をVCで再生することができます。ボイスチャット内で音楽を再生させたい時に便利です。```\n\n**【現在の設定】**',
+    'SETTING_MUSIC_EMBED_DESCRIPTION': '**Tips**: スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。```YoutubeやSpotify、SoundCloudにある音楽をVCで再生することができます。ボイスチャット内で音楽を再生させたい時に便利です。```\n**【現在の設定】**',
     'SETTING_MUSIC_EMBED_FIELD_1': 'DJモード',
     'SETTING_MUSIC_EMBED_FIELD_2': '❓DJモードとは',
     'SETTING_MUSIC_EMBED_FIELD_2_VALUE': 'musicコマンドや再生パネルの使用を、指定したロールを持つメンバーと管理者権限をもつメンバーのみ許可します。\n大規模なサーバーで使用する場合やVC荒らしを防止するために、**この設定を有効にすることをおすすめします。**',
@@ -70,19 +76,57 @@ const languageData = {
     'SETTING_LANGUAGE_TITLE': '🌐 言語設定',
     'SETTING_LANGUAGE_DESCRIPTION': '使用する言語を選択してください。',
 
+    // ConnectionError
     'CONNECTIONERROR_EMBED_TITLE': 'エラー!',
 
+    // GuidlMemberAdd
     'GUILDMEMBERADD_BOT_TITLE': (name) => `${name} が導入されました!`,
     'GUILDMEMBERADD_MEMBER_DESCRIPTION': (array) => `${array[0]} **(${array[1]})** さん\n**${array[2]}** へようこそ!\n${array[3]}\n\n現在のメンバー数: **${array[4]}**`,
 
+    // GuildMemverRemove
     'GUILDMEMBERREMOVE_BOT_TITLE': (name) => `${name} が廃止されました`,
     'GUILDMEMBERREMOVE_MEMBER': (name) => `**${name}** さんがサーバーを退出しました👋`,
 
+    // TrackStart
     'TRACKSTART_PLAYING': '再生中',
 
+    // MessageCreate
     'MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_TITLE': 'メッセージ展開',
     'MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_FIELD': 'メッセージの内容',
     'MESSAGECREATE_MESSAGELINKEXPANSION_ERROR_TITLE': 'エラー!',
+
+    // 通報機能
+    'REPORT_NOT_SETTING': '⚠️ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。',
+    'REPORT_NOT_SETTING_ADMIN': '⚠️ **この機能を使用するには追加で設定が必要です。**\n`/setting`で通報機能の設定を開き、通報を受け取るチャンネルを設定してください。',
+    'REPORT_NOT_SETTING_ADMIN_IMAGE': 'https://cdn.discordapp.com/attachments/958791423161954445/976117804879192104/unknown.png',
+    'REPORT_MEMBER_UNDEFINED': '❌ そのユーザーはこのサーバーにいません!',
+    'REPORT_MYSELF': '僕を通報しても意味ないよ。',
+    'REPORT_BOT': '❌ BOT、Webhook、システムメッセージを通報することはできません!',
+    'REPORT_YOURSELF': '自分自身を通報していますよ...',
+    'REPORT_ADMIN': '❌ このコマンドでサーバー運営者を通報することはできません!',
+    'REPORT_SUCCESS': '✅ **報告ありがとうございます!** 通報をサーバー運営に送信しました!',
+    'REPORT_ERROR': '❌ 通報の送信中に問題が発生しました。',
+    'REPORT_BUTTON_LABEL': '通報',
+    'REPORT_MODAL_LABEL': '通報内容',
+    'REPORT_MODAL_PLACEHOLDER': 'できる限り詳しく入力してください',
+
+    'REPORT_MESSAGE_EMBED_TITLE': '⚠️ メッセージを通報',
+    'REPORT_MESSAGE_EMBED_DESCRIPTION': 'このメッセージを通報してもよろしいですか?```通報はこのサーバーの運営にのみ送信され、Discordには送信されません。```',
+    'REPORT_MESSAGE_EMBED_FIELD_1': '投稿者',
+    'REPORT_MESSAGE_EMBED_FIELD_2': '投稿先',
+    'REPORT_MESSAGE_EMBED_FIELD_2_VALUE': (ch, url) => `${ch} [リンク](${url})`,
+    'REPORT_MESSAGE_EMBED_FIELD_3': 'メッセージ',
+    'REPORT_MESSAGE_MODAL_TITLE': 'メッセージを通報',
+    'REPORT_MESSAGE_SLAVE_EMBED_TITLE': '⚠️ 通報 (メッセージ)',
+    'REPORT_MESSAGE_SLAVE_EMBED_FOOTER': (tag) => `通報者: ${tag}`,
+
+    'REPORT_USER_EMBED_TITLE': '⚠️ ユーザーを通報',
+    'REPORT_USER_EMBED_DESCRIPTION': 'このユーザーを通報してもよろしいですか?```通報はこのサーバーの運営にのみ送信され、Discordには送信されません。```',
+    'REPORT_USER_EMBED_FIELD_1': '対象者',
+    'REPORT_USER_MODAL_TITLE': 'メンバーを通報',
+    'REPORT_USER_SLAVE_EMBED_TITLE': '⚠️ 通報 (ユーザー)',
+    'REPORT_USER_SLAVE_EMBED_FOOTER': (tag) => `通報者: ${tag}`,
+
 };
 
 const translate = (key, args) => {

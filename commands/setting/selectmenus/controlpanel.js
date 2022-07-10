@@ -71,7 +71,7 @@ module.exports = {
                 .setDescription(language('SETTING_REPORT_EMBED_DESCRIPTION'))
                 .setColor('GREEN')
                 .addFields(
-                    { name: `${language('SETTING_REPORT_EMBED_FIELD_1')}`, value: reportCh ? `${language('SETTING_CHANNEL_ENABLE', reportCh)}` : `${language('SETTING_NONE')}`, inline: true },
+                    { name: `${language('SETTING_REPORT_EMBED_FIELD_1')}`, value: reportCh ? `<#${reportCh}>` : `${language('SETTING_NONE')}`, inline: true },
                     { name: `${language('SETTING_REPORT_EMBED_FIELD_2')}`, value: reportRoleMention ? `${language('SETTING_ROLE_ENABLE', reportRole)})` : `${language('SETTING_DISABLE')}`, inline: true },
                 );
             const select = new discord.MessageActionRow().addComponents([
