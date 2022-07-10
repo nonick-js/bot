@@ -71,6 +71,7 @@ const languageData = {
     'SETTING_LANGUAGE_DESCRIPTION': 'Please select the language you wish to use.',
 
     'CONNECTIONERROR_EMBED_TITLE': 'Error!',
+
     'GUILDMEMBERADD_BOT_TITLE': (name) => `${name} has been introduced!`,
     'GUILDMEMBERADD_MEMBER_DESCRIPTION': (array) => `${array[0]}**(${array[1]})**\nWelcome to **${array[2]}**!\n${array[3]}\n\n**${array[4]}** Members`,
 
