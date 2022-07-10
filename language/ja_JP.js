@@ -22,10 +22,8 @@ const languageData = {
     'SETTING_ERROR_NOTPERMISSION': '⚠️ **BOTの権限が不足しています!**\n必要な権限: `チャンネルを見る` `メッセージを送信` `埋め込みリンク`',
     'SETTING_ERROR_CHANNELNOTFOUND': (name) => `⚠️ ${discord.Formatters.inlineCode(name)}という名前のチャンネルは存在しません!`,
     'SETTING_ERROR_ROLENOTFOUND': (name) => `⚠️ ${discord.Formatters.inlineCode(name)}という名前のロールは存在しません!`,
-
     'SETTING_HOME_TITLE': (username) => `🛠 ${username} - 設定`,
     'SETTING_HOME_DESCRIPTION': (username) => `${username}のコントロールパネルへようこそ!\nここではこのBOTの設定を変更することができます!\n\`\`\`\nセレクトメニューから閲覧・変更したい設定を選択しよう!\n\`\`\``,
-
     'SETTING_WELCOMEMESSAGE': '入退室ログ',
     'SETTING_WELCOMEMESSAGE_EMBED_TITLE': '🛠 設定 - 入退室ログ',
     'SETTING_WELCOMEMESSAGE_EMBED_DESCRIPTION': '```サーバーに新しくメンバーが参加した時や退室した時に通知してくれる機能です。メッセージを設定することで参加した人に見てもらいたい情報を送信できます。```\n**【現在の設定】**',
@@ -43,7 +41,6 @@ const languageData = {
     'SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_1': 'メンバー参加時にメッセージを送信',
     'SETTING_WELCOMEMESSAGE_SELECT_TITLE_2': '退室ログ',
     'SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_2': 'メンバー退室時にメッセージを送信',
-
     'SETTING_REPORT': '通報機能',
     'SETTING_REPORT_EMBED_TITLE': '🛠 設定 - 通報機能',
     'SETTING_REPORT_EMBED_DESCRIPTION': '**Tips**: コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。\n```メンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。```\n**【現在の設定】**',
@@ -56,13 +53,11 @@ const languageData = {
     'SETTING_REPORT_REPORTCH_MODAL_LABEL': 'チャンネル名',
     'SETTING_REPORT_REPORTROLE_MODAL_TITLE': 'ロールメンション',
     'SETTING_REPORT_REPORTROLE_MODAL_LABEL': 'ロール名',
-
     'SETTING_MESSAGELINKEXPANSION': 'リンク展開',
     'SETTING_MESSAGELINKEXPANSION_EMBED_TITLE': '🛠 設定 - リンク展開',
     'SETTING_MESSAGELINKEXPANSION_EMBED_DESCRIPTION': '```\nDiscordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。\n流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。\n```\n**【現在の設定】**',
     'SETTING_MESSAGELINKEXPANSION_EMBED_FIELD_1': 'リンク展開',
     'SETTING_MESSAGELINKEXPANSION_SELECT_TITLE_1': '全般設定',
-
     'SETTING_MUSIC': '音楽再生',
     'SETTING_MUSIC_EMBED_TITLE': '🛠 設定 - 音楽再生',
     'SETTING_MUSIC_EMBED_DESCRIPTION': '**Tips**: スラッシュコマンド自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。\n```YoutubeやSpotify、SoundCloudにある音楽をVCで再生することができます。ボイスチャット内で音楽を再生させたい時に便利です。```\n\n**【現在の設定】**',
@@ -72,12 +67,25 @@ const languageData = {
     'SETTING_MUSIC_SELECT_TITLE_1': 'DJモード',
     'SETTING_MUSIC_DJROLE_MODAL_TITLE': 'DJモード',
     'SETTING_MUSIC_DJROLE_MODAL_LABEL': 'ロール名',
-
     'SETTING_LANGUAGE_TITLE': '🌐 言語設定',
     'SETTING_LANGUAGE_DESCRIPTION': '使用する言語を選択してください。',
+
+    'CONNECTIONERROR_EMBED_TITLE': 'エラー!',
+
+    'GUILDMEMBERADD_BOT_TITLE': (name) => `${name} が導入されました!`,
+    'GUILDMEMBERADD_MEMBER_DESCRIPTION': (array) => `${array[0]} **(${array[1]})** さん\n**${array[2]}** へようこそ!\n${array[3]}\n\n現在のメンバー数: **${array[4]}**`,
+
+    'GUILDMEMBERREMOVE_BOT_TITLE': (name) => `${name} が廃止されました`,
+    'GUILDMEMBERREMOVE_MEMBER': (name) => `**${name}** さんがサーバーを退出しました👋`,
+
+    'TRACKSTART_PLAYING': '再生中',
+
+    'MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_TITLE': 'メッセージ展開',
+    'MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_FIELD': 'メッセージの内容',
+    'MESSAGECREATE_MESSAGELINKEXPANSION_ERROR_TITLE': 'エラー!',
 };
 
-const translate = (key, ...args) => {
+const translate = (key, args) => {
     const translation = languageData[key];
     if (!translation) return '<language error>';
     if (typeof translation === 'function') return translation(args);

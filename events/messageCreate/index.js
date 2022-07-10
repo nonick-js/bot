@@ -8,7 +8,7 @@ const pagination = require('../../modules/pagination');
 
 module.exports = {
     /** @type {messageCreateCallback} */
-    async execute(client, message, Configs) {
+    async execute(client, message, Configs, language) {
         if (message.author.bot) return;
         const config = await Configs.findOne({ where: { serverId: message.guild.id } });
         const linkOpen = config.get('linkOpen');
@@ -23,18 +23,18 @@ module.exports = {
                     if (!msg) throw new TypeError('Unknown Message');
                     const contentEmbeds = msg.content ? discord.Util.splitMessage(msg.content, { maxLength: 1024, char: '' }).map(content => {
                         return new discord.MessageEmbed()
-                            .setTitle('メッセージ展開')
+                            .setTitle(language('MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_TITLE'))
                             .setColor('WHITE')
                             .setURL(v[0])
                             .setAuthor({
                                 name: msg.member?.displayName ?? msg.author.username,
                                 iconURL: msg.member?.displayAvatarURL({ dynamic: true }) ?? msg.author.displayAvatarURL({ dynamic: true }),
                             })
-                            .addField('メッセージの内容', content);
+                            .addField(language('MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_FIELD'), content);
                     }) : [];
                     const attachmentEmbeds = msg.attachments.map(attachment => {
                         return new discord.MessageEmbed()
-                            .setTitle('メッセージ展開')
+                            .setTitle(language('MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_TITLE'))
                             .setColor('WHITE')
                             .setURL(v[0])
                             .setAuthor({
@@ -48,7 +48,7 @@ module.exports = {
                 catch (err) {
                     console.log(err);
                     const em = new discord.MessageEmbed()
-                        .setTitle('エラー!')
+                        .setTitle(language('MESSAGECREATE_MESSAGELINKEXPANSION_ERROR_TITLE'))
                         .setColor('RED')
                         .setDescription(err.message);
                     message.reply({ embeds: [em], allowedMentions: { parse: [] } });

@@ -86,26 +86,34 @@ client.on('guildMemberAdd', member => moduleExecute(member, guildMemberAdd));
 client.on('guildMemberRemove', member => moduleExecute(member, guildMemberRemove));
 client.on('messageCreate', message => moduleExecute(message, messageCreate));
 
-player.on('trackStart', (queue, track) => trackStart.execute(client, queue, track));
-player.on('connectionError', (queue, error) => connectionError.execute(client, queue, error));
+player.on('trackStart', async (queue, track) => {
+    const config = await Configs.findOne({ where: { serverId: queue.guild.id } });
+    const language = require(`./language/${config.get('language')}`);
+    trackStart.execute(client, queue, track, language);
+});
+player.on('connectionError', async (queue, error) => {
+    const config = await Configs.findOne({ where: { serverId: queue.guild.id } });
+    const language = require(`./language/${config.get('language')}`);
+    connectionError.execute(client, queue, error, language);
+});
 player.on('botDisconnect', queue => queue.destroy());
 player.on('channelEmpty', queue => queue.destroy());
 
 client.on('interactionCreate', async interaction => {
     await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
     const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-    const laungage = require(`./language/${config.get('language')}`);
+    const language = require(`./language/${config.get('language')}`);
 
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
-            .setDescription(laungage('BLACKLIST_MESSAGE', client.user.username))
+            .setDescription(language('BLACKLIST_MESSAGE', client.user.username))
             .setColor('RED');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     const cmd = commands.getCommand(interaction);
     try {
-        cmd.exec(client, interaction, Configs, laungage, player);
+        cmd.exec(client, interaction, Configs, language, player);
     }
     catch (e) {
         console.log(e);
@@ -117,10 +125,10 @@ async function moduleExecute(param, module) {
 
     await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
     const config = await Configs.findOne({ where: { serverId: param.guild.id } });
-    const laungage = require(`./language/${config.get('language')}`);
+    const language = require(`./language/${config.get('language')}`);
 
     try {
-        module.execute(client, param, Configs, laungage);
+        module.execute(client, param, Configs, language);
     } catch (e) {
         console.log(`[エラー!] サーバーID:${param.guild.id}\n${e}`);
     }

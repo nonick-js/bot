@@ -22,10 +22,8 @@ const languageData = {
     'SETTING_ERROR_NOTPERMISSION': '⚠️ **BOT authority is insufficient!**\nRequired Permissions: `View Channels` `Send Messages` `Embed links`',
     'SETTING_ERROR_CHANNELNOTFOUND': (name) => `⚠️ There is no channel named ${discord.Formatters.inlineCode(name)}!`,
     'SETTING_ERROR_ROLENOTFOUND': (name) => `⚠️ There is no role named ${discord.Formatters.inlineCode(name)}!`,
-
     'SETTING_HOME_TITLE': (username) => `🛠 ${username} - Setting`,
     'SETTING_HOME_DESCRIPTION': (username) => `Welcome to ${username} control panel!\nHere you can change the settings for this BOT!\n\`\`\`\nSelect the settings you want to view or change from the select menu!\n\`\`\``,
-
     'SETTING_WELCOMEMESSAGE': 'Welcome Message',
     'SETTING_WELCOMEMESSAGE_EMBED_TITLE': '🛠 Setting - Welcome Message',
     'SETTING_WELCOMEMESSAGE_EMBED_DESCRIPTION': '```This function notifies you when a new member joins or leaves the server. You can set up a message to send information that you want the person who joined to see.\n```\n**【Current settings】**',
@@ -43,7 +41,6 @@ const languageData = {
     'SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_1': 'Send a message when a member joins',
     'SETTING_WELCOMEMESSAGE_SELECT_TITLE_2': 'Leave Message',
     'SETTING_WELCOMEMESSAGE_SELECT_DESCRIPTION_2': 'Send a message when a member leaves',
-
     'SETTING_REPORT': 'Report Cotextmenu',
     'SETTING_REPORT_EMBED_TITLE': '🛠 Setting - Report Contextmenu',
     'SETTING_REPORT_EMBED_DESCRIPTION': '**Tips**: If you want to turn off the functionality of the context menu itself, you can change it from `Server Settings → Linked Services → NoNICK.js`.\n```\nThis function allows members to report messages that violate server rules, etc. This reduces the burden on management by eliminating the need for moderators to monitor messages.\n```\n**【Current settings】**',
@@ -56,13 +53,11 @@ const languageData = {
     'SETTING_REPORT_REPORTCH_MODAL_LABEL': 'channel name',
     'SETTING_REPORT_REPORTROLE_MODAL_TITLE': 'Role Mention',
     'SETTING_REPORT_REPORTROLE_MODAL_LABEL': 'role name',
-
     'SETTING_MESSAGELINKEXPANSION': 'Message Link Expansion',
     'SETTING_MESSAGELINKEXPANSION_EMBED_TITLE': '🛠 Setting - Message Link Expansion',
     'SETTING_MESSAGELINKEXPANSION_EMBED_DESCRIPTION': '```\nThis function displays the linked message when you send a Discord message link.\nThis is useful when you want to chat about past messages.\n```\n**【Current settings】**',
     'SETTING_MESSAGELINKEXPANSION_EMBED_FIELD_1': 'Message Link Expansion',
     'SETTING_MESSAGELINKEXPANSION_SELECT_TITLE_1': 'General Setting',
-
     'SETTING_MUSIC': 'MusicPlayback',
     'SETTING_MUSIC_EMBED_TITLE': '🛠 Setting - MusicPlayback',
     'SETTING_MUSIC_EMBED_DESCRIPTION': '**Tips**: If you want to turn off the functionality of the slash command itself, you can change it from `Server Settings → Linked Services → NoNICK.js`.\n```Music from Youtube, Spotify, and SoundCloud can be played in Voice Chat. This is useful when you want to play music within a Voice Chat.```\n**【Current setting】**',
@@ -72,16 +67,28 @@ const languageData = {
     'SETTING_MUSIC_SELECT_TITLE_1': 'DJ Mode',
     'SETTING_MUSIC_DJROLE_MODAL_TITLE': 'DJ Mode',
     'SETTING_MUSIC_DJROLE_MODAL_LABEL': 'role name',
-
     'SETTING_LANGUAGE_TITLE': '🌐 Language Setting',
     'SETTING_LANGUAGE_DESCRIPTION': 'Please select the language you wish to use.',
+
+    'CONNECTIONERROR_EMBED_TITLE': 'Error!',
+    'GUILDMEMBERADD_BOT_TITLE': (name) => `${name} has been introduced!`,
+    'GUILDMEMBERADD_MEMBER_DESCRIPTION': (array) => `${array[0]}**(${array[1]})**\nWelcome to **${array[2]}**!\n${array[3]}\n\n**${array[4]}** Members`,
+
+    'GUILDMEMBERREMOVE_BOT_TITLE': (name) => `${name} is abolished`,
+    'GUILDMEMBERREMOVE_MEMBER': (name) => `**${name}** has left the server👋`,
+
+    'TRACKSTART_PLAYING': 'Now Playing',
+
+    'MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_TITLE': 'Message Link Expansion',
+    'MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_FIELD': 'Message Content',
+    'MESSAGECREATE_MESSAGELINKEXPANSION_ERROR_TITLE': 'Error!',
 };
 
-const translate = (key, ...args) => {
+const translate = (key, args) => {
     const translation = languageData[key];
     if (!translation) {
         const JPLanguage = require('./ja_JP');
-        return JPLanguage(key, ...args);
+        return JPLanguage(key, args);
     }
     if (typeof translation === 'function') return translation(args);
     else return translation;
