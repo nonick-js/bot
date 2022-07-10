@@ -76,11 +76,11 @@ client.on('ready', () => {
     });
     if (guildCommand) commands.register(client, guildId);
     else commands.register(client);
-    client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
+    client.user.setActivity(`/info | ${client.guilds.cache.size}servers`);
 });
 
-client.on('guildCreate', () => client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`));
-client.on('guildDelete', () => client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`));
+client.on('guildCreate', () => client.user.setActivity(`/info | ${client.guilds.cache.size} servers`));
+client.on('guildDelete', () => client.user.setActivity(`/info | ${client.guilds.cache.size} servers`));
 
 client.on('guildMemberAdd', member => moduleExecute(member, guildMemberAdd));
 client.on('guildMemberRemove', member => moduleExecute(member, guildMemberRemove));
