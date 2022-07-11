@@ -2,7 +2,7 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.MessageContextMenuInteraction} interaction
+* @param {discord.ButtonInteraction} interaction
 * @param {discord.Client} client
 * @returns {void}
 */
@@ -16,18 +16,18 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'messageReport', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         const modal = new discord.Modal()
             .setCustomId('messageReport')
-            .setTitle('メッセージを通報')
+            .setTitle(language('REPORT_MESSAGE_MODAL_TITLE'))
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('firstTextInput')
-                        .setLabel('このメッセージはサーバールール等の何に違反していますか？')
-                        .setPlaceholder('できる限り詳しく入力してください')
+                        .setLabel(language('REPORT_MODAL_LABEL'))
+                        .setPlaceholder(language('REPORT_MODAL_PLACEHOLDER'))
                         .setStyle('PARAGRAPH')
-                        .setMaxLength(1000)
+                        .setMaxLength(4000)
                         .setRequired(true),
                 ),
             );

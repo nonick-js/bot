@@ -16,15 +16,15 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-reportCh', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
 		const modal = new discord.Modal()
 			.setCustomId('setting-Channel')
-			.setTitle('通報機能')
+			.setTitle(language('SETTING_REPORT_REPORTCH_MODAL_TITLE'))
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
 						.setCustomId('reportCh,0')
-						.setLabel('受け取った通報を送信するチャンネルの名前を入力してください。')
+						.setLabel(language('SETTING_REPORT_REPORTCH_MODAL_LABEL'))
 						.setStyle('SHORT')
 						.setMaxLength(100)
 						.setRequired(true),

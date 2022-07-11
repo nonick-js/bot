@@ -30,7 +30,7 @@ const connectionError = require('./events/connectionError/index');
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
 	serverId: { type: Sequelize.STRING, unique: true },
-    laungage: { type: Sequelize.STRING, defaultValue: 'ja_JP' },
+    language: { type: Sequelize.STRING, defaultValue: 'ja_JP' },
     welcome: { type: Sequelize.BOOLEAN, defaultValue: false },
     welcomeCh: { type: Sequelize.STRING, defaultValue: null },
     welcomeMessage: { type: Sequelize.TEXT, defaultValue: 'まずはルールを確認しよう!' },
@@ -86,37 +86,49 @@ client.on('guildMemberAdd', member => moduleExecute(member, guildMemberAdd));
 client.on('guildMemberRemove', member => moduleExecute(member, guildMemberRemove));
 client.on('messageCreate', message => moduleExecute(message, messageCreate));
 
-player.on('trackStart', (queue, track) => trackStart.execute(client, queue, track));
-player.on('connectionError', (queue, error) => connectionError.execute(client, queue, error));
+player.on('trackStart', async (queue, track) => {
+    const config = await Configs.findOne({ where: { serverId: queue.guild.id } });
+    const language = require(`./language/${config.get('language')}`);
+    trackStart.execute(client, queue, track, language);
+});
+player.on('connectionError', async (queue, error) => {
+    const config = await Configs.findOne({ where: { serverId: queue.guild.id } });
+    const language = require(`./language/${config.get('language')}`);
+    connectionError.execute(client, queue, error, language);
+});
 player.on('botDisconnect', queue => queue.destroy());
 player.on('channelEmpty', queue => queue.destroy());
 
 client.on('interactionCreate', async interaction => {
+    await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
+    const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+    const language = require(`./language/${config.get('language')}`);
+
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
-            .setDescription([
-                `🚫 このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。`,
-                '禁止された理由や詳細は`nonick-mc#1017`までお問い合わせください。',
-            ].join('\n'))
+            .setDescription(language('BLACKLIST_MESSAGE', client.user.username))
             .setColor('RED');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     const cmd = commands.getCommand(interaction);
     try {
-        await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
-        cmd.exec(interaction, client, Configs, player);
+        cmd.exec(client, interaction, Configs, language, player);
     }
-    catch (err) {
-        console.log(err);
+    catch (e) {
+        console.log(e);
     }
 });
 
 async function moduleExecute(param, module) {
     if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
+
     await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
+    const config = await Configs.findOne({ where: { serverId: param.guild.id } });
+    const language = require(`./language/${config.get('language')}`);
+
     try {
-        module.execute(client, param, Configs);
+        module.execute(client, param, Configs, language, player);
     } catch (e) {
         console.log(`[エラー!] サーバーID:${param.guild.id}\n${e}`);
     }

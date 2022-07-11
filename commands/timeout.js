@@ -14,23 +14,20 @@ const discord = require('discord.js');
 
 module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { name: 'timeout', description: 'ユーザーをタイムアウト 公式のtimeoutコマンドより柔軟な設定が可能です。', type: 'CHAT_INPUT', options: [
-        { name: 'user', description: 'タイムアウト対象のユーザー', type: 'USER', required: true },
-        { name: 'day', description: 'タイムアウトする時間 (日単位)', type: 'NUMBER', required: true },
-        { name: 'minute', description: 'タイムアウトする時間 (分単位)', type: 'NUMBER', required: true },
-        { name: 'reason', description: 'タイムアウトする理由', type: 'STRING' },
+    data: { name: 'timeout', description: 'ユーザーをタイムアウト 公式のtimeoutコマンドより柔軟な設定が可能です。', descriptionLocalizations: { 'en-US': 'Timeout a user. More flexible than the official timeout command.' }, type: 'CHAT_INPUT', options: [
+        { name: 'user', description: 'ユーザー', descriptionLocalizations: { 'en-US': 'User' }, type: 'USER', required: true },
+        { name: 'day', description: 'タイムアウトする時間 (日単位)', descriptionLocalizations: { 'en-US': 'time to time out (in days)' }, type: 'NUMBER', required: true },
+        { name: 'minute', description: 'タイムアウトする時間 (分単位)', descriptionLocalizations: { 'en-US': 'time to time out (in minutes)' }, type: 'NUMBER', required: true },
+        { name: 'reason', description: 'タイムアウトする理由', descriptionLocalizations: { 'en-US': 'reason' }, type: 'STRING' },
     ] },
     /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
+    exec: async (client, interaction, Configs, language) => {
 		const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
 		const { timeoutLog, timeoutLogCh, timeoutDm } = config.get();
 
         if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
             const embed = new discord.MessageEmbed()
-				.setDescription([
-					'❌ あなたにはこのコマンドを使用する権限がありません！',
-					'必要な権限: `メンバーをタイムアウト`',
-				].join('\n'))
+				.setDescription(language('TIMEOUT_PERMISSION_ERROR'))
 				.setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
@@ -40,46 +37,45 @@ module.exports = {
 		/** @type {discord.GuildMember} */
 		const timeoutMember = interaction.guild.members.cache.get(interaction.options.getUser('user').id);
 
-		const timeoutReason = interaction.options.getString('reason') ?? '理由が入力されていません';
+		const timeoutReason = interaction.options.getString('reason') ?? language('TIMEOUT_REASON_NONE');
 		const timeoutDuration_d = interaction.options.getNumber('day');
 		const timeoutDuration_m = interaction.options.getNumber('minute');
 		const timeoutDuration = (timeoutDuration_d * 86400000) + (timeoutDuration_m * 60000);
 
 		if (!timeoutMember) {
 			const embed = new discord.MessageEmbed()
-				.setDescription('❌ そのユーザーはこのサーバーにいません!')
+				.setDescription(language('TIEMOUT_MEMBER_UNDEFINED'))
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral:true });
 		}
 		if (moderateUser.id !== interaction.guild.ownerId && !(interaction.member.roles.highest.comparePositionTo(timeoutMember.roles.highest) <= 1)) {
 			const embed = new discord.MessageEmbed()
-				.setDescription('❌ 最上位の役職が自分より上か同じメンバーをタイムアウトさせることはできません!')
+				.setDescription()
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 		if (timeoutDuration > 2419000000) {
 			const embed = new discord.MessageEmbed()
-				.setDescription('❌ `28日`を超えるタイムアウトはできません!')
+				.setDescription(language('TIMEOUT_ROLE_ERROR'))
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
-		if (timeoutMember == interaction.guild.me) return interaction.reply({ content: '代わりに君をタイムアウトしようかな?', ephemeral: true });
+		if (timeoutMember == interaction.guild.me) return interaction.reply({ content: `${language('TIMEOUT_MYSELF')}`, ephemeral: true });
 
 		timeoutMember.timeout(timeoutDuration, timeoutReason)
 			.then(() => {
-				interaction.reply({ content: `⛔ <@${timeoutMember.id}>を**${discord.Formatters.inlineCode(Math.floor((timeoutDuration / 86400000)))}日${discord.Formatters.inlineCode(Math.floor((timeoutDuration % 86400000) / 60000))}分**タイムアウトしました。`, ephemeral:true });
-
+				interaction.reply({ content: `${language('TIMEOUT_RESULT', [timeoutMember, Math.floor(timeoutDuration / 86400000), Math.floor((timeoutDuration % 86400000) / 60000) ])}`, ephemeral:true });
 				if (timeoutLog) {
 					const embed = new discord.MessageEmbed()
-                        .setTitle('⛔タイムアウト')
+                        .setTitle(language('TIMEOUT_LOG_EMBED_TITLE'))
                         .setThumbnail(timeoutMember.displayAvatarURL())
                         .addFields(
-                            { name: '処罰を受けた人', value: `${timeoutMember}(${discord.Formatters.inlineCode(timeoutMember.id)})` },
-							{ name: 'タイムアウトが解除される時間', value: `${timeoutMember.communicationDisabledUntil}` },
-                            { name: 'タイムアウトした理由', value: timeoutReason },
+                            { name: `${language('TIMEOUT_LOG_EMBED_FIELD_1')}`, value: `${timeoutMember}(\`${timeoutMember.id}\`)` },
+							{ name: `${language('TIMEOUT_LOG_EMBED_FIELD_2')}`, value: `${discord.Formatters.time(timeoutMember.communicationDisabledUntilTimestamp / 1000, 'f')}` },
+                            { name: `${language('TIMEOUT_LOG_EMBED_FIELD_3')}`, value: timeoutReason },
                         )
                         .setColor('RED')
-                        .setFooter({ text: `担当者: ${moderateUser.tag}`, iconURL: moderateUser.displayAvatarURL() });
+                        .setFooter({ text: `${language('TIMEOUT_LOG_EMBED_FOOTER', moderateUser.tag)}`, iconURL: moderateUser.displayAvatarURL() });
 
 					interaction.guild.channels.fetch(timeoutLogCh)
 						.then((channel) => channel.send({ embeds: [embed] }).catch(() => Configs.update({ timeoutLog: false, timeoutLogCh: null }, { where: { serverId: interaction.guildId } })))
@@ -87,28 +83,25 @@ module.exports = {
 				}
 				if (timeoutDm) {
 					const embed = new discord.MessageEmbed()
-						.setTitle('⛔タイムアウト')
-						.setDescription(`あなたは**${interaction.guild.name}**からタイムアウトされました`)
+						.setTitle(language('TIMEOUT_DM_EMBED_TITLE'))
+						.setDescription(language('TIMEOUT_DM_DESCRIPTION', interaction.guild.name))
 						.setThumbnail(interaction.guild.iconURL())
 						.setColor('RED')
 						.addFields(
-							{ name: 'タイムアウトが解除される時間', value: `${timeoutMember.communicationDisabledUntil}` },
-							{ name: 'タイムアウトされた理由', value: timeoutReason },
+							{ name: `${language('TIMEOUT_DM_EMBED_FIELD_1')}`, value: `${discord.Formatters.time(timeoutMember.communicationDisabledUntilTimestamp / 1000, 'f')}` },
+							{ name: `${language('TIMEOUT_DM_EMBED_FIELD_2')}`, value: timeoutReason },
 					);
 					timeoutMember.user.send({ embeds: [embed] })
 						.catch(() => {
 							const error = new discord.MessageEmbed()
-								.setDescription('⚠️ タイムアウトした人への警告DMに失敗しました。\nメッセージ受信を拒否しています。')
+								.setDescription(language('TIMEOUT_DM_SEND_ERROR'))
 								.setColor('RED');
 							interaction.followUp({ embeds: [error], ephemeral: true });
 						});
 				}
 			}).catch(() => {
 				const embed = new discord.MessageEmbed()
-					.setDescription([
-                        `❌ <@${timeoutMember.id}>(${discord.Formatters.inlineCode(timeoutMember.id)})のタイムアウトに失敗しました。`,
-                        'BOTより上の権限を持っているか、サーバーの管理者です。',
-                    ].join('\n'))
+					.setDescription(language('TIMEOUT_ERROR', timeoutMember.id))
 					.setColor('RED');
 				interaction.reply({ embeds: [embed], ephemeral:true });
 			});

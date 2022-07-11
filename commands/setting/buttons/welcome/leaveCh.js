@@ -16,15 +16,15 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data:  { customid: 'setting-leaveCh', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
 		const modal = new discord.Modal()
 			.setCustomId('setting-Channel')
-			.setTitle('退室ログ')
+			.setTitle(language('SETTING_WELCOMEMESSAGE_LEAVE_MODAL_TITLE'))
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
 						.setCustomId('leaveCh,1')
-						.setLabel('退室ログを送信するチャンネルの名前を入力してください。')
+						.setLabel(language('SETTING_WELCOMEMESSAGE_LEAVE_MODAL_LABEL'))
 						.setStyle('SHORT')
 						.setMaxLength(100)
 						.setRequired(true),

@@ -2,7 +2,7 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.MessageContextMenuInteraction} interaction
+* @param {discord.CommandInteraction} interaction
 * @param {discord.Client} client
 * @returns {void}
 */
@@ -14,26 +14,19 @@ const discord = require('discord.js');
 
 module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { name: 'サーバー運営に通報', type: 'MESSAGE' },
+    data: { name: 'メッセージを通報', nameLocalizations: { 'en-US': 'Report this message' }, type: 'MESSAGE' },
     /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
+    exec: async (client, interaction, Configs, language) => {
 		const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const reportCh = config.get('reportCh');
 
 		if (reportCh == null) {
             const embed = new discord.MessageEmbed()
-				.setDescription([
-					'⚠️ **この機能を使用するには追加で設定が必要です。**',
-					'BOTの設定権限を持っている人に連絡してください。',
-				].join('\n'))
+				.setDescription(language('REPORTMESSAGE_NOT_SETTING'))
 				.setColor('BLUE');
 			if (interaction.member.permissions.has('MANAGE_GUILD')) {
-				embed
-					.setDescription([
-						'⚠️ **この機能を使用するには追加で設定が必要です。**',
-						`${discord.Formatters.inlineCode('/setting')}で通報機能の設定を開き、レポートを受け取るチャンネルを設定してください。`,
-					].join('\n'))
-					.setImage('https://cdn.discordapp.com/attachments/958791423161954445/976117804879192104/unknown.png');
+				embed.setDescription(language('REPORT_NOT_SETTING_ADMIN'))
+					.setImage(language('REPORT_NOT_SETTING_ADMIN_IMAGE'));
 			}
 			return interaction.reply({ embeds: [embed], ephemeral:true });
 		}
@@ -45,44 +38,45 @@ module.exports = {
 
 		if (!member) {
 			const embed = new discord.MessageEmbed()
-				.setDescription('❌ そのユーザーはこのサーバーにいません!')
+				.setDescription(language('REPORT_MEMBER_UNDEFINED'))
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
-		if (user == client.user) return interaction.reply({ content: '僕を通報しても意味ないよ。', ephemeral: true });
+		if (user == client.user) return interaction.reply({ content: `${language('REPORT_MYSELF')}`, ephemeral: true });
 		if (user.bot || user.system) {
 			const embed = new discord.MessageEmbed()
-				.setDescription('❌ BOT、Webhook、システムメッセージを通報することはできません!')
+				.setDescription(language('REPORT_BOT'))
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral:true });
 		}
-		if (member == interaction.member) return interaction.reply({ content: '自分自身を通報していますよ...', ephemeral: true });
+		if (member == interaction.member) return interaction.reply({ content: `${language('REPORT_YOURSELF')}`, ephemeral: true });
 		if (member.permissions.has('MANAGE_MESSAGES')) {
 			const embed = new discord.MessageEmbed()
-			.setDescription('❌ このコマンドでサーバー運営者を通報することはできません!')
+			.setDescription(language('REPORT_ADMIN'))
 			.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral:true });
 		}
 
+		/** @type {discord.Message} */
 		const reportedMessage = interaction.targetMessage;
 		const embed = new discord.MessageEmbed()
-			.setTitle('⚠ メッセージを通報')
-			.setDescription('このメッセージを通報してもよろしいですか?' + discord.Formatters.codeBlock('markdown', '通報はこのサーバーの運営にのみ送信されます。\n無関係なメッセージの通報や通報の連投は処罰を受ける可能性があります。'))
+			.setTitle(language('REPORT_MESSAGE_EMBED_TITLE'))
+			.setDescription(language('REPORT_MESSAGE_EMBED_DESCRIPTION'))
 			.setColor('RED')
 			.setThumbnail(user.displayAvatarURL())
 			.addFields(
-				{ name: '投稿者', value: `<@${user.id}>`, inline:true },
-				{ name: '投稿先', value: `${reportedMessage.channel} [リンク](${reportedMessage.url})`, inline:true },
+				{ name: `${language('REPORT_MESSAGE_EMBED_FIELD_1')}`, value: `${user}`, inline:true },
+				{ name: `${language('REPORT_MESSAGE_EMBED_FIELD_2')}`, value: `${language('REPORT_MESSAGE_EMBED_FIELD_2_VALUE', [reportedMessage.channel, reportedMessage.url])}`, inline:true },
 			);
 		const button = new discord.MessageActionRow().addComponents(
 			new discord.MessageButton()
 				.setCustomId('messageReport')
-				.setLabel('通報')
+				.setLabel(language('REPORT_BUTTON_LABEL'))
 				.setEmoji('969148338597412884')
 				.setStyle('DANGER'),
 		);
 
-		if (reportedMessage.content) embed.addFields({ name: 'メッセージ', value: `${reportedMessage.content}` });
+		if (reportedMessage.content) embed.addFields({ name: `${language('REPORT_MESSAGE_EMBED_FIELD_3')}`, value: `${reportedMessage.content}` });
 		if (reportedMessage.attachments.first()) {
 			const reportedMessageFile = reportedMessage.attachments.first();
 			if (reportedMessageFile.height && reportedMessageFile.width) embed.setImage(reportedMessageFile.url);

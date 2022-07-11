@@ -9,7 +9,7 @@ const discord = require('discord.js');
 
 module.exports = {
     /** @type {MemberRemoveCallback} */
-    async execute(client, member, Configs) {
+    async execute(client, member, Configs, language) {
         const config = await Configs.findOne({ where: { serverId: member.guild.id } });
         const { leave, leaveCh } = config.get();
 
@@ -18,11 +18,11 @@ module.exports = {
                 .then((channel) => {
                     if (member.user.bot) {
                         const embed = new discord.MessageEmbed()
-                            .setAuthor({ name: `${member.user.username} が廃止されました`, iconURL: member.displayAvatarURL() })
+                            .setAuthor({ name: `${language('GUILDMEMBERREMOVE_BOT_TITLE', member.user.username)}`, iconURL: member.displayAvatarURL() })
                             .setColor('RED');
                         channel.send({ embeds: [embed] }).catch(() => Configs.update({ leave: false, leaveCh: null }, { where: { serverId: member.guild.id } }));
                     } else {
-                        channel.send(`**${member.user.tag}** さんがサーバーを退出しました👋`).catch(() => Configs.update({ leave: false, leaveCh: null }, { where: { serverId: member.guild.id } }));
+                        channel.send(language('GUILDMEMBERREMOVE_MEMBER', member.user.tag)).catch(() => Configs.update({ leave: false, leaveCh: null }, { where: { serverId: member.guild.id } }));
                     }
                 })
                 .catch(() => Configs.update({ leave: false, leaveCh: null }, { where: { serverId: member.guild.id } }));

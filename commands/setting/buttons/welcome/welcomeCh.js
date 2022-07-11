@@ -16,15 +16,15 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-welcomeCh', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
 		const modal = new discord.Modal()
 			.setCustomId('setting-Channel')
-			.setTitle('入室ログ')
+			.setTitle(language('SETTING_WELCOMEMESSAGE_WELCOME_MODAL_TITLE'))
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
 						.setCustomId('welcomeCh,0')
-						.setLabel('入室ログを送信するチャンネルの名前を入力してください。')
+						.setLabel(language('SETTING_WELCOMEMESSAGE_WELCOME_MODAL_LABEL'))
 						.setStyle('SHORT')
 						.setMaxLength(100)
 						.setRequired(true),

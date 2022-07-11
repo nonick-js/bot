@@ -16,17 +16,17 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-welcomeMessage', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
 		const modal = new discord.Modal()
 			.setCustomId('modal-setting-welcomeMessage')
-			.setTitle('Welcomeメッセージ')
+			.setTitle(language('SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_TITLE'))
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
 						.setCustomId('firstTextInput')
-						.setLabel('入室ログに表示するメッセージを入力してください。')
+						.setLabel(language('SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_LABEL'))
 						.setStyle('PARAGRAPH')
-						.setPlaceholder('<#チャンネルID>や<@ユーザーID>、<@&ロールID> と入力することでそれぞれメンションが可能です!')
+						.setPlaceholder(language('SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_PLACEHOLDER'))
 						.setMaxLength(1000)
 						.setRequired(true),
 				),

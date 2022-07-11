@@ -10,9 +10,9 @@ const discord_player = require('discord-player');
  */
 
 module.exports = {
-    async execute(client, queue, error) {
+    async execute(client, queue, error, language) {
         const embed = new discord.MessageEmbed()
-            .setTitle('エラー!')
+            .setTitle(language('CONNECTIONERROR_EMBED_TITLE'))
             .setDescription(discord.Formatters.codeBlock(error))
             .setColor('RED');
         // eslint-disable-next-line no-empty-function

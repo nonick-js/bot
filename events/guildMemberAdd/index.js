@@ -9,25 +9,21 @@ const discord = require('discord.js');
 
 module.exports = {
     /** @type {MemberAddCallback} */
-    async execute(client, member, Configs) {
+    async execute(client, member, Configs, language) {
+        if (member.user == client.user) return;
         const config = await Configs.findOne({ where: { serverId: member.guild.id } });
         const { welcome, welcomeCh, welcomeMessage } = config.get();
 
-        if (welcome && member.user !== client.user) {
+        if (welcome) {
             member.guild.channels.fetch(welcomeCh)
                 .then((channel) => {
                     const embed = new discord.MessageEmbed();
                     if (member.user.bot) {
-                        embed.setAuthor({ name: `${member.user.username} が導入されました!`, iconURL: member.user.displayAvatarURL() })
+                        embed.setAuthor({ name: `${language('GUILDMEMBERADD_BOT_TITLE', member.user.username)}`, iconURL: member.user.displayAvatarURL() })
                         .setColor('BLUE');
                     } else {
                         embed.setTitle('WELCOME!')
-                        .setDescription([
-                            `<@${member.id}>**(${member.user.tag})** さん`,
-                            `**${member.guild.name}** へようこそ!`,
-                            `${welcomeMessage}`,
-                            `\n現在のメンバー数:**${member.guild.memberCount}**人`,
-                        ].join('\n'))
+                        .setDescription(language('GUILDMEMBERADD_MEMBER_DESCRIPTION', [member, member.user.tag, member.guild.name, welcomeMessage, member.guild.memberCount]))
                         .setThumbnail(member.user.displayAvatarURL())
                         .setColor('GREEN')
                         .setTimestamp();

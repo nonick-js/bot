@@ -18,7 +18,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'music-prev', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs, player) => {
+    exec: async (client, interaction, Configs, language, player) => {
         /** @type {discord_player.Queue} */
         const queue = player.getQueue(interaction.guildId);
         const content = interaction.message.content;
@@ -28,25 +28,25 @@ module.exports = {
 
         if (dj && !interaction.member.roles.cache.has(djRole) && !interaction.member.permissions.has('ADMINISTRATOR')) {
             const embed = new discord.MessageEmbed()
-                .setDescription(`❌ この機能は${discord.Formatters.roleMention(djRole)}を持つメンバーのみが使用できます!`)
+                .setDescription()
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
         if (!queue) {
             const embed = new discord.MessageEmbed()
-                .setDescription('❌ 現在キューはありません!')
+                .setDescription(language('MUSIC_NULLQUEUE', djRole))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
         if (!interaction.member.voice.channelId) {
             const embed = new discord.MessageEmbed()
-                .setDescription('❌ ボイスチャンネルに参加してください!')
+                .setDescription(language('MUSIC_VC_NOTJOIN'))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
         if (interaction.guild.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.me.voice.channelId) {
             const embed = new discord.MessageEmbed()
-                .setDescription('❌ 現在再生中のボイスチャンネルに参加してください!')
+                .setDescription(language('MUSIC_PLAYINGVC_NOTJOIN'))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
@@ -58,11 +58,11 @@ module.exports = {
                 queue.insert(currintTrack, 0);
 
                 // eslint-disable-next-line no-empty-function
-                await queue.metadata.channel.send('⏮️ 一つ前の音楽を再生します').catch(() => {});
+                await queue.metadata.channel.send(language('MUSIC_PREV_SUCCESS')).catch(() => {});
             })
             .catch(() => {
                 const embed = new discord.MessageEmbed()
-                    .setDescription('❌ これより前に再生した曲がありません!')
+                    .setDescription(language('MUSIC_PREV_ERROR'))
                     .setColor('RED');
                 interaction.reply({ embeds: [embed], ephemeral: true });
             });
