@@ -127,6 +127,14 @@ const languageData = {
     'REPORT_USER_SLAVE_EMBED_TITLE': '⚠️ 通報 (ユーザー)',
     'REPORT_USER_SLAVE_EMBED_FOOTER': (tag) => `通報者: ${tag}`,
 
+    // Userinfoコンテキストメニュー
+    'USERINFO_NONE': '__なし__',
+    'USERINFO_NICKNAME': (name) => `${discord.Formatters.formatEmoji('973880625566212126')} ニックネーム: **${name}**`,
+    'USERINFO_USERID': (id) => `${discord.Formatters.formatEmoji('973880625641705522')} ユーザーID: ${id}`,
+    'USERINFO_CREATETIME': 'アカウント作成日',
+    'USERINFO_JOINTIME': 'サーバー参加日',
+    'USERINFO_ROLE': 'ロール',
+    'USERINFO_BOOSTTIME': (time) => `最後にブーストした日: ${discord.Formatters.time(time, 'D')}`,
 };
 
 const translate = (key, args) => {

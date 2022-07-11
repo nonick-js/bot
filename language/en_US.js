@@ -126,6 +126,15 @@ const languageData = {
     'REPORT_USER_MODAL_TITLE': 'Report this User',
     'REPORT_USER_SLAVE_EMBED_TITLE': '⚠️ Report (User)',
     'REPORT_USER_SLAVE_EMBED_FOOTER': (tag) => `Reporter: ${tag}`,
+
+    // Userinfoコンテキストメニュー
+    'USERINFO_NONE': '__none__',
+    'USERINFO_NICKNAME': (name) => `${discord.Formatters.formatEmoji('973880625566212126')} Nickname: **${name}**`,
+    'USERINFO_USERID': (id) => `${discord.Formatters.formatEmoji('973880625641705522')} UserId: ${id}`,
+    'USERINFO_CREATETIME': 'Account Create Date',
+    'USERINFO_JOINTIME': 'Server Join Date',
+    'USERINFO_ROLE': 'Roles',
+    'USERINFO_BOOSTTIME': (time) => `Date of last boost: ${discord.Formatters.time(time, 'D')}`,
 };
 
 const translate = (key, args) => {
