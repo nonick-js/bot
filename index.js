@@ -128,7 +128,7 @@ async function moduleExecute(param, module) {
     const language = require(`./language/${config.get('language')}`);
 
     try {
-        module.execute(client, param, Configs, language);
+        module.execute(client, param, Configs, language, player);
     } catch (e) {
         console.log(`[エラー!] サーバーID:${param.guild.id}\n${e}`);
     }

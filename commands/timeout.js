@@ -14,7 +14,7 @@ const discord = require('discord.js');
 
 module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { name: 'timeout', description: 'ユーザーをタイムアウト 公式のtimeoutコマンドより柔軟な設定が可能です。', nameLocalizations: { 'en-US': 'Timeout a user. More flexible than the official timeout command.' }, type: 'CHAT_INPUT', options: [
+    data: { name: 'timeout', description: 'ユーザーをタイムアウト 公式のtimeoutコマンドより柔軟な設定が可能です。', descriptionLocalizations: { 'en-US': 'Timeout a user. More flexible than the official timeout command.' }, type: 'CHAT_INPUT', options: [
         { name: 'user', description: 'ユーザー', descriptionLocalizations: { 'en-US': 'User' }, type: 'USER', required: true },
         { name: 'day', description: 'タイムアウトする時間 (日単位)', descriptionLocalizations: { 'en-US': 'time to time out (in days)' }, type: 'NUMBER', required: true },
         { name: 'minute', description: 'タイムアウトする時間 (分単位)', descriptionLocalizations: { 'en-US': 'time to time out (in minutes)' }, type: 'NUMBER', required: true },

@@ -16,7 +16,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'music-panel', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction) => {
         const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
                 .setCustomId('music-10secAgo')

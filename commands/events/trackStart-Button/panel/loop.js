@@ -18,7 +18,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'music-loop', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs, player) => {
+    exec: async (client, interaction, Configs, language, player) => {
         /** @type {discord_player.Queue} */
         const queue = player.getQueue(interaction.guildId);
         const button = interaction.message.components[0];
@@ -27,25 +27,25 @@ module.exports = {
 
         if (dj && !interaction.member.roles.cache.has(djRole) && !interaction.member.permissions.has('ADMINISTRATOR')) {
             const embed = new discord.MessageEmbed()
-                .setDescription(`❌ この機能は${discord.Formatters.roleMention(djRole)}を持つメンバーのみが使用できます!`)
+                .setDescription(language('MUSIC_DJROLE', djRole))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
         if (!queue) {
             const embed = new discord.MessageEmbed()
-                .setDescription('❌ 現在キューはありません!')
+                .setDescription(language('MUSIC_NULLQUEUE'))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
         if (!interaction.member.voice.channelId) {
             const embed = new discord.MessageEmbed()
-                .setDescription('❌ ボイスチャンネルに参加してください!')
+                .setDescription(language('MUSIC_VC_NOTJOIN'))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
         if (interaction.guild.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.me.voice.channelId) {
             const embed = new discord.MessageEmbed()
-                .setDescription('❌ 現在再生中のボイスチャンネルに参加してください!')
+                .setDescription(language('MUSIC_PLAYINGVC_NOTJOIN'))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
@@ -53,6 +53,6 @@ module.exports = {
         queue.setRepeatMode(queue.repeatMode == 1 ? 0 : 1);
         interaction.update({ components: [button], ephemeral: true });
         // eslint-disable-next-line no-empty-function
-        await queue.metadata.channel.send(`🔂 1曲ループ再生を**${queue.repeatMode == 0 ? 'オフ' : 'オン' }**にしました`).catch(() => {});
+        await queue.metadata.channel.send(language('MUSIC_LOOP_BUTTON_PLAYMODE_2', queue.repeatMode)).catch(() => {});
     },
 };
