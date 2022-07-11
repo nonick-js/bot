@@ -2,8 +2,8 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.ButtonInteraction} interaction
 * @param {discord.Client} client
+* @param {discord.ButtonInteraction} interaction
 * @returns {void}
 */
 /**

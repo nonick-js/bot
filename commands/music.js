@@ -4,8 +4,8 @@ const discord_player = require('discord-player');
 
 /**
 * @callback InteractionCallback
+* @param {discord.Client} client
 * @param {discord.CommandInteraction} interaction
-* @param {...any} [args]
 * @returns {void}
 */
 /**

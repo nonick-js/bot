@@ -2,9 +2,9 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.CommandInteraction} interaction
 * @param {discord.Client} client
-* @returns {void}
+* @param {discord.ButtonInteraction} interaction
+* @param {...any} [args]
 */
 /**
 * @typedef ContextMenuData
