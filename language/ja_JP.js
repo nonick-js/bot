@@ -119,7 +119,6 @@ const languageData = {
     'REPORT_MESSAGE_MODAL_TITLE': 'メッセージを通報',
     'REPORT_MESSAGE_SLAVE_EMBED_TITLE': '⚠️ 通報 (メッセージ)',
     'REPORT_MESSAGE_SLAVE_EMBED_FOOTER': (tag) => `通報者: ${tag}`,
-
     'REPORT_USER_EMBED_TITLE': '⚠️ ユーザーを通報',
     'REPORT_USER_EMBED_DESCRIPTION': 'このユーザーを通報してもよろしいですか?```通報はこのサーバーの運営にのみ送信され、Discordには送信されません。```',
     'REPORT_USER_EMBED_FIELD_1': '対象者',
@@ -127,7 +126,7 @@ const languageData = {
     'REPORT_USER_SLAVE_EMBED_TITLE': '⚠️ 通報 (ユーザー)',
     'REPORT_USER_SLAVE_EMBED_FOOTER': (tag) => `通報者: ${tag}`,
 
-    // Userinfoコンテキストメニュー
+    // userinfoコンテキストメニュー
     'USERINFO_NONE': '__なし__',
     'USERINFO_NICKNAME': (name) => `${discord.Formatters.formatEmoji('973880625566212126')} ニックネーム: **${name}**`,
     'USERINFO_USERID': (id) => `${discord.Formatters.formatEmoji('973880625641705522')} ユーザーID: ${id}`,
@@ -135,6 +134,26 @@ const languageData = {
     'USERINFO_JOINTIME': 'サーバー参加日',
     'USERINFO_ROLE': 'ロール',
     'USERINFO_BOOSTTIME': (time) => `最後にブーストした日: ${discord.Formatters.time(time, 'D')}`,
+
+    // timeoutコマンド
+    'TIMEOUT_PERMISSION_ERROR': '❌ あなたにはこのコマンドを使用する権限がありません！\n必要な権限: `メンバーをタイムアウト`',
+    'TIMEOUT_REASON_NONE': '理由が入力されていません',
+    'TIMEOUT_MEMBER_UNDEFINED': '❌ そのユーザーはこのサーバーにいません!',
+    'TIMEOUT_ROLE_ERROR': '❌ 最上位の役職が自分より上か同じメンバーをタイムアウトさせることはできません!',
+    'TIMEOUT_MYSELF': '代わりに君をタイムアウトしようかな?',
+
+    'TIMEOUT_RESULT': (array) => `⛔ ${array[0]}を**\`${array[1]}\`日\`${array[2]}\`分**タイムアウトしました。`,
+    'TIMEOUT_ERROR': (id) => `❌ <@${id}> (\`${id}\`)のタイムアウトに失敗しました。\nBOTより上の権限を持っているか、サーバーの管理者です。`,
+    'TIMEOUT_LOG_EMBED_TITLE': '⛔タイムアウト',
+    'TIMEOUT_LOG_EMBED_FIELD_1': '処罰を受けた人',
+    'TIMEOUT_LOG_EMBED_FIELD_2': 'タイムアウトが解除される時間',
+    'TIMEOUT_LOG_EMBED_FIELD_3': 'タイムアウトした理由',
+    'TIMEOUT_LOG_EMBED_FOOTER': (tag) => `コマンド使用者: ${tag}`,
+    'TIMEOUT_DM_EMBED_TITLE': '⛔タイムアウト',
+    'TIMEOUT_DM_DESCRIPTION': (guild) => `あなたは**${guild}**からタイムアウトされました。`,
+    'TIMEOUT_DM_EMBED_FIELD_1': 'タイムアウトが解除される時間',
+    'TIMEOUT_DM_EMBED_FIELD_2': 'タイムアウトされた理由',
+    'TIMEOUT_DM_SEND_ERROR': '⚠️ タイムアウトした人への警告DMに失敗しました。メッセージ受信を拒否しています。',
 };
 
 const translate = (key, args) => {

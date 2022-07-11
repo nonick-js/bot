@@ -135,6 +135,26 @@ const languageData = {
     'USERINFO_JOINTIME': 'Server Join Date',
     'USERINFO_ROLE': 'Roles',
     'USERINFO_BOOSTTIME': (time) => `Date of last boost: ${discord.Formatters.time(time, 'D')}`,
+
+    // timeoutコマンド
+    'TIMEOUT_PERMISSION_ERROR': '❌  **You are not authorized to do this!**\nRequired Permissions: `Timeout Members`',
+    'TIMEOUT_REASON_NONE': 'No reason entered',
+    'TIMEOUT_MEMBER_UNDEFINED': '❌ That user is not on this server!',
+    'TIMEOUT_ROLE_ERROR': '❌ You cannot time out a member whose highest position is above or the same as yours!!',
+    'TIMEOUT_MYSELF': 'I\'ll timeout you, shall I?',
+
+    'TIMEOUT_RESULT': (array) => `⛔ ${array[0]} is timeout for **\`${array[1]}\`days\`${array[2]}\`minutes**.`,
+    'TIMEOUT_ERROR': (id) => `❌ <@${id}> (\`${id}\`) timeout failed.\nYou have authority above the BOT or are an administrator of the server.`,
+    'TIMEOUT_LOG_EMBED_TITLE': '⛔Timeout',
+    'TIMEOUT_LOG_EMBED_FIELD_1': 'Punished Persons',
+    'TIMEOUT_LOG_EMBED_FIELD_2': 'Time for timeout to be canceled',
+    'TIMEOUT_LOG_EMBED_FIELD_3': 'Reason for timeout',
+    'TIMEOUT_LOG_EMBED_FOOTER': (tag) => `by ${tag}`,
+    'TIMEOUT_DM_EMBED_TITLE': '⛔Timeout',
+    'TIMEOUT_DM_DESCRIPTION': (guild) => `You have been timed out of **${guild}**.`,
+    'TIMEOUT_DM_EMBED_FIELD_1': 'Time for timeout to be canceled',
+    'TIMEOUT_DM_EMBED_FIELD_2': 'Reason for timeout',
+    'TIMEOUT_DM_SEND_ERROR': '⚠️ Warning DM to timed-out person failed. Message receipt rejected.',
 };
 
 const translate = (key, args) => {
