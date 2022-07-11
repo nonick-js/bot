@@ -74,8 +74,10 @@ const languageData = {
     'SETTING_MUSIC_SELECT_TITLE_1': 'DJ Mode',
     'SETTING_MUSIC_DJROLE_MODAL_TITLE': 'DJ Mode',
     'SETTING_MUSIC_DJROLE_MODAL_LABEL': 'role name',
+
     'SETTING_LANGUAGE_TITLE': '🌐 Language Setting',
     'SETTING_LANGUAGE_DESCRIPTION': 'Please select the language you wish to use.',
+    'SETTING_WHATSNEW_ERROR': '⚠️ Failed to acquire data.\nPlease wait a while and try again.',
 
     // ConnectionError
     'CONNECTIONERROR_EMBED_TITLE': 'Error!',

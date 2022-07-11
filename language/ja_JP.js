@@ -74,8 +74,10 @@ const languageData = {
     'SETTING_MUSIC_SELECT_TITLE_1': 'DJモード',
     'SETTING_MUSIC_DJROLE_MODAL_TITLE': 'DJモード',
     'SETTING_MUSIC_DJROLE_MODAL_LABEL': 'ロール名',
+
     'SETTING_LANGUAGE_TITLE': '🌐 言語設定',
     'SETTING_LANGUAGE_DESCRIPTION': '使用する言語を選択してください。',
+    'SETTING_WHATSNEW_ERROR': '⚠️ データの取得に失敗しました。\nしばらく待ってから再度お試しください。',
 
     // ConnectionError
     'CONNECTIONERROR_EMBED_TITLE': 'エラー!',
