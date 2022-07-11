@@ -2,6 +2,7 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
+* @param {discord.Client}
 * @param {discord.ButtonInteraction} interaction
 * @param {...any} [args]
 * @returns {void}
@@ -16,27 +17,28 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-Send', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         const embed = interaction.message.embeds[0];
+        /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
         if (select.components[0].type == 'BUTTON') {
             const error = new discord.MessageEmbed()
-                .setDescription('❌ パネルには最低でも**1つ**ロールを追加する必要があります!')
+                .setDescription(language('REACTION_DELETEROLE_ERROR'))
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }
 
-        if (interaction.message.components[1].components[3].label == '複数選択') select.components[0].setMaxValues(select.components[0].options.length);
+        if (interaction.message.components[1].components[3].style == 'DANGER') select.components[0].setMaxValues(select.components[0].options.length);
         interaction.channel.send({ embeds: [embed], components: [select] })
             .then(() => {
                 const success = new discord.MessageEmbed()
-                    .setDescription('✅ パネルを作成しました!')
+                    .setDescription(language('REACTION_SEND_SUCCESS'))
                     .setColor('GREEN');
                 interaction.update({ content: ' ', embeds: [success], components:[] });
             })
             .catch(() => {
                 const error = new discord.MessageEmbed()
-                    .setDescription('❌ このチャンネルに送信する権限がありません!')
+                    .setDescription(language('REACTION_SEND_ERROR'))
                     .setColor('RED');
                 interaction.update({ embeds: [embed, error] });
             });

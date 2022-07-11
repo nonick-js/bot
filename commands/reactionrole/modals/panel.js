@@ -2,7 +2,8 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.ModalSubmitInteraction} interaction
+* @param {discord.Client}
+* @param {discord.ButtonInteraction} interaction
 * @param {...any} [args]
 * @returns {void}
 */
@@ -16,7 +17,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRoleSetting', type: 'MODAL' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         const imageURL = interaction.fields.getTextInputValue('image');
         const embed = new discord.MessageEmbed()
             .setTitle(interaction.fields.getTextInputValue('title'))
@@ -35,23 +36,23 @@ module.exports = {
                 .setStyle('SECONDARY'),
             new discord.MessageButton()
                 .setCustomId('reactionRole-AddRole')
-                .setLabel('追加')
+                .setLabel(language('REACTION_BUTTON_2'))
                 .setEmoji('988439798324817930')
                 .setStyle('SECONDARY'),
             new discord.MessageButton()
                 .setCustomId('reactionRole-DeleteRole')
-                .setLabel('削除')
+                .setLabel(language('REACTION_BUTTON_3'))
                 .setEmoji('989089271275204608')
                 .setStyle('SECONDARY'),
             new discord.MessageButton()
                 .setCustomId('reactionRole-Mode')
-                .setLabel('単一選択')
+                .setLabel(language('REACTION_BUTTON_4_SINGLE'))
                 .setStyle('SUCCESS'),
             new discord.MessageButton()
                 .setCustomId('reactionRole-Send')
-                .setLabel('送信')
+                .setLabel(language('REACTION_BUTTON_5'))
                 .setStyle('PRIMARY'),
         );
-        interaction.reply({ content: '**プレビューモード**\n「送信」ボタンを押すとこのチャンネルにパネルを送信します。', embeds: [embed], components: [button], ephemeral: true });
+        interaction.reply({ content: `${language('REACTION_CONTENT')}`, embeds: [embed], components: [button], ephemeral: true });
     },
 };

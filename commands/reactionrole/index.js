@@ -14,27 +14,24 @@ const discord = require('discord.js');
 
 module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { name: 'reactionrole', description: '新しいリアクションロールパネルを作成します。', type: 'CHAT_INPUT' },
+    data: { name: 'reactionrole', description: '新しいリアクションロールパネルを作成', descriptionLocalizations: { 'en-US': 'Create a new reaction role panel' }, type: 'CHAT_INPUT' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         if (!interaction.member.permissions.has('MANAGE_ROLES')) {
             const embed = new discord.MessageEmbed()
-                .setDescription([
-                    '❌ あなたにはこのコマンドを使用する権限がありません!',
-                    '必要な権限: `ロールを管理`',
-                ].join('\n'))
+                .setDescription(language('REACTION_PERMISSION_ERROR'))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
         const modal = new discord.Modal()
             .setCustomId('reactionRoleSetting')
-            .setTitle('セレクトロールパネル')
+            .setTitle(language('REACTION_MODAL_TITLE'))
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('title')
-                        .setLabel('埋め込みのタイトル')
+                        .setLabel(language('REACTION_MODAL_LABEL_1'))
                         .setMaxLength(1000)
                         .setStyle('SHORT')
                         .setRequired(true),
@@ -42,8 +39,8 @@ module.exports = {
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('description')
-                        .setLabel('埋め込みの説明')
-                        .setPlaceholder('このセレクトロールについて説明しよう')
+                        .setLabel(language('REACTION_MODAL_LABEL_2'))
+                        .setPlaceholder('')
                         .setMaxLength(4000)
                         .setStyle('PARAGRAPH')
                         .setRequired(true),
@@ -51,8 +48,8 @@ module.exports = {
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('image')
-                        .setLabel('埋め込みに乗せる画像URL')
-                        .setPlaceholder('http(s):// から始まるURLのみ対応しています。')
+                        .setLabel(language('REACTION_MODAL_LABEL_3'))
+                        .setPlaceholder(language('REACTION_MODAL_PLACEHOLDER_3'))
                         .setMaxLength(500)
                         .setStyle('SHORT'),
                 ),

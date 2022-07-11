@@ -2,6 +2,7 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
+* @param {discord.Client}
 * @param {discord.ButtonInteraction} interaction
 * @param {...any} [args]
 * @returns {void}
@@ -16,31 +17,30 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-DeleteRole', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         const embed = interaction.message.embeds[0];
-        const component = interaction.message.components[0].components[0];
+        /** @type {discord.MessageActionRow} */
+        const select = interaction.message.components[0];
+        /** @type {discord.MessageActionRow} */
+        const button = interaction.message.components[1];
 
-        if (component.type == 'BUTTON') {
+        if (select.components[0].type == 'BUTTON') {
             const error = new discord.MessageEmbed()
-                .setDescription('❌ まだ1つもロールを追加していません!')
+                .setDescription(language('REACTION_DELETEROLE_ERROR'))
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }
-        if (component.type == 'SELECT_MENU' && component.options.length == 1) {
-            const error = new discord.MessageEmbed()
-                .setDescription('❌ パネルには最低でも**1つ**ロールを追加する必要があります!')
-                .setColor('RED');
-            return interaction.update({ embeds: [embed, error] });
-        }
+
+        if (select.components[0].options.length == 1) return interaction.update({ embeds: [embed], components: [button] });
 
         const modal = new discord.Modal()
             .setCustomId('deleteRole')
-            .setTitle('ロール削除')
+            .setTitle(language('REACTION_DELETEROLE_MODAL_TITLE'))
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('textinput')
-                        .setLabel('セレクトメニューから削除したいロールの名前')
+                        .setLabel(language('REACTION_DELETEROLE_MODAL_LABEL'))
                         .setMaxLength(100)
                         .setRequired(true)
                         .setStyle('SHORT'),

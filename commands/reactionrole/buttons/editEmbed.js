@@ -2,6 +2,7 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
+* @param {discord.Client}
 * @param {discord.ButtonInteraction} interaction
 * @param {...any} [args]
 * @returns {void}
@@ -16,16 +17,16 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-EditEmbed', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         const embed = interaction.message.embeds[0];
         const modal = new discord.Modal()
             .setCustomId('reactionRole-update')
-            .setTitle('パネルの編集')
+            .setTitle(language('REACTION_EDITEMBED_MODAL_TITLE'))
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('title')
-                        .setLabel('埋め込みのタイトル')
+                        .setLabel(language('REACTION_MODAL_LABEL_1'))
                         .setMaxLength(1000)
                         .setValue(`${embed.title}`)
                         .setStyle('SHORT')
@@ -34,8 +35,8 @@ module.exports = {
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('description')
-                        .setLabel('埋め込みの説明')
-                        .setPlaceholder('このリアクションロールについて説明しよう')
+                        .setLabel(language('REACTION_MODAL_LABEL_2'))
+                        .setPlaceholder(language('REACTION_MODAL_PLACEHOLDER_2'))
                         .setMaxLength(4000)
                         .setValue(`${embed.description}`)
                         .setStyle('PARAGRAPH')
@@ -44,10 +45,10 @@ module.exports = {
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('image')
-                        .setLabel('埋め込みに乗せる画像のURL')
-                        .setPlaceholder('URLのみ対応しています。')
+                        .setLabel(language('REACTION_MODAL_LABEL_3'))
+                        .setPlaceholder(language('REACTION_MODAL_PLACEHOLDER_3'))
                         .setMaxLength(500)
-                        .setValue(embed.image ? embed.image.url : 'なし')
+                        .setValue(embed.image ? embed.image.url : language('NULL'))
                         .setStyle('SHORT'),
                 ),
             );

@@ -1,6 +1,7 @@
 const discord = require('discord.js');
 const languageData = {
     'BLACKLIST_MESSAGE': (username) => `🚫 このサーバーでの**${username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`,
+    'NULL': 'なし',
 
     // infoコマンド
     'INFO_DESCRIPTION': '「使いやすい」をモットーにした**完全無料の多機能BOT!**\n誰でも簡単にBOTを使えるような開発をしています!\n\n🔹**搭載中の機能**\n`入退室ログ` `通報機能` `リアクションロール` `音楽再生機能` `timeoutコマンド` `banコマンド`',
@@ -188,6 +189,42 @@ const languageData = {
     'MUSIC_PREV_ERROR': '❌ これより前に再生した曲がありません!',
     'MUSIC_10SECAGO_SUCCESS': '⏪ `10`秒巻き戻しました',
     'MUSIC_10SECSKIP_SUCCESS': '⏩ `10`秒スキップしました',
+
+    // Reactionコマンド
+    'REACTION_PERMISSION_ERROR': '❌ あなたにはこのコマンドを使用する権限がありません!\n必要な権限: `ロールを管理`',
+    'REACTION_ROLE_UNDEF': '❌ その名前のロールは存在しません!',
+    'REACTION_EMOJI_UNDEF': '❌ その名前の絵文字は存在しません!',
+    'REACTION_MODAL_TITLE': 'リアクションロールパネル',
+    'REACTION_MODAL_LABEL_1': 'タイトル',
+    'REACTION_MODAL_LABEL_2': '説明',
+    'REACTION_MODAL_PLACEHOLDER_2': 'このリアクションロールについて説明しよう',
+    'REACTION_MODAL_LABEL_3': '画像URL',
+    'REACTION_MODAL_PLACEHOLDER_3': 'http(s):// から始まるURLのみ対応しています。',
+    'REACTION_BUTTON_2': '追加',
+    'REACTION_BUTTON_3': '削除',
+    'REACTION_BUTTON_4_SINGLE': '単一選択',
+    'REACTION_BUTTON_4_MULTI': '複数選択',
+    'REACTION_BUTTON_5': '送信',
+    'REACTION_CONTENT': '**プレビューモード**\n「送信」ボタンを押すとこのチャンネルにパネルを送信します。',
+    'REACTION_SUCCESS': '✅ ロールを更新しました!',
+    'REACTION_ERROR': `${discord.Formatters.formatEmoji('968351750434193408')} 一部ロールが付与できませんでした。サーバーの管理者にお問い合わせください。`,
+    'REACTION_ERROR_ADMIM': (name) => `${discord.Formatters.formatEmoji('968351750434193408')} 一部ロールが付与できませんでした。以下を確認してください。\n・${name}に\`ロール管理\`権限が付与されているか。\n・パネルにある役職よりも上に${name}が持つ役職があるか。\n・ロールが存在しているか。`,
+
+    'REACTION_ADDROLE_ERROR': '❌ これ以上ロールを追加できません!',
+    'REACTION_ADDROLE_MODAL_TITLE': 'ロールを追加',
+    'REACTION_ADDROLE_MODAL_LABEL_1': 'ロールの名前',
+    'REACTION_ADDROLE_MODAL_LABEL_2': '表示名',
+    'REACTION_ADDROLE_MODAL_LABEL_3': '説明',
+    'REACTION_ADDROLE_MODAL_LABEL_4': 'カスタム絵文字',
+    'REACTION_ADDROLE_MODAL_PLACEHOLDER_4': '絵文字名で入力してください',
+    'REACTION_DELETEROLE_ERROR': '❌ まだ1つもロールを追加していません!',
+    'REACTION_DELETEROLE_ROLE_NOTINCLUDE': '❌ このロールはパネルに追加されていません!',
+    'REACTION_DELETEROLE_MODAL_TITLE': 'ロール削除',
+    'REACTION_DELETEROLE_MODAL_LABEL': 'ロールの名前',
+    'REACTION_EDITEMBED_MODAL_TITLE': 'パネルの編集',
+    'REACTION_MODE_ERROR': '❌ まずはロールを追加してください!',
+    'REACTION_SEND_SUCCESS': '✅ パネルを作成しました!',
+    'REACTION_SEND_ERROR': '❌ このチャンネルに送信する権限がありません!',
 };
 
 const translate = (key, args) => {

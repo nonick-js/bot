@@ -1,6 +1,7 @@
 const discord = require('discord.js');
 const languageData = {
     'BLACKLIST_MESSAGE': (username) => [`🚫 The use of **${username}** on this server is prohibited by the developer.`, 'Please contact `nonick-mc#1017` for more information and the reason for the ban.'].join('\n'),
+    'NULL': 'none',
 
     // info command
     'INFO_DESCRIPTION': '**“Easy to use” is the motto of Completely free multifunctional BOT!**\nWe are developing a BOT that anyone can use easily!\n\n🔹**Features**\n`WelcomeMessage` `ReportContextMenu` `ReactionRole` `MusicPlayback` `/timeout` `/ban`',
@@ -127,7 +128,7 @@ const languageData = {
     'REPORT_USER_SLAVE_EMBED_TITLE': '⚠️ Report (User)',
     'REPORT_USER_SLAVE_EMBED_FOOTER': (tag) => `Reporter: ${tag}`,
 
-    // Userinfoコンテキストメニュー
+    // UserInfo context menu
     'USERINFO_NONE': '__none__',
     'USERINFO_NICKNAME': (name) => `${discord.Formatters.formatEmoji('973880625566212126')} Nickname: **${name}**`,
     'USERINFO_USERID': (id) => `${discord.Formatters.formatEmoji('973880625641705522')} UserId: ${id}`,
@@ -136,7 +137,7 @@ const languageData = {
     'USERINFO_ROLE': 'Roles',
     'USERINFO_BOOSTTIME': (time) => `Date of last boost: ${discord.Formatters.time(time, 'D')}`,
 
-    // timeoutコマンド
+    // timeout command
     'TIMEOUT_PERMISSION_ERROR': '❌  **You are not authorized to do this!**\nRequired Permissions: `Timeout Members`',
     'TIMEOUT_REASON_NONE': 'No reason entered',
     'TIMEOUT_MEMBER_UNDEFINED': '❌ That user is not on this server!',
@@ -156,7 +157,7 @@ const languageData = {
     'TIMEOUT_DM_EMBED_FIELD_2': 'Reason for timeout',
     'TIMEOUT_DM_SEND_ERROR': '⚠️ Warning DM to timed-out person failed. Message receipt rejected.',
 
-    // 音楽再生機能
+    // MusicPlayBack
     'MUSIC_DJROLE': (role) => `❌ This feature is only available to members with <@${role}>!`,
     'MUSIC_VC_NOTJOIN': '❌ Join the Voice Channel!',
     'MUSIC_PLAYINGVC_NOTJOIN': '❌ Join the voice channel currently playing!',
@@ -189,6 +190,42 @@ const languageData = {
     'MUSIC_PREV_ERROR': '❌ No songs played before this one!',
     'MUSIC_10SECAGO_SUCCESS': '⏪ Rewound `10` seconds.',
     'MUSIC_10SECSKIP_SUCCESS': '⏩ Skipped `10` seconds.',
+
+    // Reaction command
+    'REACTION_PERMISSION_ERROR': '❌ **You are not authorized to do this!**\nRequired Permissions: `Manage Roles`',
+    'REACTION_ROLE_UNDEF': '❌ A role with that name does not exist!',
+    'REACTION_EMOJI_UNDEF': '❌ There is no emoji with that name!',
+    'REACTION_MODAL_TITLE': 'Raaction Role',
+    'REACTION_MODAL_LABEL_1': 'Embed Title',
+    'REACTION_MODAL_LABEL_2': 'Embed Description',
+    'REACTION_MODAL_PLACEHOLDER_2': 'Let me explain this reaction role!',
+    'REACTION_MODAL_LABEL_3': 'Image URL',
+    'REACTION_MODAL_PLACEHOLDER_3': 'Only URLs beginning with http(s):// are supported.',
+    'REACTION_BUTTON_2': 'Add',
+    'REACTION_BUTTON_3': 'Remove',
+    'REACTION_BUTTON_4_SINGLE': 'Single Select',
+    'REACTION_BUTTON_4_MULTI': 'Multi Select',
+    'REACTION_BUTTON_5': 'Send',
+    'REACTION_CONTENT': '**Preview Mode**\nPress the "Send" button to send the panel to this channel.',
+    'REACTION_SUCCESS': '✅ Updated Roles!',
+    'REACTION_ERROR': `${discord.Formatters.formatEmoji('968351750434193408')} Some roles could not be granted, please contact the BOT administrator.`,
+    'REACTION_ERROR_ADMIM': (name) => `${discord.Formatters.formatEmoji('968351750434193408')} Some roles could not be granted. Please check the following\n・Has ${name} been granted \`Manage Roles\` permission?\n・Is there a position that ${name} has above the position on the panel?\n・Is the role present?`,
+
+    'REACTION_ADDROLE_ERROR': '❌ No more roles can be added!',
+    'REACTION_ADDROLE_MODAL_TITLE': 'Add Role',
+    'REACTION_ADDROLE_MODAL_LABEL_1': 'Role Name',
+    'REACTION_ADDROLE_MODAL_LABEL_2': 'Display Name',
+    'REACTION_ADDROLE_MODAL_LABEL_3': 'Description',
+    'REACTION_ADDROLE_MODAL_LABEL_4': 'Custom Emoji',
+    'REACTION_ADDROLE_MODAL_PLACEHOLDER_4': 'Please enter with a emoji name',
+    'REACTION_DELETEROLE_ERROR': '❌ Not a single role has been added yet!',
+    'REACTION_DELETEROLE_ROLE_NOTINCLUDE': '❌ This role has not been added to the panel!',
+    'REACTION_DELETEROLE_MODAL_TITLE': 'Remove Role',
+    'REACTION_DELETEROLE_MODAL_LABEL': 'Role Name',
+    'REACTION_EDITEMBED_MODAL_TITLE': 'Edit Embed',
+    'REACTION_MODE_ERROR': '❌ Please add your role first!',
+    'REACTION_SEND_SUCCESS': '✅ Panels have been created!',
+    'REACTION_SEND_ERROR': '❌ You are not authorized to transmit on this channel!',
 };
 
 const translate = (key, args) => {

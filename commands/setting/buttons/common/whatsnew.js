@@ -17,7 +17,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-whatsnew', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction) => {
         const { version, whatsnew } = JSON.parse(fs.readFileSync('./version.json', 'utf-8'));
         const embed = new discord.MessageEmbed()
             .setTitle('What\'s New')

@@ -2,8 +2,8 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.ModalSubmitInteraction} interaction
-* @param {discord.Client} client
+* @param {discord.Client}
+* @param {discord.ButtonInteraction} interaction
 * @param {...any} [args]
 * @returns {void}
 */
@@ -17,14 +17,14 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-addRole', type: 'MODAL' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         const embed = interaction.message.embeds[0];
         const component = interaction.message.components[0];
 
         const role = interaction.guild.roles.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput'));
         if (!role) {
             const error = new discord.MessageEmbed()
-                .setDescription('❌ その名前のロールは存在しません!')
+                .setDescription(language('REACTION_ROLE_UNDEF'))
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }
@@ -34,7 +34,7 @@ module.exports = {
             emoji = interaction.guild.emojis.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput3'));
             if (!emoji) {
                 const error = new discord.MessageEmbed()
-                    .setDescription('❌ その名前の絵文字は存在しません!')
+                    .setDescription(language('REACTION_EMOJI_UNDEF'))
                     .setColor('RED');
                 return interaction.update({ embeds: [embed, error] });
             }

@@ -2,7 +2,8 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.ModalSubmitInteraction} interaction
+* @param {discord.Client}
+* @param {discord.ButtonInteraction} interaction
 * @param {...any} [args]
 * @returns {void}
 */
@@ -16,7 +17,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-update', type: 'MODAL' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction) => {
         const imageURL = interaction.fields.getTextInputValue('image');
         const embed = new discord.MessageEmbed()
             .setTitle(interaction.fields.getTextInputValue('title'))

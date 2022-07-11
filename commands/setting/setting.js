@@ -19,7 +19,7 @@ module.exports = {
     exec: async (client, interaction, Configs, language) => {
         if (!interaction.member.permissions.has('MANAGE_GUILD')) {
             const embed = new discord.MessageEmbed()
-                .setDescription(language('SETTING.PERMISSION_ERROR'))
+                .setDescription(language('SETTING_PERMISSION_ERROR'))
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }

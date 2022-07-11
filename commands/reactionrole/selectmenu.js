@@ -16,7 +16,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs, language) => {
         if (interaction.message.flags.has('EPHEMERAL')) return interaction.update({});
 
         await interaction.deferReply({ ephemeral: true });
@@ -35,26 +35,18 @@ module.exports = {
         if (errorCount == 1) {
             if (interaction.member.permissions.has('MANAGE_ROLES')) {
                 const embed = new discord.MessageEmbed()
-                    .setDescription([
-                        `${discord.Formatters.formatEmoji('968351750434193408')} 一部ロールが付与できませんでした。`,
-                        '以下を確認してください。',
-                        '・NoNICK.jsに`ロール管理`権限が付与されているか。',
-                        '・パネルにある役職よりも上にNoNICK.jsが持つ役職があるか。',
-                    ].join('\n'))
+                    .setDescription(language('REACTION_ERROR_ADMIM', client.user.username))
                     .setColor('RED');
                 interaction.editReply({ embeds: [embed], ephemeral: true });
             } else {
                 const embed = new discord.MessageEmbed()
-                    .setDescription([
-                        `${discord.Formatters.formatEmoji('968351750434193408')} 一部ロールが付与できませんでした。`,
-                        'サーバーの管理者にお問い合わせください。',
-                    ].join('\n'))
+                    .setDescription(language('REACTION_ERROR'))
                     .setColor('RED');
                 interaction.editReply({ embeds: [embed], ephemeral: true });
             }
         } else {
             const embed = new discord.MessageEmbed()
-                .setDescription('✅ ロールを更新しました!')
+                .setDescription(language('REACTION_SUCCESS'))
                 .setColor('GREEN');
             interaction.editReply({ embeds: [embed], ephemeral: true });
         }
