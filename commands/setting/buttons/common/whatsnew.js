@@ -28,7 +28,7 @@ module.exports = {
                     .setColor('BLUE');
                 interaction.reply({ embeds: [embed], ephemeral: true });
             })
-            .catch((e) => {
+            .catch(() => {
                 const embed = new discord.MessageEmbed()
                     .setDescription(laungage('SETTING_WHATSNEW_ERROR'))
                     .setColor('RED');
