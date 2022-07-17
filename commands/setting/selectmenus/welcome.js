@@ -26,7 +26,7 @@ module.exports = {
         /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
         /** @type {discord.MessageActionRow} */
-        const button = new discord.MessageActionRow.addComponents(
+        const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
             .setCustomId('setting-back')
             .setEmoji('971389898076598322')
