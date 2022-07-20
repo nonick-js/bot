@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const discord = require('discord.js');
-const discord_player = require('discord-player');
 const client = new discord.Client({
     intents: Object.values(discord.Intents.FLAGS),
     allowedMentions: { parse:['roles'] },
@@ -14,7 +13,6 @@ const sequelize = new Sequelize({
 });
 require('dotenv').config();
 const { guildId, guildCommand, blackList_guild, blackList_user, debugMode, replitMode } = require('./config.json');
-const player = new discord_player.Player(client);
 
 const interaction_commands = require('./modules/interaction');
 const commands = new interaction_commands('./commands');
@@ -23,9 +21,7 @@ commands.debug = false;
 // モジュールを取得
 const guildMemberAdd = require('./events/guildMemberAdd/index');
 const guildMemberRemove = require('./events/guildMemberRemove/index');
-const trackStart = require('./events/trackStart/index');
 const messageCreate = require('./events/messageCreate/index');
-const connectionError = require('./events/connectionError/index');
 
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
@@ -86,11 +82,6 @@ client.on('guildMemberAdd', member => moduleExecute(member, guildMemberAdd));
 client.on('guildMemberRemove', member => moduleExecute(member, guildMemberRemove));
 client.on('messageCreate', message => moduleExecute(message, messageCreate));
 
-player.on('trackStart', (queue, track) => trackStart.execute(client, queue, track));
-player.on('connectionError', (queue, error) => connectionError.execute(client, queue, error));
-player.on('botDisconnect', queue => queue.destroy());
-player.on('channelEmpty', queue => queue.destroy());
-
 client.on('interactionCreate', async interaction => {
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
@@ -105,7 +96,7 @@ client.on('interactionCreate', async interaction => {
     const cmd = commands.getCommand(interaction);
     try {
         await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
-        cmd.exec(interaction, client, Configs, player);
+        cmd.exec(interaction, client, Configs);
     }
     catch (err) {
         console.log(err);

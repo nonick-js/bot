@@ -54,7 +54,6 @@ module.exports = {
                     { label: '入退室ログ', value: 'setting-welcomemessage', emoji: '🚪' },
                     { label: '通報機能', value: 'setting-report', emoji: '📢' },
                     { label: 'リンク展開', value: 'setting-linkOpen', emoji: '🔗' },
-                    { label: '/music コマンド', value: 'setting-music', emoji: '966596708484149289' },
                     { label: '/timeout コマンド', value: 'setting-timeout', emoji: '966596708484149289' },
                     { label: '/ban コマンド', value: 'setting-ban', emoji: '966596708484149289' },
                 ]),

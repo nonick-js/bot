@@ -205,45 +205,5 @@ module.exports = {
             ]);
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
         }
-
-        if (interaction.values == 'setting-music') {
-            const { dj, djRole } = config.get();
-
-            const embed = new discord.MessageEmbed()
-            .setTitle('🛠 設定 - リンク展開')
-            .setDescription([
-                'musicコマンドの設定を以下のセレクトメニューから行えます。',
-                discord.Formatters.codeBlock('markdown', [
-                    '# musicコマンドとは...',
-                    'YoutubeやSpotify、SoundCloudにある音楽をVCで再生することができます。',
-                    'ボイスチャット内で音楽を再生させたい時に便利です。',
-                ].join('\n')),
-                '**【現在の設定】**',
-            ].join('\n'))
-            .setColor('GREEN')
-            .addFields(
-                { name: 'DJモード', value: dj ? `${discord.Formatters.formatEmoji('968351750014783532')}有効 (${discord.Formatters.roleMention(djRole)})` : `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline: true },
-                { name: '❓DJモードとは', value: 'musicコマンドや再生パネルの使用を、指定したロールを持つメンバーと管理者権限をもつメンバーのみ許可します。\n大規模なサーバーで使用する場合やVC荒らしを防止するために、**この設定を有効にすることをおすすめします。**', inline: true },
-            );
-            const select = new discord.MessageActionRow().addComponents([
-                new discord.MessageSelectMenu()
-                    .setCustomId('musicSetting')
-                    .setPlaceholder('ここから選択')
-                    .addOptions({ label: 'DJモード', value: 'setting-music', emoji: '966719258430160986', default:true }),
-            ]);
-            button.addComponents([
-                new discord.MessageButton()
-                    .setCustomId('setting-dj')
-                    .setLabel(dj ? '無効化' : '有効化')
-                    .setStyle(dj ? 'DANGER' : 'SUCCESS')
-                    .setDisabled(djRole ? false : true),
-                new discord.MessageButton()
-                    .setCustomId('setting-djRole')
-                    .setLabel('ロールの変更')
-                    .setEmoji('966719258430160986')
-                    .setStyle('SECONDARY'),
-            ]);
-            interaction.update({ embeds: [embed], components: [select, button], ephemeral: true });
-        }
     },
 };
