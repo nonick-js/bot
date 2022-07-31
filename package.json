@@ -18,10 +18,8 @@
   },
   "homepage": "https://github.com/nonick-mc/DiscordBot-NoNICK.js#readme",
   "dependencies": {
-    "@discordjs/opus": "^0.7.0",
     "@octokit/rest": "^19.0.3",
     "discord-api-types": "^0.35.0",
-    "discord-player": "^5.2.2",
     "discord.js": "^13.9.0",
     "dotenv": "^16.0.1",
     "ffmpeg-static": "^5.0.0",
