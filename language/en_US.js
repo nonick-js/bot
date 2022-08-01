@@ -159,40 +159,6 @@ const languageData = {
     'TIMEOUT_DM_EMBED_FIELD_2': 'Reason for timeout',
     'TIMEOUT_DM_SEND_ERROR': '⚠️ Warning DM to timed-out person failed. Message receipt rejected.',
 
-    // MusicPlayBack
-    'MUSIC_DJROLE': (role) => `❌ This feature is only available to members with <@${role}>!`,
-    'MUSIC_VC_NOTJOIN': '❌ Join the Voice Channel!',
-    'MUSIC_PLAYINGVC_NOTJOIN': '❌ Join the voice channel currently playing!',
-    'MUSIC_NULLQUEUE': '❌ No queue!',
-
-    'MUSIC_PLAY_ERROR': '❌ I cannot access the voice channel!',
-    'MUSIC_PLAY_URLERROR': (query) => `❌ Cannot find ${query}!\nPlease enter the correct URL.`,
-    'MUSIC_ADDQUEUE': 'Added to the queue!',
-    'MUSIC_STOP_SUCCESS': '⏹ Player has been deactivated.',
-    'MUSIC_QUEUE_NULL': 'なし',
-    'MUSIC_QUEUE_PLAYMODE_1': '▶️ Usually regenerated',
-    'MUSIC_QUEUE_PLAYMODE_2': '🔂 Loop playback of one song',
-    'MUSIC_QUEUE_PLAYMODE_3': '🔁 Cue Loop Playback',
-    'MUSIC_QUEUE_EMBED_FIELD_1': 'Queue',
-    'MUSIC_QUEUEDELETE_ERROR': '❌ Invalid value sent!',
-    'MUSIC_QUEUEDELETE_SUCCESS': (number) => `🗑️ ${number} music ahead has been removed from the queue.`,
-    'MUSIC_SKIP_SUCCESS': (title) => `⏯ **${title}** skipped.`,
-    'MUSIC_LOOP_PLAYMODE_1': '▶️ Cue loop playback is now **off**.',
-    'MUSIC_LOOP_PLAYMODE_2': '🔂 One song loop playback is now **ON**.',
-    'MUSIC_LOOP_PLAYMODE_3': '🔁 Cue loop playback is now **ON**.',
-    'MUSIC_LOOP_BUTTON_PLAYMODE_2': (loopmode) => `🔂 One song loop playback turned **${loopmode == 0 ? 'OFF' : 'ON' }**.`,
-    'MUSIC_LOOP_BUTTON_PLAYMODE_3': (loopmode) => `🔁 Cue loop playback turned **${loopmode == 0 ? 'OFF' : 'ON' }**.`,
-    'MUSIC_VOLUME_ERROR': '❌ The volume must be between `1` and `200`!',
-    'MUSIC_VOLUME_MODAL_TITLE': 'Volume Setting',
-    'MUSIC_VOLUME_MODAL_LABEL': (volume) => `Current volume: ${volume}`,
-    'MUSIC_VOLUME_MODAL_PLACEHOLDER': 'Specify a value between 0~200.',
-    'MUSIC_VOLUME_SUCCESS': (amount) => `🔊 Volume has been changed to \`${amount}\`.`,
-    'MUSIC_PAUSE_SUCCESS': (paused) => `${paused ? '⏸️' : '▶️' } Music **${paused ? 'Paused' : 'Played' }**.`,
-    'MUSIC_PREV_SUCCESS': '⏮️ Play one previous music',
-    'MUSIC_PREV_ERROR': '❌ No songs played before this one!',
-    'MUSIC_10SECAGO_SUCCESS': '⏪ Rewound `10` seconds.',
-    'MUSIC_10SECSKIP_SUCCESS': '⏩ Skipped `10` seconds.',
-
     // Reaction command
     'REACTION_PERMISSION_ERROR': '❌ **You are not authorized to do this!**\nRequired Permissions: `Manage Roles`',
     'REACTION_ROLE_UNDEF': '❌ A role with that name does not exist!',
@@ -208,11 +174,12 @@ const languageData = {
     'REACTION_BUTTON_4_SINGLE': 'Single Select',
     'REACTION_BUTTON_4_MULTI': 'Multi Select',
     'REACTION_BUTTON_5': 'Send',
+    'REACTION_BUTTON_6': 'Edit',
     'REACTION_CONTENT': '**Preview Mode**\nPress the "Send" button to send the panel to this channel.',
+    'REACTION_CONTENT_EDIT': '**Preview Mode**\nPress the "Edit" button to finish editing the panel.',
     'REACTION_SUCCESS': '✅ Updated Roles!',
     'REACTION_ERROR': `${discord.Formatters.formatEmoji('968351750434193408')} Some roles could not be granted, please contact the BOT administrator.`,
     'REACTION_ERROR_ADMIM': (name) => `${discord.Formatters.formatEmoji('968351750434193408')} Some roles could not be granted. Please check the following\n・Has ${name} been granted \`Manage Roles\` permission?\n・Is there a position that ${name} has above the position on the panel?\n・Is the role present?`,
-
     'REACTION_ADDROLE_ERROR': '❌ No more roles can be added!',
     'REACTION_ADDROLE_MODAL_TITLE': 'Add Role',
     'REACTION_ADDROLE_MODAL_LABEL_1': 'Role Name',
@@ -228,6 +195,10 @@ const languageData = {
     'REACTION_MODE_ERROR': '❌ Please add your role first!',
     'REACTION_SEND_SUCCESS': '✅ Panels have been created!',
     'REACTION_SEND_ERROR': '❌ You are not authorized to transmit on this channel!',
+    'REACTION_EDIT_SEND': '✅ A new panel has been sent because the original panel does not exist!',
+    'REACTION_EDIT_SUCCESS': '✅ Panel edited!',
+
+    'EDITPANEL_NOTPANEL': '❌ It is not a reaction roll panel!',
 };
 
 const translate = (key, args) => {

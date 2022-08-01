@@ -158,40 +158,6 @@ const languageData = {
     'TIMEOUT_DM_EMBED_FIELD_2': 'タイムアウトされた理由',
     'TIMEOUT_DM_SEND_ERROR': '⚠️ タイムアウトした人への警告DMに失敗しました。メッセージ受信を拒否しています。',
 
-    // 音楽再生機能
-    'MUSIC_DJROLE': (role) => `❌ この機能は<@${role}>を持つメンバーのみが使用できます!`,
-    'MUSIC_VC_NOTJOIN': '❌ ボイスチャンネルに参加してください!',
-    'MUSIC_PLAYINGVC_NOTJOIN': '❌ 現在再生中のボイスチャンネルに参加してください!',
-    'MUSIC_NULLQUEUE': '❌ キューがありません!',
-
-    'MUSIC_PLAY_ERROR': '❌ ボイスチャンネルにアクセスできません!',
-    'MUSIC_PLAY_URLERROR': (query) => `❌ ${query} が見つかりません!\n正しいURLを入力してください。`,
-    'MUSIC_ADDQUEUE': 'キューに追加されました!',
-    'MUSIC_STOP_SUCCESS': '⏹ プレイヤーを停止しました',
-    'MUSIC_QUEUE_NULL': 'なし',
-    'MUSIC_QUEUE_PLAYMODE_1': '▶️ 通常再生',
-    'MUSIC_QUEUE_PLAYMODE_2': '🔂 1曲ループ再生',
-    'MUSIC_QUEUE_PLAYMODE_3': '🔁 キューループ再生',
-    'MUSIC_QUEUE_EMBED_FIELD_1': 'キュー',
-    'MUSIC_QUEUEDELETE_ERROR': '❌ 無効な値が送信されました!',
-    'MUSIC_QUEUEDELETE_SUCCESS': (number) => `🗑️ ${number}つ先の音楽をキューから削除しました。`,
-    'MUSIC_SKIP_SUCCESS': (title) => `⏯ **${title}** をスキップしました`,
-    'MUSIC_LOOP_PLAYMODE_1': '▶️ キューのループ再生を**オフ**にしました',
-    'MUSIC_LOOP_PLAYMODE_2': '🔂 1曲ループ再生を**オン**にしました',
-    'MUSIC_LOOP_PLAYMODE_3': '🔁 キューループ再生を**オン**にしました',
-    'MUSIC_LOOP_BUTTON_PLAYMODE_2': (loopmode) => `🔂 1曲ループ再生を**${loopmode == 0 ? 'オフ' : 'オン' }**にしました`,
-    'MUSIC_LOOP_BUTTON_PLAYMODE_3': (loopmode) => `🔁 ループ再生を**${loopmode == 0 ? 'オフ' : 'オン' }**にしました`,
-    'MUSIC_VOLUME_ERROR': '❌ 音量は`1`から`200`までの間で指定してください!',
-    'MUSIC_VOLUME_MODAL_TITLE': '音量設定',
-    'MUSIC_VOLUME_MODAL_LABEL': (volume) => `現在の音量: ${volume}`,
-    'MUSIC_VOLUME_MODAL_PLACEHOLDER': '0~200までの値で指定してください',
-    'MUSIC_VOLUME_SUCCESS': (amount) => `🔊 音量を\`${amount}\`に変更しました`,
-    'MUSIC_PAUSE_SUCCESS': (paused) => `${paused ? '⏸️' : '▶️' } 音楽を**${paused ? '一時停止' : '再生' }**しました`,
-    'MUSIC_PREV_SUCCESS': '⏮️ 一つ前の音楽を再生します',
-    'MUSIC_PREV_ERROR': '❌ これより前に再生した曲がありません!',
-    'MUSIC_10SECAGO_SUCCESS': '⏪ `10`秒巻き戻しました',
-    'MUSIC_10SECSKIP_SUCCESS': '⏩ `10`秒スキップしました',
-
     // Reactionコマンド
     'REACTION_PERMISSION_ERROR': '❌ あなたにはこのコマンドを使用する権限がありません!\n必要な権限: `ロールを管理`',
     'REACTION_ROLE_UNDEF': '❌ その名前のロールは存在しません!',
@@ -207,11 +173,12 @@ const languageData = {
     'REACTION_BUTTON_4_SINGLE': '単一選択',
     'REACTION_BUTTON_4_MULTI': '複数選択',
     'REACTION_BUTTON_5': '送信',
+    'REACTION_BUTTON_6': '編集',
     'REACTION_CONTENT': '**プレビューモード**\n「送信」ボタンを押すとこのチャンネルにパネルを送信します。',
+    'REACTION_CONTENT_EDIT': '**プレビューモード**\n「編集」ボタンを押すとパネルの編集を終了します。',
     'REACTION_SUCCESS': '✅ ロールを更新しました!',
     'REACTION_ERROR': `${discord.Formatters.formatEmoji('968351750434193408')} 一部ロールが付与できませんでした。サーバーの管理者にお問い合わせください。`,
     'REACTION_ERROR_ADMIM': (name) => `${discord.Formatters.formatEmoji('968351750434193408')} 一部ロールが付与できませんでした。以下を確認してください。\n・${name}に\`ロール管理\`権限が付与されているか。\n・パネルにある役職よりも上に${name}が持つ役職があるか。\n・ロールが存在しているか。`,
-
     'REACTION_ADDROLE_ERROR': '❌ これ以上ロールを追加できません!',
     'REACTION_ADDROLE_MODAL_TITLE': 'ロールを追加',
     'REACTION_ADDROLE_MODAL_LABEL_1': 'ロールの名前',
@@ -227,6 +194,10 @@ const languageData = {
     'REACTION_MODE_ERROR': '❌ まずはロールを追加してください!',
     'REACTION_SEND_SUCCESS': '✅ パネルを作成しました!',
     'REACTION_SEND_ERROR': '❌ このチャンネルに送信する権限がありません!',
+    'REACTION_EDIT_SEND': '✅ 元のパネルが見つからないため、新たにパネルを送信しました!',
+    'REACTION_EDIT_SUCCESS': '✅ パネルを編集しました!',
+
+    'EDITPANEL_NOTPANEL': '❌ それはリアクションロールパネルではありません!',
 };
 
 const translate = (key, args) => {
