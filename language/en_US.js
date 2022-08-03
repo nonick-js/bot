@@ -102,7 +102,7 @@ const languageData = {
     'REPORT_NOT_SETTING': '⚠️ **Additional configuration is required to use this feature.**\nPlease contact the person who has the authority to set up the BOT.',
     'REPORT_NOT_SETTING_ADMIN': '⚠️ **Additional configuration is required to use this feature.**\nOpen the settings for the reporting function in `/setting` and set the channel to receive the calls.',
     'REPORT_NOT_SETTING_ADMIN_IMAGE': 'https://media.discordapp.net/attachments/958791423161954445/995556431661109358/unknown.png',
-    'REPORT_MEMBER_UNDEFINED': '❌ That user is not on this server!',
+    'REPORT_MEMBER_UNDEFINED': '❌ The user has been removed!',
     'REPORT_MYSELF': 'There\'s no point in reporting me.',
     'REPORT_BOT': '❌ You cannot report BOTs, Webhooks, or System messages!',
     'REPORT_YOURSELF': 'You are reporting yourself...',
@@ -123,11 +123,11 @@ const languageData = {
     'REPORT_MESSAGE_SLAVE_EMBED_TITLE': '⚠️ Report (Message)',
     'REPORT_MESSAGE_SLAVE_EMBED_FOOTER': (tag) => `Reporter: ${tag}`,
 
-    'REPORT_USER_EMBED_TITLE': '⚠️ Report User',
-    'REPORT_USER_EMBED_DESCRIPTION': 'May I report this user?```The report will only be sent to the management of this server and not to Discord.```',
+    'REPORT_USER_EMBED_TITLE': '⚠️ Report Member',
+    'REPORT_USER_EMBED_DESCRIPTION': 'May I report this member?```The report will only be sent to the management of this server and not to Discord.```',
     'REPORT_USER_EMBED_FIELD_1': 'Target',
-    'REPORT_USER_MODAL_TITLE': 'Report this User',
-    'REPORT_USER_SLAVE_EMBED_TITLE': '⚠️ Report (User)',
+    'REPORT_USER_MODAL_TITLE': 'Report this Member',
+    'REPORT_USER_SLAVE_EMBED_TITLE': '⚠️ Report (Member)',
     'REPORT_USER_SLAVE_EMBED_FOOTER': (tag) => `Reporter: ${tag}`,
 
     // UserInfo context menu

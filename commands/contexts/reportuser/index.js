@@ -3,7 +3,7 @@ const discord = require('discord.js');
 /**
 * @callback InteractionCallback
 * @param {discord.Client} client
-* @param {discord.MessageContextMenuInteraction} interaction
+* @param {discord.UserContextMenuInteraction} interaction
 * @returns {void}
 */
 /**
@@ -17,7 +17,8 @@ module.exports = {
     data: { name: 'メンバーを通報', nameLocalizations: { 'en-US': 'Report this user' }, type: 'USER' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
-		const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+
+		const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const reportCh = config.get('reportCh');
 
 		if (reportCh == null) {
@@ -34,44 +35,61 @@ module.exports = {
 		/** @type {discord.User} */
 		const user = interaction.targetUser;
 		/** @type {discord.GuildMember} */
-		const member = interaction.guild.members.cache.get(user.id);
+		// eslint-disable-next-line no-empty-function
+		const member = await interaction.guild.members.fetch(user.id).catch(() => {});
 
-		if (!member) {
+		if (!user) {
 			const embed = new discord.MessageEmbed()
-				.setDescription(language('REPORT_MEMBER_UNDEFINED'))
+				.setDescription(language('REPORT_USER_UNDEFINED'))
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
-		if (user == client.user) return interaction.reply({ content: `${language('REPORT_MYSELF')}`, ephemeral: true });
-		if (user.bot || user.system) {
+
+		if (!member && user.bot && user.discriminator == '0000') {
+			const embed = new discord.MessageEmbed()
+				.setDescription(language('REPORT_BOT'))
+				.setColor('RED');
+			return interaction.reply({ embeds: [embed], ephemeral: true });
+		}
+
+		if (user == client.user) {
+			return interaction.reply({ content: `${language('REPORT_MYSELF')}`, ephemeral: true });
+		}
+
+		if (user.system) {
 			const embed = new discord.MessageEmbed()
 				.setDescription(language('REPORT_BOT'))
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral:true });
 		}
-		if (member == interaction.member) return interaction.reply({ content: `${language('REPORT_YOURSELF')}`, ephemeral: true });
-		if (member.permissions.has('MANAGE_MESSAGES')) {
-			const embed = new discord.MessageEmbed()
-			.setDescription(language('REPORT_ADMIN'))
-			.setColor('RED');
-			return interaction.reply({ embeds: [embed], ephemeral:true });
+
+		if (member) {
+			if (member == interaction.member) {
+				return interaction.reply({ content: `${language('REPORT_YOURSELF')}`, ephemeral: true });
+			}
+
+			if (member.permissions.has('MANAGE_MESSAGES')) {
+				const embed = new discord.MessageEmbed()
+					.setDescription(language('REPORT_ADMIN'))
+					.setColor('RED');
+				return interaction.reply({ embeds: [embed], ephemeral:true });
+			}
 		}
 
-		const embed = new discord.MessageEmbed()
-			.setTitle(language('REPORT_USER_EMBED_TITLE'))
-			.setDescription(language('REPORT_USER_EMBED_DESCRIPTION'))
-			.setColor('RED')
-			.setThumbnail(user.displayAvatarURL())
-			.addFields(
-				{ name: `${language('REPORT_USER_EMBED_FIELD_1')}`, value: `${user}`, inline:true },
-			);
-		const button = new discord.MessageActionRow().addComponents(
-			new discord.MessageButton()
-				.setCustomId('userReport')
-				.setLabel(language('REPORT_BUTTON_LABEL'))
-				.setEmoji('969148338597412884')
-				.setStyle('DANGER'),
-		);
-		interaction.reply({ embeds: [embed], components: [button], ephemeral:true });
+		const modal = new discord.Modal()
+            .setCustomId('userReport')
+            .setTitle(language('REPORT_USER_MODAL_TITLE'))
+            .addComponents(
+                new discord.MessageActionRow().addComponents(
+                    new discord.TextInputComponent()
+                        .setCustomId(interaction.targetUser.id)
+                        .setLabel(language('REPORT_MODAL_LABEL'))
+                        .setPlaceholder(language('REPORT_MODAL_PLACEHOLDER'))
+                        .setStyle('PARAGRAPH')
+                        .setMaxLength(4000)
+                        .setRequired(true),
+                ),
+            );
+        interaction.showModal(modal);
     },
 };

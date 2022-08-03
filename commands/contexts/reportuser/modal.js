@@ -17,40 +17,50 @@ module.exports = {
     data: { customid: 'userReport', type: 'MODAL' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
+
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
-        const reportRoleMention = config.get('reportRoleMention');
-        const reportCh = config.get('reportCh');
-        const reportRole = config.get('reportRole');
+        const { reportRole, reportRoleMention, reportCh } = config.get();
 
-        const embed = interaction.message.embeds[0];
-        const user = await client.users.fetch(embed.fields[0].value.replace(/^../g, '').replace(/.$/, ''));
+        const userId = interaction.components[0].components[0].customId;
+        const reportReason = interaction.components[0].components[0].value;
         /** @type {discord.User} */
-        const reportUser = interaction.user;
-        const reportReason = interaction.fields.getTextInputValue('firstTextInput');
+        // eslint-disable-next-line no-empty-function
+        const user = await client.users.fetch(userId).catch(() => {});
 
-        const reportEmbed = new discord.MessageEmbed()
+        if (!user) {
+            const embed = new discord.MessageEmbed()
+                .setDescription(language('REPORT_USER_UNDEFINED'))
+                .setColor('RED');
+            return interaction.reply({ embeds: [embed], ephemeral: true });
+        }
+
+        const embed = new discord.MessageEmbed()
             .setTitle(language('REPORT_USER_SLAVE_EMBED_TITLE'))
             .setDescription(`\`\`\`${reportReason}\`\`\``)
-            .setThumbnail(user.displayAvatarURL())
             .addFields(
                 { name: `${language('REPORT_USER_EMBED_FIELD_1')}`, value: `${user}`, inline:true },
             )
-            .setFooter({ text: `${language('REPORT_USER_SLAVE_EMBED_FOOTER', reportUser.tag)}`, iconURL: reportUser.displayAvatarURL() })
-            .setColor('RED');
+            .setColor('RED')
+            .setThumbnail(user.displayAvatarURL())
+            .setFooter({ text: `${language('REPORT_USER_SLAVE_EMBED_FOOTER', interaction.user.tag)}`, iconURL: interaction.user.displayAvatarURL() });
 
-        interaction.member.guild.channels.fetch(reportCh)
-            .then(channel => {
-                const content = reportRoleMention ? `<@&${reportRole}>` : ' ';
-                channel.send({ content: content, embeds: [reportEmbed] })
-                    .then(() => interaction.update({ content: `${language('REPORT_SUCCESS')}`, embeds: [], components: [] }))
-                    .catch(() => {
-                        Configs.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
-                        interaction.update({ content: `${language('REPORT_ERROR')}`, embeds: [], components: [] });
-                    });
+        // eslint-disable-next-line no-empty-function
+        const Ch = await interaction.guild.channels.fetch(reportCh).catch(() => {});
+
+        if (!Ch) {
+            Configs.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
+            return interaction.reply({ content: `${language('REPORT_ERROR')}`, ephemeral: true });
+        }
+
+        const content = reportRoleMention ? `<@&${reportRole}>` : ' ';
+
+        Ch.send({ content: content, embeds: [embed] })
+            .then(() => {
+                interaction.reply({ content: `${language('REPORT_SUCCESS')}`, ephemeral: true });
             })
             .catch(() => {
                 Configs.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
-                interaction.update({ content: `${language('REPORT_ERROR')}`, embeds: [], components: [] });
+                interaction.reply({ content: `${language('REPORT_ERROR')}`, ephemeral: true });
             });
     },
 };
