@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
+const swicher = require('../../../../modules/swicher');
 
 /**
 * @callback InteractionCallback
@@ -28,19 +29,11 @@ module.exports = {
         /** @type {discord.MessageActionRow} */
         const button = interaction.message.components[1];
 
-        if (leave) {
-            Configs.update({ leave: false }, { where: { serverId: interaction.guildId } });
-            embed.fields[1].value = language('SETTING_DISABLE');
-            button.components[1]
-                .setLabel(language('SETTING_BUTTON_ENABLE'))
-                .setStyle('SUCCESS');
-        } else {
-            Configs.update({ leave: true }, { where: { serverId: interaction.guildId } });
-            embed.fields[1].value = language('SETTING_CHANNEL_ENABLE', leaveCh);
-            button.components[1]
-                .setLabel(language('SETTING_BUTTON_DISABLE'))
-                .setStyle('DANGER');
-        }
+        Configs.update({ leave: leave ? false : true }, { where: { serverId: interaction.guildId } });
+        embed.fields[1].value = swicher.chStatusSwicher(language, !leave, leaveCh);
+        button.components[1]
+            .setLabel(swicher.buttonLabelSwicher(language, !leave))
+            .setStyle(swicher.buttonStyleSwicher(!leave));
         interaction.update({ embeds: [embed], components: [select, button] });
     },
 };

@@ -1,4 +1,5 @@
 const discord = require('discord.js');
+const swicher = require('../../../modules/swicher');
 
 /**
 * @callback InteractionCallback
@@ -17,6 +18,7 @@ module.exports = {
     data: { customid: 'welcomeSetting', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
+
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { welcome, welcomeCh, leave, leaveCh } = config.get();
 
@@ -34,17 +36,17 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-welcome')
-                    .setLabel(welcome ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
-                    .setStyle(welcome ? 'DANGER' : 'SUCCESS')
-                    .setDisabled(welcomeCh ? false : true),
+                    .setLabel(swicher.buttonLabelSwicher(language, welcome))
+                    .setStyle(swicher.buttonStyleSwicher(welcome))
+                    .setDisabled(swicher.buttonDisableSwicher(welcomeCh)),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeCh')
-                    .setLabel(language('SETTING_BUTTON_CH'))
+                    .setLabel(language('Setting.Common.Button.Ch'))
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeMessage')
-                    .setLabel(language('SETTING_BUTTON_MESSAGE'))
+                    .setLabel(language('Setting.Common.Button.Message'))
                     .setEmoji('966596708458983484')
                     .setStyle('SECONDARY'),
             );
@@ -54,12 +56,12 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-leave')
-                    .setLabel(leave ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
-                    .setStyle(leave ? 'DANGER' : 'SUCCESS')
-                    .setDisabled(leaveCh ? false : true),
+                    .setLabel(swicher.buttonLabelSwicher(language, leave))
+                    .setStyle(swicher.buttonStyleSwicher(leave))
+                    .setDisabled(swicher.buttonDisableSwicher(leaveCh)),
                 new discord.MessageButton()
                     .setCustomId('setting-leaveCh')
-                    .setLabel(language('SETTING_BUTTON_CH'))
+                    .setLabel(language('Setting.Common.Button.Ch'))
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
             );
@@ -71,5 +73,6 @@ module.exports = {
         const index = select.components[0].options.findIndex(v => v.value == interaction.values[0]);
         select.components[0].options[index].default = true;
         interaction.update({ components: [select, button], ephemeral:true });
+
     },
 };

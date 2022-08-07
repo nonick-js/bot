@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
+const swicher = require('../../../../modules/swicher');
 
 /**
 * @callback InteractionCallback
@@ -18,6 +19,7 @@ module.exports = {
     data: { customid: 'setting-welcome', type: 'BUTTON' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
+
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { welcome, welcomeCh } = config.get();
 
@@ -28,19 +30,11 @@ module.exports = {
         /** @type {discord.MessageActionRow} */
         const button = interaction.message.components[1];
 
-        if (welcome) {
-            Configs.update({ welcome: false }, { where: { serverId: interaction.guildId } });
-            embed.fields[0].value = language('SETTING_DISABLE');
-            button.components[1]
-                .setLabel(language('SETTING_BUTTON_ENABLE'))
-                .setStyle('SUCCESS');
-        } else {
-            Configs.update({ welcome: true }, { where: { serverId: interaction.guildId } });
-            embed.fields[0].value = language('SETTING_CHANNEL_ENABLE', welcomeCh);
-            button.components[1]
-                .setLabel(language('SETTING_BUTTON_DISABLE'))
-                .setStyle('DANGER');
-        }
+        Configs.update({ welcome: welcome ? false : true }, { where: { serverId: interaction.guildId } });
+        embed.fields[0].value = swicher.chStatusSwicher(language, !welcome, welcomeCh);
+        button.components[1]
+            .setLabel(swicher.buttonLabelSwicher(language, !welcome))
+            .setStyle(swicher.buttonStyleSwicher(!welcome));
         interaction.update({ embeds: [embed], components: [select, button] });
     },
 };

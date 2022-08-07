@@ -1,4 +1,5 @@
 const discord = require('discord.js');
+const swicher = require('../../../modules/swicher');
 
 /**
  * @callback InteractionCallback
@@ -17,6 +18,7 @@ module.exports = {
     data: { customid: 'reportSetting', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
+
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { reportRole, reportRoleMention } = config.get();
 
@@ -34,22 +36,22 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-reportCh')
-                    .setLabel(language('SETTING_BUTTON_CH'))
+                    .setLabel(language('Setting.Common.Button.Ch'))
                     .setStyle('SECONDARY')
                     .setEmoji('966588719635267624'),
             );
         }
 
         if (interaction.values == 'setting-report-2') {
-            button .addComponents(
+            button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-reportRoleMention')
-                    .setLabel(reportRoleMention ? language('SETTING_BUTTON_DISABLE') : language('SETTING_BUTTON_ENABLE'))
-                    .setStyle(reportRoleMention ? 'DANGER' : 'SUCCESS')
-                    .setDisabled(reportRole ? false : true),
+                    .setLabel(swicher.buttonLabelSwicher(language, reportRoleMention))
+                    .setStyle(swicher.buttonStyleSwicher(reportRoleMention))
+                    .setDisabled(swicher.buttonDisableSwicher(reportRole)),
                 new discord.MessageButton()
                     .setCustomId('setting-reportRole')
-                    .setLabel(language('SETTING_BUTTON_ROLE'))
+                    .setLabel(language('Setting.Common.Button.Role'))
                     .setEmoji('966719258430160986')
                     .setStyle('SECONDARY'),
             );
@@ -60,6 +62,7 @@ module.exports = {
         }
         const index = select.components[0].options.findIndex(v => v.value == interaction.values[0]);
         select.components[0].options[index].default = true;
+
         interaction.update({ components: [select, button], ephemeral: true });
     },
 };

@@ -18,6 +18,7 @@ module.exports = {
     data: { customid: 'language', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs) => {
+
         await Configs.update({ language: interaction.values[0] }, { where: { serverId: interaction.guild.id } });
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const new_language = require(`../../../language/${config.get('language')}`);
@@ -28,14 +29,16 @@ module.exports = {
         const button = interaction.message.components[1];
 
         const embed = new discord.MessageEmbed()
-            .setTitle(new_language('SETTING_LANGUAGE_TITLE'))
-            .setDescription(new_language('SETTING_LANGUAGE_DESCRIPTION'))
-            .setColor('GREEN');
+            .setTitle(new_language('Setting.Language.Embed.Title'))
+            .setDescription(new_language('Setting.Language.Embed.Description'))
+            .setColor('2f3136');
 
         for (let i = 0; i < select.components[0].options.length; i++) {
             select.components[0].options[i].default = false;
         }
+
         const index = select.components[0].options.findIndex(v => v.value == interaction.values[0]);
+
         select.components[0].options[index].default = true;
         interaction.update({ embeds: [embed], components: [select, button] });
     },

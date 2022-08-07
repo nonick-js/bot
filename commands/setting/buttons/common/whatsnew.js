@@ -19,20 +19,36 @@ module.exports = {
     data: { customid: 'setting-whatsnew', type: 'BUTTON' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, laungage) => {
+
         octokit.repos.listReleases({ owner: 'nonick-mc', repo: 'DiscordBot-NoNick.js' })
             .then((res) => {
                 const whatsnew = res.data.find(v => v.prerelease == false);
+
                 const embed = new discord.MessageEmbed()
-                    .setTitle('What\'s New')
+                    .setTitle('📢 What\'s New')
                     .setDescription(`**${client.user.username} ${whatsnew.name}\`\`\`md\n${whatsnew.body}\`\`\`**`)
-                    .setColor('BLUE');
-                interaction.reply({ embeds: [embed], ephemeral: true });
+                    .setColor('2f3136');
+                const button = new discord.MessageActionRow().addComponents(
+                    new discord.MessageButton()
+                    .setCustomId('setting-back')
+                    .setEmoji('971389898076598322')
+                    .setStyle('PRIMARY'),
+                );
+
+                interaction.update({ embeds: [embed], components:[button], ephemeral: true });
             })
             .catch(() => {
                 const embed = new discord.MessageEmbed()
-                    .setDescription(laungage('SETTING_WHATSNEW_ERROR'))
+                    .setDescription(laungage('Setting.Error.WhatsNew'))
                     .setColor('RED');
-                interaction.reply({ embeds: [embed], ephemeral: true });
+                const button = new discord.MessageActionRow().addComponents(
+                    new discord.MessageButton()
+                    .setCustomId('setting-back')
+                    .setEmoji('971389898076598322')
+                    .setStyle('PRIMARY'),
+                );
+
+                interaction.update({ embeds: [embed], components: [button], ephemeral: true });
             });
     },
 };

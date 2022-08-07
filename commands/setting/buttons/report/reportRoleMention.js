@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
+const swicher = require('../../../../modules/swicher');
 
 /**
 * @callback InteractionCallback
@@ -18,6 +19,7 @@ module.exports = {
     data: { customid: 'setting-reportRoleMention', type: 'BUTTON' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
+
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const { reportRole, reportRoleMention } = config.get();
 
@@ -28,19 +30,11 @@ module.exports = {
         /** @type {discord.MessageActionRow} */
         const button = interaction.message.components[1];
 
-        if (reportRoleMention) {
-            Configs.update({ reportRoleMention: false }, { where: { serverId: interaction.guildId } });
-            embed.fields[1].value = language('SETTING_DISABLE');
-            button.components[1]
-                .setLabel(language('SETTING_BUTTON_ENABLE'))
-                .setStyle('SUCCESS');
-        } else {
-            Configs.update({ reportRoleMention: true }, { where: { serverId: interaction.guildId } });
-            embed.fields[1].value = language('SETTING_ROLE_ENABLE', reportRole);
-            button.components[1]
-                .setLabel(language('SETTING_BUTTON_DISABLE'))
-                .setStyle('DANGER');
-        }
+        Configs.update({ reportRoleMention: reportRoleMention ? false : true }, { where: { serverId: interaction.guildId } });
+        embed.fields[1].value = swicher.roleStatusSwicher(language, !reportRoleMention, reportRole);
+        button.components[1]
+            .setLabel(swicher.buttonLabelSwicher(language, !reportRoleMention))
+            .setStyle(swicher.buttonStyleSwicher(!reportRoleMention));
         interaction.update({ embeds: [embed], components: [select, button] });
     },
 };

@@ -1,4 +1,7 @@
 const discord = require('discord.js');
+const fieldIndex = {
+    reportRole: [1, 'reportRoleMention', 1],
+};
 
 /**
 * @callback InteractionCallback
@@ -17,8 +20,7 @@ module.exports = {
     data: { customid: 'setting-Role', type: 'MODAL' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
-        /** @type {Array} 設定する項目 splice位置 */
-        const settingInfo = interaction.components[0].components[0].customId.split(',');
+        const setting = interaction.components[0].components[0].customId;
         const textInput = interaction.components[0].components[0].value;
 
         /** @type {discord.MessageEmbed} */
@@ -29,21 +31,19 @@ module.exports = {
         const button = interaction.message.components[1];
 
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
-        const configMention = config.get(settingInfo[0] + 'Mention');
 
-        try {
-            const roleId = interaction.guild.roles.cache.find((role) => role.name === textInput).id;
-            Configs.update({ [settingInfo[0]]: roleId }, { where: { serverId: interaction.guildId } });
-            button.components[1].setDisabled(false);
-            if (configMention) embed.fields[parseInt(settingInfo[1], 10)].value = language('SETTING_ROLE_ENABLE', roleId);
-            interaction.update({ embeds: [embed], components: [select, button] });
-        }
-        catch {
+        const role = interaction.guild.roles.cache.find(v => v.name == textInput);
+        if (!role) {
             const roleNotFound = new discord.MessageEmbed()
-                .setTitle(language('SETTING_ERROR_TITLE'))
-                .setDescription(language('SETTING_ERROR_ROLENOTFOUND', textInput))
+                .setDescription(language('Setting.Error.RoleNotfound', textInput))
                 .setColor('RED');
-            interaction.update({ embeds: [embed, roleNotFound], components: [select, button] });
+            return interaction.update({ embeds: [embed, roleNotFound] });
         }
+
+        console.log(setting);
+        Configs.update({ [setting]: role.id }, { where: { serverId: interaction.guildId } });
+        if (config.get(fieldIndex[setting][1])) embed.fields[fieldIndex[setting][0]].value = language('Setting.Common.Embed.Role_enable', role.id);
+        button.components[fieldIndex[setting][2]].setDisabled(false);
+        interaction.update({ embeds: [embed], components: [select, button] });
     },
 };

@@ -86,7 +86,7 @@ client.on('interactionCreate', async interaction => {
 
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
-            .setDescription(language('BLACKLIST_MESSAGE', client.user.username))
+            .setDescription(language('Common.BlackList', client.user.username))
             .setColor('RED');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }

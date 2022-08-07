@@ -19,12 +19,12 @@ module.exports = {
     exec: async (client, interaction, Configs, language) => {
 		const modal = new discord.Modal()
 			.setCustomId('setting-Channel')
-			.setTitle(language('SETTING_WELCOMEMESSAGE_LEAVE_MODAL_TITLE'))
+			.setTitle(language('Setting.WelcomeMessage.Modal.LeaveCh.Title'))
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
-						.setCustomId('leaveCh,1')
-						.setLabel(language('SETTING_WELCOMEMESSAGE_LEAVE_MODAL_LABEL'))
+						.setCustomId('leaveCh')
+						.setLabel(language('Setting.WelcomeMessage.Modal.LeaveCh.Label'))
 						.setStyle('SHORT')
 						.setMaxLength(100)
 						.setRequired(true),

@@ -19,14 +19,14 @@ module.exports = {
     exec: async (client, interaction, Configs, language) => {
 		const modal = new discord.Modal()
 			.setCustomId('modal-setting-welcomeMessage')
-			.setTitle(language('SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_TITLE'))
+			.setTitle(language('Setting.WelcomeMessage.Modal.WelcomeMessage.Title'))
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
-						.setCustomId('firstTextInput')
-						.setLabel(language('SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_LABEL'))
+						.setCustomId('welcomeMessage')
+						.setLabel(language('Setting.WelcomeMessage.Modal.WelcomeMessage.Label'))
 						.setStyle('PARAGRAPH')
-						.setPlaceholder(language('SETTING_WELCOMEMESSAGE_WELCOMEMESSAGE_MODAL_PLACEHOLDER'))
+						.setPlaceholder(language('Setting.WelcomeMessage.Modal.WelcomeMessage.Placeholder'))
 						.setMaxLength(1000)
 						.setRequired(true),
 				),

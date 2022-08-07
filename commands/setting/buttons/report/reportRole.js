@@ -19,12 +19,12 @@ module.exports = {
     exec: async (client, interaction, Configs, language) => {
         const modal = new discord.Modal()
             .setCustomId('setting-Role')
-            .setTitle(language('SETTING_REPORT_REPORTROLE_MODAL_TITLE'))
+            .setTitle(language('Setting.Report.Modal.ReportRole.Title'))
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
-                        .setCustomId('reportRole,1')
-                        .setLabel(language('SETTING_REPORT_REPORTROLE_MODAL_LABEL'))
+                        .setCustomId('reportRole')
+                        .setLabel(language('Setting.Report.Modal.ReportRole.Label'))
                         .setStyle('SHORT')
                         .setMaxLength(100)
                         .setRequired(true),

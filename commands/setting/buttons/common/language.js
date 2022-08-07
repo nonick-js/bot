@@ -17,11 +17,13 @@ module.exports = {
     data: { customid: 'setting-language', type: 'BUTTON' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
+
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+
         const embed = new discord.MessageEmbed()
-            .setTitle(language('SETTING_LANGUAGE_TITLE'))
-            .setDescription(language('SETTING_LANGUAGE_DESCRIPTION'))
-            .setColor('GREEN');
+            .setTitle(language('Setting.Language.Embed.Title'))
+            .setDescription(language('Setting.Language.Embed.Description'))
+            .setColor('2f3136');
         const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
             .setCustomId('setting-back')

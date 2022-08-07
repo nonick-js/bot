@@ -1,4 +1,9 @@
 const discord = require('discord.js');
+const fieldIndex = {
+    welcomeCh: [0, 'welcome', 1],
+    reportCh: [0, 'report', 1],
+    leaveCh: [1, 'leave', 1],
+};
 
 /**
 * @callback InteractionCallback
@@ -17,8 +22,7 @@ module.exports = {
     data: { customid: 'setting-Channel', type: 'MODAL' },
     /** @type {InteractionCallback} */
     exec: async (client, interaction, Configs, language) => {
-        /** @type {Array} 設定する項目 splice位置 */
-        const settingInfo = interaction.components[0].components[0].customId.split(',');
+        const setting = interaction.components[0].components[0].customId;
         const textInput = interaction.components[0].components[0].value;
 
         /** @type {discord.MessageEmbed} */
@@ -29,38 +33,35 @@ module.exports = {
         const button = interaction.message.components[1];
 
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
-        const configCh = config.get(settingInfo[0].slice(0, -2));
 
-        try {
-            const channel = interaction.guild.channels.cache.find(v => v.name == textInput);
-            const successembed = new discord.MessageEmbed()
-                .setDescription(language('SETTING_CH_SUCCESS_DESCRIPTION', embed.fields[parseInt(settingInfo[1], 10)].name))
-                .setColor('GREEN');
-            channel.send({ embeds: [successembed] })
-                .then(() => {
-                    Configs.update({ [settingInfo[0]]: channel.id }, { where: { serverId: interaction.guildId } });
-                    if (settingInfo[0].slice(0, -2) == 'report') {
-                        embed.fields[parseInt(settingInfo[1], 10)].value = discord.Formatters.channelMention(channel.id);
-                    } else {
-                        if (configCh) embed.fields[parseInt(settingInfo[1], 10)].value = language('SETTING_CHANNEL_ENABLE', channel.id);
-                        button.components[1].setDisabled(false);
-                    }
-                    interaction.update({ embeds: [embed], components: [select, button] });
-                })
-                .catch(() => {
-                    const MissingPermission = new discord.MessageEmbed()
-                        .setTitle(language('SETTING_ERROR_TITLE'))
-                        .setDescription(language('SETTING_ERROR_NOTPERMISSION'))
-                        .setColor('RED');
-                    interaction.update({ embeds: [embed, MissingPermission] });
-                });
-        }
-        catch {
-            const notFound = new discord.MessageEmbed()
-                .setTitle(language('SETTING_ERROR_TITLE'))
-                .setDescription(language('SETTING_ERROR_CHANNELNOTFOUND', textInput))
+        const ch = interaction.guild.channels.cache.find(v => v.name == textInput);
+        if (!ch) {
+            const error = new discord.MessageEmbed()
+                .setDescription(language('Setting.Error.ChNotfound', textInput))
                 .setColor('RED');
-            interaction.update({ embeds: [embed, notFound] });
+            return interaction.update({ embeds: [embed, error] });
         }
+
+        const successEmbed = new discord.MessageEmbed()
+            .setDescription(language('Setting.Common.Embed.Channel.Success', embed.fields[fieldIndex[setting][0]].name))
+            .setColor('GREEN');
+
+        ch.send({ embeds: [successEmbed] })
+            .then(() => {
+                Configs.update({ [setting]: ch.id }, { where: { serverId: interaction.guildId } });
+                if (setting == 'reportCh') {
+                    embed.fields[fieldIndex[setting][0]].value = `<#${ch.id}>`;
+                } else {
+                    if (config.get(fieldIndex[setting][1])) embed.fields[fieldIndex[setting][0]].value = language('Setting.Common.Embed.Ch_Enable', ch.id);
+                    button.components[fieldIndex[setting][2]].setDisabled(false);
+                }
+                interaction.update({ embeds: [embed], components: [select, button] });
+            })
+            .catch(() => {
+                const MissingPermission = new discord.MessageEmbed()
+                    .setDescription(language('Setting.Common.Embed.Channel.Error'))
+                    .setColor('RED');
+                interaction.update({ embeds: [embed, MissingPermission] });
+            });
     },
 };
