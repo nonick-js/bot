@@ -1,6 +1,7 @@
 const discord = require('discord.js');
 const languageData = {
 
+    NULL: 'なし',
     Common: {
         BlackList: (username) => `🚫 このサーバーでの**${username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`,
     },
@@ -20,8 +21,6 @@ const languageData = {
             Label: 'サポートサーバー',
         },
     },
-
-    NULL: 'なし',
 
     Setting: {
         Error: {
@@ -150,6 +149,57 @@ const languageData = {
         },
     },
 
+    Report: {
+        Common: {
+            Embed: {
+                NotSetting: '⚠️ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。',
+                NotSetting_Admin: '⚠️ **この機能を使用するには追加で設定が必要です。**\n`/setting`で通報機能の設定を開き、通報を受け取るチャンネルを設定してください。',
+                NotSetting_Admin_Image: 'https://cdn.discordapp.com/attachments/958791423161954445/976117804879192104/unknown.png',
+                Report: {
+                    User_Undef: '❌ そのユーザーは削除されています!',
+                    Message_Undef: '❌ 通報しようとしているメッセージは削除されました。',
+                    Myself: '僕を通報しても意味ないよ。',
+                    Yourself: '自分自身を通報していますよ...',
+                    Sys: '❌ Webhookやシステムメッセージを通報することはできません!',
+                    Admin: '❌ このコマンドでサーバー運営者を通報することはできません!',
+                },
+                Success: '✅ **報告ありがとうございます!** 通報をサーバー運営に送信しました!',
+                Error: '❌ 通報の送信中に問題が発生しました。',
+            },
+            Modal: {
+                Label: '通報理由',
+                Placeholder: 'できる限り詳しく入力してください',
+            },
+        },
+        MessageSlave: {
+            Embed: {
+                Title: '⚠️ 通報 (メッセージ)',
+                Field: {
+                    Name_1: '投稿者',
+                    Name_2: '投稿先',
+                    Name_3: 'メッセージ',
+                    Value_2: (array) => `${array[0]} [リンク](${array[1]})`,
+                },
+                Footer: (tag) => `通報者: ${tag}`,
+            },
+            Modal: {
+                Title: 'メッセージを通報',
+            },
+        },
+        UserSlave: {
+            Embed: {
+                Title: '⚠️ 通報 (メンバー)',
+                Field: {
+                    Name_1: '対象者',
+                },
+                Footer: (tag) => `通報者: ${tag}`,
+            },
+            Modal: {
+                Title: 'メンバーを通報',
+            },
+        },
+    },
+
     // ConnectionError
     CONNECTIONERROR_EMBED_TITLE: 'エラー!',
 
@@ -169,36 +219,6 @@ const languageData = {
     MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_FIELD: 'メッセージの内容',
     MESSAGECREATE_MESSAGELINKEXPANSION_ERROR_TITLE: 'エラー!',
 
-    // 通報機能
-    REPORT_NOT_SETTING: '⚠️ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。',
-    REPORT_NOT_SETTING_ADMIN: '⚠️ **この機能を使用するには追加で設定が必要です。**\n`/setting`で通報機能の設定を開き、通報を受け取るチャンネルを設定してください。',
-    REPORT_NOT_SETTING_ADMIN_IMAGE: 'https://cdn.discordapp.com/attachments/958791423161954445/976117804879192104/unknown.png',
-    REPORT_USER_UNDEFINED: '❌ そのユーザーは削除されています!',
-    REPORT_MYSELF: '僕を通報しても意味ないよ。',
-    REPORT_BOT: '❌ Webhookやシステムメッセージを通報することはできません!',
-    REPORT_YOURSELF: '自分自身を通報していますよ...',
-    REPORT_ADMIN: '❌ このコマンドでサーバー運営者を通報することはできません!',
-    REPORT_SUCCESS: '✅ **報告ありがとうございます!** 通報をサーバー運営に送信しました!',
-    REPORT_ERROR: '❌ 通報の送信中に問題が発生しました。',
-    REPORT_MESSAGE_UNDEF: '❌ 通報しようとしているメッセージは削除されました。',
-    REPORT_BUTTON_LABEL: '通報',
-    REPORT_MODAL_LABEL: '通報内容',
-    REPORT_MODAL_PLACEHOLDER: 'できる限り詳しく入力してください',
-    REPORT_MESSAGE_EMBED_TITLE: '⚠️ メッセージを通報',
-    REPORT_MESSAGE_EMBED_DESCRIPTION: 'このメッセージを通報してもよろしいですか?```通報はこのサーバーの運営にのみ送信され、Discordには送信されません。```',
-    REPORT_MESSAGE_EMBED_FIELD_1: '投稿者',
-    REPORT_MESSAGE_EMBED_FIELD_2: '投稿先',
-    REPORT_MESSAGE_EMBED_FIELD_2_VALUE: (array) => `${array[0]} [リンク](${array[1]})`,
-    REPORT_MESSAGE_EMBED_FIELD_3: 'メッセージ',
-    REPORT_MESSAGE_MODAL_TITLE: 'メッセージを通報',
-    REPORT_MESSAGE_SLAVE_EMBED_TITLE: '⚠️ 通報 (メッセージ)',
-    REPORT_MESSAGE_SLAVE_EMBED_FOOTER: (tag) => `通報者: ${tag}`,
-    REPORT_USER_EMBED_TITLE: '⚠️ メンバーを通報',
-    REPORT_USER_EMBED_DESCRIPTION: 'このメンバーを通報してもよろしいですか?```通報はこのサーバーの運営にのみ送信され、Discordには送信されません。```',
-    REPORT_USER_EMBED_FIELD_1: '対象者',
-    REPORT_USER_MODAL_TITLE: 'メンバーを通報',
-    REPORT_USER_SLAVE_EMBED_TITLE: '⚠️ 通報 (メンバー)',
-    REPORT_USER_SLAVE_EMBED_FOOTER: (tag) => `通報者: ${tag}`,
 
     // userinfoコンテキストメニュー
     USERINFO_NONE: '__なし__',
