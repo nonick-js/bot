@@ -200,6 +200,19 @@ const languageData = {
         },
     },
 
+    UserInfo: {
+        Embed: {
+            None: '__なし__',
+            Member_Undef: '**このユーザーはサーバーにいません**',
+            NickName: (name) => `${discord.Formatters.formatEmoji('973880625566212126')} ニックネーム: **${name}**`,
+            UserId: (id) => `${discord.Formatters.formatEmoji('973880625641705522')} ユーザーID: \`${id}\``,
+            CreateTime: 'アカウント作成日',
+            JoinTime: 'サーバー参加日',
+            BoostTime: (time) => `ブーストを開始した日: ${discord.Formatters.time(time, 'D')}`,
+            Role: 'ロール',
+        },
+    },
+
     // ConnectionError
     CONNECTIONERROR_EMBED_TITLE: 'エラー!',
 
@@ -219,15 +232,6 @@ const languageData = {
     MESSAGECREATE_MESSAGELINKEXPANSION_CONTENTEMBED_FIELD: 'メッセージの内容',
     MESSAGECREATE_MESSAGELINKEXPANSION_ERROR_TITLE: 'エラー!',
 
-
-    // userinfoコンテキストメニュー
-    USERINFO_NONE: '__なし__',
-    USERINFO_NICKNAME: (name) => `${discord.Formatters.formatEmoji('973880625566212126')} ニックネーム: **${name}**`,
-    USERINFO_USERID: (id) => `${discord.Formatters.formatEmoji('973880625641705522')} ユーザーID: ${id}`,
-    USERINFO_CREATETIME: 'アカウント作成日',
-    USERINFO_JOINTIME: 'サーバー参加日',
-    USERINFO_ROLE: 'ロール',
-    USERINFO_BOOSTTIME: (time) => `最後にブーストした日: ${discord.Formatters.time(time, 'D')}`,
 
     // timeoutコマンド
     TIMEOUT_PERMISSION_ERROR: '❌ あなたにはこのコマンドを使用する権限がありません！\n必要な権限: `メンバーをタイムアウト`',

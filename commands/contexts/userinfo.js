@@ -19,13 +19,29 @@ module.exports = {
     exec: async (client, interaction, Configs, language) => {
         /** @type {discord.User} */
         const user = interaction.targetUser;
-        const member = await interaction.guild.members.fetch(user);
+        const createTime = discord.Formatters.time(Math.floor(user.createdTimestamp / 1000), 'D');
+
+        /** @type {discord.GuildMember} */
+        // eslint-disable-next-line no-empty-function
+        const member = await interaction.guild.members.fetch(user).catch(() => {});
+        if (!member) {
+            const embed = new discord.MessageEmbed()
+                .setAuthor({ name: user.tag })
+                .setThumbnail(user.displayAvatarURL())
+                .setColor('WHITE')
+                .setDescription([
+                    `${language('UserInfo.Embed.Member_Undef')}`,
+                    `${language('UserInfo.Embed.UserId', user.id)}`,
+                ].join('\n'))
+                .addFields(
+                    { name: `${language('UserInfo.Embed.CreateTime')}`, value: createTime },
+                );
+            return interaction.reply({ embeds: [embed], ephemeral: true });
+        }
 
         const nickName = member.nickname ?? language('USERINFO_NONE');
-        const createTime = Math.floor(user.createdTimestamp / 1000);
-        const joinTime = Math.floor(member.joinedTimestamp / 1000);
+        const joinTime = discord.Formatters.time(Math.floor(member.joinedTimestamp / 1000), 'D');
 		const boostTime = Math.floor(member.premiumSinceTimestamp / 1000);
-
         const roleCollection = member.roles.cache.filter(role => role.name !== '@everyone').sort((before, after) => {
             if (before.position > after.position) return -1;
             return 1;
@@ -36,18 +52,18 @@ module.exports = {
             .setThumbnail(member.displayAvatarURL())
             .setAuthor({ name: user.tag })
             .setDescription([
-                `${language('USERINFO_NICKNAME', nickName)}`,
-                `${language('USERINFO_USERID', user.id)}`,
+                `${language('UserInfo.Embed.UserId', user.id)}`,
+                `${language('UserInfo.Embed.NickName', nickName)}`,
             ].join('\n'))
             .addFields(
-                { name: `${language('USERINFO_CREATETIME')}`, value: discord.Formatters.time(createTime, 'D'), inline:true },
-                { name: `${language('USERINFO_JOINTIME')}`, value: discord.Formatters.time(joinTime, 'D'), inline:true },
-                { name: `${language('USERINFO_ROLE')}`, value: roles },
+                { name: `${language('UserInfo.Embed.CreateTime')}`, value: createTime, inline:true },
+                { name: `${language('UserInfo.Embed.JoinTime')}`, value: joinTime, inline:true },
+                { name: `${language('UserInfo.Embed.Role')}`, value: roles },
             )
             .setColor(member.roles.highest.color);
 
-		if (boostTime !== 0) embed.addFields({ name: '🎉SERVER BOOST', value: `${language('USERINFO_BOOSTTIME'), boostTime}` });
-        if (embed.color == 0) {embed.setColor('WHITE');}
+		if (boostTime) embed.addFields({ name: '🎉SERVER BOOST', value: `${language('UserInfo.BoostTime'), boostTime}` });
+        if (!embed.color) embed.setColor('WHITE');
         if (user.displayAvatarURL() !== member.displayAvatarURL()) {
             embed.setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() });
             embed.setThumbnail(member.displayAvatarURL());
