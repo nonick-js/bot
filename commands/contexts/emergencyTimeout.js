@@ -2,7 +2,8 @@ const discord = require('discord.js');
 
 /**
 * @callback InteractionCallback
-* @param {discord.UserContextMenuInteraction} interaction
+* @param {discord.Client} client
+* @param {discord.MessageContextMenuInteraction} interaction
 * @param {...any} [args]
 * @returns {void}
 */
@@ -16,7 +17,8 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { name: '緊急タイムアウト', type: 'USER' },
     /** @type {InteractionCallback} */
-    exec: async (interaction) => {
+    exec: async (client, interaction, Configs) => {
+
         if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
             const embed = new discord.MessageEmbed()
 				.setDescription([
@@ -27,6 +29,9 @@ module.exports = {
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
+        const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
+        const { timeoutLogCh } = config.get();
+
         if (!interaction.targetMember) {
             const embed = new discord.MessageEmbed()
                 .setDescription('❌ このユーザーはサーバーにいません!')
@@ -34,10 +39,8 @@ module.exports = {
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
-        interaction.targetMember.timeout(2419000000, '緊急タイムアウト')
+        interaction.targetMember.timeout(2419000000, `緊急タイムアウト by ${interaction.user.tag}`)
             .then(() => {
-                const { timeoutLogCh } = require('../../config.json');
-
                 interaction.reply({ content: `⛔ ${interaction.targetUser}を**緊急タイムアウト**しました (28日)` });
 
                 const embed = new discord.MessageEmbed()
