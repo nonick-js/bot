@@ -16,15 +16,15 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-welcomeCh', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
 		const modal = new discord.Modal()
 			.setCustomId('setting-Channel')
-			.setTitle(language('Setting.WelcomeMessage.Modal.WelcomeCh.Title'))
+			.setTitle('入室ログ')
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
 						.setCustomId('welcomeCh')
-						.setLabel(language('Setting.WelcomeMessage.Modal.WelcomeCh.Label'))
+						.setLabel('チャンネル名')
 						.setStyle('SHORT')
 						.setMaxLength(100)
 						.setRequired(true),

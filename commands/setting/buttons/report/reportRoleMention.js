@@ -18,7 +18,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-reportRoleMention', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
 
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const { reportRole, reportRoleMention } = config.get();
@@ -31,9 +31,9 @@ module.exports = {
         const button = interaction.message.components[1];
 
         Configs.update({ reportRoleMention: reportRoleMention ? false : true }, { where: { serverId: interaction.guildId } });
-        embed.fields[1].value = swicher.roleStatusSwicher(language, !reportRoleMention, reportRole);
+        embed.fields[1].value = swicher.roleStatusSwicher(!reportRoleMention, reportRole);
         button.components[1]
-            .setLabel(swicher.buttonLabelSwicher(language, !reportRoleMention))
+            .setLabel(swicher.buttonLabelSwicher(!reportRoleMention))
             .setStyle(swicher.buttonStyleSwicher(!reportRoleMention));
         interaction.update({ embeds: [embed], components: [select, button] });
     },

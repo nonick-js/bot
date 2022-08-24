@@ -16,22 +16,23 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { name: 'reactionrole', description: '新しいリアクションロールパネルを作成', descriptionLocalizations: { 'en-US': 'Create a new reaction role panel' }, type: 'CHAT_INPUT' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
+
         if (!interaction.member.permissions.has('MANAGE_ROLES')) {
             const embed = new discord.MessageEmbed()
-                .setDescription(language('REACTION_PERMISSION_ERROR'))
+                .setDescription('❌ あなたにはこのコマンドを使用する権限がありません!\n必要な権限: `ロールを管理`')
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
         const modal = new discord.Modal()
             .setCustomId('reactionRoleSetting')
-            .setTitle(language('REACTION_MODAL_TITLE'))
+            .setTitle('リアクションロールパネル')
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('title')
-                        .setLabel(language('REACTION_MODAL_LABEL_1'))
+                        .setLabel('タイトル')
                         .setMaxLength(1000)
                         .setStyle('SHORT')
                         .setRequired(true),
@@ -39,8 +40,7 @@ module.exports = {
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('description')
-                        .setLabel(language('REACTION_MODAL_LABEL_2'))
-                        .setPlaceholder('')
+                        .setLabel('説明')
                         .setMaxLength(4000)
                         .setStyle('PARAGRAPH')
                         .setRequired(true),
@@ -48,9 +48,9 @@ module.exports = {
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('image')
-                        .setLabel(language('REACTION_MODAL_LABEL_3'))
-                        .setPlaceholder(language('REACTION_MODAL_PLACEHOLDER_3'))
-                        .setMaxLength(500)
+                        .setLabel('画像URL')
+                        .setPlaceholder('http(s):// から始まるURLのみ対応しています。')
+                        .setMaxLength(1000)
                         .setStyle('SHORT'),
                 ),
             );

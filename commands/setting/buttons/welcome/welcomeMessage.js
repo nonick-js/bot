@@ -16,17 +16,17 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-welcomeMessage', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
 		const modal = new discord.Modal()
 			.setCustomId('modal-setting-welcomeMessage')
-			.setTitle(language('Setting.WelcomeMessage.Modal.WelcomeMessage.Title'))
+			.setTitle('Welcomeメッセージ')
 			.addComponents(
 				new discord.MessageActionRow().addComponents(
 					new discord.TextInputComponent()
 						.setCustomId('welcomeMessage')
-						.setLabel(language('Setting.WelcomeMessage.Modal.WelcomeMessage.Label'))
+						.setLabel('メッセージ')
 						.setStyle('PARAGRAPH')
-						.setPlaceholder(language('Setting.WelcomeMessage.Modal.WelcomeMessage.Placeholder'))
+						.setPlaceholder('<#チャンネルID>や<@ユーザーID>、<@&ロールID> と入力することでそれぞれメンションが可能です')
 						.setMaxLength(1000)
 						.setRequired(true),
 				),

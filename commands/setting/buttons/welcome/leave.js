@@ -18,7 +18,7 @@ module.exports = {
     /** @type { discord.ApplicationCommandData|ContextMenuData } */
     data: { customid: 'setting-leave', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const { leave, leaveCh } = config.get();
 
@@ -30,9 +30,9 @@ module.exports = {
         const button = interaction.message.components[1];
 
         Configs.update({ leave: leave ? false : true }, { where: { serverId: interaction.guildId } });
-        embed.fields[1].value = swicher.chStatusSwicher(language, !leave, leaveCh);
+        embed.fields[1].value = swicher.chStatusSwicher(!leave, leaveCh);
         button.components[1]
-            .setLabel(swicher.buttonLabelSwicher(language, !leave))
+            .setLabel(swicher.buttonLabelSwicher(!leave))
             .setStyle(swicher.buttonStyleSwicher(!leave));
         interaction.update({ embeds: [embed], components: [select, button] });
     },

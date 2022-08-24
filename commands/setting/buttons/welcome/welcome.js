@@ -18,7 +18,7 @@ module.exports = {
     /** @type { discord.ApplicationCommandData|ContextMenuData } */
     data: { customid: 'setting-welcome', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
 
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { welcome, welcomeCh } = config.get();
@@ -31,9 +31,9 @@ module.exports = {
         const button = interaction.message.components[1];
 
         Configs.update({ welcome: welcome ? false : true }, { where: { serverId: interaction.guildId } });
-        embed.fields[0].value = swicher.chStatusSwicher(language, !welcome, welcomeCh);
+        embed.fields[0].value = swicher.chStatusSwicher(!welcome, welcomeCh);
         button.components[1]
-            .setLabel(swicher.buttonLabelSwicher(language, !welcome))
+            .setLabel(swicher.buttonLabelSwicher(!welcome))
             .setStyle(swicher.buttonStyleSwicher(!welcome));
         interaction.update({ embeds: [embed], components: [select, button] });
     },

@@ -11,6 +11,7 @@ const sequelize = new Sequelize({
 	logging: false,
 	storage: 'sql/config.sqlite',
 });
+
 require('dotenv').config();
 const { guildId, guildCommand, blackList_guild, blackList_user, debugMode, replitMode } = require('./config.json');
 const interaction_commands = require('./modules/interaction');
@@ -69,7 +70,7 @@ client.on('ready', () => {
     });
     if (guildCommand) commands.register(client, guildId);
     else commands.register(client);
-    client.user.setActivity(`/info | ${client.guilds.cache.size}servers`);
+    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} servers `, type: 'COMPETING' });
 });
 
 client.on('guildCreate', () => client.user.setActivity(`/info | ${client.guilds.cache.size} servers`));
@@ -81,19 +82,17 @@ client.on('messageCreate', message => moduleExecute(message, messageCreate));
 
 client.on('interactionCreate', async interaction => {
     await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
-    const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-    const language = require(`./language/${config.get('language')}`);
 
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
-            .setDescription(language('Common.BlackList', client.user.username))
+            .setDescription(`🚫 このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`)
             .setColor('RED');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
     const cmd = commands.getCommand(interaction);
     try {
-        cmd.exec(client, interaction, Configs, language);
+        cmd.exec(client, interaction, Configs);
     }
     catch (e) {
         console.log(e);
@@ -102,13 +101,10 @@ client.on('interactionCreate', async interaction => {
 
 async function moduleExecute(param, module) {
     if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
-
     await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
-    const config = await Configs.findOne({ where: { serverId: param.guild.id } });
-    const language = require(`./language/${config.get('language')}`);
 
     try {
-        module.execute(client, param, Configs, language);
+        module.execute(client, param, Configs);
     } catch (e) {
         console.log(`[エラー!] サーバーID:${param.guild.id}\n${e}`);
     }

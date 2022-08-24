@@ -17,7 +17,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-DeleteRole', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
         const embed = interaction.message.embeds[0];
         /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
@@ -26,7 +26,7 @@ module.exports = {
 
         if (select.components[0].type == 'BUTTON') {
             const error = new discord.MessageEmbed()
-                .setDescription(language('REACTION_DELETEROLE_ERROR'))
+                .setDescription('❌ まだ1つもロールを追加していません!')
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }
@@ -35,12 +35,12 @@ module.exports = {
 
         const modal = new discord.Modal()
             .setCustomId('deleteRole')
-            .setTitle(language('REACTION_DELETEROLE_MODAL_TITLE'))
+            .setTitle('ロール削除')
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('textinput')
-                        .setLabel(language('REACTION_DELETEROLE_MODAL_LABEL'))
+                        .setLabel('ロールの名前')
                         .setMaxLength(100)
                         .setRequired(true)
                         .setStyle('SHORT'),

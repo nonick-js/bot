@@ -17,16 +17,16 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-EditEmbed', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
         const embed = interaction.message.embeds[0];
         const modal = new discord.Modal()
             .setCustomId('reactionRole-update')
-            .setTitle(language('REACTION_EDITEMBED_MODAL_TITLE'))
+            .setTitle('埋め込みの編集')
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('title')
-                        .setLabel(language('REACTION_MODAL_LABEL_1'))
+                        .setLabel('タイトル')
                         .setMaxLength(1000)
                         .setValue(`${embed.title}`)
                         .setStyle('SHORT')
@@ -35,8 +35,7 @@ module.exports = {
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('description')
-                        .setLabel(language('REACTION_MODAL_LABEL_2'))
-                        .setPlaceholder(language('REACTION_MODAL_PLACEHOLDER_2'))
+                        .setLabel('説明')
                         .setMaxLength(4000)
                         .setValue(`${embed.description}`)
                         .setStyle('PARAGRAPH')
@@ -45,10 +44,10 @@ module.exports = {
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId('image')
-                        .setLabel(language('REACTION_MODAL_LABEL_3'))
-                        .setPlaceholder(language('REACTION_MODAL_PLACEHOLDER_3'))
+                        .setLabel('画像URL')
+                        .setPlaceholder('http(s):// から始まるURLのみ対応しています。')
                         .setMaxLength(500)
-                        .setValue(embed.image ? embed.image.url : language('NULL'))
+                        .setValue(embed.image ? embed.image.url : 'なし')
                         .setStyle('SHORT'),
                 ),
             );

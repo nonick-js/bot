@@ -16,7 +16,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'messageReport', type: 'MODAL' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
 
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const { reportRole, reportRoleMention, reportCh } = config.get();
@@ -29,23 +29,23 @@ module.exports = {
         const message = await interaction.channel.messages.fetch(messageId).catch(() => {});
         if (!message) {
             const embed = new discord.MessageEmbed()
-                .setDescription(language('Report.Common.Embed.Report.Message_Undef'))
+                .setDescription('❌ 通報しようとしているメッセージは削除されました。')
                 .setColor('RED');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
         const embed = new discord.MessageEmbed()
-            .setTitle(language('Report.MessageSlave.Embed.Title'))
+            .setTitle('⚠️ 通報 (メッセージ)')
             .setDescription(`\`\`\`${reportReason}\`\`\``)
             .addFields(
-                { name: `${language('Report.MessageSlave.Embed.Field.Name_1')}`, value: `${message.author}`, inline:true },
-                { name: `${language('Report.MessageSlave.Embed.Field.Name_2')}`, value: `${language('Report.MessageSlave.Embed.Field.Value_2', [message.channel, message.url])}`, inline:true },
+                { name: '投稿者', value: `${message.author}`, inline:true },
+                { name: '投稿先', value: `${message.channel} [リンク](${message.url})`, inline:true },
             )
             .setColor('RED')
             .setThumbnail(message.author.displayAvatarURL())
-            .setFooter({ text: `${language('Report.MessageSlave.Embed.Footer', interaction.user.tag)}`, iconURL: interaction.user.displayAvatarURL() });
+            .setFooter({ text: `通報者: ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() });
 
-        if (message.content) embed.addFields({ name: `${language('Report.MessageSlave.Embed.Field.Name_3')}`, value: `${message.content}` });
+        if (message.content) embed.addFields({ name: 'メッセージ', value: `${message.content}` });
 		if (message.attachments.first()) {
 			const reportedMessageFile = message.attachments.first();
 			if (reportedMessageFile.height && reportedMessageFile.width) embed.setImage(reportedMessageFile.url);
@@ -55,18 +55,18 @@ module.exports = {
         const Ch = await interaction.guild.channels.fetch(reportCh).catch(() => {});
         if (!Ch) {
             Configs.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
-            return interaction.reply({ content: `${language('Report.Common.Embed.Error')}`, ephemeral: true });
+            return interaction.reply({ content: '❌ 通報の送信中に問題が発生しました。', ephemeral: true });
         }
 
         const content = reportRoleMention ? `<@&${reportRole}>` : ' ';
 
         Ch.send({ content: content, embeds: [embed] })
             .then(() => {
-                interaction.reply({ content: `${language('Report.Common.Embed.Success')}`, ephemeral: true });
+                interaction.reply({ content: '✅ **報告ありがとうございます!** 通報をサーバー運営に送信しました!', ephemeral: true });
             })
             .catch(() => {
                 Configs.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
-                interaction.reply({ content: `${language('Report.Common.Embed.Error')}`, ephemeral: true });
+                interaction.reply({ content: '❌ 通報の送信中に問題が発生しました。', ephemeral: true });
             });
     },
 };

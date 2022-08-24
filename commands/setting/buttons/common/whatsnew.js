@@ -18,7 +18,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-whatsnew', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, laungage) => {
+    exec: async (client, interaction) => {
 
         octokit.repos.listReleases({ owner: 'nonick-mc', repo: 'DiscordBot-NoNick.js' })
             .then((res) => {
@@ -27,7 +27,7 @@ module.exports = {
                 const embed = new discord.MessageEmbed()
                     .setTitle('📢 What\'s New')
                     .setDescription(`**${client.user.username} ${whatsnew.name}\`\`\`md\n${whatsnew.body}\`\`\`**`)
-                    .setColor('2f3136');
+                    .setColor('GREEN');
                 const button = new discord.MessageActionRow().addComponents(
                     new discord.MessageButton()
                     .setCustomId('setting-back')
@@ -39,7 +39,7 @@ module.exports = {
             })
             .catch(() => {
                 const embed = new discord.MessageEmbed()
-                    .setDescription(laungage('Setting.Error.WhatsNew'))
+                    .setDescription('⚠️ データの取得に失敗しました。\nしばらく待ってから再度お試しください。')
                     .setColor('RED');
                 const button = new discord.MessageActionRow().addComponents(
                     new discord.MessageButton()

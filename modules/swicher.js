@@ -1,18 +1,20 @@
+const discord = require('discord.js');
+
 // settingコマンド専用
-function statusSwicher(languageData, key) {
-    return key ? `${languageData('Setting.Common.Embed.Enable')}` : `${languageData('Setting.Common.Embed.Disable')}`;
+function statusSwicher(key) {
+    return key ? `${discord.Formatters.formatEmoji('758380151544217670')} 有効` : `${discord.Formatters.formatEmoji('758380151238033419')} 無効`;
 }
 
-function chStatusSwicher(languageData, key, key2) {
-    return key ? `${languageData('Setting.Common.Embed.Ch_Enable', key2)}` : `${languageData('Setting.Common.Embed.Disable')}`;
+function chStatusSwicher(key, key2) {
+    return key ? `${discord.Formatters.formatEmoji('758380151544217670')} 有効 (<#${key2}>)` : `${discord.Formatters.formatEmoji('758380151238033419')} 無効`;
 }
 
-function roleStatusSwicher(languageData, key, key2) {
-    return key ? `${languageData('Setting.Common.Embed.Role_Enable', key2)}` : `${languageData('Setting.Common.Embed.Disable')}`;
+function roleStatusSwicher(key, key2) {
+    return key ? `${discord.Formatters.formatEmoji('758380151544217670')} 有効 (<@&${key2}>)` : `${discord.Formatters.formatEmoji('758380151238033419')} 無効`;
 }
 
-function buttonLabelSwicher(languageData, key) {
-    return key ? languageData('Setting.Common.Button.Disable') : languageData('Setting.Common.Button.Enable');
+function buttonLabelSwicher(key) {
+    return key ? '無効化' : '有効化';
 }
 
 function buttonStyleSwicher(key) {

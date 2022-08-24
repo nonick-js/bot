@@ -16,18 +16,18 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { name: 'メンバーを通報', nameLocalizations: { 'en-US': 'Report this user' }, type: 'USER' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
 
 		const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const reportCh = config.get('reportCh');
 
 		if (reportCh == null) {
 			const embed = new discord.MessageEmbed()
-				.setDescription(language('Report.Common.Embed.NotSetting'))
+				.setDescription('⚠️ **この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。')
 				.setColor('BLUE');
 				if (interaction.member.permissions.has('MANAGE_GUILD')) {
-					embed.setDescription(language('Report.Common.Embed.NotSetting_Admin'))
-					.setImage(language('Report.Common.Embed.NotSetting_Admin_Image'));
+					embed.setDescription('⚠️ **この機能を使用するには追加で設定が必要です。**\n`/setting`で通報機能の設定を開き、通報を受け取るチャンネルを設定してください。')
+						.setImage('https://cdn.discordapp.com/attachments/958791423161954445/976117804879192104/unknown.png');
 			}
 			return interaction.reply({ embeds: [embed], ephemeral:true });
 		}
@@ -40,36 +40,29 @@ module.exports = {
 
 		if (!user) {
 			const embed = new discord.MessageEmbed()
-				.setDescription(language('Report.Common.Embed.Report.User_undef'))
+				.setDescription('❌ そのユーザーは削除されています!')
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
-		if (!member && user.bot && user.discriminator == '0000') {
+		if (!member && user.bot && user.discriminator == '0000' || user.system) {
 			const embed = new discord.MessageEmbed()
-				.setDescription(language('Report.Common.Embed.Report.Sys'))
+				.setDescription('❌ Webhookやシステムメッセージを通報することはできません!')
 				.setColor('RED');
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
 		if (user == client.user) {
-			return interaction.reply({ content: `${language('Report.Common.Embed.Report.Myself')}`, ephemeral: true });
-		}
-
-		if (user.system) {
-			const embed = new discord.MessageEmbed()
-				.setDescription(language('Report.Common.Embed.Sys'))
-				.setColor('RED');
-			return interaction.reply({ embeds: [embed], ephemeral:true });
+			return interaction.reply({ content: '僕を通報しても意味ないよ。', ephemeral: true });
 		}
 
 		if (member) {
 			if (member == interaction.member) {
-				return interaction.reply({ content: `${language('Report.Common.Embed.Report.Yourself')}`, ephemeral: true });
+				return interaction.reply({ content: '自分自身を通報していますよ...', ephemeral: true });
 			}
 			if (member.permissions.has('MANAGE_MESSAGES')) {
 				const embed = new discord.MessageEmbed()
-					.setDescription(language('Report.Common.Embed.Report.Admin'))
+					.setDescription('❌ このコマンドでサーバー運営者を通報することはできません!')
 					.setColor('RED');
 				return interaction.reply({ embeds: [embed], ephemeral:true });
 			}
@@ -77,13 +70,13 @@ module.exports = {
 
 		const modal = new discord.Modal()
             .setCustomId('userReport')
-            .setTitle(language('Report.UserSlave.Modal.Title'))
+            .setTitle('メンバーを通報')
             .addComponents(
                 new discord.MessageActionRow().addComponents(
                     new discord.TextInputComponent()
                         .setCustomId(interaction.targetUser.id)
-                        .setLabel(language('Report.Common.Modal.Label'))
-                        .setPlaceholder(language('Report.Common.Modal.Placeholder'))
+                        .setLabel('通報理由')
+                        .setPlaceholder('通報はサーバー運営にのみ公開されます')
                         .setStyle('PARAGRAPH')
                         .setMaxLength(4000)
                         .setRequired(true),

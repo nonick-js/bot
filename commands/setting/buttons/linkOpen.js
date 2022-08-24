@@ -18,7 +18,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-linkOpen', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
 
         const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
         const linkOpen = config.get('linkOpen');
@@ -31,9 +31,9 @@ module.exports = {
         const button = interaction.message.components[1];
 
         Configs.update({ linkOpen: linkOpen ? false : true }, { where: { serverId: interaction.guildId } });
-        embed.fields[0].value = swicher.statusSwicher(language, linkOpen);
+        embed.fields[0].value = swicher.statusSwicher(linkOpen);
         button.components[1]
-            .setLabel(swicher.buttonLabelSwicher(language, !linkOpen))
+            .setLabel(swicher.buttonLabelSwicher(!linkOpen))
             .setStyle(swicher.buttonStyleSwicher(!linkOpen));
         interaction.update({ embeds: [embed], components: [select, button] });
     },

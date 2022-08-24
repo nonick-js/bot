@@ -17,17 +17,14 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRoleSetting', type: 'MODAL' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
+
         const imageURL = interaction.fields.getTextInputValue('image');
         const embed = new discord.MessageEmbed()
             .setTitle(interaction.fields.getTextInputValue('title'))
             .setDescription(interaction.fields.getTextInputValue('description'))
             .setColor('516ff5');
-        if (imageURL) {
-            if (imageURL.startsWith('http://') || imageURL.startsWith('https://')) {
-                embed.setImage(imageURL);
-            }
-        }
+        if (imageURL) if (imageURL.startsWith('http://') || imageURL.startsWith('https://')) embed.setImage(imageURL);
 
         const button = new discord.MessageActionRow().addComponents(
             new discord.MessageButton()
@@ -36,23 +33,23 @@ module.exports = {
                 .setStyle('SECONDARY'),
             new discord.MessageButton()
                 .setCustomId('reactionRole-AddRole')
-                .setLabel(language('REACTION_BUTTON_2'))
+                .setLabel('追加')
                 .setEmoji('988439798324817930')
                 .setStyle('SECONDARY'),
             new discord.MessageButton()
                 .setCustomId('reactionRole-DeleteRole')
-                .setLabel(language('REACTION_BUTTON_3'))
+                .setLabel('削除')
                 .setEmoji('989089271275204608')
                 .setStyle('SECONDARY'),
             new discord.MessageButton()
                 .setCustomId('reactionRole-Mode')
-                .setLabel(language('REACTION_BUTTON_4_SINGLE'))
+                .setLabel('単一選択')
                 .setStyle('SUCCESS'),
             new discord.MessageButton()
                 .setCustomId('reactionRole-Send')
-                .setLabel(language('REACTION_BUTTON_5'))
+                .setLabel('送信')
                 .setStyle('PRIMARY'),
         );
-        interaction.reply({ content: `${language('REACTION_CONTENT')}`, embeds: [embed], components: [button], ephemeral: true });
+        interaction.reply({ content: '**プレビューモード**\n「送信」ボタンを押すとこのチャンネルにパネルを送信します。', embeds: [embed], components: [button], ephemeral: true });
     },
 };

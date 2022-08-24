@@ -17,7 +17,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reportSetting', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
 
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { reportRole, reportRoleMention } = config.get();
@@ -36,7 +36,7 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-reportCh')
-                    .setLabel(language('Setting.Common.Button.Ch'))
+                    .setLabel('送信先')
                     .setStyle('SECONDARY')
                     .setEmoji('966588719635267624'),
             );
@@ -46,12 +46,12 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-reportRoleMention')
-                    .setLabel(swicher.buttonLabelSwicher(language, reportRoleMention))
+                    .setLabel(swicher.buttonLabelSwicher(reportRoleMention))
                     .setStyle(swicher.buttonStyleSwicher(reportRoleMention))
                     .setDisabled(swicher.buttonDisableSwicher(reportRole)),
                 new discord.MessageButton()
                     .setCustomId('setting-reportRole')
-                    .setLabel(language('Setting.Common.Button.Role'))
+                    .setLabel('ロール')
                     .setEmoji('966719258430160986')
                     .setStyle('SECONDARY'),
             );

@@ -16,7 +16,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'deleteRole', type: 'MODAL' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
         const embed = interaction.message.embeds[0];
         /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
@@ -26,7 +26,7 @@ module.exports = {
         const role = interaction.guild.roles.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput'));
         if (!role) {
             const error = new discord.MessageEmbed()
-                .setDescription(language('REACTION_ROLE_UNDEF'))
+                .setDescription('❌ その名前のロールは存在しません!')
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }
@@ -34,7 +34,7 @@ module.exports = {
         const replace = select.components[0].options.findIndex((v) => v.value == role.id);
         if (replace == -1) {
             const error = new discord.MessageEmbed()
-                .setDescription(language('REACTION_DELETEROLE_ROLE_NOTINCLUDE'))
+                .setDescription('❌ このロールはパネルに追加されていません!')
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }

@@ -21,7 +21,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-Channel', type: 'MODAL' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
         const setting = interaction.components[0].components[0].customId;
         const textInput = interaction.components[0].components[0].value;
 
@@ -37,13 +37,13 @@ module.exports = {
         const ch = interaction.guild.channels.cache.find(v => v.name == textInput);
         if (!ch) {
             const error = new discord.MessageEmbed()
-                .setDescription(language('Setting.Error.ChNotfound', textInput))
+                .setDescription(`⚠️ \`${textInput}\`という名前のチャンネルは存在しません!`)
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }
 
         const successEmbed = new discord.MessageEmbed()
-            .setDescription(language('Setting.Common.Embed.Channel.Success', embed.fields[fieldIndex[setting][0]].name))
+            .setDescription(`✅ **${embed.fields[fieldIndex[setting][0]].name}**がここに送信されます!`)
             .setColor('GREEN');
 
         ch.send({ embeds: [successEmbed] })
@@ -52,14 +52,14 @@ module.exports = {
                 if (setting == 'reportCh') {
                     embed.fields[fieldIndex[setting][0]].value = `<#${ch.id}>`;
                 } else {
-                    if (config.get(fieldIndex[setting][1])) embed.fields[fieldIndex[setting][0]].value = language('Setting.Common.Embed.Ch_Enable', ch.id);
+                    if (config.get(fieldIndex[setting][1])) embed.fields[fieldIndex[setting][0]].value = `${discord.Formatters.formatEmoji('758380151544217670')} 有効 (<#${ch.id}>)`;
                     button.components[fieldIndex[setting][2]].setDisabled(false);
                 }
                 interaction.update({ embeds: [embed], components: [select, button] });
             })
             .catch(() => {
                 const MissingPermission = new discord.MessageEmbed()
-                    .setDescription(language('Setting.Common.Embed.Channel.Error'))
+                    .setDescription('⚠️ **BOTの権限が不足しています!**\n必要な権限: `チャンネルを見る` `メッセージを送信` `埋め込みリンク`')
                     .setColor('RED');
                 interaction.update({ embeds: [embed, MissingPermission] });
             });

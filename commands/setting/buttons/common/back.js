@@ -16,11 +16,15 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-back', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
 
         const embed = new discord.MessageEmbed()
-            .setTitle(language('Setting.Home.Embed.Title', client.user.username))
-            .setDescription(language('Setting.Home.Embed.Description', client.user.username))
+            .setTitle(`🛠 ${client.user.username} - 設定`)
+            .setDescription([
+                `${client.user.username}のコントロールパネルへようこそ!`,
+                'ここではこのBOTの設定を変更することができます!',
+                '```セレクトメニューから閲覧・変更したい設定を選択しよう!```',
+            ].join('\n'))
             .setColor('2f3136');
 
         const button = new discord.MessageActionRow().addComponents(
@@ -29,19 +33,15 @@ module.exports = {
                 .setLabel('What\'s New')
                 .setEmoji('966588719643631666')
                 .setStyle('PRIMARY'),
-            new discord.MessageButton()
-                .setCustomId('setting-language')
-                .setEmoji('🌐')
-                .setStyle('SECONDARY'),
         );
 
         const select = new discord.MessageActionRow().addComponents(
             new discord.MessageSelectMenu()
                 .setCustomId('setting-select')
                 .addOptions([
-                    { label: `${language('Setting.Home.Select.Option.Label_1')}`, value: 'setting-welcomemessage', emoji: '🚪' },
-                    { label: `${language('Setting.Home.Select.Option.Label_2')}`, value: 'setting-report', emoji: '📢' },
-                    { label: `${language('Setting.Home.Select.Option.Label_3')}`, value: 'setting-linkOpen', emoji: '🔗' },
+                    { label: '入退室ログ', value: 'setting-welcomemessage', emoji: '🚪' },
+                    { label: '通報機能', value: 'setting-report', emoji: '📢' },
+                    { label: 'リンク展開', value: 'setting-linkOpen', emoji: '🔗' },
                 ]),
         );
 

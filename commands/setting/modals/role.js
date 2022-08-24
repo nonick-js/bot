@@ -19,7 +19,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'setting-Role', type: 'MODAL' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
         const setting = interaction.components[0].components[0].customId;
         const textInput = interaction.components[0].components[0].value;
 
@@ -35,14 +35,14 @@ module.exports = {
         const role = interaction.guild.roles.cache.find(v => v.name == textInput);
         if (!role) {
             const roleNotFound = new discord.MessageEmbed()
-                .setDescription(language('Setting.Error.RoleNotfound', textInput))
+                .setDescription(`⚠️ ${discord.Formatters.inlineCode(textInput)}という名前のロールは存在しません!`)
                 .setColor('RED');
             return interaction.update({ embeds: [embed, roleNotFound] });
         }
 
         console.log(setting);
         Configs.update({ [setting]: role.id }, { where: { serverId: interaction.guildId } });
-        if (config.get(fieldIndex[setting][1])) embed.fields[fieldIndex[setting][0]].value = language('Setting.Common.Embed.Role_enable', role.id);
+        if (config.get(fieldIndex[setting][1])) embed.fields[fieldIndex[setting][0]].value = `${discord.Formatters.formatEmoji('758380151544217670')} 有効 (<@&${role.id}>)`;
         button.components[fieldIndex[setting][2]].setDisabled(false);
         interaction.update({ embeds: [embed], components: [select, button] });
     },

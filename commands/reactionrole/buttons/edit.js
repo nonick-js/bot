@@ -17,14 +17,14 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-Edit', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
 
         const embed = interaction.message.embeds[0];
         const select = interaction.message.components[0];
 
         if (select.type == 'BUTTON') {
             const error = new discord.MessageEmbed()
-                .setDescription(language('REACTION_DELETEROLE_ERROR'))
+                .setDescription('❌ まだ1つもロールを追加していません!')
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }
@@ -44,7 +44,7 @@ module.exports = {
                 components: [select],
             }).then(() => {
                 const success = new discord.MessageEmbed()
-                    .setDescription(language('REACTION_EDIT_SEND'))
+                    .setDescription('✅ 元のパネルが見つからないため、新たにパネルを送信しました!')
                     .setColor('GREEN');
                 interaction.update({ content: ' ', embeds: [success], components:[] });
             }).catch(() => {
@@ -53,7 +53,7 @@ module.exports = {
                     iconURL: 'https://media.discordapp.net/attachments/958791423161954445/1003671818881740891/988439788132646954.png',
                 });
                 const error = new discord.MessageEmbed()
-                    .setDescription(language('REACTION_SEND_ERROR'))
+                    .setDescription('❌ このチャンネルに送信する権限がありません!')
                     .setColor('RED');
                 interaction.update({ embeds: [embed, error] });
             });
@@ -64,7 +64,7 @@ module.exports = {
             components: [select],
         }).then(() => {
             const success = new discord.MessageEmbed()
-                .setDescription(language('REACTION_EDIT_SUCCESS'))
+                .setDescription('✅ パネルを編集しました!')
                 .setColor('GREEN');
             interaction.update({ content: ' ', embeds: [success], components:[] });
         }).catch(() => {
@@ -73,7 +73,7 @@ module.exports = {
                 iconURL: 'https://media.discordapp.net/attachments/958791423161954445/1003671818881740891/988439788132646954.png',
             });
             const error = new discord.MessageEmbed()
-                .setDescription(language('REACTION_SEND_ERROR'))
+                .setDescription('❌ このチャンネルに送信する権限がありません!')
                 .setColor('RED');
             interaction.update({ embeds: [embed, error] });
         });

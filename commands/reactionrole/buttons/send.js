@@ -17,13 +17,14 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole-Send', type: 'BUTTON' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
         const embed = interaction.message.embeds[0];
         /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
+
         if (select.components[0].type == 'BUTTON') {
             const error = new discord.MessageEmbed()
-                .setDescription(language('REACTION_DELETEROLE_ERROR'))
+                .setDescription('❌ まだ1つもロールを追加していません!')
                 .setColor('RED');
             return interaction.update({ embeds: [embed, error] });
         }
@@ -32,13 +33,13 @@ module.exports = {
         interaction.channel.send({ embeds: [embed], components: [select] })
             .then(() => {
                 const success = new discord.MessageEmbed()
-                    .setDescription(language('REACTION_SEND_SUCCESS'))
+                    .setDescription('✅ パネルを作成しました!')
                     .setColor('GREEN');
                 interaction.update({ content: ' ', embeds: [success], components:[] });
             })
             .catch(() => {
                 const error = new discord.MessageEmbed()
-                    .setDescription(language('REACTION_SEND_ERROR'))
+                    .setDescription('❌ このチャンネルに送信する権限がありません!')
                     .setColor('RED');
                 interaction.update({ embeds: [embed, error] });
             });

@@ -17,7 +17,7 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'welcomeSetting', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction, Configs) => {
 
         const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
         const { welcome, welcomeCh, leave, leaveCh } = config.get();
@@ -36,17 +36,17 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-welcome')
-                    .setLabel(swicher.buttonLabelSwicher(language, welcome))
+                    .setLabel(swicher.buttonLabelSwicher(welcome))
                     .setStyle(swicher.buttonStyleSwicher(welcome))
                     .setDisabled(swicher.buttonDisableSwicher(welcomeCh)),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeCh')
-                    .setLabel(language('Setting.Common.Button.Ch'))
+                    .setLabel('送信先')
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
                 new discord.MessageButton()
                     .setCustomId('setting-welcomeMessage')
-                    .setLabel(language('Setting.Common.Button.Message'))
+                    .setLabel('メッセージ')
                     .setEmoji('966596708458983484')
                     .setStyle('SECONDARY'),
             );
@@ -56,12 +56,12 @@ module.exports = {
             button.addComponents(
                 new discord.MessageButton()
                     .setCustomId('setting-leave')
-                    .setLabel(swicher.buttonLabelSwicher(language, leave))
+                    .setLabel(swicher.buttonLabelSwicher(leave))
                     .setStyle(swicher.buttonStyleSwicher(leave))
                     .setDisabled(swicher.buttonDisableSwicher(leaveCh)),
                 new discord.MessageButton()
                     .setCustomId('setting-leaveCh')
-                    .setLabel(language('Setting.Common.Button.Ch'))
+                    .setLabel('送信先')
                     .setEmoji('966588719635267624')
                     .setStyle('SECONDARY'),
             );

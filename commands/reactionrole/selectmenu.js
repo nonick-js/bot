@@ -17,39 +17,36 @@ module.exports = {
     /** @type {discord.ApplicationCommandData|ContextMenuData} */
     data: { customid: 'reactionRole', type: 'SELECT_MENU' },
     /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs, language) => {
+    exec: async (client, interaction) => {
         if (interaction.message.flags.has('EPHEMERAL')) return interaction.update({});
+        interaction.deferReply({ ephemeral: true });
 
-        await interaction.deferReply({ ephemeral: true });
-        let errorCount = 0;
-        for (let i = 0; i < interaction.component.options.length; i++) {
-            await interaction.member.roles.remove(interaction.component.options[i].value).catch(() => {
-                errorCount = 1;
-            });
-        }
-        for (let i = 0; i < interaction.values.length; i++) {
-            await interaction.member.roles.add(interaction.values[i]).catch(() => {
-                errorCount = 1;
-            });
-        }
-
-        if (errorCount == 1) {
-            if (interaction.member.permissions.has('MANAGE_ROLES')) {
-                const embed = new discord.MessageEmbed()
-                    .setDescription(language('REACTION_ERROR_ADMIM', client.user.username))
-                    .setColor('RED');
-                interaction.editReply({ embeds: [embed], ephemeral: true });
-            } else {
-                const embed = new discord.MessageEmbed()
-                    .setDescription(language('REACTION_ERROR'))
-                    .setColor('RED');
-                interaction.editReply({ embeds: [embed], ephemeral: true });
-            }
+        const roles = interaction.member?.roles;
+        // eslint-disable-next-line no-undef
+        if (roles instanceof GuildMemberRoleManager) {
+            await roles.remove(interaction.component.options.map(opt => opt.value).filter(opt => !interaction.values.includes(opt)));
+            await roles.add(interaction.values)
+                .then(() => {
+                    const embed = new discord.MessageEmbed()
+                        .setDescription('✅ ロールを更新しました!')
+                        .setColor('RED');
+                    return interaction.followUp({ embeds: [embed], ephemeral: true });
+                }).catch(() => {
+                    const embed = new discord.MessageEmbed().setColor('RED');
+                    if (interaction.member.permissions.has('MANAGE_ROLES')) {
+                        embed.setDescription([
+                            `${discord.Formatters.formatEmoji('968351750434193408')} 一部ロールが付与できませんでした。以下を確認してください。`,
+                            `・${client.user.username}に\`ロール管理\`権限が付与されているか。`,
+                            `・パネルにある役職よりも上に${client.user.username}が持つ役職があるか。`,
+                            '・ロールが存在しているか。',
+                        ]);
+                    } else {
+                        embed.setDescription(`${discord.Formatters.formatEmoji('968351750434193408')} 一部ロールが付与できませんでした。サーバーの管理者にお問い合わせください。`);
+                    }
+                    return interaction.followUp({ embeds: [embed], ephemeral: true });
+                });
         } else {
-            const embed = new discord.MessageEmbed()
-                .setDescription(language('REACTION_SUCCESS'))
-                .setColor('GREEN');
-            interaction.editReply({ embeds: [embed], ephemeral: true });
+            return interaction.followUp({ content: '❌ このチャンネルでは使用できません', ephemeral: true });
         }
     },
 };
