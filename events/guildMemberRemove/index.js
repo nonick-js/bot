@@ -11,9 +11,6 @@ module.exports = {
     /** @type {MemberRemoveCallback} */
     async execute(client, member, Configs) {
         if (member == member.guild.me) return;
-
-        const welcomeMessage = require('./welcomeMessage');
-
-        welcomeMessage.execute(client, member, Configs);
+        require('./welcomeMessage').execute(client, member, Configs);
     },
 };

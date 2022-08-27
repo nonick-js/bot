@@ -11,9 +11,6 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {MemberAddCallback} */
     async execute(client, member, Configs) {
-
-        const welcomeMessage = require('./welcomeMessage');
-
-        welcomeMessage.execute(client, member, Configs);
+        require('./welcomeMessage').execute(client, member, Configs);
     },
 };
