@@ -1,10 +1,14 @@
 const discord = require('discord.js');
 
-/** @type {import('@djs-tools/interactions').ButtonRegister} */
+/** @type {import('@djs-tools/interactions').ChatInputRegister} */
 const ping_command = {
     data: {
-        customId: 'setting-back',
-        type: 'BUTTON',
+        name: 'setting',
+        description: 'コントロールパネル(設定)を開きます',
+        dmPermission: false,
+        defaultMemberPermissions: discord.PermissionFlagsBits.ManageGuild,
+        type: 'CHAT_INPUT',
+        coolTime: 5,
     },
     exec: async (interaction) => {
         const embed = new discord.EmbedBuilder()
@@ -33,7 +37,7 @@ const ping_command = {
                 ]),
         );
 
-        interaction.update({ embeds: [embed], components: [select, button] });
+        interaction.reply({ embeds: [embed], components: [select, button], ephemeral: true });
     },
 };
 module.exports = [ ping_command ];

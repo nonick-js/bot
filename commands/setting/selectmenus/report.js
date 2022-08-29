@@ -1,59 +1,47 @@
 const discord = require('discord.js');
-const swicher = require('../../../modules/swicher');
+const { settingSwicher } = require('../../../modules/swicher');
 
-/**
- * @callback InteractionCallback
- * @param {discord.Client} client
- * @param {discord.Interaction} interaction
- * @returns {void}
- */
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'reportSetting', type: 'SELECT_MENU' },
-    /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs) => {
-
-        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
+/** @type {import('@djs-tools/interactions').SelectMenuRegister} */
+const ping_command = {
+    data: {
+        customId: 'reportSetting',
+        type: 'SELECT_MENU',
+    },
+    exec: async (interaction) => {
+        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guild.id } });
         const { reportRole, reportRoleMention } = config.get();
 
-        /** @type {discord.MessageActionRow} */
+        /** @type {discord.ActionRow} */
         const select = interaction.message.components[0];
-        /** @type {discord.MessageActionRow} */
-        const button = new discord.MessageActionRow().addComponents(
-            new discord.MessageButton()
+        const button = new discord.ActionRowBuilder().addComponents(
+            new discord.ButtonBuilder()
                 .setCustomId('setting-back')
                 .setEmoji('971389898076598322')
-                .setStyle('PRIMARY'),
+                .setStyle(discord.ButtonStyle.Primary),
         );
 
         if (interaction.values == 'setting-report-1') {
             button.addComponents(
-                new discord.MessageButton()
+                new discord.ButtonBuilder()
                     .setCustomId('setting-reportCh')
                     .setLabel('送信先')
-                    .setStyle('SECONDARY')
-                    .setEmoji('966588719635267624'),
+                    .setEmoji('966588719635267624')
+                    .setStyle(discord.ButtonStyle.Secondary),
             );
         }
 
         if (interaction.values == 'setting-report-2') {
             button.addComponents(
-                new discord.MessageButton()
+                new discord.ButtonBuilder()
                     .setCustomId('setting-reportRoleMention')
-                    .setLabel(swicher.buttonLabelSwicher(reportRoleMention))
-                    .setStyle(swicher.buttonStyleSwicher(reportRoleMention))
-                    .setDisabled(swicher.buttonDisableSwicher(reportRole)),
-                new discord.MessageButton()
+                    .setLabel(settingSwicher('BUTTON_LABEL', reportRoleMention))
+                    .setStyle(settingSwicher('BUTTON_STYLE', reportRoleMention))
+                    .setDisabled(settingSwicher('BUTTON_DISABLE', reportRole)),
+                new discord.ButtonBuilder()
                     .setCustomId('setting-reportRole')
                     .setLabel('ロール')
                     .setEmoji('966719258430160986')
-                    .setStyle('SECONDARY'),
+                    .setStyle(discord.ButtonStyle.Secondary),
             );
         }
 
@@ -66,3 +54,4 @@ module.exports = {
         interaction.update({ components: [select, button], ephemeral: true });
     },
 };
+module.exports = [ ping_command ];

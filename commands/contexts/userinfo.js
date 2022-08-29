@@ -1,73 +1,88 @@
 const discord = require('discord.js');
+const flagEmoji = {
+    Staff:'966753508739121222',
+    Partner: '966753508860768357',
+    Hypesquad:'966753508961439745',
+    BugHunterLevel1: '966753508848205925',
+    HypeSquadOnlineHouse1: '966753508843978872',
+    HypeSquadOnlineHouse2: '966753508927889479',
+    HypeSquadOnlineHouse3: '966753508776890459',
+    PremiumEarlySupporter: '966753508751736892',
+    BugHunterLevel2: '966753508755898410',
+    VerifiedDeveloper: '966753508705583174',
+    CertifiedModerator:'959536411894243378',
+};
+const removeFlag = [
+    'Quarantined',
+    'BotHTTPInteractions',
+    'Quarantined',
+    'Spammer',
+    'TeamPseudoUser',
+    'VerifiedBot',
+];
 
-/**
-* @callback InteractionCallback
-* @param {discord.Client} client
-* @param {discord.MessageContextMenuInteraction} interaction
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'} type
-*/
+/** @type {import('@djs-tools/interactions').UserRegister} */
+const ping_command = {
+    data: {
+        name: 'ユーザーの情報',
+        dmPermission: false,
+        type: 'USER',
+    },
+    exec: async (interaction) => {
+        await interaction.deferReply({ ephemeral: true });
 
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { name: 'このユーザーの情報', nameLocalizations: { 'en-US': 'Information this user' }, type: 'USER' },
-    /** @type {InteractionCallback} */
-    exec: async (client, interaction) => {
-        /** @type {discord.User} */
-        const user = interaction.targetUser;
-        const createTime = discord.Formatters.time(Math.floor(user.createdTimestamp / 1000), 'D');
+        const createTime = discord.time(Math.floor(interaction.targetUser.createdTimestamp / 1000), 'D');
+        const viewFlags = interaction.targetUser.flags.remove(removeFlag);
+        let flags = '';
+        for (let i = 0; i < viewFlags.toArray().length; i++) flags += discord.formatEmoji(flagEmoji[interaction.targetUser.flags.toArray()[i]]);
 
-        /** @type {discord.GuildMember} */
-        // eslint-disable-next-line no-empty-function
-        const member = await interaction.guild.members.fetch(user).catch(() => {});
-        if (!member) {
-            const embed = new discord.MessageEmbed()
-                .setAuthor({ name: user.tag })
-                .setThumbnail(user.displayAvatarURL())
-                .setColor('WHITE')
+        if (!interaction.targetMember) {
+            const embed = new discord.EmbedBuilder()
+                .setAuthor({ name: interaction.targetUser.tag })
+                .setThumbnail(interaction.targetUser.displayAvatarURL())
+                .setColor('White')
                 .setDescription([
-                    '**このユーザーはサーバーにいません**',
-                    `${discord.Formatters.formatEmoji('973880625641705522')} ユーザーID: \`${user.id}\``,
+                    '**このユーザーはこのサーバーにいません**',
+                    `${discord.formatEmoji('1005688192818761748')} ユーザーID: \`${interaction.targetId}\``,
                 ].join('\n'))
                 .addFields(
-                    { name: 'アカウント作成日', value: createTime },
+                    { name: 'アカウント作成日', value: createTime, inline: true },
+                    { name: 'フラッグ', value: flags ? flags : 'なし', inline: true },
                 );
-            return interaction.reply({ embeds: [embed], ephemeral: true });
+            return interaction.followUp({ embeds: [embed], ephemeral: true });
         }
 
-        const nickName = member.nickname ?? '__なし__';
-        const joinTime = discord.Formatters.time(Math.floor(member.joinedTimestamp / 1000), 'D');
-		const boostTime = Math.floor(member.premiumSinceTimestamp / 1000);
-        const roleCollection = member.roles.cache.filter(role => role.name !== '@everyone').sort((before, after) => {
+        const nickName = interaction.targetMember.nickname ?? '__なし__';
+        const joinTime = discord.time(Math.floor(interaction.targetMember.joinedTimestamp / 1000), 'D');
+        const boostTime = Math.floor(interaction.targetMember.premiumSinceTimestamp / 1000);
+        const roleCollection = interaction.targetMember.roles.cache.filter(role => role.name !== '@everyone').sort((before, after) => {
             if (before.position > after.position) return -1;
             return 1;
         });
         const roles = roleCollection.size ? roleCollection.map(role => role.toString()).join(' ') : '__なし__';
 
-        const embed = new discord.MessageEmbed()
-            .setThumbnail(member.displayAvatarURL())
-            .setAuthor({ name: user.tag })
+        const embed = new discord.EmbedBuilder()
+            .setThumbnail(interaction.targetMember.displayAvatarURL())
+            .setAuthor({ name: interaction.targetUser.tag })
             .setDescription([
-                `${discord.Formatters.formatEmoji('973880625566212126')} ニックネーム: **${nickName}**`,
-                `${discord.Formatters.formatEmoji('973880625641705522')} ユーザーID: \`${user.id}\``,
+                `${discord.formatEmoji('1005688190931320922')} ニックネーム: **${nickName}**`,
+                `${discord.formatEmoji('1005688192818761748')} ユーザーID: \`${interaction.targetId}\``,
             ].join('\n'))
+            .setColor(interaction.targetMember.roles.highest.color)
             .addFields(
                 { name: 'アカウント作成日', value: createTime, inline:true },
                 { name: 'サーバー参加日', value: joinTime, inline:true },
+                { name: 'フラッグ', value: flags ? flags : 'なし', inline: true },
                 { name: 'ロール', value: roles },
-            )
-            .setColor(member.roles.highest.color);
+            );
 
-		if (boostTime) embed.addFields({ name: '🎉SERVER BOOST', value: `ブーストを開始した日: ${discord.Formatters.time(boostTime, 'D')}` });
-        if (!embed.color) embed.setColor('WHITE');
-        if (user.displayAvatarURL() !== member.displayAvatarURL()) {
-            embed.setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() });
-            embed.setThumbnail(member.displayAvatarURL());
+        if (boostTime) embed.addFields({ name: `${discord.formatEmoji('896591259886567434')} SERVER BOOST`, value: `ブーストを開始した日: ${discord.time(boostTime, 'D')} (${discord.time(boostTime, 'R')})` });
+        if (!embed.data.color) embed.setColor('White');
+        if (interaction.targetUser.displayAvatarURL() !== interaction.targetMember.displayAvatarURL()) {
+            embed.setAuthor({ name: interaction.targetUser.tag, iconURL: interaction.targetUser.displayAvatarURL() });
+            embed.setThumbnail(interaction.targetMember.displayAvatarURL());
         }
-        interaction.reply({ embeds: [embed], ephemeral: true });
+        interaction.followUp({ embeds: [embed], ephemeral: true });
     },
 };
+module.exports = [ ping_command ];

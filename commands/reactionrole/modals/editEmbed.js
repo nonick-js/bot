@@ -1,33 +1,25 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 
-/**
-* @callback InteractionCallback
-* @param {discord.Client}
-* @param {discord.ButtonInteraction} interaction
-* @param {...any} [args]
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'|'MODAL'} type
-*/
+/** @type {import('@djs-tools/interactions').ModalRegister} */
+const ping_command = {
+    data: {
+        customId: 'reactionRole-update',
+        type: 'MODAL',
+    },
+    exec: async (interaction) => {
+        const title = interaction.fields.getTextInputValue('title');
+        const description = interaction.fields.getTextInputValue('description') || null;
+        const imageURL = interaction.fields.getTextInputValue('image') || null;
 
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'reactionRole-update', type: 'MODAL' },
-    /** @type {InteractionCallback} */
-    exec: async (client, interaction) => {
-        const imageURL = interaction.fields.getTextInputValue('image');
-        const embed = new discord.MessageEmbed()
-            .setTitle(interaction.fields.getTextInputValue('title'))
-            .setDescription(interaction.fields.getTextInputValue('description'))
-            .setColor('516ff5');
-        if (imageURL) {
-            if (imageURL.startsWith('http://') || imageURL.startsWith('https://')) {
-                embed.setImage(imageURL);
-            }
-        }
-        interaction.update({ embeds: [embed], ephemeral: true });
+        const embed = new discord.EmbedBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setColor('516ff5')
+            .setFooter(interaction.message.embeds[0].footer);
+        if (imageURL?.startsWith('http://') || imageURL?.startsWith('https://')) embed.setImage(imageURL);
+
+        interaction.update({ embeds: [embed] });
     },
 };
+module.exports = [ ping_command ];

@@ -3,14 +3,14 @@ const discord = require('discord.js');
 
 /**
  * @callback MemberAddCallback
- * @param {discord.Client} client
  * @param {discord.GuildMember} member
- * @returns {void}
  */
 
 module.exports = {
     /** @type {MemberAddCallback} */
-    async execute(client, member, Configs) {
-        require('./welcomeMessage').execute(client, member, Configs);
+    async execute(member) {
+        if (member.user == member.client.user) return;
+
+        require('./welcomeMessage').execute(member);
     },
 };

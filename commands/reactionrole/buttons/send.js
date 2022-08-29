@@ -1,47 +1,42 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 
-/**
-* @callback InteractionCallback
-* @param {discord.Client}
-* @param {discord.ButtonInteraction} interaction
-* @param {...any} [args]
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'|'MODAL'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'reactionRole-Send', type: 'BUTTON' },
-    /** @type {InteractionCallback} */
-    exec: async (client, interaction) => {
+/** @type {import('@djs-tools/interactions').ButtonRegister} */
+const ping_command = {
+    data: {
+        customId: 'reactionRole-Send',
+        type: 'BUTTON',
+    },
+    exec: async (interaction) => {
+        /** @type {discord.EmbedBuilder} */
         const embed = interaction.message.embeds[0];
-        /** @type {discord.MessageActionRow} */
+        /** @type {discord.ActionRow} */
         const select = interaction.message.components[0];
 
-        if (select.components[0].type == 'BUTTON') {
-            const error = new discord.MessageEmbed()
-                .setDescription('❌ まだ1つもロールを追加していません!')
-                .setColor('RED');
+        if (select.components[0].type == discord.ComponentType.Button) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ まだ1つもロールを追加していません！')
+                .setColor('Red');
             return interaction.update({ embeds: [embed, error] });
         }
 
-        if (interaction.message.components[1].components[3].style == 'DANGER') select.components[0].setMaxValues(select.components[0].options.length);
+        if (interaction.message.components[1].components[3].label == '複数選択') {
+            select.components[0] = discord.SelectMenuBuilder.from(select.components[0]).setMaxValues(select.components[0].options.length);
+        }
+
         interaction.channel.send({ embeds: [embed], components: [select] })
             .then(() => {
-                const success = new discord.MessageEmbed()
+                const success = new discord.EmbedBuilder()
                     .setDescription('✅ パネルを作成しました!')
-                    .setColor('GREEN');
+                    .setColor('Green');
                 interaction.update({ content: ' ', embeds: [success], components:[] });
             })
             .catch(() => {
-                const error = new discord.MessageEmbed()
-                    .setDescription('❌ このチャンネルに送信する権限がありません!')
-                    .setColor('RED');
+                const error = new discord.EmbedBuilder()
+                    .setDescription('❌ このチャンネルに送信する権限がありません！')
+                    .setColor('Red');
                 interaction.update({ embeds: [embed, error] });
             });
     },
 };
+module.exports = [ ping_command ];

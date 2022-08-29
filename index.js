@@ -1,27 +1,25 @@
 const Sequelize = require('sequelize');
 const discord = require('discord.js');
-const client = new discord.Client({
-    intents: Object.values(discord.Intents.FLAGS),
-    allowedMentions: { parse:['roles'] },
-    partials: ['CHANNEL', 'GUILD_MEMBER', 'GUILD_SCHEDULED_EVENT', 'MESSAGE', 'REACTION', 'USER'],
-});
-const sequelize = new Sequelize({
-	host: 'localhost',
-	dialect: 'sqlite',
-	logging: false,
-	storage: 'sql/config.sqlite',
-});
-
+const { DiscordInteractions } = require('@djs-tools/interactions');
+const { guildId, guildCommand, blackList_guild, blackList_user } = require('./config.json');
 require('dotenv').config();
-const { guildId, guildCommand, blackList_guild, blackList_user, debugMode, replitMode } = require('./config.json');
-const interaction_commands = require('./modules/interaction');
-const commands = new interaction_commands('./commands');
-commands.debug = false;
 
-// モジュールを取得
-const guildMemberAdd = require('./events/guildMemberAdd/index');
-const guildMemberRemove = require('./events/guildMemberRemove/index');
-const messageCreate = require('./events/messageCreate/index');
+const client = new discord.Client({
+    intents: Object.values(discord.GatewayIntentBits),
+    allowedMentions: { parse:['roles'] },
+    partials: [
+        discord.Partials.Channel,
+        discord.Partials.GuildMember,
+        discord.Partials.GuildScheduledEvent,
+        discord.Partials.Message,
+        discord.Partials.Reaction,
+        discord.Partials.User,
+    ],
+});
+const sequelize = new Sequelize({ host: 'localhost', dialect: 'sqlite', logging: false, storage: 'sql/config.sqlite' });
+
+const interactions = new DiscordInteractions(client);
+interactions.loadInteractions('./commands');
 
 // sqliteのテーブルの作成
 const Configs = sequelize.define('configs', {
@@ -43,19 +41,8 @@ const Configs = sequelize.define('configs', {
     banDm: { type: Sequelize.BOOLEAN, defaultValue: false },
     linkOpen: { type: Sequelize.BOOLEAN, defaultValue: false },
 });
+client.db = Configs;
 
-if (replitMode) {
-    'use strict';
-    const http = require('http');
-    http.createServer(function(req, res) {
-        res.write('ready nouniku!!');
-        res.end();
-    }).listen(8080);
-}
-
-client.on('debug', (e) => {if (debugMode) console.log(e);});
-
-// ready nouniku!!
 client.on('ready', () => {
     Configs.sync({ alter: true });
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
@@ -68,20 +55,24 @@ client.on('ready', () => {
         'Plattform': `${process.platform} | ${process.arch}`,
         'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
-    if (guildCommand) commands.register(client, guildId);
-    else commands.register(client);
     client.user.setActivity({ name: `/info | ${client.guilds.cache.size} servers `, type: 'COMPETING' });
+    if (guildCommand) interactions.registerCommands(guildId);
+    else interactions.registerCommands();
 });
 
 client.on('guildCreate', () => client.user.setActivity(`/info | ${client.guilds.cache.size} servers`));
-client.on('guildDelete', () => client.user.setActivity(`/info | ${client.guilds.cache.size} servers`));
+client.on('guildDelete', guild => {
+    client.user.setActivity(`/info | ${client.guilds.cache.size} servers`);
+    Configs.destroy({ where:{ serverId: guild.id } });
+});
 
-client.on('guildMemberAdd', member => moduleExecute(member, guildMemberAdd));
-client.on('guildMemberRemove', member => moduleExecute(member, guildMemberRemove));
-client.on('messageCreate', message => moduleExecute(message, messageCreate));
+client.on('guildMemberAdd', member => moduleExecute(member, require('./events/guildMemberAdd/index')));
+client.on('guildMemberRemove', member => moduleExecute(member, require('./events/guildMemberRemove/index')));
+client.on('messageCreate', message => moduleExecute(message, require('./events/messageCreate/index')));
 
 client.on('interactionCreate', async interaction => {
     await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
+    interaction.db_config = Configs;
 
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
@@ -89,25 +80,15 @@ client.on('interactionCreate', async interaction => {
             .setColor('RED');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
-
-    const cmd = commands.getCommand(interaction);
-    try {
-        cmd.exec(client, interaction, Configs);
-    }
-    catch (e) {
-        console.log(e);
-    }
+    interactions.run(interaction).catch(console.warn);
 });
 
 async function moduleExecute(param, module) {
     if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
     await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
+    param.db_config = Configs;
 
-    try {
-        module.execute(client, param, Configs);
-    } catch (e) {
-        console.log(`[エラー!] サーバーID:${param.guild.id}\n${e}`);
-    }
+    module.execute(param);
 }
 
 client.login(process.env.BOT_TOKEN);

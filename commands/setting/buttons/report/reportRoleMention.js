@@ -1,40 +1,31 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
-const swicher = require('../../../../modules/swicher');
+const { settingSwicher } = require('../../../../modules/swicher');
 
-/**
-* @callback InteractionCallback
-* @param {discord.Client} client
-* @param {discord.MessageContextMenuInteraction} interaction
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'setting-reportRoleMention', type: 'BUTTON' },
-    /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs) => {
-
-        const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
+/** @type {import('@djs-tools/interactions').ButtonRegister} */
+const ping_command = {
+    data: {
+        customId: 'setting-reportRoleMention',
+        type: 'BUTTON',
+    },
+    exec: async (interaction) => {
+        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
         const { reportRole, reportRoleMention } = config.get();
 
-        /** @type {discord.MessageEmbed} */
+        /** @type {discord.EmbedBuilder} */
         const embed = interaction.message.embeds[0];
-        /** @type {discord.MessageActionRow} */
+        /** @type {discord.ActionRow} */
         const select = interaction.message.components[0];
-        /** @type {discord.MessageActionRow} */
+        /** @type {discord.ActionRow} */
         const button = interaction.message.components[1];
 
-        Configs.update({ reportRoleMention: reportRoleMention ? false : true }, { where: { serverId: interaction.guildId } });
-        embed.fields[1].value = swicher.roleStatusSwicher(!reportRoleMention, reportRole);
+        interaction.db_config.update({ reportRoleMention: reportRoleMention ? false : true }, { where: { serverId: interaction.guildId } });
+        embed.fields[1].value = settingSwicher('STATUS_ROLE', !reportRoleMention, reportRole);
         button.components[1]
-            .setLabel(swicher.buttonLabelSwicher(!reportRoleMention))
-            .setStyle(swicher.buttonStyleSwicher(!reportRoleMention));
+            .setLabel(settingSwicher('BUTTON_LABEL', !reportRoleMention))
+            .setStyle(settingSwicher('BUTTON_STYLE', !reportRoleMention));
+
         interaction.update({ embeds: [embed], components: [select, button] });
     },
 };
+module.exports = [ ping_command ];

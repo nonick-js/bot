@@ -4,31 +4,22 @@ const fieldIndex = {
     welcomeMessage: 2,
 };
 
-/**
-* @callback InteractionCallback
-* @param {discord.Client} client
-* @param {discord.CommandInteraction} interaction
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'|'MODAL'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'modal-setting-welcomeMessage', type: 'MODAL' },
-    /** @type {InteractionCallback} */
-    exec: async (client, interaction, Configs) => {
+/** @type {import('@djs-tools/interactions').ModalRegister} */
+const ping_command = {
+    data: {
+        customId: 'modal-setting-welcomeMessage',
+        type: 'MODAL',
+    },
+    exec: async (interaction) => {
         const setting = interaction.components[0].components[0].customId;
         const textInput = interaction.components[0].components[0].value;
 
-        /** @type {discord.MessageEmbed} */
+        /** @type {discord.EmbedBuilder} */
         const embed = interaction.message.embeds[0];
 
-        Configs.update({ [setting]: `${textInput}` }, { where: { serverId: interaction.guildId } });
+        interaction.db_config.update({ [setting]: `${textInput}` }, { where: { serverId: interaction.guildId } });
         embed.fields[fieldIndex[setting]].value = textInput;
         interaction.update({ embeds: [embed] });
     },
 };
+module.exports = [ ping_command ];
