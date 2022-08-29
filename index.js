@@ -75,9 +75,9 @@ client.on('interactionCreate', async interaction => {
     interaction.db_config = Configs;
 
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
-        const embed = new discord.MessageEmbed()
+        const embed = new discord.EmbedBuilder()
             .setDescription(`🚫 このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`)
-            .setColor('RED');
+            .setColor('Red');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
     interactions.run(interaction).catch(console.warn);
