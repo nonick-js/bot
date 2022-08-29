@@ -1,5 +1,6 @@
 node_modules
+sql
+test
+updateMemo.txt
 .env
 config.json
-config.sqlite
-.eslint.json

@@ -1,65 +1,50 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 
-/**
-* @callback InteractionCallback
-* @param {discord.Client}
-* @param {discord.ButtonInteraction} interaction
-* @param {...any} [args]
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'|'MODAL'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'reactionRole-addRole', type: 'MODAL' },
-    /** @type {InteractionCallback} */
-    exec: async (client, interaction) => {
+/** @type {import('@djs-tools/interactions').ModalRegister} */
+const ping_command = {
+    data: {
+        customId: 'reactionRole-addRole',
+        type: 'MODAL',
+    },
+    exec: async (interaction) => {
+        /** @type {discord.Embed} */
         const embed = interaction.message.embeds[0];
-        const component = interaction.message.components[0];
+        /** @type {discord.ActionRow} */
+        const selectMenu = interaction.message.components[0];
+        /** @type {discord.ActionRow} */
+        const button = interaction.message.components[1];
 
+        const label = interaction.fields.getTextInputValue('textinput');
+        const description = interaction.fields.getTextInputValue('textinput2') || undefined;
+        const emoji = interaction.guild.emojis.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput3')) || undefined;
         const role = interaction.guild.roles.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput'));
+
         if (!role) {
-            const error = new discord.MessageEmbed()
-                .setDescription('❌ その名前のロールは存在しません!')
-                .setColor('RED');
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ その名前のロールは存在しません！')
+                .setColor('Red');
             return interaction.update({ embeds: [embed, error] });
         }
 
-        let emoji = interaction.fields.getTextInputValue('textinput3');
-        if (emoji) {
-            emoji = interaction.guild.emojis.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput3'));
-            if (!emoji) {
-                const error = new discord.MessageEmbed()
-                    .setDescription('❌ その名前の絵文字は存在しません!')
-                    .setColor('RED');
-                return interaction.update({ embeds: [embed, error] });
-            }
-        }
-
-        if (component.components[0].type == 'BUTTON') {
-            const select = new discord.MessageActionRow().addComponents(
-                new discord.MessageSelectMenu()
+        if (selectMenu.components[0].type == discord.ComponentType.Button) {
+            const select = new discord.ActionRowBuilder().addComponents(
+                new discord.SelectMenuBuilder()
                     .setCustomId('reactionRole')
                     .setMinValues(0)
-                    .addOptions([{ label: interaction.fields.getTextInputValue('textinput1'), description: interaction.fields.getTextInputValue('textinput2'), value: role.id, emoji: emoji.id }]),
+                    .addOptions({ label: label, description: description, value: role.id, emoji: emoji?.id }),
             );
-            interaction.update({ embeds: [embed], components: [select, component] });
+            interaction.update({ embeds: [embed], components: [select, selectMenu] });
         } else {
-            if (component.components[0].options.find((v) => v.value == role.id)) {
-                const error = new discord.MessageEmbed()
-                    .setDescription('❌ そのロールはすでにパネルに追加されています!')
-                    .setColor('RED');
+            if (selectMenu.components[0].options.find((v) => v.value == role.id)) {
+                const error = new discord.EmbedBuilder()
+                    .setDescription('❌ そのロールはすでにパネルに追加されています！')
+                    .setColor('Red');
                 return interaction.update({ embeds: [embed, error] });
             }
-
-            const button = interaction.message.components[1];
-            component.components[0]
-                .addOptions({ label: interaction.fields.getTextInputValue('textinput1'), description: interaction.fields.getTextInputValue('textinput2'), value: role.id, emoji: `${emoji}` });
-            interaction.update({ embeds: [embed], components: [component, button ] });
+            selectMenu.components[0] = discord.SelectMenuBuilder.from(selectMenu.components[0]).addOptions({ label: label, description: description, value: role.id, emoji: emoji?.id });
+            interaction.update({ embeds: [embed], components: [selectMenu, button ] });
         }
     },
 };
+module.exports = [ ping_command ];

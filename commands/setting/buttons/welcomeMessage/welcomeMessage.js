@@ -4,20 +4,21 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'setting-reportCh',
+        customId: 'setting-welcomeMessage',
         type: 'BUTTON',
     },
     exec: async (interaction) => {
         const modal = new discord.ModalBuilder()
-            .setCustomId('setting-Channel')
-            .setTitle('通報の送信先')
+            .setCustomId('modal-setting-welcomeMessage')
+            .setTitle('Welcomeメッセージ')
             .addComponents(
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
-                        .setCustomId('reportCh')
-                        .setLabel('チャンネル名')
-                        .setMaxLength(100)
-                        .setStyle(discord.TextInputStyle.Short)
+                        .setCustomId('welcomeMessage')
+                        .setLabel('入室ログに表示するメッセージ')
+                        .setPlaceholder('各テキストのマークアップは公式ドキュメントを参照してください')
+                        .setMaxLength(1000)
+                        .setStyle(discord.TextInputStyle.Paragraph)
                         .setRequired(true),
                 ),
             );

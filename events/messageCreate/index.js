@@ -8,8 +8,9 @@ const discord = require('discord.js');
 
 module.exports = {
     /** @type {messageCreateCallback} */
-    async execute(client, message, Configs) {
+    async execute(message) {
         if (message.author.bot) return;
-        require('./linkOpen').execute(client, message, Configs);
+
+        // require('./linkOpen').execute(message);
     },
 };

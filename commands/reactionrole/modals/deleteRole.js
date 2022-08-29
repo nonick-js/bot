@@ -1,45 +1,38 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 
-/**
-* @callback InteractionCallback
-* @param {discord.ModalSubmitInteraction} interaction
-* @param {...any} [args]
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'|'MODAL'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'deleteRole', type: 'MODAL' },
-    /** @type {InteractionCallback} */
-    exec: async (client, interaction) => {
+/** @type {import('@djs-tools/interactions').ModalRegister} */
+const ping_command = {
+    data: {
+        customId: 'deleteRole',
+        type: 'MODAL',
+    },
+    exec: async (interaction) => {
+        /** @type {discord.Embed} */
         const embed = interaction.message.embeds[0];
-        /** @type {discord.MessageActionRow} */
+        /** @type {discord.ActionRow} */
         const select = interaction.message.components[0];
-        /** @type {discord.MessageActionRow} */
+        /** @type {discord.ActionRow} */
         const button = interaction.message.components[1];
 
         const role = interaction.guild.roles.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput'));
         if (!role) {
-            const error = new discord.MessageEmbed()
+            const error = new discord.EmbedBuilder()
                 .setDescription('❌ その名前のロールは存在しません!')
-                .setColor('RED');
+                .setColor('Red');
             return interaction.update({ embeds: [embed, error] });
         }
 
         const replace = select.components[0].options.findIndex((v) => v.value == role.id);
         if (replace == -1) {
-            const error = new discord.MessageEmbed()
+            const error = new discord.EmbedBuilder()
                 .setDescription('❌ このロールはパネルに追加されていません!')
-                .setColor('RED');
+                .setColor('Red');
             return interaction.update({ embeds: [embed, error] });
         }
 
-        select.components[0].spliceOptions(replace, 1);
+        select.components[0] = discord.SelectMenuBuilder.from(select.components[0]).setOptions(select.components[0].options.splice(replace - 1, 1));
         interaction.update({ embeds: [embed], components: [select, button] });
     },
 };
+module.exports = [ ping_command ];

@@ -8,16 +8,6 @@
         "pattern": "[0-9]{18}",
         "description": "BOTのクライアントID"
       },
-      "debugMode": {
-        "type": "boolean",
-        "description": "BOTをデバッグモードとして起動(上級者向け)",
-        "default": false
-      },
-      "replitMode": {
-        "type": "boolean",
-        "description": "BOTをReplitで起動するか否か",
-        "default": true
-      },
       "guildCommand": {
         "type": "boolean",
         "description": "trueにするとギルドコマンド、falseにするとグローバルコマンドとして登録します"
