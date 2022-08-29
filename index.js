@@ -21,10 +21,9 @@ const sequelize = new Sequelize({ host: 'localhost', dialect: 'sqlite', logging:
 const interactions = new DiscordInteractions(client);
 interactions.loadInteractions('./commands');
 
-// sqliteのテーブルの作成
-const Configs = sequelize.define('configs', {
+const basicConfigs = sequelize.define('basic', {
 	serverId: { type: Sequelize.STRING, unique: true },
-    language: { type: Sequelize.STRING, defaultValue: 'ja_JP' },
+
     welcome: { type: Sequelize.BOOLEAN, defaultValue: false },
     welcomeCh: { type: Sequelize.STRING, defaultValue: null },
     welcomeMessage: { type: Sequelize.TEXT, defaultValue: 'まずはルールを確認しよう!' },
@@ -33,18 +32,24 @@ const Configs = sequelize.define('configs', {
     reportCh: { type: Sequelize.STRING, defaultValue: null },
     reportRoleMention: { type: Sequelize.BOOLEAN, defaultValue: false },
     reportRole: { type: Sequelize.STRING, defaultValue: null },
-    timeoutLog: { type: Sequelize.BOOLEAN, defaultValue: false },
-    timeoutLogCh: { type: Sequelize.STRING, defaultValue: null },
-    timeoutDm: { type: Sequelize.BOOLEAN, defaultValue: false },
-    banLog: { type: Sequelize.BOOLEAN, defaultValue: false },
-    banLogCh: { type: Sequelize.STRING, defaultValue: null },
-    banDm: { type: Sequelize.BOOLEAN, defaultValue: false },
     linkOpen: { type: Sequelize.BOOLEAN, defaultValue: false },
 });
-client.db = Configs;
+
+const logConfigs = sequelize.define('log', {
+	serverId: { type: Sequelize.STRING, unique: true },
+    log: { type: Sequelize.BOOLEAN, defaultValue: false },
+    logCh: { type: Sequelize.STRING, defaultValue: null },
+
+    messageDelete: { type: Sequelize.BOOLEAN, defaultValue: false },
+    timeout: { type: Sequelize.BOOLEAN, defaultValue: false },
+    kick: { type: Sequelize.BOOLEAN, defaultValue: false },
+    ban: { type: Sequelize.BOOLEAN, defaultValue: false },
+});
 
 client.on('ready', () => {
-    Configs.sync({ alter: true });
+    basicConfigs.sync({ alter: true });
+    logConfigs.sync({ alter: true });
+
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
     console.table({
         'Bot User': client.user.tag,
@@ -63,7 +68,7 @@ client.on('ready', () => {
 client.on('guildCreate', () => client.user.setActivity(`/info | ${client.guilds.cache.size} servers`));
 client.on('guildDelete', guild => {
     client.user.setActivity(`/info | ${client.guilds.cache.size} servers`);
-    Configs.destroy({ where:{ serverId: guild.id } });
+    basicConfigs.destroy({ where:{ serverId: guild.id } });
 });
 
 client.on('guildMemberAdd', member => moduleExecute(member, require('./events/guildMemberAdd/index')));
@@ -71,24 +76,27 @@ client.on('guildMemberRemove', member => moduleExecute(member, require('./events
 client.on('messageCreate', message => moduleExecute(message, require('./events/messageCreate/index')));
 
 client.on('interactionCreate', async interaction => {
-    await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
-    interaction.db_config = Configs;
-
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
         const embed = new discord.MessageEmbed()
             .setDescription(`🚫 このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`)
             .setColor('RED');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
+    syncDB(interaction);
     interactions.run(interaction).catch(console.warn);
 });
 
 async function moduleExecute(param, module) {
     if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
-    await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
-    param.db_config = Configs;
-
+    syncDB(param);
     module.execute(param);
+}
+
+async function syncDB(classParam) {
+    await basicConfigs.findOrCreate({ where:{ serverId: classParam.guild.id } });
+    await logConfigs.findOrCreate({ where:{ serverId: classParam.guild.id } });
+    classParam.db_config = basicConfigs;
+    classParam.db_logConfig = logConfigs;
 }
 
 client.login(process.env.BOT_TOKEN);
