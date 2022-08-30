@@ -33,13 +33,14 @@ const basicConfigs = sequelize.define('basic', {
     reportRoleMention: { type: Sequelize.BOOLEAN, defaultValue: false },
     reportRole: { type: Sequelize.STRING, defaultValue: null },
     linkOpen: { type: Sequelize.BOOLEAN, defaultValue: false },
+    log: { type: Sequelize.BOOLEAN, defaultValue: false },
+    logCh: { type: Sequelize.STRING, defaultValue: null },
 });
 
 const logConfigs = sequelize.define('log', {
 	serverId: { type: Sequelize.STRING, unique: true },
-    log: { type: Sequelize.BOOLEAN, defaultValue: false },
-    logCh: { type: Sequelize.STRING, defaultValue: null },
 
+    botLog: { type: Sequelize.BOOLEAN, defaultValue: false },
     messageDelete: { type: Sequelize.BOOLEAN, defaultValue: false },
     timeout: { type: Sequelize.BOOLEAN, defaultValue: false },
     kick: { type: Sequelize.BOOLEAN, defaultValue: false },
@@ -82,21 +83,22 @@ client.on('interactionCreate', async interaction => {
             .setColor('RED');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
-    syncDB(interaction);
+
+    await basicConfigs.findOrCreate({ where: { serverId: interaction.guildId } });
+    await logConfigs.findOrCreate({ where: { serverId: interaction.guildId } });
+    interaction.db_config = basicConfigs;
+    interaction.db_logConfig = logConfigs;
     interactions.run(interaction).catch(console.warn);
 });
 
 async function moduleExecute(param, module) {
     if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
-    syncDB(param);
-    module.execute(param);
-}
 
-async function syncDB(classParam) {
-    await basicConfigs.findOrCreate({ where:{ serverId: classParam.guild.id } });
-    await logConfigs.findOrCreate({ where:{ serverId: classParam.guild.id } });
-    classParam.db_config = basicConfigs;
-    classParam.db_logConfig = logConfigs;
+    await basicConfigs.findOrCreate({ where:{ serverId: param.guild.id } });
+    await logConfigs.findOrCreate({ where:{ serverId: param.guild.id } });
+    param.db_config = basicConfigs;
+    param.db_logConfig = logConfigs;
+    module.execute(param);
 }
 
 client.login(process.env.BOT_TOKEN);
