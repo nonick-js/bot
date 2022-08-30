@@ -75,6 +75,8 @@ client.on('guildDelete', guild => {
 client.on('guildMemberAdd', member => moduleExecute(member, require('./events/guildMemberAdd/index')));
 client.on('guildMemberRemove', member => moduleExecute(member, require('./events/guildMemberRemove/index')));
 client.on('messageCreate', message => moduleExecute(message, require('./events/messageCreate/index')));
+client.on('guildBanAdd', ban => moduleExecute(ban, require('./events/guildBanAdd/index')));
+client.on('guildBanRemove', member => moduleExecute(member, require('./events/guildBanRemove/index')));
 
 client.on('interactionCreate', async interaction => {
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {

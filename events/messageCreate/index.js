@@ -9,7 +9,7 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {messageCreateCallback} */
     async execute(message) {
-        if (message.author.bot) return;
+        if (message.author.bot || !message.guilds) return;
 
         // require('./linkOpen').execute(message);
     },
