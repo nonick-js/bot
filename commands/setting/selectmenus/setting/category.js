@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const { settingSwicher } = require('../../../modules/swicher');
+const { settingSwicher } = require('../../../../modules/swicher');
 
 /** @type {import('@djs-tools/interactions').SelectMenuRegister} */
 const ping_command = {
@@ -9,6 +9,8 @@ const ping_command = {
     },
     exec: async (interaction) => {
         const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
+        const logConfig = await interaction.db_logConfig.findOne({ where: { serverId: interaction.guildId } });
+
         const button = new discord.ActionRowBuilder().addComponents(
             new discord.ButtonBuilder()
                 .setCustomId('setting-back')
@@ -24,7 +26,7 @@ const ping_command = {
                 .setDescription([
                     '```サーバーに新しくメンバーが参加した時や退室した時に通知してくれる機能です。',
                     'メッセージを設定することで参加した人に見てもらいたい情報を送信できます。```\n**【現在の設定】**',
-                ].join('\n'))
+                ].join(''))
                 .setColor('Green')
                 .addFields(
                     { name: '入室ログ', value: settingSwicher('STATUS_CH', welcome, welcomeCh), inline:true },
@@ -65,7 +67,11 @@ const ping_command = {
 
             const embed = new discord.EmbedBuilder()
                 .setTitle('🛠 設定 - 通報機能')
-                .setDescription('**Tips**: コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。```メンバーがサーバールール等に違反しているメッセージを通報できる機能です。モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。```\n**【現在の設定】**')
+                .setDescription([
+                    '**Tips**: コンテキストメニュー自体の機能をOFFにしたい場合は、`サーバー設定→連携サービス→NoNICK.js`から変更できます。',
+                    '```メンバーがサーバールール等に違反しているメッセージを通報できる機能です。',
+                    'モデレーターがメッセージを監視する必要がなくなるため、運営の負担を減らせます。```\n**【現在の設定】**',
+                ].join(''))
                 .setColor('Green')
                 .addFields(
                     { name: '通報の送信先', value: reportCh ? `<#${reportCh}>` : `${'__設定されていません__'}`, inline: true },
@@ -94,11 +100,11 @@ const ping_command = {
             const linkOpen = config.get('linkOpen');
 
             const embed = new discord.EmbedBuilder()
-                .setTitle('🛠 設定 - リンク展開')
+                .setTitle('🛠 設定 - リンク展開機能')
                 .setDescription([
                     '```Discordのメッセージリンクを送信した際にリンク先のメッセージを表示してくれる機能です。',
                     '流れてしまったメッセージや過去のメッセージをチャットに出したい時に便利です。```\n**【現在の設定】**',
-                ].join('\n'))
+                ].join(''))
                 .setColor('Green')
                 .addFields({ name: 'リンク展開', value: settingSwicher('STATUS_ENABLE', linkOpen), inline: true });
             const select = new discord.ActionRowBuilder().addComponents([
@@ -115,6 +121,55 @@ const ping_command = {
 
             interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
         }
+
+        if (interaction.values == 'setting-log') {
+            const { log, logCh } = config.get();
+
+            const categoryData = [
+                { name: 'botLog', value: `\` ${interaction.client.user.username} \`` },
+                { name: 'messageDelete', value: '`メッセージ削除`' },
+                { name: 'timeout', value: '`タイムアウト`' },
+                { name: 'kick', value: '`Kick`' },
+                { name: 'ban', value: '`BAN`' },
+            ];
+            const enableCategory = categoryData.filter(v => logConfig.get(v.name)).map(v => v['value']);
+
+            const embed = new discord.EmbedBuilder()
+                .setTitle('🛠 設定 - ログ機能')
+                .setDescription([
+                    '```サーバー上のモデレーションやアクティビティをログとして送信する機能です。',
+                    '監査ログを使用するよりも簡単に確認することができます。```\n**【現在の設定】**',
+                ].join(''))
+                .setColor('Green')
+                .addFields(
+                    { name: 'ログ機能', value: settingSwicher('STATUS_CH', log, logCh), inline: true },
+                    { name: 'イベント', value: enableCategory.join(' ') || 'なし', inline: true },
+                );
+            const select = new discord.ActionRowBuilder().addComponents(
+                new discord.SelectMenuBuilder()
+                    .setCustomId('logSetting')
+                    .addOptions(
+                        { label: '全般設定', value: 'setting-logSetting-general', emoji: '966588719635267624', default:true },
+                        { label: 'イベント設定', value: 'setting-logSetting-event', emoji: '966588719635263539' },
+                    ),
+            );
+            button.addComponents(
+                new discord.ButtonBuilder()
+                    .setCustomId('setting-log')
+                    .setLabel(settingSwicher('BUTTON_LABEL', log))
+                    .setStyle(settingSwicher('BUTTON_STYLE', log))
+                    .setDisabled(settingSwicher('BUTTON_DISABLE', log, logCh)),
+                new discord.ButtonBuilder()
+                    .setCustomId('setting-logCh')
+                    .setLabel('送信先')
+                    .setEmoji('966588719635267624')
+                    .setStyle(discord.ButtonStyle.Secondary),
+            );
+
+            interaction.update({ embeds: [embed], components: [select, button] });
+        }
+
+
     },
 };
 module.exports = [ ping_command ];

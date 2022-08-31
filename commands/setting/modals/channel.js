@@ -5,6 +5,7 @@ const fieldIndex = {
     welcomeCh: [0, 'welcome', 1],
     reportCh: [0, 'report', 1],
     leaveCh: [1, 'leave', 1],
+    logCh: [0, 'log', 1],
 };
 
 /** @type {import('@djs-tools/interactions').ModalRegister} */

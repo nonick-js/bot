@@ -9,7 +9,9 @@ const ping_command = {
     },
     exec: async (interaction) => {
         const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
-        const { reportRole, reportRoleMention, reportCh } = config.get();
+        const { reportRole, reportRoleMention, reportCh, log, logCh } = config.get();
+
+        const logConfig = await interaction.db_logConfig.findOne({ where: { serverId: interaction.guild.id } });
 
         const messageId = interaction.components[0].components[0].customId;
         const reportReason = interaction.components[0].components[0].value;
@@ -44,10 +46,29 @@ const ping_command = {
         const Ch = await interaction.guild.channels.fetch(reportCh).catch(() => {});
         if (!Ch) {
             interaction.db_config.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
+
             const errorEmbed = new discord.EmbedBuilder()
                 .setDescription('❌ 通報の送信中に問題が発生しました。')
                 .setColor('Red');
-            return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+
+            if (log && logConfig.get('botLog')) {
+                const error = new discord.EmbedBuilder()
+                    .setTitle('通報機能')
+                    .setDescription([
+                        '❌**通報機能の送信先**がリセットされました。',
+                        '**理由:** 送信先のチャンネルが削除されている',
+                    ].join('\n'))
+                    .setColor('516ff5');
+
+                // eslint-disable-next-line no-empty-function
+                const logChannel = await interaction.guild.channels.fetch(logCh).catch(() => {});
+                if (!logChannel) return interaction.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: interaction.guild.id } });
+
+                logChannel.send({ embeds: [error] }).catch(() => interaction.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: interaction.guild.id } }));
+            }
+
+            return;
         }
 
         const content = reportRoleMention ? `<@&${reportRole}>` : ' ';
@@ -59,12 +80,29 @@ const ping_command = {
                     .setColor('Green');
                 interaction.reply({ embeds: [successEmbed], ephemeral: true });
             })
-            .catch(() => {
+            .catch(async () => {
                 interaction.db_config.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
+
                 const errorEmbed = new discord.EmbedBuilder()
                     .setDescription('❌ 通報の送信中に問題が発生しました。')
                     .setColor('Red');
                 interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+
+                if (log && logConfig.get('botLog')) {
+                    const error = new discord.EmbedBuilder()
+                        .setTitle('通報機能')
+                        .setDescription([
+                            '❌**通報機能の送信先**がリセットされました。',
+                            '**理由:** 必要な権限(`チャンネルを見る` `メッセージを送信` `埋め込みリンク`)が与えられていない',
+                        ].join('\n'))
+                        .setColor('516ff5');
+
+                    // eslint-disable-next-line no-empty-function
+                    const logChannel = await interaction.guild.channels.fetch(logCh).catch(() => {});
+                    if (!logChannel) return interaction.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: interaction.guild.id } });
+
+                    return logChannel.send({ embeds: [error] }).catch(() => interaction.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: interaction.guild.id } }));
+                }
             });
     },
 };
