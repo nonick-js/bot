@@ -2,16 +2,15 @@
 const discord = require('discord.js');
 
 /**
- * @callback MemberRemoveCallback
+ * @callback guildBanRemoveCallback
  * @param {discord.GuildMember} member
  */
 
 module.exports = {
-    /** @type {MemberRemoveCallback} */
+    /** @type {guildBanRemoveCallback} */
     async execute(member) {
         if (member.user == member.client.user) return;
 
-        require('./welcomeMessage').execute(member);
-        require('./kickLog').execute(member);
+        require('./banRemoveLog').execute(member);
     },
 };

@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const { settingSwicher } = require('../../../modules/swicher');
+const { settingSwicher } = require('../../../../modules/swicher');
 
 /** @type {import('@djs-tools/interactions').SelectMenuRegister} */
 const ping_command = {

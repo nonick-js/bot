@@ -24,8 +24,8 @@ const ping_command = {
         embed.fields[0].value = settingSwicher('STATUS_CH', !welcome, welcomeCh);
 
         button.components[1] = discord.ButtonBuilder.from(button.components[1])
-                .setLabel(settingSwicher('BUTTON_LABEL', !welcome))
-                .setStyle(settingSwicher('BUTTON_STYLE', !welcome)),
+            .setLabel(settingSwicher('BUTTON_LABEL', !welcome))
+            .setStyle(settingSwicher('BUTTON_STYLE', !welcome)),
 
         interaction.update({ embeds: [embed], components: [select, button] });
     },
