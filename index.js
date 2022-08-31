@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const client = new discord.Client({
     intents: Object.values(discord.GatewayIntentBits),
-    allowedMentions: { parse:['roles'] },
+    allowedMentions: { parse:[discord.AllowedMentionsTypes.Role] },
     partials: [
         discord.Partials.Channel,
         discord.Partials.GuildMember,
