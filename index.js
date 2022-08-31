@@ -41,7 +41,6 @@ const logConfigs = sequelize.define('log', {
 	serverId: { type: Sequelize.STRING, unique: true },
 
     botLog: { type: Sequelize.BOOLEAN, defaultValue: false },
-    messageDelete: { type: Sequelize.BOOLEAN, defaultValue: false },
     timeout: { type: Sequelize.BOOLEAN, defaultValue: false },
     kick: { type: Sequelize.BOOLEAN, defaultValue: false },
     ban: { type: Sequelize.BOOLEAN, defaultValue: false },
@@ -72,12 +71,12 @@ client.on('guildDelete', guild => {
     basicConfigs.destroy({ where:{ serverId: guild.id } });
 });
 
-client.on('guildMemberAdd', member => moduleExecute(member, undefined, require('./events/guildMemberAdd/index')));
-client.on('guildMemberRemove', member => moduleExecute(member, undefined, require('./events/guildMemberRemove/index')));
-client.on('messageCreate', message => moduleExecute(message, undefined, require('./events/messageCreate/index')));
 client.on('guildBanAdd', ban => moduleExecute(ban, undefined, require('./events/guildBanAdd/index')));
 client.on('guildBanRemove', member => moduleExecute(member, undefined, require('./events/guildBanRemove/index')));
+client.on('guildMemberAdd', member => moduleExecute(member, undefined, require('./events/guildMemberAdd/index')));
+client.on('guildMemberRemove', member => moduleExecute(member, undefined, require('./events/guildMemberRemove/index')));
 client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(oldMember, newMember, require('./events/guildMemberUpdate/index')));
+client.on('messageCreate', message => moduleExecute(message, undefined, require('./events/messageCreate/index')));
 
 client.on('interactionCreate', async interaction => {
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
