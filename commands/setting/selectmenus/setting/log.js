@@ -21,7 +21,7 @@ const ping_command = {
                 .setStyle(discord.ButtonStyle.Primary),
         );
 
-        if (interaction.values == 'setting-log-general') {
+        if (interaction.values == 'setting-logSetting-general') {
             button.addComponents(
                 new discord.ButtonBuilder()
                     .setCustomId('setting-log')
@@ -42,11 +42,10 @@ const ping_command = {
             const logEventSelect = new discord.ActionRowBuilder().addComponents(
                 new discord.SelectMenuBuilder()
                     .setCustomId('setting-logEvents')
-                    .setMaxValues(5)
+                    .setMaxValues(4)
                     .setPlaceholder('有効にしたいイベントを選択')
                     .setOptions(
                         { label: `${interaction.client.user.username}`, description: 'BOTのエラー等', value: 'botLog', emoji: '966596708484149289' },
-                        { label: 'メッセージ削除', value: 'messageDelete', emoji: '966596708458983484' },
                         { label: 'タイムアウト', value: 'timeout', emoji: '969148338597412884' },
                         { label: 'Kick', value: 'kick', emoji: '969148338597412884' },
                         { label: 'BAN', value: 'ban', emoji: '969148338597412884' },
