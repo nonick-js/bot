@@ -14,10 +14,10 @@ const ping_command = {
         const selectData = interaction.values;
         const categoryData = [
             { name: 'botLog', value: `\`${interaction.client.user.username}\`` },
-            { name: 'messageDelete', value: '`メッセージ削除`' },
-            { name: 'timeout', value: '`タイムアウト`' },
-            { name: 'kick', value: '`Kick`' },
-            { name: 'ban', value: '`BAN`' },
+            { name: 'messageDelete', value: ' `メッセージ削除` ' },
+            { name: 'timeout', value: ' `タイムアウト` ' },
+            { name: 'kick', value: ' `Kick` ' },
+            { name: 'ban', value: ' `BAN` ' },
         ];
 
         selectData.forEach(v => interaction.db_logConfig.update({ [v]: true }, { where: { serverId: interaction.guild.id } }));

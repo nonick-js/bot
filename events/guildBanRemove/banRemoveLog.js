@@ -13,15 +13,18 @@ module.exports = {
         const logConfig = await member.db_logConfig.findOne({ where: { serverId: member.guild.id } });
 
         if (!config.get('log') || !logConfig.get('ban')) return;
-        const auditLogs = await member.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanRemove });
-        const banLog = auditLogs.entries.find(v => v.target == member.user);
+        // eslint-disable-next-line no-empty-function
+        const auditLogs = await member.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanRemove }).catch(() => {});
+        const banLog = auditLogs?.entries?.find(v => v.target == member.user);
+        if (!banLog) return;
 
         const embed = new discord.EmbedBuilder()
-            .setTitle('BAN解除')
-            .setDescription(`${member.user} \`${member.user.id}\``)
+            .setTitle('🔨BAN解除')
+            .setDescription(`${member.user} (\`${member.user.id}\`)`)
             .setThumbnail(member.user.displayAvatarURL())
             .setColor('Blue')
-            .setFooter({ text: banLog.executor.tag, iconURL: banLog.executor.displayAvatarURL() });
+            .setFooter({ text: banLog.executor.tag, iconURL: banLog.executor.displayAvatarURL() })
+            .setTimestamp();
 
         // eslint-disable-next-line no-empty-function
         const channel = await member.guild.channels.fetch(config.get('logCh')).catch(() => {});

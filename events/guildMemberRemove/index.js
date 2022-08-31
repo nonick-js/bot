@@ -12,5 +12,6 @@ module.exports = {
         if (member.user == member.client.user) return;
 
         require('./welcomeMessage').execute(member);
+        require('./kickLog').execute(member);
     },
 };

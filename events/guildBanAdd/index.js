@@ -11,6 +11,6 @@ module.exports = {
     async execute(ban) {
         if (ban.user == ban.client.user) return;
 
-        require('./log').execute(ban);
+        require('./banLog').execute(ban);
     },
 };

@@ -126,11 +126,11 @@ const ping_command = {
             const { log, logCh } = config.get();
 
             const categoryData = [
-                { name: 'botLog', value: `\`${interaction.client.user.username}\`` },
-                { name: 'messageDelete', value: '`メッセージ削除`' },
-                { name: 'timeout', value: '`タイムアウト`' },
-                { name: 'kick', value: '`Kick`' },
-                { name: 'ban', value: '`BAN`' },
+                { name: 'botLog', value: `\` ${interaction.client.user.username} \`` },
+                { name: 'messageDelete', value: '` メッセージ削除 `' },
+                { name: 'timeout', value: '` タイムアウト `' },
+                { name: 'kick', value: '` Kick `' },
+                { name: 'ban', value: '` BAN `' },
             ];
             const enableCategory = categoryData.filter(v => logConfig.get(v.name)).map(v => v['value']);
 

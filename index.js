@@ -72,11 +72,12 @@ client.on('guildDelete', guild => {
     basicConfigs.destroy({ where:{ serverId: guild.id } });
 });
 
-client.on('guildMemberAdd', member => moduleExecute(member, require('./events/guildMemberAdd/index')));
-client.on('guildMemberRemove', member => moduleExecute(member, require('./events/guildMemberRemove/index')));
-client.on('messageCreate', message => moduleExecute(message, require('./events/messageCreate/index')));
-client.on('guildBanAdd', ban => moduleExecute(ban, require('./events/guildBanAdd/index')));
-client.on('guildBanRemove', member => moduleExecute(member, require('./events/guildBanRemove/index')));
+client.on('guildMemberAdd', member => moduleExecute(member, undefined, require('./events/guildMemberAdd/index')));
+client.on('guildMemberRemove', member => moduleExecute(member, undefined, require('./events/guildMemberRemove/index')));
+client.on('messageCreate', message => moduleExecute(message, undefined, require('./events/messageCreate/index')));
+client.on('guildBanAdd', ban => moduleExecute(ban, undefined, require('./events/guildBanAdd/index')));
+client.on('guildBanRemove', member => moduleExecute(member, undefined, require('./events/guildBanRemove/index')));
+client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(oldMember, newMember, require('./events/guildMemberUpdate/index')));
 
 client.on('interactionCreate', async interaction => {
     if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
@@ -93,14 +94,14 @@ client.on('interactionCreate', async interaction => {
     interactions.run(interaction).catch(console.warn);
 });
 
-async function moduleExecute(param, module) {
+async function moduleExecute(param, param2, module) {
     if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
 
     await basicConfigs.findOrCreate({ where:{ serverId: param.guild.id } });
     await logConfigs.findOrCreate({ where:{ serverId: param.guild.id } });
     param.db_config = basicConfigs;
     param.db_logConfig = logConfigs;
-    module.execute(param);
+    module.execute(param, param2);
 }
 
 client.login(process.env.BOT_TOKEN);

@@ -13,15 +13,19 @@ module.exports = {
         const logConfig = await ban.db_logConfig.findOne({ where: { serverId: ban.guild.id } });
 
         if (!config.get('log') || !logConfig.get('ban')) return;
-        const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanAdd });
-        const banLog = auditLogs.entries.find(v => v.target == ban.user);
+        // eslint-disable-next-line no-empty-function
+        const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanAdd }).catch(() => {});
+        const banLog = auditLogs?.entries?.find(v => v.target == ban.user);
+        if (!banLog) return;
 
         const embed = new discord.EmbedBuilder()
-            .setTitle('BAN')
-            .setDescription(`${ban.user} \`${ban.user.id}\`\n\`\`\`${ban.reason ?? '理由が入力されていません'}\`\`\``)
+            .setTitle('🔨BAN')
+            .setDescription(`${ban.user} (\`${ban.user.id}\`)`)
             .setThumbnail(ban.user.displayAvatarURL())
             .setColor('Red')
-            .setFooter({ text: banLog.executor.tag, iconURL: banLog.executor.displayAvatarURL() });
+            .setFields({ name: '理由', value: `\`\`\`${banLog.reason ?? '入力されていません'}\`\`\`` })
+            .setFooter({ text: banLog.executor.tag, iconURL: banLog.executor.displayAvatarURL() })
+            .setTimestamp();
 
         // eslint-disable-next-line no-empty-function
         const channel = await ban.guild.channels.fetch(config.get('logCh')).catch(() => {});
