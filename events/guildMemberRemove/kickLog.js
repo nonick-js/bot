@@ -14,7 +14,7 @@ const discord = require('discord.js');
 
         if (!config.get('log') || !logConfig.get('kick')) return;
         // eslint-disable-next-line no-empty-function
-        const auditLogs = await member.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberKick }).catch(() => {});
+        const auditLogs = await member.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberKick, limit: 3 }).catch(() => {});
         const kickLog = auditLogs?.entries?.find(v => v.target == member.user);
         if (!kickLog || kickLog?.createdAt < member.joinedAt) return;
 

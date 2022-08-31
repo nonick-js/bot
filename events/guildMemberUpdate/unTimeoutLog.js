@@ -17,7 +17,7 @@ module.exports = {
 
         if (!config.get('log') || !logConfig.get('timeout')) return;
         // eslint-disable-next-line no-empty-function
-        const auditLogs = await newMember.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberUpdate }).catch(() => {});
+        const auditLogs = await newMember.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberUpdate, limit: 3 }).catch(() => {});
         const timeoutLog = auditLogs?.entries?.find(v => v.target == newMember.user);
         if (!timeoutLog) return;
 

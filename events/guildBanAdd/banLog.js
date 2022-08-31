@@ -14,7 +14,7 @@ module.exports = {
 
         if (!config.get('log') || !logConfig.get('ban')) return;
         // eslint-disable-next-line no-empty-function
-        const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanAdd }).catch(() => {});
+        const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanAdd, limit: 3 }).catch(() => {});
         const banLog = auditLogs?.entries?.find(v => v.target == ban.user);
         if (!banLog) return;
 
