@@ -23,7 +23,6 @@ interactions.loadInteractions('./commands');
 
 const basicConfigs = sequelize.define('basic', {
 	serverId: { type: Sequelize.STRING, unique: true },
-
     welcome: { type: Sequelize.BOOLEAN, defaultValue: false },
     welcomeCh: { type: Sequelize.STRING, defaultValue: null },
     welcomeMessage: { type: Sequelize.TEXT, defaultValue: 'まずはルールを確認しよう!' },
@@ -39,16 +38,24 @@ const basicConfigs = sequelize.define('basic', {
 
 const logConfigs = sequelize.define('log', {
 	serverId: { type: Sequelize.STRING, unique: true },
-
     botLog: { type: Sequelize.BOOLEAN, defaultValue: false },
     timeout: { type: Sequelize.BOOLEAN, defaultValue: false },
     kick: { type: Sequelize.BOOLEAN, defaultValue: false },
     ban: { type: Sequelize.BOOLEAN, defaultValue: false },
 });
 
+const verificationConfig = sequelize.define('verification', {
+	serverId: { type: Sequelize.STRING, unique: true },
+    oldLevel: { type: Sequelize.NUMBER, defaultValue: null },
+    newLevel: { type: Sequelize.NUMBER, defaultValue: null },
+    startChangeTime: { type: Sequelize.STRING, defaultValue: null },
+    endChangeTime: { type: Sequelize.STRING, defaultValue: null },
+});
+
 client.on('ready', () => {
     basicConfigs.sync({ alter: true });
     logConfigs.sync({ alter: true });
+    verificationConfig.sync({ alter: true });
 
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
     console.table({
@@ -88,8 +95,11 @@ client.on('interactionCreate', async interaction => {
 
     await basicConfigs.findOrCreate({ where: { serverId: interaction.guildId } });
     await logConfigs.findOrCreate({ where: { serverId: interaction.guildId } });
+    await verificationConfig.findOrCreate({ where: { serverId: interaction.guildId } });
+
     interaction.db_config = basicConfigs;
     interaction.db_logConfig = logConfigs;
+    interaction.db_verificationConfig = verificationConfig;
     interactions.run(interaction).catch(console.warn);
 });
 
@@ -98,8 +108,11 @@ async function moduleExecute(param, param2, module) {
 
     await basicConfigs.findOrCreate({ where:{ serverId: param.guild.id } });
     await logConfigs.findOrCreate({ where:{ serverId: param.guild.id } });
+    await verificationConfig.findOrCreate({ where: { serverId: param.guild.id } });
+
     param.db_config = basicConfigs;
     param.db_logConfig = logConfigs;
+    param.db_verificationConfig = verificationConfig;
     module.execute(param, param2);
 }
 
