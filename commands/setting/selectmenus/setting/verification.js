@@ -43,7 +43,7 @@ const ping_command = {
                     .setStyle(discord.ButtonStyle.Secondary),
             );
             setDefault();
-            interaction.update({ components: [select, button] });
+            interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, button] });
         }
 
         if (interaction.values == 'setting-verificationSetting-level') {
@@ -58,7 +58,7 @@ const ping_command = {
                     ),
             );
             setDefault();
-            interaction.update({ components: [select, logEventSelect, button] });
+            interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, logEventSelect, button] });
         }
 
         function setDefault() {

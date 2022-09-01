@@ -12,11 +12,11 @@ const discord = require('discord.js');
 function settingSwicher(type, key, key2) {
     switch (type) {
         case 'STATUS_ENABLE':
-            return key ? `${discord.formatEmoji('758380151544217670')} 有効` : `${discord.formatEmoji('758380151238033419')} 無効`;
+            return key ? `${discord.formatEmoji('758380151544217670')} 有効` : `${discord.formatEmoji('1014606484849565797')} 無効`;
         case 'STATUS_CH':
-            return key ? `${discord.formatEmoji('758380151544217670')} 有効 (<#${key2}>)` : `${discord.formatEmoji('758380151238033419')} 無効`;
+            return key ? `${discord.formatEmoji('758380151544217670')} 有効 (<#${key2}>)` : `${discord.formatEmoji('1014606484849565797')} 無効`;
         case 'STATUS_ROLE':
-            return key ? `${discord.formatEmoji('758380151544217670')} 有効 (<@&${key2}>)` : `${discord.formatEmoji('758380151238033419')} 無効`;
+            return key ? `${discord.formatEmoji('758380151544217670')} 有効 (<@&${key2}>)` : `${discord.formatEmoji('1014606484849565797')} 無効`;
         case 'BUTTON_LABEL':
             return key ? '無効化' : '有効化';
         case 'BUTTON_STYLE':

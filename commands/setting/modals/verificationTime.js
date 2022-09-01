@@ -11,12 +11,16 @@ const ping_command = {
         const customId = interaction.components[0].components[0].customId;
         const value = interaction.components[0].components[0].value;
 
+        const oldVerificationConfig = await interaction.db_verificationConfig.findOne({ where: { serverId: interaction.guildId } });
+
         try {
             if (isNaN(Number(value)) || Number(value) < -1 || Number(value) > 23) throw '無効な値です！';
+            if (customId == 'startChangeTime' && value == oldVerificationConfig.get('endChangeTime')) throw '終了時刻と同じ時間に設定することはできません！';
+            if (customId == 'endChangeTime' && value == oldVerificationConfig.get('startChangeTime')) throw '開始時刻と同じ時間に設定することはできません！';
 
             interaction.db_verificationConfig.update({ [customId]: Number(value) }, { where: { serverId: interaction.guildId } });
-            const verificationConfig = await interaction.db_verificationConfig.findOne({ where: { serverId: interaction.guildId } });
-            const { startChangeTime, endChangeTime } = verificationConfig.get();
+            const newVerificationConfig = await interaction.db_verificationConfig.findOne({ where: { serverId: interaction.guildId } });
+            const { startChangeTime, endChangeTime } = newVerificationConfig.get();
 
             const time = (startChangeTime !== null ? `${startChangeTime}:00` : '未設定') + ' ～ ' + (endChangeTime !== null ? `${endChangeTime}:00` : '未設定');
             interaction.message.embeds[0].fields[1].value = time;
