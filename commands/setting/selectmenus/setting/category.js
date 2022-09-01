@@ -10,6 +10,7 @@ const ping_command = {
     exec: async (interaction) => {
         const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
         const logConfig = await interaction.db_logConfig.findOne({ where: { serverId: interaction.guildId } });
+        const verificationConfig = await interaction.db_verificationConfig.findOne({ where: { serverId: interaction.guildId } });
 
         const button = new discord.ActionRowBuilder().addComponents(
             new discord.ButtonBuilder()
@@ -169,7 +170,59 @@ const ping_command = {
             interaction.update({ embeds: [embed], components: [select, button] });
         }
 
+        if (interaction.values == 'setting-verification') {
+            const { verification } = config.get();
+            const { newLevel, startChangeTime, endChangeTime } = verificationConfig.get();
 
+            const levelStatus = [
+                { key: 1, value: '🟢**低** `メール認証がされているアカウントのみ`' },
+                { key: 2, value: '🟡**中** `Discordに登録してから5分以上経過したアカウントのみ`' },
+                { key: 3, value: '🟠**高** `このサーバーのメンバーとなってから10分以上経過したメンバーのみ`' },
+                { key: 4, value: '🔴**最高** `電話認証がされているアカウントのみ`' },
+            ];
+            const time = (startChangeTime !== null ? `${startChangeTime}:00` : '未設定') + ' ～ ' + (endChangeTime !== null ? `${endChangeTime}:00` : '未設定');
+
+            const embed = new discord.EmbedBuilder()
+                .setTitle('🛠 設定 - 認証レベル自動変更機能')
+                .setDescription([
+                    `${discord.formatEmoji('966588719614275584')} この機能の実行ログは\`ログ機能\`の\`${interaction.client.user.username}\`に含まれています。`,
+                    '```サーバーの認証レベルを指定した時間まで自動で変更する機能です。',
+                    '運営が浮上できない時間帯に設定することで荒らし対策をすることができます。```\n**【現在の設定】**',
+                ].join(''))
+                .setColor('Green')
+                .addFields(
+                    { name: '状態', value: settingSwicher('STATUS_ENABLE', verification), inline: true },
+                    { name: '自動変更期間', value: time, inline: true },
+                    { name: '自動変更するレベル', value: levelStatus.find(v => v.key == newLevel)?.value ?? '未設定' },
+                );
+            const select = new discord.ActionRowBuilder().addComponents(
+                new discord.SelectMenuBuilder()
+                    .setCustomId('verificationSetting')
+                    .setOptions(
+                        { label: '全般設定', value: 'setting-verificationSetting-general', emoji: '966588719635267624', default:true },
+                        { label: '認証レベル設定', description: '自動変更期間の間変更されるレベル', value: 'setting-verificationSetting-level', emoji: '966588719635263539' },
+                    ),
+            );
+            button.addComponents(
+                new discord.ButtonBuilder()
+                    .setCustomId('setting-verification')
+                    .setLabel(settingSwicher('BUTTON_LABEL', verification))
+                    .setStyle(settingSwicher('BUTTON_STYLE', verification))
+                    .setDisabled(settingSwicher('BUTTON_DISABLE', newLevel)),
+                new discord.ButtonBuilder()
+                    .setCustomId('settin-startChangeTime')
+                    .setLabel('開始時刻')
+                    .setEmoji('1014603109001085019')
+                    .setStyle(discord.ButtonStyle.Secondary),
+                new discord.ButtonBuilder()
+                    .setCustomId('setting-endChangeTime')
+                    .setLabel('終了時刻')
+                    .setEmoji('1014603109001085019')
+                    .setStyle(discord.ButtonStyle.Secondary),
+            );
+
+            interaction.update({ embeds: [embed], components: [select, button] });
+        }
     },
 };
 module.exports = [ ping_command ];
