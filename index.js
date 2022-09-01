@@ -2,7 +2,7 @@ const discord = require('discord.js');
 const cron = require('node-cron');
 const Sequelize = require('sequelize');
 const { DiscordInteractions } = require('@djs-tools/interactions');
-const { guildId, guildCommand, blackList_guild, blackList_user } = require('./config.json');
+const { guildId, guildCommand, blackList, beta } = require('./config.json');
 require('dotenv').config();
 
 const client = new discord.Client({
@@ -96,9 +96,16 @@ client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(oldMember
 client.on('messageCreate', message => moduleExecute(message, undefined, require('./events/messageCreate/index')));
 
 client.on('interactionCreate', async interaction => {
-    if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
+    try {
+        if (blackList.guilds.includes(interaction.guild.id) || blackList.users.includes(interaction.guild.ownerId)) throw `このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`;
+        if (beta.betaMode) {
+            const guild = await client.guilds.fetch(beta.guildId);
+            const role = await guild.roles.fetch(beta.roleId);
+            if (!role.members.find(v => v.user.id == guild.ownerId)) throw 'このBOTを使用するにはサーバーの管理者が**Beta Tester**に参加する必要があります。';
+        }
+    } catch (err) {
         const embed = new discord.EmbedBuilder()
-            .setDescription(`🚫 このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`)
+            .setDescription(`🚫 ${err}`)
             .setColor('Red');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
@@ -114,7 +121,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 async function moduleExecute(param, param2, module) {
-    if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
+    if (blackList.guilds.includes(param.guild?.id) || blackList.users.includes(param.guild?.ownerId)) return;
 
     await basicConfigs.findOrCreate({ where:{ serverId: param.guild.id } });
     await logConfigs.findOrCreate({ where:{ serverId: param.guild.id } });
