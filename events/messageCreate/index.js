@@ -2,15 +2,14 @@
 const discord = require('discord.js');
 /**
  * @callback messageCreateCallback
- * @param {discord.Client} client
  * @param {discord.Message} message
  */
 
 module.exports = {
     /** @type {messageCreateCallback} */
     async execute(message) {
-        if (message.author.bot || !message.guilds) return;
+        if (message.author.bot || message.author == message.client.user || !message.guild) return;
 
-        // require('./linkOpen').execute(message);
+        require('./linkOpen').execute(message);
     },
 };

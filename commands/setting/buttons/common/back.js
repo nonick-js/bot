@@ -30,6 +30,7 @@ const ping_command = {
                     { label: '通報機能', value: 'setting-report', emoji: '📢' },
                     { label: 'リンク展開機能', value: 'setting-linkOpen', emoji: '🔗' },
                     { label: 'ログ機能', value: 'setting-log', emoji: '📑' },
+                    { label: '認証レベル自動変更機能', value: 'setting-verification', emoji: '✅' },
                 ]),
         );
 
