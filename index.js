@@ -1,5 +1,6 @@
-const Sequelize = require('sequelize');
 const discord = require('discord.js');
+const cron = require('node-cron');
+const Sequelize = require('sequelize');
 const { DiscordInteractions } = require('@djs-tools/interactions');
 const { guildId, guildCommand, blackList_guild, blackList_user } = require('./config.json');
 require('dotenv').config();
@@ -34,7 +35,8 @@ const basicConfigs = sequelize.define('basic', {
     linkOpen: { type: Sequelize.BOOLEAN, defaultValue: false },
     log: { type: Sequelize.BOOLEAN, defaultValue: false },
     logCh: { type: Sequelize.STRING, defaultValue: null },
-});
+    verification: { type: Sequelize.BOOLEAN, defaultValue: false },
+}, { timestamps: false, createdAt: false, updatedAt: false });
 
 const logConfigs = sequelize.define('log', {
 	serverId: { type: Sequelize.STRING, unique: true },
@@ -42,15 +44,15 @@ const logConfigs = sequelize.define('log', {
     timeout: { type: Sequelize.BOOLEAN, defaultValue: false },
     kick: { type: Sequelize.BOOLEAN, defaultValue: false },
     ban: { type: Sequelize.BOOLEAN, defaultValue: false },
-});
+}, { timestamps: false, createdAt: false, updatedAt: false });
 
 const verificationConfig = sequelize.define('verification', {
 	serverId: { type: Sequelize.STRING, unique: true },
     oldLevel: { type: Sequelize.NUMBER, defaultValue: null },
     newLevel: { type: Sequelize.NUMBER, defaultValue: null },
-    startChangeTime: { type: Sequelize.STRING, defaultValue: null },
-    endChangeTime: { type: Sequelize.STRING, defaultValue: null },
-});
+    startChangeTime: { type: Sequelize.NUMBER, defaultValue: null },
+    endChangeTime: { type: Sequelize.NUMBER, defaultValue: null },
+}, { timestamps: false, createdAt: false, updatedAt: false });
 
 client.on('ready', () => {
     basicConfigs.sync({ alter: true });
@@ -70,6 +72,14 @@ client.on('ready', () => {
     client.user.setActivity(`/info | ${client.guilds.cache.size} servers `);
     if (guildCommand) interactions.registerCommands(guildId);
     else interactions.registerCommands();
+
+    cron.schedule('0 * * * * *', date => {
+        client.db_config = basicConfigs;
+        client.db_logConfig = logConfigs;
+        client.db_verificationConfig = verificationConfig;
+
+        require('./cron/verificationChange/index').execute(client, date);
+    }, { timezone: 'Japan' });
 });
 
 client.on('guildCreate', () => client.user.setActivity(`/info | ${client.guilds.cache.size} servers`));
