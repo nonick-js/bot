@@ -6,16 +6,15 @@ const { guildId, guildCommand, blackList, beta } = require('./config.json');
 require('dotenv').config();
 
 const client = new discord.Client({
-    intents: Object.values(discord.GatewayIntentBits),
-    allowedMentions: { parse: [discord.AllowedMentionsTypes.Role] },
-    partials: [
-        discord.Partials.Channel,
-        discord.Partials.GuildMember,
-        discord.Partials.GuildScheduledEvent,
-        discord.Partials.Message,
-        discord.Partials.Reaction,
-        discord.Partials.User,
+    intents: [
+        discord.GatewayIntentBits.Guilds,
+        discord.GatewayIntentBits.GuildBans,
+        discord.GatewayIntentBits.GuildMessages,
+        discord.GatewayIntentBits.GuildMembers,
+        discord.GatewayIntentBits.MessageContent,
     ],
+    allowedMentions: { parse: [ discord.AllowedMentionsTypes.Role ] },
+    partials: [ discord.Partials.Channel, discord.Partials.GuildMember, discord.Partials.Message, discord.Partials.User ],
 });
 const sequelize = new Sequelize({ host: 'localhost', dialect: 'sqlite', logging: false, storage: 'sql/config.sqlite' });
 
