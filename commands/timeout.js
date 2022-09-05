@@ -13,51 +13,28 @@ const ping_command = {
             { name: 'minute', description: '時間 (分単位)', type: discord.ApplicationCommandOptionType.Number, required: true },
             { name: 'reason', description: '理由', type: discord.ApplicationCommandOptionType.String, required: false },
         ],
-        type: 'CHAT_INPUT',
         dmPermission: false,
         defaultMemberPermissions: discord.PermissionFlagsBits.ModerateMembers,
+        type: 'CHAT_INPUT',
     },
     exec: async (interaction) => {
-
         /** @type {import('discord.js').GuildMember} */
-		// eslint-disable-next-line no-empty-function
 		const timeoutMember = await interaction.guild.members.fetch(interaction.options.getUser('user').id).catch(() => {});
 		const timeoutDuration = (date.toMS(`${interaction.options.getNumber('day')}d`)) + (date.toMS(`${interaction.options.getNumber('hour')}h`)) + (date.toMS(`${interaction.options.getNumber('minute')}m`));
 		const timeoutReason = interaction.options.getString('reason') ?? '理由が入力されていません';
 
-		if (!timeoutMember) {
-            const embed = new discord.EmbedBuilder()
-                .setDescription('❌ そのユーザーはこのサーバーにいません！')
-                .setColor('Red');
-			return interaction.reply({ embeds: [embed], ephemeral:true });
-		}
-
-		if (interaction.user.id !== interaction.guild.ownerId && Math.sign(interaction.member.roles.highest.comparePositionTo(timeoutMember.roles.highest)) !== 1) {
-            const embed = new discord.EmbedBuilder()
-                .setDescription('❌ 最上位の役職が自分より上か同じメンバーをタイムアウトさせることはできません！')
-                .setColor('Red');
-			return interaction.reply({ embeds: [embed], ephemeral: true });
-		}
-
-		if (timeoutDuration > date.toMS('28d')) {
-            const embed = new discord.EmbedBuilder()
-                .setDescription('❌ 28日を超えるタイムアウトはできません！')
-                .setColor('Red');
-			return interaction.reply({ embeds: [embed], ephemeral: true });
-		}
-
-		if (timeoutMember.user == interaction.client.user) {
-			const embed = new discord.EmbedBuilder()
-				.setDescription(`❌ **${interaction.client.user.username}**自身をタイムアウトさせることはできません！`)
+		try {
+			if (!timeoutMember) throw 'そのユーザーはこのサーバーにいません！';
+			if (timeoutMember.user == interaction.user) throw '自分自身にコマンドを使用しています...';
+			if (timeoutMember.user == interaction.client.user) throw `**${interaction.client.user.username}**自身をタイムアウトすることはできません！`;
+			if (!timeoutMember.manageable) throw `そのユーザーは**${interaction.client.user.username}**より権限が強いためタイムアウトできません！`;
+			if (interaction.user.id !== interaction.guild.ownerId && interaction.member.roles.highest.comparePositionTo(timeoutMember.roles.highest) >= 0) throw '最上位の役職が自分より上か同じメンバーをタイムアウトさせることはできません！';
+			if (timeoutDuration > date.toMS('28d')) throw '28日を超えるタイムアウトはできません！';
+		} catch (err) {
+			const errorEmbed = new discord.EmbedBuilder()
+				.setDescription(`❌ ${err}`)
 				.setColor('Red');
-			return interaction.reply({ embeds: [embed], ephemeral: true });
-		}
-
-		if (timeoutMember.user == interaction.user) {
-			const embed = new discord.EmbedBuilder()
-				.setDescription('❌ 自分自身をタイムアウトしようとしています...')
-				.setColor('White');
-			return interaction.reply({ embeds: [embed], ephemeral: true });
+			return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 		}
 
 		timeoutMember.timeout(timeoutDuration, timeoutReason + ` by ${interaction.user.tag}`)
@@ -71,16 +48,14 @@ const ping_command = {
 						'タイムアウトしました。',
 					].join(''))
 					.setColor('Red');
-				interaction.reply({ embeds: [embed], ephemeral:true });
+				interaction.reply({ embeds: [embed], ephemeral: true });
 			})
-			.catch(() => {
-				const embed = new discord.EmbedBuilder()
-					.setDescription([
-						`❌ <@${timeoutMember.id}> (\`${timeoutMember.id}\`)のタイムアウトに失敗しました。`,
-						'BOTより上の権限を持っているか、サーバーの管理者です。',
-					].join('\n'))
-					.setColor('Red');
-				interaction.reply({ embeds: [embed], ephemeral:true });
+			.catch((err) => {
+                const error = new discord.EmbedBuilder()
+                    .setTitle('エラー！')
+                    .setDescription(`以下のエラー文を直前の動作と共にサポートサーバーへ送信してください。\n\`\`\`${err}\`\`\``)
+                    .setColor('Red');
+				interaction.reply({ embeds: [error], ephemeral: true });
 			});
     },
 };
