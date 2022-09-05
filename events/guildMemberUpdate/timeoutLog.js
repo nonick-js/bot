@@ -10,16 +10,23 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {guildMemberUpdateCallback} */
     async execute(oldMember, newMember) {
-        if (!newMember.communicationDisabledUntil || oldMember.communicationDisabledUntil == newMember.communicationDisabledUntil) return;
+        if (!newMember?.communicationDisabledUntil || oldMember?.communicationDisabledUntil == newMember?.communicationDisabledUntil) return;
 
-        const config = await oldMember.db_config.findOne({ where: { serverId: newMember.guild.id } });
-        const logConfig = await oldMember.db_logConfig.findOne({ where: { serverId: newMember.guild.id } });
+        const logModel = await require('../../models/log')(oldMember.sequelize).findOne({ where: { serverId: newMember.guild.id } });
+        if (!logModel.get('log') || !logModel.get('timeout')) return;
 
-        if (!config.get('log') || !logConfig.get('timeout')) return;
-        // eslint-disable-next-line no-empty-function
         const auditLogs = await newMember.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberUpdate, limit: 3 }).catch(() => {});
         const timeoutLog = auditLogs?.entries?.find(v => v.target == newMember.user);
         if (!timeoutLog) return;
+
+        const channel = await newMember.guild.channels.fetch(logModel.get('logCh')).catch(() => {});
+
+        try {
+            if (!channel) throw '';
+            if (!channel.permissionsFor(newMember.guild.members.me).has(discord.PermissionFlagsBits.ViewChannel, discord.PermissionFlagsBits.SendMessages, discord.PermissionFlagsBits.EmbedLinks)) throw '';
+        } catch {
+            return logModel.update({ log: false, logCh: null }).catch(() => {});
+        }
 
         const embed = new discord.EmbedBuilder()
             .setTitle('⛔タイムアウト')
@@ -33,10 +40,6 @@ module.exports = {
             .setFooter({ text: timeoutLog.executor.tag, iconURL: timeoutLog.executor.displayAvatarURL() })
             .setTimestamp();
 
-        // eslint-disable-next-line no-empty-function
-        const channel = await oldMember.guild.channels.fetch(config.get('logCh')).catch(() => {});
-        if (!channel) return oldMember.db_config.update({ log: false, logCh: null }, { where: { serverId: newMember.guild.id } });
-
-        channel.send({ embeds: [embed] }).catch(() => oldMember.db_config.update({ log: false, logCh: null }, { where: { serverId: newMember.guild.id } }));
+        channel.send({ embeds: [embed] }).catch(() => logModel.update({ log: false, logCh: null }).catch(() => {}));
     },
 };

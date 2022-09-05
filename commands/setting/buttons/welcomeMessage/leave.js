@@ -27,6 +27,7 @@ const ping_command = {
         }
 
         embed.fields[1].value = settingSwitcher('STATUS_CH', !leave, leaveCh) + `\n\n${discord.formatEmoji('966596708458983484')} ${welcomeM_preview(leaveMessage)}`;
+
         button.components[1] = discord.ButtonBuilder.from(button.components[1])
             .setLabel(settingSwitcher('BUTTON_LABEL', !leave))
             .setStyle(settingSwitcher('BUTTON_STYLE', !leave)),

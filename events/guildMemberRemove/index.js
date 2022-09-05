@@ -11,7 +11,7 @@ module.exports = {
     async execute(member) {
         if (member.user == member.client.user) return;
 
-        require('./welcomeMessage').execute(member);
+        require('./leaveMessage').execute(member);
         require('./kickLog').execute(member);
     },
 };

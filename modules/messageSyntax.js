@@ -21,15 +21,15 @@ function welcomeM_preview(message) {
     return result;
 }
 
-function welcomeM(message, param) {
+function welcomeM(message, member) {
     let result = message;
 
     const replace = [
-        param.guild.name,
-        param.guild.memberCount,
-        param.user,
-        param.user.username,
-        param.user.tag,
+        member.guild.name,
+        member.guild.memberCount,
+        member.user,
+        member.user.username,
+        member.user.tag,
     ];
 
     for (let i = 0; i < welcomeMSyntax.length; i++) result = result.replace(welcomeMSyntax[i], replace[i]);

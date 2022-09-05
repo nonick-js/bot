@@ -5,7 +5,7 @@ const { settingSwitcher } = require('../../../modules/switcher');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'setting-linkOpen',
+        customId: 'setting-messageExpansion',
         type: 'BUTTON',
     },
     exec: async (interaction) => {

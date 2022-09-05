@@ -10,7 +10,7 @@ const ping_command = {
     exec: async (interaction) => {
         const modal = new discord.ModalBuilder()
             .setCustomId('setting-Channel')
-            .setTitle('退室ログ')
+            .setTitle('退室メッセージ')
             .addComponents(
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()

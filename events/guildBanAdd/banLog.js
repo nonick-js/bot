@@ -9,14 +9,21 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {guildBanAddCallback} */
     async execute(ban) {
-        const config = await ban.db_config.findOne({ where: { serverId: ban.guild.id } });
-        const logConfig = await ban.db_logConfig.findOne({ where: { serverId: ban.guild.id } });
+        const logModel = await require('../../models/log')(ban.sequelize).findOne({ where: { serverId: ban.guild.id } });
+        if (!logModel.get('log') || !logModel.get('ban')) return;
 
-        if (!config.get('log') || !logConfig.get('ban')) return;
-        // eslint-disable-next-line no-empty-function
         const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanAdd, limit: 3 }).catch(() => {});
         const banLog = auditLogs?.entries?.find(v => v.target == ban.user);
         if (!banLog) return;
+
+        const channel = await ban.guild.channels.fetch(logModel.get('logCh')).catch(() => {});
+
+        try {
+            if (!channel) throw '';
+            if (!channel.permissionsFor(ban.guild.members.me).has(discord.PermissionFlagsBits.ViewChannel, discord.PermissionFlagsBits.SendMessages, discord.PermissionFlagsBits.EmbedLinks)) throw '';
+        } catch {
+            return logModel.update({ log: false, logCh: null }).catch(() => {});
+        }
 
         const embed = new discord.EmbedBuilder()
             .setTitle('🔨BAN')
@@ -27,10 +34,6 @@ module.exports = {
             .setFooter({ text: banLog.executor.tag, iconURL: banLog.executor.displayAvatarURL() })
             .setTimestamp();
 
-        // eslint-disable-next-line no-empty-function
-        const channel = await ban.guild.channels.fetch(config.get('logCh')).catch(() => {});
-        if (!channel) return ban.db_config.update({ log: false, logCh: null }, { where: { serverId: ban.guild.id } });
-
-        channel.send({ embeds: [embed] }).catch(() => ban.db_config.update({ log: false, logCh: null }, { where: { serverId: ban.guild.id } }));
+        channel.send({ embeds: [embed] }).catch(() => logModel.update({ log: false, logCh: null }).catch(() => {}));
     },
 };

@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 const { settingSwitcher } = require('../../../modules/switcher');
+const { welcomeM_preview } = require('../../../modules/messageSyntax');
 
 /** @type {import('@djs-tools/interactions').ModalRegister} */
 const ping_command = {
@@ -15,10 +16,10 @@ const ping_command = {
         const button = interaction.message.components[1];
 
         const settingData = [
-            { key: 'welcomeCh', model: 'welcomeM', embedIndex: 0, enableButtonModel: 'welcome' },
-            { key: 'leaveCh', model: 'welcomeM', embedIndex: 1, enableButtonModel: 'leave' },
-            { key: 'reportCh', model: 'basic', embedIndex: 0, enableButtonModel: null },
-            { key: 'logCh', model: 'log', embedIndex: 0, enableButtonModel: 'log' },
+            { key: 'welcomeCh', model: 'welcomeM', embedIndex: 0, enableButtonModel: 'welcome', message: 'welcomeMessage' },
+            { key: 'leaveCh', model: 'welcomeM', embedIndex: 1, enableButtonModel: 'leave', message: 'leaveMessage' },
+            { key: 'reportCh', model: 'basic', embedIndex: 0, enableButtonModel: null, message: null },
+            { key: 'logCh', model: 'log', embedIndex: 0, enableButtonModel: 'log', message: null },
         ];
         const setting = settingData.find(v => v.key == customId);
         const channel = interaction.guild.channels.cache.find(v => v.name == value);
@@ -48,8 +49,12 @@ const ping_command = {
             return interaction.update({ embeds: [embed, error] });
         }
 
-        if (setting.enableButtonModel) {
+        if (setting.enableButtonModel && !setting.message) {
             embed.fields[setting.embedIndex].value = settingSwitcher('STATUS_CH', Model.get(setting.enableButtonModel), channel.id);
+            button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(false);
+        }
+        else if (setting.enableButtonModel && setting.message) {
+            embed.fields[setting.embedIndex].value = settingSwitcher('STATUS_CH', Model.get(setting.enableButtonModel), channel.id) + `\n\n${discord.formatEmoji('966596708458983484')} ${welcomeM_preview(Model.get(setting.message))}`;
             button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(false);
         }
         else { embed.fields[setting.embedIndex].value = `${channel}`; }

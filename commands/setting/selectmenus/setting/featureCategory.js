@@ -23,22 +23,22 @@ const ping_command = {
                 const { welcome, welcomeCh, welcomeMessage, leave, leaveCh, leaveMessage } = welcomeMModel.get();
 
                 const embed = new discord.EmbedBuilder()
-                    .setTitle('🛠 設定 - 入退室ログ機能')
+                    .setTitle('🛠 設定 - 入退室メッセージ機能')
                     .setDescription([
                         '```サーバーに新しくメンバーが参加した時や退室した時に通知してくれる機能です。',
                         'メッセージを設定することで参加した人に見てもらいたい情報を送信できます。```\n**【現在の設定】**',
                     ].join(''))
                     .setColor('Green')
                     .setFields(
-                        { name: '入室ログ', value: settingSwitcher('STATUS_CH', welcome, welcomeCh) + `\n\n${discord.formatEmoji('966596708458983484')} ${welcomeM_preview(welcomeMessage)}`, inline: true },
-                        { name: '退室ログ', value: settingSwitcher('STATUS_CH', leave, leaveCh) + `\n\n${discord.formatEmoji('966596708458983484')} ${welcomeM_preview(leaveMessage)}`, inline: true },
+                        { name: '入室メッセージ', value: settingSwitcher('STATUS_CH', welcome, welcomeCh) + `\n\n${discord.formatEmoji('966596708458983484')} ${welcomeM_preview(welcomeMessage)}`, inline: true },
+                        { name: '退室メッセージ', value: settingSwitcher('STATUS_CH', leave, leaveCh) + `\n\n${discord.formatEmoji('966596708458983484')} ${welcomeM_preview(leaveMessage)}`, inline: true },
                     );
                 const select = new discord.ActionRowBuilder().addComponents([
                     new discord.SelectMenuBuilder()
                         .setCustomId('setting-settingCategory')
                         .setOptions(
-                            { label: '入室ログ', value: 'category-welcomeMessage-welcome', description: 'メンバー参加時にメッセージを送信', emoji: '966588719635267624', default: true },
-                            { label: '退室ログ', value: 'category-welcomeMessage-leave', description: 'メンバー退室時にメッセージを送信', emoji: '966588719635267624' },
+                            { label: '入室メッセージ', value: 'category-welcomeMessage-welcome', description: 'メンバー参加時にメッセージを送信', emoji: '966588719635267624', default: true },
+                            { label: '退室メッセージ', value: 'category-welcomeMessage-leave', description: 'メンバー退室時にメッセージを送信', emoji: '966588719635267624' },
                         ),
                 ]);
                 button.addComponents(

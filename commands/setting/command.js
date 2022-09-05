@@ -29,7 +29,7 @@ const ping_command = {
             new discord.SelectMenuBuilder()
                 .setCustomId('setting-featureCategory')
                 .addOptions([
-                    { label: '入退室ログ機能', value: 'setting-welcomeMessage', emoji: '🚪' },
+                    { label: '入退室メッセージ機能', value: 'setting-welcomeMessage', emoji: '🚪' },
                     { label: '通報機能', value: 'setting-report', emoji: '📢' },
                     { label: 'リンク展開機能', value: 'setting-messageExpansion', emoji: '🔗' },
                     { label: 'ログ機能', value: 'setting-log', emoji: '📑' },

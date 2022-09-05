@@ -1,4 +1,5 @@
 const discord = require('discord.js');
+const { welcomeM } = require('../../modules/messageSyntax');
 
 /**
  * @callback MemberAddCallback
@@ -8,42 +9,36 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {MemberAddCallback} */
     async execute(member) {
-        const config = await member.db_config.findOne({ where: { serverId: member.guild.id } });
-        const { welcome, welcomeCh, welcomeMessage, log, logCh } = config.get();
+        const welcomeMModel = await require('../../models/welcomeM')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
+        const logModel = await require('../../models/log')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
+        const { welcome, welcomeCh, welcomeMessage } = welcomeMModel.get();
+        const { log, logCh } = logModel.get();
         if (!welcome) return;
 
-        const logConfig = await member.db_logConfig.findOne({ where: { serverId: member.guild.id } });
-
-        // eslint-disable-next-line no-empty-function
         const channel = await member.guild.channels.fetch(welcomeCh).catch(() => {});
-        if (!channel) {
-            member.db_config.update({ welcome: false, welcomeCh: null }, { where: { serverId: member.guild.id } });
 
-            if (log && logConfig.get('botLog')) {
-                const embed = new discord.EmbedBuilder()
-                    .setTitle('入退室ログ')
-                    .setDescription([
-                        '❌**入室ログ**がリセットされました。',
-                        '**理由:** 送信先のチャンネルが削除されている',
-                    ].join('\n'))
-                    .setColor('516ff5');
+        try {
+            if (!channel) throw '**入室メッセージ**がリセットされました。\n**理由:** 送信先のチャンネルが削除されている';
+            if (!channel.permissionsFor(member.guild.members.me).has(discord.PermissionFlagsBits.ViewChannel | discord.PermissionFlagsBits.SendMessages | discord.PermissionFlagsBits.EmbedLinks)) throw '**入室ログ**がリセットされました。\n**理由:** 権限が不足している (`チャンネルを見る` `メッセージを送信` `埋め込みリンク`)';
+        } catch (err) {
+            welcomeMModel.update({ welcome: false, welcomeCh: null }).catch(() => {});
 
-                // eslint-disable-next-line no-empty-function
+            if (log) {
                 const logChannel = await member.guild.channels.fetch(logCh).catch(() => {});
-                if (!logChannel) return member.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: member.guild.id } });
+                if (!logChannel) return logModel.update({ log: false, logCh: null }).catch(() => {});
 
-                return logChannel.send({ embeds: [embed] }).catch(() => member.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: member.guild.id } }));
+                const error = new discord.EmbedBuilder()
+                    .setTitle('入退室ログ')
+                    .setDescription(`❌ ${err}`)
+                    .setColor('516ff5');
+                logChannel.send({ embeds: [error] }).catch(() => logModel.update({ log: false, logCh: null }).catch(() => {}));
             }
+            return;
         }
 
         const welcomeEmbed_member = new discord.EmbedBuilder()
             .setTitle('WELCOME!')
-            .setDescription([
-                `${member} **(${member.user.tag})** さん`,
-                `**${member.guild.name}** へようこそ!`,
-                `${welcomeMessage}\n`,
-                `現在のメンバー数: **${member.guild.memberCount}人**`,
-            ].join('\n'))
+            .setDescription(welcomeM(welcomeMessage, member))
             .setThumbnail(member.user.displayAvatarURL())
             .setColor('Green');
 
@@ -51,24 +46,19 @@ module.exports = {
             .setAuthor({ name: `${member.user.username} が連携されました`, iconURL: member.user.displayAvatarURL() })
             .setColor('Blue');
 
-        channel.send({ embeds: [member.user.bot ? welcomeEmbed_bot : welcomeEmbed_member] })
-            .catch(async () => {
-                member.db_config.update({ welcome: false, welcomeCh: null }, { where: { serverId: member.guild.id } });
+        channel.send({ embeds: [member.user.bot ? welcomeEmbed_bot : welcomeEmbed_member ] })
+            .catch(async (err) => {
+                welcomeMModel.update({ welcome: false, welcomeCh: null }).catch(() => {});
 
-                if (log && logConfig.get('botLog')) {
-                    const embed = new discord.EmbedBuilder()
-                        .setTitle('入退室ログ')
-                        .setDescription([
-                            '❌**入室ログ**がリセットされました。',
-                            '**理由:** 必要な権限(`チャンネルを見る` `メッセージを送信` `埋め込みリンク`)が与えられていない',
-                        ].join('\n'))
-                        .setColor('516ff5');
-
-                    // eslint-disable-next-line no-empty-function
+                if (log) {
                     const logChannel = await member.guild.channels.fetch(logCh).catch(() => {});
-                    if (!logChannel) return member.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: member.guild.id } });
+                    if (!logChannel) return logModel.update({ log: false, logCh: null }).catch(() => {});
 
-                    return logChannel.send({ embeds: [embed] }).catch(() => member.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: member.guild.id } }));
+                    const error = new discord.EmbedBuilder()
+                        .setTitle('入退室ログ')
+                        .setDescription(`❌ **入室メッセージ**がリセットされました。\n**理由:** 不明なエラー\`\`\`${err}\`\`\``)
+                        .setColor('516ff5');
+                    logChannel.send({ embeds: [error] }).catch(() => logModel.update({ log: false, logCh: null }).catch(() => {}));
                 }
             });
     },

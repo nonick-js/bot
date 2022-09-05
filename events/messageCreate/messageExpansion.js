@@ -10,8 +10,8 @@ const expansion = require('../../modules/expansion');
 module.exports = {
     /** @type {messageCreateCallback} */
     async execute(message) {
-        const config = await message.db_config.findOne({ where: { serverId: message.guild.id } });
-        if (!config.get('linkOpen')) return;
+        const Model = await require('../../models/basic')(message.sequelize).findOne({ where: { serverId: message.guild.id } });
+        if (!Model.get('messageExpansion')) return;
 
         expansion.urlExpansion(message);
     },

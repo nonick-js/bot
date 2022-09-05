@@ -3,14 +3,14 @@ const discord = require('discord.js');
 
 /**
  * @callback guildBanRemoveCallback
- * @param {discord.GuildMember} member
+ * @param {discord.GuildBan} ban
  */
 
 module.exports = {
     /** @type {guildBanRemoveCallback} */
-    async execute(member) {
-        if (member.user == member.client.user) return;
+    async execute(ban) {
+        if (ban.user == ban.client.user) return;
 
-        require('./banRemoveLog').execute(member);
+        require('./banRemoveLog').execute(ban);
     },
 };

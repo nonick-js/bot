@@ -10,7 +10,7 @@ const ping_command = {
     exec: async (interaction) => {
         const modal = new discord.ModalBuilder()
             .setCustomId('setting-Channel')
-            .setTitle('入室ログ')
+            .setTitle('入室メッセージ')
             .addComponents(
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
