@@ -13,14 +13,18 @@ const ping_command = {
         const message = interaction.targetMessage;
         /** @type {discord.Embed} */
         const panelEmbed = message.embeds[0];
-        /** @type {discord.SelectMenuComponent} */
-        const components = message.components[0].components[0];
+        /** @type {discord.ActionRow} */
+        const components = message.components[0];
 
-        if (message.author !== interaction.client.user || components?.type !== discord.ComponentType.SelectMenu || components?.customId !== 'reactionRole') {
-            const embed = new discord.EmbedBuilder()
-                .setDescription('❌ それはリアクションロールパネルではありません!')
+        try {
+            if (message.author !== interaction.client.user) throw '';
+            if (components?.components[0]?.type !== discord.ComponentType.SelectMenu) throw '';
+            if (components?.components[0]?.customId !== 'reactionRole') throw '';
+        } catch {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ それはリアクションロールパネルではありません！')
                 .setColor('Red');
-            return interaction.reply({ embeds: [embed], ephemeral: true });
+            return interaction.reply({ embeds: [error], ephemeral: true });
         }
 
         const embed = new discord.EmbedBuilder()
@@ -32,25 +36,25 @@ const ping_command = {
 
         const button = new discord.ActionRowBuilder().addComponents(
             new discord.ButtonBuilder()
-                .setCustomId('reactionRole-EditEmbed')
+                .setCustomId('reactionRole-editEmbed')
                 .setEmoji('988439788132646954')
                 .setStyle(discord.ButtonStyle.Secondary),
             new discord.ButtonBuilder()
-                .setCustomId('reactionRole-AddRole')
+                .setCustomId('reactionRole-addRole')
                 .setLabel('追加')
                 .setEmoji('988439798324817930')
                 .setStyle(discord.ButtonStyle.Secondary),
             new discord.ButtonBuilder()
-                .setCustomId('reactionRole-DeleteRole')
+                .setCustomId('reactionRole-deleteRole')
                 .setLabel('削除')
                 .setEmoji('989089271275204608')
                 .setStyle(discord.ButtonStyle.Secondary),
             new discord.ButtonBuilder()
-                .setCustomId('reactionRole-Mode')
+                .setCustomId('reactionRole-changeMode')
                 .setLabel('単一選択')
                 .setStyle(discord.ButtonStyle.Success),
             new discord.ButtonBuilder()
-                .setCustomId('reactionRole-OverWrite')
+                .setCustomId('reactionRole-editPanel')
                 .setLabel('編集')
                 .setStyle(discord.ButtonStyle.Primary),
         );

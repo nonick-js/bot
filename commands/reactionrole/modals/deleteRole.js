@@ -4,35 +4,31 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ModalRegister} */
 const ping_command = {
     data: {
-        customId: 'deleteRole',
+        customId: 'reactionRole-deleteRole',
         type: 'MODAL',
     },
     exec: async (interaction) => {
-        /** @type {discord.Embed} */
-        const embed = interaction.message.embeds[0];
         /** @type {discord.ActionRow} */
         const select = interaction.message.components[0];
         /** @type {discord.ActionRow} */
         const button = interaction.message.components[1];
 
         const role = interaction.guild.roles.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput'));
-        if (!role) {
-            const error = new discord.EmbedBuilder()
-                .setDescription('❌ その名前のロールは存在しません!')
-                .setColor('Red');
-            return interaction.update({ embeds: [embed, error] });
-        }
-
         const replace = select.components[0].options.findIndex((v) => v.value == role.id);
-        if (replace == -1) {
-            const error = new discord.EmbedBuilder()
-                .setDescription('❌ このロールはパネルに追加されていません!')
+
+        try {
+            if (!role) throw 'その名前のロールは存在しません！';
+            if (replace == 1) throw 'このロールはパネルに追加されていません！';
+        } catch (err) {
+            const errorEmbed = new discord.EmbedBuilder()
+                .setDescription(`❌ ${err}`)
                 .setColor('Red');
-            return interaction.update({ embeds: [embed, error] });
+            return interaction.update({ embeds: [interaction.message.embeds[0], errorEmbed] });
         }
 
-        select.components[0] = discord.SelectMenuBuilder.from(select.components[0]).setOptions(select.components[0].options.splice(replace - 1, 1));
-        interaction.update({ embeds: [embed], components: [select, button] });
+        select.components[0] = discord.SelectMenuBuilder.from(select.components[0])
+            .setOptions(select.components[0].options.splice(replace - 1, 1));
+        interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, button] });
     },
 };
 module.exports = [ ping_command ];

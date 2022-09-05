@@ -4,14 +4,15 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'reactionRole-EditEmbed',
+        customId: 'reactionRole-editEmbed',
         type: 'BUTTON',
     },
     exec: async (interaction) => {
         /** @type {discord.Embed} */
         const embed = interaction.message.embeds[0];
+
         const modal = new discord.ModalBuilder()
-            .setCustomId('reactionRole-update')
+            .setCustomId('reactionRole-editEmbedModal')
             .setTitle('埋め込みの編集')
             .addComponents(
                 new discord.ActionRowBuilder().addComponents(
@@ -29,16 +30,6 @@ const ping_command = {
                         .setMaxLength(4000)
                         .setValue(embed?.description || '')
                         .setStyle(discord.TextInputStyle.Paragraph)
-                        .setRequired(false),
-                ),
-                new discord.ActionRowBuilder().addComponents(
-                    new discord.TextInputBuilder()
-                        .setCustomId('image')
-                        .setLabel('画像URL')
-                        .setPlaceholder('http(s):// から始まるURLのみ対応しています。')
-                        .setMaxLength(1000)
-                        .setValue(embed?.image?.url || '')
-                        .setStyle(discord.TextInputStyle.Short)
                         .setRequired(false),
                 ),
             );

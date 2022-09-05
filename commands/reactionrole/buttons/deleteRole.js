@@ -4,28 +4,26 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'reactionRole-DeleteRole',
+        customId: 'reactionRole-deleteRole',
         type: 'BUTTON',
     },
     exec: async (interaction) => {
-        /** @type {discord.EmbedBuilder} */
-        const embed = interaction.message.embeds[0];
-        /** @type {discord.ActionRowComponent} */
+        /** @type {discord.ActionRow} */
         const select = interaction.message.components[0];
-        /** @type {discord.ActionRowComponent} */
+        /** @type {discord.ActionRow} */
         const button = interaction.message.components[1];
 
         if (select.components[0].type == discord.ComponentType.Button) {
             const error = new discord.EmbedBuilder()
                 .setDescription('❌ まだ1つもロールを追加していません!')
                 .setColor('Red');
-            return interaction.update({ embeds: [embed, error] });
+            return interaction.update({ embeds: [interaction.message.embeds[0], error] });
         }
 
-        if (select.components[0].options.length == 1) return interaction.update({ embeds: [embed], components: [button] });
+        if (select.components[0].options.length == 1) return interaction.update({ embeds: [interaction.message.embeds[0]], components: [button] });
 
         const modal = new discord.ModalBuilder()
-            .setCustomId('deleteRole')
+            .setCustomId('reactionRole-deleteRoleModal')
             .setTitle('ロール削除')
             .addComponents(
                 new discord.ActionRowBuilder().addComponents(
@@ -36,6 +34,7 @@ const ping_command = {
                         .setStyle(discord.TextInputStyle.Short),
                 ),
             );
+
         interaction.showModal(modal);
     },
 };
