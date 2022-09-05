@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
-const { settingSwicher } = require('../../../../modules/swicher');
+const { settingSwitcher } = require('../../../../modules/switcher');
 
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
@@ -9,20 +9,26 @@ const ping_command = {
         type: 'BUTTON',
     },
     exec: async (interaction) => {
-        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
-        const verification = config.get('verification');
+        const Model = await require('../../../../models/verification')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
+        const verification = Model.get('verification');
 
-        /** @type {discord.EmbedBuilder} */
         const embed = interaction.message.embeds[0];
-        /** @type {discord.ActionRow} */
         const button = interaction.message.components[1];
 
-        interaction.db_config.update({ verification: verification ? false : true }, { where: { serverId: interaction.guildId } });
+        let err = false;
+        Model.update({ verification: verification ? false : true }).catch(() => err = true);
 
-        embed.fields[0].value = settingSwicher('STATUS_ENABLE', !verification);
+        if (err) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ 設定を正しく保存できませんでした。時間を置いて再試行してください。')
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, error] });
+        }
+
+        embed.fields[0].value = settingSwitcher('STATUS_ENABLE', !verification);
         button.components[1] = discord.ButtonBuilder.from(button.components[1])
-            .setLabel(settingSwicher('BUTTON_LABEL', !verification))
-            .setStyle(settingSwicher('BUTTON_STYLE', !verification));
+            .setLabel(settingSwitcher('BUTTON_LABEL', !verification))
+            .setStyle(settingSwitcher('BUTTON_STYLE', !verification));
 
         interaction.update({ embeds: [interaction.message.embeds[0]], components: [interaction.message.components[0], button] });
     },

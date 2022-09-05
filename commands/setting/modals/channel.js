@@ -1,12 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
-// 埋め込みのFieldのname, 対応したON/OFFの設定, 対応したON/OFFのボタンの場所
-const fieldIndex = {
-    welcomeCh: [0, 'welcome', 1],
-    reportCh: [0, 'report', 1],
-    leaveCh: [1, 'leave', 1],
-    logCh: [0, 'log', 1],
-};
+const { settingSwitcher } = require('../../../modules/switcher');
 
 /** @type {import('@djs-tools/interactions').ModalRegister} */
 const ping_command = {
@@ -15,49 +9,52 @@ const ping_command = {
         type: 'MODAL',
     },
     exec: async (interaction) => {
-        const setting = interaction.components[0].components[0].customId;
-        const textInput = interaction.components[0].components[0].value;
-        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
-
-        /** @type {discord.EmbedBuilder} */
+        const customId = interaction.components[0].components[0].customId;
+        const value = interaction.components[0].components[0].value;
         const embed = interaction.message.embeds[0];
-        /** @type {discord.ActionRow} */
-        const select = interaction.message.components[0];
-        /** @type {discord.ActionRow} */
         const button = interaction.message.components[1];
 
-        const ch = interaction.guild.channels.cache.find(v => v.name == textInput);
-        if (!ch) {
+        const settingData = [
+            { key: 'welcomeCh', model: 'welcomeM', embedIndex: 0, enableButtonModel: 'welcome' },
+            { key: 'leaveCh', model: 'welcomeM', embedIndex: 1, enableButtonModel: 'leave' },
+            { key: 'reportCh', model: 'basic', embedIndex: 0, enableButtonModel: null },
+            { key: 'logCh', model: 'log', embedIndex: 0, enableButtonModel: 'log' },
+        ];
+        const setting = settingData.find(v => v.key == customId);
+        const channel = interaction.guild.channels.cache.find(v => v.name == value);
+
+        try {
+            if (!channel) throw 'その名前のチャンネルはありません！\n(もしチャンネルが存在している場合は、チャンネルに何かしらの変更を加えてください)';
+            if (!channel.permissionsFor(interaction.guild.members.me).has(discord.PermissionFlagsBits.ViewChannel | discord.PermissionFlagsBits.SendMessages | discord.PermissionFlagsBits.EmbedLinks)) { throw [
+                `${channel}での**${interaction.client.user.username}**の権限が不足しています！`,
+                '**必要な権限**: `チャンネルを見る` `メッセージを送信` `埋め込みリンク`',
+            ].join('\n');}
+        } catch (err) {
             const error = new discord.EmbedBuilder()
-                .setDescription(`⚠️ \`${textInput}\`という名前のチャンネルは存在しません！`)
+                .setDescription(`⚠️ ${err}`)
                 .setColor('Red');
             return interaction.update({ embeds: [embed, error] });
         }
 
-        const successEmbed = new discord.EmbedBuilder()
-            .setDescription(`✅ **${embed.fields[fieldIndex[setting][0]].name}**がここに送信されます！`)
-            .setColor('Green');
+        const Model = await require(`../../../models/${setting.model}`)(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
 
-        ch.send({ embeds: [successEmbed] })
-            .then(() => {
-                interaction.db_config.update({ [setting]: ch.id }, { where: { serverId: interaction.guildId } });
-                if (setting == 'reportCh') {
-                    embed.fields[fieldIndex[setting][0]].value = `<#${ch.id}>`;
-                } else {
-                    if (config.get(fieldIndex[setting][1])) embed.fields[fieldIndex[setting][0]].value = `${discord.formatEmoji('758380151544217670')} 有効 (<#${ch.id}>)`;
-                    button.components[fieldIndex[setting][2]] = discord.ButtonBuilder.from(button.components[fieldIndex[setting][2]]).setDisabled(false);
-                }
+        let err = false;
+        Model.update({ [setting.key]: channel.id }).catch(() => err = true);
 
-                interaction.update({ embeds: [embed], components: [select, button] });
-            })
-            .catch((e) => {
-                console.log(e);
-                const MissingPermission = new discord.EmbedBuilder()
-                    .setDescription('⚠️ **BOTの権限が不足しています！**\n必要な権限: `チャンネルを見る` `メッセージを送信` `埋め込みリンク`')
-                    .setColor('Red');
+        if (err) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ 設定を正しく保存できませんでした。時間を置いて再試行してください。')
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, error] });
+        }
 
-                interaction.update({ embeds: [embed, MissingPermission] });
-            });
+        if (setting.enableButtonModel) {
+            embed.fields[setting.embedIndex].value = settingSwitcher('STATUS_CH', Model.get(setting.enableButtonModel), channel.id);
+            button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(false);
+        }
+        else { embed.fields[setting.embedIndex].value = `${channel}`; }
+
+        interaction.update({ embeds: [embed], components: [interaction.message.components[0], button] });
     },
 };
 module.exports = [ ping_command ];

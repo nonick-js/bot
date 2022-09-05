@@ -4,7 +4,7 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'setting-welcomeMessage',
+        customId: 'setting-leaveMessage',
         type: 'BUTTON',
     },
     exec: async (interaction) => {
@@ -12,15 +12,15 @@ const ping_command = {
 
         const modal = new discord.ModalBuilder()
             .setCustomId('setting-Message')
-            .setTitle('入室ログメッセージ')
+            .setTitle('退室ログメッセージ')
             .addComponents(
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
-                        .setCustomId('welcomeMessage')
-                        .setLabel('入室ログに表示するメッセージ')
+                        .setCustomId('leaveMessage')
+                        .setLabel('退室ログに表示するメッセージ')
                         .setPlaceholder('各テキストのマークアップは公式ドキュメントを参照してください')
                         .setMaxLength(3000)
-                        .setValue(Model.get('welcomeMessage'))
+                        .setValue(Model.get('leaveMessage'))
                         .setStyle(discord.TextInputStyle.Paragraph)
                         .setRequired(true),
                 ),

@@ -1,9 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
-// 埋め込みのFieldのname, 対応したON/OFFの設定, 対応したON/OFFのボタンの場所
-const fieldIndex = {
-    reportRole: [1, 'reportRoleMention', 1],
-};
+const { settingSwitcher } = require('../../../modules/switcher');
 
 /** @type {import('@djs-tools/interactions').ModalRegister} */
 const ping_command = {
@@ -12,31 +9,40 @@ const ping_command = {
         type: 'MODAL',
     },
     exec: async (interaction) => {
-        const setting = interaction.components[0].components[0].customId;
-        const textInput = interaction.components[0].components[0].value;
-
-        /** @type {discord.EmbedBuilder} */
+        const customId = interaction.components[0].components[0].customId;
+        const value = interaction.components[0].components[0].value;
         const embed = interaction.message.embeds[0];
-        /** @type {discord.ActionRow} */
-        const select = interaction.message.components[0];
-        /** @type {discord.ActionRow} */
         const button = interaction.message.components[1];
 
-        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
+        const settingData = [
+            { key: 'reportRole', model: 'basic', embedIndex: 1, enableButtonModel: 'reportRoleMention' },
+        ];
+        const setting = settingData.find(v => v.key == customId);
+        const role = interaction.guild.roles.cache.find(v => v.name == value);
 
-        const role = interaction.guild.roles.cache.find(v => v.name == textInput);
         if (!role) {
-            const roleNotFound = new discord.MessageEmbed()
-                .setDescription(`⚠️ ${discord.inlineCode(textInput)}という名前のロールは存在しません！`)
-                .setColor('RED');
+            const roleNotFound = new discord.EmbedBuilder()
+                .setDescription(`⚠️ ${discord.inlineCode(value)}という名前のロールは存在しません！`)
+                .setColor('Red');
             return interaction.update({ embeds: [embed, roleNotFound] });
         }
 
-        interaction.db_config.update({ [setting]: role.id }, { where: { serverId: interaction.guildId } });
-        if (config.get(fieldIndex[setting][1])) embed.fields[fieldIndex[setting][0]].value = `${discord.formatEmoji('758380151544217670')} 有効 (<@&${role.id}>)`;
-        button.components[fieldIndex[setting][2]] = discord.ButtonBuilder.from(button.components[fieldIndex[setting][2]]).setDisabled(false);
+        const Model = await require(`../../../models/${setting.model}`)(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
 
-        interaction.update({ embeds: [embed], components: [select, button] });
+        let err = false;
+        Model.update({ [setting.key]: role.id }).catch(() => err = true);
+
+        if (err) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ 設定を正しく保存できませんでした。時間を置いて再試行してください。')
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, error] });
+        }
+
+        embed.fields[setting.embedIndex].value = settingSwitcher('STATUS_ROLE', Model.get(setting.enableButtonModel), role.id);
+        button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(false);
+
+        interaction.update({ embeds: [embed], components: [interaction.message.components[0], button] });
     },
 };
 module.exports = [ ping_command ];

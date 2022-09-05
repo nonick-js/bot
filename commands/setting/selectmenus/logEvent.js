@@ -9,23 +9,36 @@ const ping_command = {
     },
     exec: async (interaction) => {
         const embed = interaction.message.embeds[0];
-        const select = interaction.message.components[1];
+        const button = interaction.message.components[2];
 
-        const selectData = interaction.values;
+        const values = interaction.values;
         const categoryData = [
-            { name: 'botLog', value: `\`${interaction.client.user.username}\`` },
-            { name: 'timeout', value: '`タイムアウト`' },
-            { name: 'kick', value: '`Kick`' },
-            { name: 'ban', value: '`BAN`' },
+            { key: 'bot', value: `${interaction.client.user.username}` },
+            { key: 'timeout', value: 'タイムアウト' },
+            { key: 'kick', value: 'Kick' },
+            { key: 'ban', value: 'BAN' },
         ];
 
-        selectData.forEach(v => interaction.db_logConfig.update({ [v]: true }, { where: { serverId: interaction.guild.id } }));
-        categoryData.filter(v => !selectData.includes(v.name)).forEach(v => interaction.db_logConfig.update({ [v.name]: false }, { where: { serverId: interaction.guild.id } }));
+        const enableCategory = categoryData.filter(v => values.includes(v.key));
+        const disableCategory = categoryData.filter(v => !values.includes(v.key));
 
-        const status = categoryData.filter(v => selectData.includes(v.name)).map(v => v['value']);
-        embed.fields[1].value = status.join(' ') || 'なし';
+        const Model = await require('../../../models/log')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
+        let err = false;
 
-        interaction.update({ embeds: [embed], components: [interaction.message.components[0], select, interaction.message.components[2]] });
+        Model.update(Object.assign({}, ...enableCategory.map(v => ({ [v.key]: true })))).catch(() => err = true);
+        Model.update(Object.assign({}, ...disableCategory.map(v => ({ [v.key]: false })))).catch(() => err = true);
+
+        if (err) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ 一部設定を正しく保存できませんでした。時間を置いて再試行してください。')
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, error] });
+        }
+
+        embed.fields[1].value = enableCategory.map(v => `\`${v.value}\``).join(' ') || 'なし';
+        button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(embed.fields[1].value == 'なし' ? true : false);
+
+        interaction.update({ embeds: [embed], components: [interaction.message.components[0], interaction.message.components[1], interaction.message.components[2]] });
     },
 };
 module.exports = [ ping_command ];

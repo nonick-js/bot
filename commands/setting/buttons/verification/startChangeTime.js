@@ -4,7 +4,7 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'settin-startChangeTime',
+        customId: 'setting-startChangeTime',
         type: 'BUTTON',
     },
     exec: async (interaction) => {

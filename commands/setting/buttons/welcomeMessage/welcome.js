@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
-const { settingSwicher } = require('../../../../modules/swicher');
+const { settingSwitcher } = require('../../../../modules/switcher');
+const { welcomeM_preview } = require('../../../../modules/messageSyntax');
 
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
@@ -9,25 +10,29 @@ const ping_command = {
         type: 'BUTTON',
     },
     exec: async (interaction) => {
-        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guild.id } });
-        const { welcome, welcomeCh } = config.get();
+        const Model = await require('../../../../models/welcomeM')(interaction.sequelize).findOne({ where: { serverId: interaction.guild.id } });
+        const { welcome, welcomeCh, welcomeMessage } = Model.get();
 
-        /** @type {discord.Embed} */
         const embed = interaction.message.embeds[0];
-        /** @type {discord.ActionRow} */
-        const select = interaction.message.components[0];
-        /** @type {discord.ActionRow} */
         const button = interaction.message.components[1];
 
-        interaction.db_config.update({ welcome: welcome ? false : true }, { where: { serverId: interaction.guildId } });
+        let err = false;
+        Model.update({ welcome: welcome ? false : true }).catch(() => err = true);
 
-        embed.fields[0].value = settingSwicher('STATUS_CH', !welcome, welcomeCh);
+        if (err) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ 設定を正しく保存できませんでした。時間を置いて再試行してください。')
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, error] });
+        }
+
+        embed.fields[0].value = settingSwitcher('STATUS_CH', !welcome, welcomeCh) + `\n\n${discord.formatEmoji('966596708458983484')} ${welcomeM_preview(welcomeMessage)}`;
 
         button.components[1] = discord.ButtonBuilder.from(button.components[1])
-            .setLabel(settingSwicher('BUTTON_LABEL', !welcome))
-            .setStyle(settingSwicher('BUTTON_STYLE', !welcome)),
+            .setLabel(settingSwitcher('BUTTON_LABEL', !welcome))
+            .setStyle(settingSwitcher('BUTTON_STYLE', !welcome)),
 
-        interaction.update({ embeds: [embed], components: [select, button] });
+        interaction.update({ embeds: [embed], components: [interaction.message.components[0], button] });
     },
 };
 module.exports = [ ping_command ];
