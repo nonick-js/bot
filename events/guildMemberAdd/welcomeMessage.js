@@ -12,7 +12,7 @@ module.exports = {
         const welcomeMModel = await require('../../models/welcomeM')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
         const logModel = await require('../../models/log')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
         const { welcome, welcomeCh, welcomeMessage } = welcomeMModel.get();
-        const { log, logCh } = logModel.get();
+        const { log, logCh, bot } = logModel.get();
         if (!welcome) return;
 
         const channel = await member.guild.channels.fetch(welcomeCh).catch(() => {});
@@ -23,7 +23,7 @@ module.exports = {
         } catch (err) {
             welcomeMModel.update({ welcome: false, welcomeCh: null }).catch(() => {});
 
-            if (log) {
+            if (log && bot) {
                 const logChannel = await member.guild.channels.fetch(logCh).catch(() => {});
                 if (!logChannel) return logModel.update({ log: false, logCh: null }).catch(() => {});
 
@@ -50,7 +50,7 @@ module.exports = {
             .catch(async (err) => {
                 welcomeMModel.update({ welcome: false, welcomeCh: null }).catch(() => {});
 
-                if (log) {
+                if (log && bot) {
                     const logChannel = await member.guild.channels.fetch(logCh).catch(() => {});
                     if (!logChannel) return logModel.update({ log: false, logCh: null }).catch(() => {});
 
@@ -58,6 +58,7 @@ module.exports = {
                         .setTitle('入退室ログ')
                         .setDescription(`❌ **入室メッセージ**がリセットされました。\n**理由:** 不明なエラー\`\`\`${err}\`\`\``)
                         .setColor('516ff5');
+
                     logChannel.send({ embeds: [error] }).catch(() => logModel.update({ log: false, logCh: null }).catch(() => {}));
                 }
             });

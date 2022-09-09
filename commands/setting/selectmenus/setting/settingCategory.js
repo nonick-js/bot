@@ -160,7 +160,7 @@ const ping_command = {
 
         if (interaction.values[0].startsWith('category-verification')) {
             const verificationModel = await require('../../../../models/verification')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
-            const { verification, newLevel } = verificationModel.get();
+            const { verification, newLevel, startChangeTime, endChangeTime } = verificationModel.get();
 
             switch (interaction.values[0]) {
                 case 'category-verification-general': {
@@ -169,7 +169,7 @@ const ping_command = {
                             .setCustomId('setting-verification')
                             .setLabel(settingSwitcher('BUTTON_LABEL', verification))
                             .setStyle(settingSwitcher('BUTTON_STYLE', verification))
-                            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel)),
+                            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime && endChangeTime)),
                         new discord.ButtonBuilder()
                             .setCustomId('setting-startChangeTime')
                             .setLabel('開始時刻')
@@ -195,6 +195,13 @@ const ping_command = {
                                 { label: '高', description: 'このサーバーのメンバーとなってから10分以上経過したメンバーのみ', value: '3', emoji: '🟠', default: newLevel == 3 },
                                 { label: '最高', description: '電話認証がされているアカウントのみ', value: '4', emoji: '🔴', default: newLevel == 4 },
                             ),
+                    );
+                    button.addComponents(
+                        new discord.ButtonBuilder()
+                            .setCustomId('sync-oldLevel')
+                            .setLabel('元に戻す認証レベルを現在のレベルに設定')
+                            .setStyle(discord.ButtonStyle.Danger)
+                            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel)),
                     );
 
                     interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, logEventSelect, button] });

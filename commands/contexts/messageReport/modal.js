@@ -8,9 +8,10 @@ const ping_command = {
         type: 'MODAL',
     },
     exec: async (interaction) => {
-        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
-        const logConfig = await interaction.db_logConfig.findOne({ where: { serverId: interaction.guild.id } });
-        const { reportRole, reportRoleMention, reportCh, log, logCh } = config.get();
+        const basicModel = await require('../../../models/basic')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
+        const logModel = await require('../../../models/log')(interaction.sequelize).findOne({ where: { serverId: interaction.guild.id } });
+        const { reportRole, reportRoleMention, reportCh } = basicModel.get();
+        const { log, logCh, bot } = logModel.get();
 
         const customId = interaction.components[0].components[0].customId;
         const value = interaction.components[0].components[0].value;
@@ -40,32 +41,29 @@ const ping_command = {
 			if (reportedMessageFile.height && reportedMessageFile.width) embed.setImage(reportedMessageFile.url);
 		}
 
-        const Ch = await interaction.guild.channels.fetch(reportCh).catch(() => {});
+        const channel = await interaction.guild.channels.fetch(reportCh).catch(() => {});
         const content = reportRoleMention ? `<@&${reportRole}>` : ' ';
 
-        if (!Ch) {
-            interaction.db_config.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
+        try {
+            if (!channel) throw '**通報機能**がリセットされました。\n**理由:** 送信先のチャンネルが削除されている';
+            if (!channel.permissionsFor(interaction.guild.members.me).has(discord.PermissionFlagsBits.ViewChannel | discord.PermissionFlagsBits.SendMessages | discord.PermissionFlagsBits.EmbedLinks)) throw '**入室ログ**がリセットされました。\n**理由:** 権限が不足している (`チャンネルを見る` `メッセージを送信` `埋め込みリンク`)';
+        } catch (err) {
+            basicModel.update({ reportCh: null }).catch(() => {});
 
-            const errorEmbed = new discord.EmbedBuilder()
-                .setDescription('❌ 通報の送信中に問題が発生しました。')
-                .setColor('Red');
-            interaction.reply({ embeds: [errorEmbed], ephemeral: true });
-
-            if (log && logConfig.get('botLog')) {
+            if (log && bot) {
                 const logChannel = await interaction.guild.channels.fetch(logCh).catch(() => {});
-                if (!logChannel) return interaction.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: interaction.guild.id } });
+                if (!logChannel) return logModel.update({ log: false, logCh: null }).catch(() => {});
 
                 const error = new discord.EmbedBuilder()
-                    .setTitle('通報機能')
-                    .setDescription('❌**通報機能の送信先**がリセットされました。\n**理由:** 送信先のチャンネルが削除されている')
+                    .setTitle('入退室ログ')
+                    .setDescription(`❌ ${err}`)
                     .setColor('516ff5');
-
-                logChannel.send({ embeds: [error] }).catch(() => interaction.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: interaction.guild.id } }));
+                logChannel.send({ embeds: [error] }).catch(() => logModel.update({ log: false, logCh: null }).catch(() => {}));
             }
             return;
         }
 
-        Ch.send({ content: content, embeds: [embed] })
+        channel.send({ content: content, embeds: [embed] })
             .then(() => {
                 const successEmbed = new discord.EmbedBuilder()
                     .setDescription('✅ **報告ありがとうございます！** 通報をサーバー運営に送信しました！')
@@ -73,23 +71,23 @@ const ping_command = {
                 interaction.reply({ embeds: [successEmbed], ephemeral: true });
             })
             .catch(async () => {
-                interaction.db_config.update({ reportCh: null }, { where: { serverId: interaction.guildId } });
+                basicModel.update({ reportCh: null });
 
                 const errorEmbed = new discord.EmbedBuilder()
                     .setDescription('❌ 通報の送信中に問題が発生しました。')
                     .setColor('Red');
                 interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 
-                if (log && logConfig.get('botLog')) {
+                if (log && bot) {
                     const logChannel = await interaction.guild.channels.fetch(logCh).catch(() => {});
-                    if (!logChannel) return interaction.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: interaction.guild.id } });
+                    if (!logChannel) return logModel.update({ log: false, logCh: null });
 
                     const error = new discord.EmbedBuilder()
                         .setTitle('通報機能')
                         .setDescription('❌**通報機能の送信先**がリセットされました。\n**理由:** 必要な権限(`チャンネルを見る` `メッセージを送信` `埋め込みリンク`)が与えられていない')
                         .setColor('516ff5');
 
-                    logChannel.send({ embeds: [error] }).catch(() => interaction.db_logConfig.update({ log: false, logCh: null }, { where: { serverId: interaction.guild.id } }));
+                    logChannel.send({ embeds: [error] }).catch(() => logModel.update({ log: false, logCh: null }));
                 }
             });
     },

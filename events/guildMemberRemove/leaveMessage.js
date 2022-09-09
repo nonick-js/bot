@@ -12,7 +12,7 @@ module.exports = {
         const welcomeMModel = await require('../../models/welcomeM')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
         const logModel = await require('../../models/log')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
         const { leave, leaveCh, leaveMessage } = welcomeMModel.get();
-        const { log, logCh } = logModel.get();
+        const { log, logCh, bot } = logModel.get();
         if (!leave) return;
 
         const channel = await member.guild.channels.fetch(leaveCh).catch(() => {});
@@ -23,7 +23,7 @@ module.exports = {
         } catch (err) {
             welcomeMModel.update({ leave: false, leaveCh: null }).catch(() => {});
 
-            if (log) {
+            if (log && bot) {
                 const logChannel = await member.guild.channels.fetch(logCh).catch(() => {});
                 if (!logChannel) return logModel.update({ log: false, logCh: null }).catch(() => {});
 
@@ -46,7 +46,7 @@ module.exports = {
             .catch(async (err) => {
                 welcomeMModel.update({ leave: false, leaveCh: null }).catch(() => {});
 
-                if (log) {
+                if (log && bot) {
                     const logChannel = await member.guild.channels.fetch(logCh).catch(() => {});
                     if (!logChannel) return logModel.update({ log: false, logCh: null }).catch(() => {});
 

@@ -12,6 +12,7 @@ const ping_command = {
 
         const embed = interaction.message.embeds[0];
         const select = interaction.message.components[1];
+        const button = interaction.message.components[2];
 
         const levelStatus = [
             '🟢 **低** `メール認証がされているアカウントのみ`',
@@ -39,8 +40,10 @@ const ping_command = {
         }
 
         embed.fields[2].value = levelStatus[Number(interaction.values) - 1];
+        button.components[1] = discord.ButtonBuilder.from(button.components[1])
+            .setDisabled(false);
 
-        interaction.update({ embeds: [embed], components: [interaction.message.components[0], select, interaction.message.components[2]] });
+        interaction.update({ embeds: [embed], components: [interaction.message.components[0], select, button ] });
     },
 };
 module.exports = [ ping_command ];

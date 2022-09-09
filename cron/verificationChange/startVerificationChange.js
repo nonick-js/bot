@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 const verificationStatusData = [
+    { key: 0, name: '設定しない', description: '無制限' },
     { key: 1, name: '低', description: 'メール認証がされているアカウントのみ' },
     { key: 2, name: '中', description: 'Discordに登録してから5分以上経過したアカウントのみ' },
     { key: 3, name: '高', description: 'このサーバーのメンバーとなってから10分以上経過したメンバーのみ' },
@@ -16,26 +17,24 @@ const verificationStatusData = [
 module.exports = {
     /** @type {verificationChangeCallback} */
     async execute(client, hour) {
-        const lists = await client.db_verificationConfig.findAll({ attributes: ['serverId', 'newLevel', 'startChangeTime'] });
-        const taskLists = lists.filter(v => v.startChangeTime == hour);
+        const lists = await require('../../models/verification')(client.sequelize).findAll({ attributes: ['serverId', 'verification', 'newLevel', 'startChangeTime'] });
+        const taskLists = lists.filter(v => v.startChangeTime == hour && v.verification);
         if (!taskLists) return;
 
         taskLists.forEach(async (v) => {
-            const config = await client.db_config.findOne({ where: { serverId: v.serverId } });
-            const logConfig = await client.db_logConfig.findOne({ where: { serverId: v.serverId } });
-            const { verification, log, logCh } = config.get();
-            if (!verification) return;
+            const logModel = await require('../../models/log')(client.sequelize).findOne({ where: { serverId: v.serverId } });
+            const verificationModel = await require('../../models/verification')(client.sequelize).findOne({ where: { serverId: v.serverId } });
+            const { log, logCh } = logModel.get();
 
             const guild = await client.guilds.fetch(v.serverId).catch(() => {});
             if (!guild) return;
 
-            client.db_verificationConfig.update({ oldLevel: guild.verificationLevel }, { where: { serverId: guild.id } });
             guild.setVerificationLevel(v.newLevel)
                 .then(async () => {
-                    if (!log || !logConfig.get('botLog')) return;
+                    if (!log || !logModel.get('bot')) return;
 
                     const channel = await guild.channels.fetch(logCh).catch(() => {});
-                    if (!channel) return client.db_config.update({ log: false, logCh: null }, { where: { serverId: guild.id } });
+                    if (!channel) return logModel.update({ log: false, logCh: null });
                     const verificationStatus = verificationStatusData.find(w => w.key == v.newLevel);
 
                     const errorEmbed = new discord.EmbedBuilder()
@@ -46,24 +45,24 @@ module.exports = {
                         ].join('\n'))
                         .setColor('Green');
 
-                    channel.send({ embeds: [errorEmbed] }).catch(() => client.db_config.update({ log: false, logCh: null }, { where: { serverId: guild.id } }));
+                    channel.send({ embeds: [errorEmbed] }).catch(() => logModel.update({ log: false, logCh: null }));
                 })
                 .catch(async () => {
-                    client.db_config.update({ verification: false }, { where: { serverId: guild.id } });
-                    if (!log || !logConfig.get('botLog')) return;
+                    verificationModel.update({ verification: false });
+                    if (!log || !logModel.get('bot')) return;
 
                     const channel = await guild.channels.fetch(logCh).catch(() => {});
-                    if (!channel) return client.db_config.update({ log: false, logCh: null }, { where: { serverId: guild.id } });
+                    if (!channel) return logModel.update({ log: false, logCh: null });
 
                     const errorEmbed = new discord.EmbedBuilder()
                         .setTitle('認証レベル自動変更機能')
                         .setDescription([
                             '❌ 機能がOFFになりました。',
-                            '**理由:** BOTに`サーバーを管理`権限が付与されていない',
+                            '**理由:** BOTに`サーバーを管理`権限が付与されていない・コミュニティサーバーに認証レベル`無制限`を設定しようとしている',
                         ].join('\n'))
                         .setColor('516ff5');
 
-                    channel.send({ embeds: [errorEmbed] }).catch(() => client.db_config.update({ log: false, logCh: null }, { where: { serverId: guild.id } }));
+                    channel.send({ embeds: [errorEmbed] }).catch(() => logModel.update({ log: false, logCh: null }));
                 });
         });
     },

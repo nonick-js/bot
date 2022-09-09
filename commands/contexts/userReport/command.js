@@ -9,8 +9,8 @@ const ping_command = {
         type: 'USER',
     },
     exec: async (interaction) => {
-        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guildId } });
-        const { reportCh } = config.get();
+        const Model = await require('../../../models/basic')(interaction.sequelize).findOne({ where: { serverId: interaction.guild.id } });
+        const { reportCh } = Model.get();
 
 		const user = interaction.targetUser;
 		const member = interaction.targetMember;

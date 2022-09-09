@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
+const { settingSwitcher } = require('../../../modules/switcher');
 
 /** @type {import('@djs-tools/interactions').ModalRegister} */
 const ping_command = {
@@ -10,6 +11,7 @@ const ping_command = {
     exec: async (interaction) => {
         const customId = interaction.components[0].components[0].customId;
         const value = interaction.components[0].components[0].value;
+        const button = interaction.message.components[1];
 
         const oldModel = await require('../../../models/verification')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
 
@@ -36,12 +38,15 @@ const ping_command = {
         }
 
         const newModel = await require('../../../models/verification')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
-        const { startChangeTime, endChangeTime } = newModel.get();
+        const { startChangeTime, endChangeTime, newLevel } = newModel.get();
 
         const time = (startChangeTime !== null ? `**${startChangeTime}:00**` : '未設定') + ' ～ ' + (endChangeTime !== null ? `**${endChangeTime}:00**` : '未設定');
         interaction.message.embeds[0].fields[1].value = time;
 
-        interaction.update({ embeds: [interaction.message.embeds[0]] });
+        button.components[1] = discord.ButtonBuilder.from(button.components[1])
+            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime && endChangeTime));
+
+        interaction.update({ embeds: [interaction.message.embeds[0]], components: [interaction.message.components[1]] });
     },
 };
 module.exports = [ ping_command ];

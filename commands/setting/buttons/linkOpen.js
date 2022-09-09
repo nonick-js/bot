@@ -10,14 +10,14 @@ const ping_command = {
     },
     exec: async (interaction) => {
         const Model = await require('../../../models/basic')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
-        const linkOpen = Model.get('linkOpen');
+        const messageExpansion = Model.get('messageExpansion');
 
         const embed = interaction.message.embeds[0];
         const select = interaction.message.components[0];
         const button = interaction.message.components[1];
 
         let err = false;
-        Model.update({ linkOpen: linkOpen ? false : true }).catch(() => err = true);
+        Model.update({ messageExpansion: messageExpansion ? false : true }).catch(() => err = true);
 
         if (err) {
             const error = new discord.EmbedBuilder()
@@ -26,10 +26,10 @@ const ping_command = {
             return interaction.update({ embeds: [embed, error] });
         }
 
-        embed.fields[0].value = settingSwitcher('STATUS_ENABLE', !linkOpen);
+        embed.fields[0].value = settingSwitcher('STATUS_ENABLE', !messageExpansion);
         button.components[1] = discord.ButtonBuilder.from(button.components[1])
-            .setLabel(settingSwitcher('BUTTON_LABEL', !linkOpen))
-            .setStyle(settingSwitcher('BUTTON_STYLE', !linkOpen));
+            .setLabel(settingSwitcher('BUTTON_LABEL', !messageExpansion))
+            .setStyle(settingSwitcher('BUTTON_STYLE', !messageExpansion));
 
         interaction.update({ embeds: [embed], components: [select, button] });
     },

@@ -48,14 +48,17 @@ client.once('ready', () => {
     else interactions.registerCommands();
 
     cron.schedule('0 * * * *', date => {
+        client.sequelize = sequelize;
         require('./cron/verificationChange/index').execute(client, date);
-    }, { timezone: 'Japan', scheduled: false });
+    }, { timezone: 'Japan' });
 });
 
 client.on('guildCreate', () => client.user.setActivity({ name: `/info | ${client.guilds.cache.size} サーバー`, type: discord.ActivityType.Competing }));
 client.on('guildDelete', guild => {
     client.user.setActivity({ name: `/info | ${client.guilds.cache.size} サーバー`, type: discord.ActivityType.Competing });
     basicModel.destroy({ where: { serverId: guild.id } });
+    logModel.destroy({ where: { serverId: guild.id } });
+    verificationModel.destroy({ where: { serverId: guild.id } });
 });
 
 client.on('guildBanAdd', ban => moduleExecute(require('./events/guildBanAdd/index'), ban));

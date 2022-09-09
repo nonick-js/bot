@@ -16,12 +16,12 @@ const flagEmoji = {
 /** @type {import('@djs-tools/interactions').UserRegister} */
 const ping_command = {
     data: {
-        name: 'ユーザーの情報',
+        name: 'メンバーの情報',
         dmPermission: false,
         type: 'USER',
     },
     exec: async (interaction) => {
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
 
         const createTime = discord.time(Math.floor(interaction.targetUser.createdTimestamp / 1000), 'D');
         const flags = interaction.targetUser.flags.toArray().filter(v => flagEmoji[v]).map(v => discord.formatEmoji(flagEmoji[v])).join('');
@@ -39,12 +39,13 @@ const ping_command = {
                     { name: 'アカウント作成日', value: createTime, inline: true },
                     { name: 'フラッグ', value: flags || 'なし', inline: true },
                 );
-            return interaction.followUp({ embeds: [embed], ephemeral: true });
+            return interaction.followUp({ embeds: [embed] });
         }
 
         const nickName = interaction.targetMember.nickname;
         const joinTime = discord.time(Math.floor(interaction.targetMember.joinedTimestamp / 1000), 'D');
         const boostTime = Math.floor(interaction.targetMember.premiumSinceTimestamp / 1000);
+        const timeoutDisableTIme = Math.floor(interaction.targetMember.communicationDisabledUntilTimestamp / 1000);
         const roles = interaction.targetMember.roles.cache.filter(role => role.name !== '@everyone').sort((before, after) => {
             if (before.position > after.position) return -1;
             return 1;
@@ -65,12 +66,17 @@ const ping_command = {
                 { name: 'ロール', value: roles || 'なし' },
             );
 
-        if (boostTime) embed.addFields({ name: `${discord.formatEmoji('896591259886567434')} SERVER BOOST`, value: `ブーストを開始した日: ${discord.time(boostTime, 'D')} (${discord.time(boostTime, 'R')})` });
+        if (boostTime) {
+            embed.addFields({ name: `${discord.formatEmoji('896591259886567434')} SERVER BOOST`, value: `ブーストを開始した日: ${discord.time(boostTime, 'D')} (${discord.time(boostTime, 'R')})` });
+        }
+        if (timeoutDisableTIme && interaction.member.permissions.has(discord.PermissionFlagsBits.ModerateMembers)) {
+            embed.addFields({ name: `${discord.formatEmoji('1016740772340576306')} タイムアウトが解除される時間`, value: `${discord.time(timeoutDisableTIme, 'D')} (${discord.time(timeoutDisableTIme, 'R')})` });
+        }
         if (interaction.targetUser.displayAvatarURL() !== interaction.targetMember.displayAvatarURL()) {
             embed.setAuthor({ name: interaction.targetUser.tag, iconURL: interaction.targetUser.displayAvatarURL() });
             embed.setThumbnail(interaction.targetMember.displayAvatarURL());
         }
-        interaction.followUp({ embeds: [embed], ephemeral: true });
+        interaction.followUp({ embeds: [embed] });
     },
 };
 module.exports = [ ping_command ];

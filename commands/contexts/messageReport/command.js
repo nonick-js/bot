@@ -9,8 +9,8 @@ const ping_command = {
         type: 'MESSAGE',
     },
     exec: async (interaction) => {
-        const config = await interaction.db_config.findOne({ where: { serverId: interaction.guild.id } });
-        const { reportCh } = config.get();
+        const Model = await require('../../../models/basic')(interaction.sequelize).findOne({ where: { serverId: interaction.guild.id } });
+        const { reportCh } = Model.get();
 
 		const user = interaction.targetMessage.author;
 		const member = interaction.guild.members.fetch(user.id).catch(() => {});

@@ -189,7 +189,7 @@ const ping_command = {
                 const embed = new discord.EmbedBuilder()
                     .setTitle('🛠 設定 - 認証レベル自動変更機能')
                     .setDescription([
-                        `${discord.formatEmoji('966588719614275584')} この機能の実行ログは\`ログ機能\`の\`${interaction.client.user.username}\`イベントに含まれています。`,
+                        `${discord.formatEmoji('966588719614275584')} 実行ログは\`ログ機能\`の\`${interaction.client.user.username}\`イベントに含まれています`,
                         '```サーバーの認証レベルを指定した時間まで自動で変更する機能です。',
                         '運営が浮上できない時間帯に設定することで荒らし対策をすることができます。```\n**【現在の設定】**',
                     ].join(''))
@@ -212,7 +212,7 @@ const ping_command = {
                         .setCustomId('setting-verification')
                         .setLabel(settingSwitcher('BUTTON_LABEL', verification))
                         .setStyle(settingSwitcher('BUTTON_STYLE', verification))
-                        .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel)),
+                        .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime && endChangeTime)),
                     new discord.ButtonBuilder()
                         .setCustomId('setting-startChangeTime')
                         .setLabel('開始時刻')
