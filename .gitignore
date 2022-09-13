@@ -1,6 +1,5 @@
-node_modules
-sql
-test
-updateMemo.txt
 .env
 config.json
+node_modules
+models/.config.sqlite
+updateMemo.txt

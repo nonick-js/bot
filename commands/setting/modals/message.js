@@ -16,7 +16,7 @@ const ping_command = {
 
         const settingData = [
             { key: 'welcomeMessage', model: 'welcomeM', embedIndex: 0, enable: 'welcome', channel: 'welcomeCh', syntax: 'welcomeM_preview' },
-            { key: 'leaveMessage', model: 'welcomeM', embedIndex: 0, enable: 'welcome', channel: 'welcomeCh', syntax: 'welcomeM_preview' },
+            { key: 'leaveMessage', model: 'welcomeM', embedIndex: 1, enable: 'welcome', channel: 'welcomeCh', syntax: 'welcomeM_preview' },
         ];
         const setting = settingData.find(v => v.key == customId);
 

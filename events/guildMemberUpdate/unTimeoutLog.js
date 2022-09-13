@@ -10,7 +10,7 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {guildMemberUpdateCallback} */
     async execute(oldMember, newMember) {
-        if (!oldMember?.communicationDisabledUntil || newMember?.communicationDisabledUntil || oldMember?.communicationDisabledUntil == newMember?.communicationDisabledUntil) return;
+        if (!oldMember?.communicationDisabledUntil || newMember?.communicationDisabledUntilTimestamp || oldMember?.communicationDisabledUntilTimestamp == newMember?.communicationDisabledUntil) return;
 
         const logModel = await require('../../models/log')(oldMember.sequelize).findOne({ where: { serverId: newMember.guild.id } });
         if (!logModel.get('log') || !logModel.get('timeout')) return;

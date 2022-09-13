@@ -55,7 +55,7 @@ const ping_command = {
                 if (!logChannel) return logModel.update({ log: false, logCh: null }).catch(() => {});
 
                 const error = new discord.EmbedBuilder()
-                    .setTitle('入退室ログ')
+                    .setTitle('通報機能')
                     .setDescription(`❌ ${err}`)
                     .setColor('516ff5');
                 logChannel.send({ embeds: [error] }).catch(() => logModel.update({ log: false, logCh: null }).catch(() => {}));

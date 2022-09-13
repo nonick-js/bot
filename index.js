@@ -2,7 +2,7 @@ const discord = require('discord.js');
 const cron = require('node-cron');
 const Sequelize = require('sequelize');
 const { DiscordInteractions } = require('@djs-tools/interactions');
-const { guildId, guildCommand, blackList, beta } = require('./config.json');
+const { guildId, guildCommand, blackList } = require('./config.json');
 require('dotenv').config();
 
 const client = new discord.Client({
@@ -17,7 +17,7 @@ const client = new discord.Client({
     partials: [ discord.Partials.Channel, discord.Partials.GuildMember, discord.Partials.Message, discord.Partials.User ],
 });
 
-const sequelize = new Sequelize({ host: 'localhost', dialect: 'sqlite', logging: false, storage: 'models/.config.sqlite' });
+const sequelize = new Sequelize({ host: 'localhost', dialect: 'sqlite', logging: false, storage: 'models/.config.sqlite', retry: { max: 10 } });
 const basicModel = require('./models/basic')(sequelize);
 const welcomeMModel = require('./models/welcomeM')(sequelize);
 const logModel = require('./models/log')(sequelize);
@@ -69,16 +69,9 @@ client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(require('
 client.on('messageCreate', message => moduleExecute(require('./events/messageCreate/index'), message));
 
 client.on('interactionCreate', async interaction => {
-    try {
-        if (blackList.guilds.includes(interaction.guild.id) || blackList.users.includes(interaction.guild.ownerId)) throw `このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`;
-        if (beta.betaMode) {
-            const guild = await client.guilds.fetch(beta.guildId);
-            const role = await guild.roles.fetch(beta.roleId, { force: true });
-            if (!role.members.find(v => v.id == interaction.guild.ownerId)) throw 'このBOTを使用するにはサーバーの管理者が**Beta Tester**に参加する必要があります。';
-        }
-    } catch (err) {
+    if (blackList.guilds.includes(interaction.guild.id) || blackList.users.includes(interaction.guild.ownerId)) {
         const embed = new discord.EmbedBuilder()
-            .setDescription(`🚫 ${err}`)
+            .setDescription(`このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`)
             .setColor('Red');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
@@ -94,11 +87,6 @@ client.on('interactionCreate', async interaction => {
 
 async function moduleExecute(module, param, param2) {
     if (blackList.guilds.includes(param.guild?.id) || blackList.users.includes(param.guild?.ownerId)) return;
-    if (beta.betaMode) {
-        const guild = await client.guilds.fetch(beta.guildId);
-        const role = await guild.roles.fetch(beta.roleId);
-        if (!role.members.find(v => v.user.id == guild.ownerId)) return;
-    }
 
     await basicModel.findOrCreate({ where: { serverId: param.guild.id } });
     await welcomeMModel.findOrCreate({ where: { serverId: param.guild.id } });

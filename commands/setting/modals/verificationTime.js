@@ -46,7 +46,7 @@ const ping_command = {
         button.components[1] = discord.ButtonBuilder.from(button.components[1])
             .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime && endChangeTime));
 
-        interaction.update({ embeds: [interaction.message.embeds[0]], components: [interaction.message.components[1]] });
+        interaction.update({ embeds: [interaction.message.embeds[0]], components: [interaction.message.components[0], interaction.message.components[1]] });
     },
 };
 module.exports = [ ping_command ];

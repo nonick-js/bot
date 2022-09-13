@@ -16,7 +16,7 @@ const flagEmoji = {
 /** @type {import('@djs-tools/interactions').UserRegister} */
 const ping_command = {
     data: {
-        name: 'メンバーの情報',
+        name: 'このユーザーの情報',
         dmPermission: false,
         type: 'USER',
     },

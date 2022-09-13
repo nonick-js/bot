@@ -28,7 +28,7 @@ const ping_command = {
 			if (timeoutMember.user == interaction.user) throw '自分自身にコマンドを使用しています...';
 			if (timeoutMember.user == interaction.client.user) throw `**${interaction.client.user.username}**自身をタイムアウトすることはできません！`;
 			if (!timeoutMember.manageable) throw `そのユーザーは**${interaction.client.user.username}**より権限が強いためタイムアウトできません！`;
-			if (interaction.user.id !== interaction.guild.ownerId && interaction.member.roles.highest.comparePositionTo(timeoutMember.roles.highest) >= 0) throw '最上位の役職が自分より上か同じメンバーをタイムアウトさせることはできません！';
+			if (interaction.user.id !== interaction.guild.ownerId && Math.sign(interaction.member.roles.highest.comparePositionTo(timeoutMember.roles.highest)) !== 1) throw '最上位の役職が自分より上か同じメンバーをタイムアウトさせることはできません！';
 			if (timeoutDuration > date.toMS('28d')) throw '28日を超えるタイムアウトはできません！';
 		} catch (err) {
 			const errorEmbed = new discord.EmbedBuilder()

@@ -4,35 +4,37 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'reactionRole-editEmbed',
+        customId: 'embed-image',
         type: 'BUTTON',
     },
     exec: async (interaction) => {
         const embed = interaction.message.embeds[0];
 
         const modal = new discord.ModalBuilder()
-            .setCustomId('reactionRole-editEmbedModal')
-            .setTitle('埋め込みの編集')
+            .setCustomId('embed-imageModal')
+            .setTitle('画像')
             .addComponents(
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
-                        .setCustomId('title')
-                        .setLabel('タイトル')
+                        .setCustomId('thumbnail')
+                        .setLabel('サムネイルに設定するURL')
                         .setMaxLength(1000)
-                        .setValue(embed.title)
-                        .setStyle(discord.TextInputStyle.Short),
+                        .setValue(embed.thumbnail?.url || '')
+                        .setStyle(discord.TextInputStyle.Short)
+                        .setRequired(false),
                 ),
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
-                        .setCustomId('description')
-                        .setLabel('説明')
-                        .setMaxLength(4000)
-                        .setValue(embed?.description || '')
-                        .setStyle(discord.TextInputStyle.Paragraph)
+                        .setCustomId('image')
+                        .setLabel('埋め込み内画像に設定するURL')
+                        .setMaxLength(1000)
+                        .setValue(embed.image?.url || '')
+                        .setStyle(discord.TextInputStyle.Short)
                         .setRequired(false),
                 ),
             );
-        interaction.showModal(modal);
+
+    interaction.showModal(modal);
     },
 };
 module.exports = [ ping_command ];

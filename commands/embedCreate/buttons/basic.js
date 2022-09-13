@@ -4,15 +4,15 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'reactionRole-editEmbed',
+        customId: 'embed-basic',
         type: 'BUTTON',
     },
     exec: async (interaction) => {
         const embed = interaction.message.embeds[0];
 
         const modal = new discord.ModalBuilder()
-            .setCustomId('reactionRole-editEmbedModal')
-            .setTitle('埋め込みの編集')
+            .setCustomId('embed-basicModal')
+            .setTitle('タイトル・説明・色')
             .addComponents(
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
@@ -27,12 +27,22 @@ const ping_command = {
                         .setCustomId('description')
                         .setLabel('説明')
                         .setMaxLength(4000)
-                        .setValue(embed?.description || '')
+                        .setValue(embed.description || '')
                         .setStyle(discord.TextInputStyle.Paragraph)
                         .setRequired(false),
                 ),
+                new discord.ActionRowBuilder().addComponents(
+                    new discord.TextInputBuilder()
+                        .setCustomId('color')
+                        .setLabel('カラーコード')
+                        .setMaxLength(7)
+                        .setPlaceholder('#ffffff')
+                        .setValue(embed.hexColor || '')
+                        .setStyle(discord.TextInputStyle.Short),
+                ),
             );
-        interaction.showModal(modal);
+
+    interaction.showModal(modal);
     },
 };
 module.exports = [ ping_command ];

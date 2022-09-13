@@ -112,8 +112,7 @@ const ping_command = {
                 const select = new discord.ActionRowBuilder().addComponents([
                     new discord.SelectMenuBuilder()
                         .setCustomId('setting-settingCategory')
-                        .setOptions({ label: '全般設定', value: 'category-messageExpansion-general', emoji: '966588719635267624', default:true })
-                        .setDisabled(true),
+                        .setOptions({ label: '全般設定', value: 'category-messageExpansion-general', emoji: '966588719635267624', default:true }),
                 ]);
                 button.addComponents([
                     new discord.ButtonBuilder()

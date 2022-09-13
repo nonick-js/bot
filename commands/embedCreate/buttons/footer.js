@@ -4,34 +4,36 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
     data: {
-        customId: 'reactionRole-editEmbed',
+        customId: 'embed-footer',
         type: 'BUTTON',
     },
     exec: async (interaction) => {
         const embed = interaction.message.embeds[0];
 
         const modal = new discord.ModalBuilder()
-            .setCustomId('reactionRole-editEmbedModal')
-            .setTitle('埋め込みの編集')
-            .addComponents(
+            .setCustomId('embed-footerModal')
+            .setTitle('フッター')
+            .setComponents(
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
-                        .setCustomId('title')
-                        .setLabel('タイトル')
-                        .setMaxLength(1000)
-                        .setValue(embed.title)
-                        .setStyle(discord.TextInputStyle.Short),
+                        .setCustomId('text')
+                        .setLabel('テキスト')
+                        .setMaxLength(2048)
+                        .setValue(embed.footer?.text || '')
+                        .setStyle(discord.TextInputStyle.Short)
+                        .setRequired(false),
                 ),
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
-                        .setCustomId('description')
-                        .setLabel('説明')
-                        .setMaxLength(4000)
-                        .setValue(embed?.description || '')
-                        .setStyle(discord.TextInputStyle.Paragraph)
+                        .setCustomId('iconURL')
+                        .setLabel('アイコンのURL')
+                        .setMaxLength(1000)
+                        .setValue(embed.footer?.iconURL || '')
+                        .setStyle(discord.TextInputStyle.Short)
                         .setRequired(false),
                 ),
             );
+
         interaction.showModal(modal);
     },
 };

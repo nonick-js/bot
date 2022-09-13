@@ -10,6 +10,6 @@ module.exports = {
     async execute(message) {
         if (message.author.bot || message.author == message.client.user || !message.guild) return;
 
-        // require('./messageExpansion').execute(message);
+        require('./messageExpansion').execute(message);
     },
 };
