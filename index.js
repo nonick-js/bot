@@ -43,7 +43,7 @@ client.once('ready', () => {
         'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
 
-    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} サーバー`, type: discord.ActivityType.Competing });
+    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
     if (guildCommand) interactions.registerCommands(guildId);
     else interactions.registerCommands();
 
@@ -53,9 +53,9 @@ client.once('ready', () => {
     }, { timezone: 'Japan' });
 });
 
-client.on('guildCreate', () => client.user.setActivity({ name: `/info | ${client.guilds.cache.size} サーバー`, type: discord.ActivityType.Competing }));
+client.on('guildCreate', () => client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
 client.on('guildDelete', guild => {
-    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} サーバー`, type: discord.ActivityType.Competing });
+    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
     basicModel.destroy({ where: { serverId: guild.id } });
     logModel.destroy({ where: { serverId: guild.id } });
     verificationModel.destroy({ where: { serverId: guild.id } });
