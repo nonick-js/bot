@@ -24,6 +24,15 @@ const ping_command = {
                 ),
                 new discord.ActionRowBuilder().addComponents(
                     new discord.TextInputBuilder()
+                        .setCustomId('url')
+                        .setLabel('タイトルURL')
+                        .setMaxLength(1000)
+                        .setValue(embed.url || '')
+                        .setStyle(discord.TextInputStyle.Short)
+                        .setRequired(false),
+                ),
+                new discord.ActionRowBuilder().addComponents(
+                    new discord.TextInputBuilder()
                         .setCustomId('description')
                         .setLabel('説明')
                         .setMaxLength(4000)

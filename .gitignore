@@ -1,5 +1,6 @@
+node_modules
+temp/embeds_exports/
 .env
 config.json
-node_modules
 models/.config.sqlite
 updateMemo.txt
