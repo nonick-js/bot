@@ -24,9 +24,10 @@
     "discord-api-types": "^0.37.5",
     "discord.js": "^14.3.0",
     "dotenv": "^16.0.2",
+    "mysql2": "^2.3.3",
     "node-cron": "^3.0.2",
     "octokit": "^2.0.7",
-    "sequelize": "^6.21.4",
+    "sequelize": "^6.21.6",
     "sqlite3": "^5.0.11"
   },
   "devDependencies": {
