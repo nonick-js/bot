@@ -28,26 +28,6 @@
 				"guilds",
 				"users"
 			]
-		},
-		"beta": {
-			"type": "object",
-			"properties": {
-				"betaMode": {
-					"type": "boolean",
-          "description": "この機能について理解してないないならfalseをおすすめする"
-				},
-				"guildId": {
-					"type": "string"
-				},
-				"roleId": {
-					"type": "string"
-				}
-			},
-			"required": [
-				"betaMode",
-				"guildId",
-				"roleId"
-			]
 		}
 	},
 	"required": [
@@ -55,7 +35,6 @@
 		"clientId",
 		"guildCommand",
 		"guildId",
-		"blackList",
-		"beta"
+		"blackList"
 	]
 }
