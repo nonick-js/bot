@@ -73,31 +73,35 @@ client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(require('
 client.on('messageCreate', message => moduleExecute(require('./events/messageCreate/index'), message));
 
 client.on('interactionCreate', async interaction => {
-    if (blackList.guilds.includes(interaction.guild.id) || blackList.users.includes(interaction.guild.ownerId)) {
+    if (blackList.guilds.includes(interaction.guild?.id) || blackList.users.includes(interaction.guild?.ownerId)) {
         const embed = new discord.EmbedBuilder()
             .setDescription(`このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`)
             .setColor('Red');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
-    await basicModel.findOrCreate({ where: { serverId: interaction.guildId } });
-    await welcomeMModel.findOrCreate({ where: { serverId: interaction.guildId } });
-    await logModel.findOrCreate({ where: { serverId: interaction.guildId } });
-    await verificationModel.findOrCreate({ where: { serverId: interaction.guildId } });
+    if (interaction.guild) {
+        await basicModel.findOrCreate({ where: { serverId: interaction.guildId } });
+        await welcomeMModel.findOrCreate({ where: { serverId: interaction.guildId } });
+        await logModel.findOrCreate({ where: { serverId: interaction.guildId } });
+        await verificationModel.findOrCreate({ where: { serverId: interaction.guildId } });
+        interaction.sequelize = sequelize;
+    }
 
-    interaction.sequelize = sequelize;
     interactions.run(interaction).catch(console.warn);
 });
 
 async function moduleExecute(module, param, param2) {
     if (blackList.guilds.includes(param.guild?.id) || blackList.users.includes(param.guild?.ownerId)) return;
 
-    await basicModel.findOrCreate({ where: { serverId: param.guild.id } });
-    await welcomeMModel.findOrCreate({ where: { serverId: param.guild.id } });
-    await logModel.findOrCreate({ where: { serverId: param.guild.id } });
-    await verificationModel.findOrCreate({ where: { serverId: param.guild.id } });
+    if (param.guild) {
+        await basicModel.findOrCreate({ where: { serverId: param.guild.id } });
+        await welcomeMModel.findOrCreate({ where: { serverId: param.guild.id } });
+        await logModel.findOrCreate({ where: { serverId: param.guild.id } });
+        await verificationModel.findOrCreate({ where: { serverId: param.guild.id } });
+        param.sequelize = sequelize;
+    }
 
-    param.sequelize = sequelize;
     module.execute(param, param2);
 }
 

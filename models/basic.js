@@ -4,7 +4,7 @@ module.exports = function(sequelize) {
     class basic extends Model {}
 
     return basic.init({
-        serverId: { type: DataTypes.STRING },
+        serverId: { type: DataTypes.STRING, allowNull: false },
         reportCh: { type: DataTypes.STRING, defaultValue: null },
         reportRoleMention: { type: DataTypes.BOOLEAN, defaultValue: false },
         reportRole: { type: DataTypes.STRING, defaultValue: null },
