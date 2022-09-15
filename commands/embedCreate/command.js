@@ -111,7 +111,7 @@ const ping_command = {
                         .setDescription([
                             '❌ ファイルからの埋め込みの生成に失敗しました！',
                             '[埋め込みの制限](https://discordjs.guide/popular-topics/embeds.html#embed-limits)に違反していないか、有効なファイルであるか確認してください。',
-                        ])
+                        ].join('\n'))
                         .setColor('Red');
                     interaction.followUp({ embeds: [error], ephemeral: true });
                 });

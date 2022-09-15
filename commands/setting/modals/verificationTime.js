@@ -28,7 +28,7 @@ const ping_command = {
         }
 
         let err = false;
-        oldModel.update({ [customId]: Number(value) }).catch(() => err = true);
+        await oldModel.update({ [customId]: Number(value) }).catch(() => err = true);
 
         if (err) {
             const error = new discord.EmbedBuilder()
