@@ -79,7 +79,6 @@ client.on('interactionCreate', async interaction => {
             .setColor('Red');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
-
     if (interaction.guild) {
         await basicModel.findOrCreate({ where: { serverId: interaction.guildId } });
         await welcomeMModel.findOrCreate({ where: { serverId: interaction.guildId } });
@@ -87,13 +86,11 @@ client.on('interactionCreate', async interaction => {
         await verificationModel.findOrCreate({ where: { serverId: interaction.guildId } });
         interaction.sequelize = sequelize;
     }
-
     interactions.run(interaction).catch(console.warn);
 });
 
 async function moduleExecute(module, param, param2) {
     if (blackList.guilds.includes(param.guild?.id) || blackList.users.includes(param.guild?.ownerId)) return;
-
     if (param.guild) {
         await basicModel.findOrCreate({ where: { serverId: param.guild.id } });
         await welcomeMModel.findOrCreate({ where: { serverId: param.guild.id } });
@@ -101,7 +98,6 @@ async function moduleExecute(module, param, param2) {
         await verificationModel.findOrCreate({ where: { serverId: param.guild.id } });
         param.sequelize = sequelize;
     }
-
     module.execute(param, param2);
 }
 

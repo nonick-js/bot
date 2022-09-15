@@ -31,6 +31,24 @@ const ping_command = {
                         .setStyle(discord.TextInputStyle.Paragraph)
                         .setRequired(false),
                 ),
+                new discord.ActionRowBuilder().addComponents(
+                    new discord.TextInputBuilder()
+                        .setCustomId('color')
+                        .setLabel('カラーコード')
+                        .setMaxLength(7)
+                        .setPlaceholder('#ffffff')
+                        .setValue(embed.hexColor || '')
+                        .setStyle(discord.TextInputStyle.Short),
+                ),
+                new discord.ActionRowBuilder().addComponents(
+                    new discord.TextInputBuilder()
+                        .setCustomId('image')
+                        .setLabel('埋め込み内画像に設定するURL')
+                        .setMaxLength(1000)
+                        .setValue(embed.image?.url || '')
+                        .setStyle(discord.TextInputStyle.Short)
+                        .setRequired(false),
+                ),
             );
         interaction.showModal(modal);
     },

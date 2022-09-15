@@ -10,7 +10,7 @@ const ping_command = {
         options: [
             { name: 'create', description: '埋め込みを作成します', options: [
                 { name: 'title', description: 'タイトル', type: discord.ApplicationCommandOptionType.String, max_length: 1000, required: true },
-                { name: 'description', description: '説明 (2スペースで改行)', type: discord.ApplicationCommandOptionType.String, max_length: 4000, required: false },
+                { name: 'description', description: '説明 (半角2スペースで改行)', type: discord.ApplicationCommandOptionType.String, max_length: 4000, required: false },
                 { name: 'color', description: '色', type: discord.ApplicationCommandOptionType.String, choices: [
                     { name: '🔴赤色', value: 'Red' },
                     { name: '🟠橙色', value: 'Orange' },
