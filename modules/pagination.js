@@ -168,14 +168,28 @@ class Pagination {
 			const embed = this.#pages[this.#current];
 			await i.deferUpdate();
 			await i.editReply({
-				embeds: [embed.setFooter({ ...embed.footer, text: `${embed.footer?.text || ''}Page ${this.current + 1} / ${this.pages.length}` })]
+				embeds: [embed.setFooter({ ...embed.footer, text: `${embed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })]
 			});
 			collector.resetTimer();
 		});
 		collector.on('end', () => {
 			if(msg) {
+				// 元データ: components: msg.components.map(row => row.components.map(button => filter(button) ? discord.ButtonBuilder.from(button).setDisabled(true) : button))
+				// 元データにバグが含まれている + 今現在メッセージURL展開以外に使用しないため、直接コンポーネントを指定する
+				const dbutton = new discord.ActionRowBuilder().addComponents(
+					new discord.ButtonBuilder()
+						.setDisabled(true)
+						.setCustomId('pagination:previousButton')
+						.setEmoji('◀️')
+						.setStyle(discord.ButtonStyle.Secondary),
+					new discord.ButtonBuilder()
+						.setDisabled(true)
+						.setCustomId('pagination:nextButton')
+						.setEmoji('▶')
+						.setStyle(discord.ButtonStyle.Secondary),
+				);
 				msg.edit({
-					components: msg.components.map(row => row.components.map(button => filter(button) ? discord.ButtonBuilder.from(button).setDisabled(true) : button))
+					components: [dbutton]
 				});
 			}
 		});

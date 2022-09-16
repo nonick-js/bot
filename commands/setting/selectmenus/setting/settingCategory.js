@@ -196,15 +196,8 @@ const ping_command = {
                                 { label: '最高', description: '電話認証がされているアカウントのみ', value: '4', emoji: '🔴', default: newLevel == 4 },
                             ),
                     );
-                    button.addComponents(
-                        new discord.ButtonBuilder()
-                            .setCustomId('sync-oldLevel')
-                            .setLabel('元に戻す認証レベルを現在のレベルに設定')
-                            .setStyle(discord.ButtonStyle.Danger)
-                            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel)),
-                    );
 
-                    interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, logEventSelect, button] });
+                    interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, logEventSelect] });
                     break;
                 }
             }

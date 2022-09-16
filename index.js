@@ -86,7 +86,7 @@ client.on('interactionCreate', async interaction => {
         await verificationModel.findOrCreate({ where: { serverId: interaction.guildId } });
         interaction.sequelize = sequelize;
     }
-    interactions.run(interaction).catch(console.warn);
+    interactions.run(interaction).catch(err => {if (err.code !== 0) console.warn(err);});
 });
 
 async function moduleExecute(module, param, param2) {
