@@ -1,7 +1,6 @@
 const discord = require('discord.js');
 const Octokit = require('@octokit/rest');
 const octokit = new Octokit.Octokit();
-const { beta } = require('../../../../config.json');
 
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
@@ -19,24 +18,13 @@ const ping_command = {
             .setStyle(discord.ButtonStyle.Primary),
         );
 
-        if (beta.betaMode) {
-            const embed = new discord.EmbedBuilder()
-                .setTitle('📢 What\'s New')
-                .setDescription([
-                    `**${interaction.client.user.username}**`,
-                    'このBOTはベータ版です。新機能や修正に関する最新情報は[こちら](https://ptb.discord.com/channels/949877204601405482/989556230756393041)でご確認ください。',
-                ].join('\n'));
-
-            return interaction.update({ embeds: [embed], components: [button] });
-        }
-
         octokit.repos.listReleases({ owner: 'nonick-mc', repo: 'DiscordBot-NoNick.js' })
             .then((res) => {
-                const whatsnew = res.data.find(v => v.prerelease == false);
+                const whatsNew = res.data.find(v => v.prerelease == false);
 
                 const embed = new discord.EmbedBuilder()
                     .setTitle('📢 What\'s New')
-                    .setDescription(`**${interaction.client.user.username} ${whatsnew.name}**\n${whatsnew.body}`)
+                    .setDescription(`**${interaction.client.user.username} ${whatsNew.name}**\n${whatsNew.body}`)
                     .setColor('Green');
 
                 interaction.editReply({ embeds: [embed], components:[button], ephemeral: true });
