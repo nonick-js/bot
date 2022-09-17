@@ -1,5 +1,5 @@
 node_modules
+models/.config.sqlite
 .env
 config.json
-config.sqlite
-.eslint.json
+updateMemo.txt

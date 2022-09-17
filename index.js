@@ -1,65 +1,53 @@
-const Sequelize = require('sequelize');
 const discord = require('discord.js');
-const client = new discord.Client({
-    intents: Object.values(discord.Intents.FLAGS),
-    allowedMentions: { parse:['roles'] },
-    partials: ['CHANNEL', 'GUILD_MEMBER', 'GUILD_SCHEDULED_EVENT', 'MESSAGE', 'REACTION', 'USER'],
-});
-const sequelize = new Sequelize({
-	host: 'localhost',
-	dialect: 'sqlite',
-	logging: false,
-	storage: 'sql/config.sqlite',
-});
+const cron = require('node-cron');
+const Sequelize = require('sequelize');
+const { DiscordInteractions } = require('@djs-tools/interactions');
+const { guildId, guildCommand, blackList } = require('./config.json');
 require('dotenv').config();
-const { guildId, guildCommand, blackList_guild, blackList_user, debugMode, replitMode } = require('./config.json');
 
-const interaction_commands = require('./modules/interaction');
-const commands = new interaction_commands('./commands');
-commands.debug = false;
-
-// モジュールを取得
-const guildMemberAdd = require('./events/guildMemberAdd/index');
-const guildMemberRemove = require('./events/guildMemberRemove/index');
-const messageCreate = require('./events/messageCreate/index');
-
-// sqliteのテーブルの作成
-const Configs = sequelize.define('configs', {
-	serverId: { type: Sequelize.STRING, unique: true },
-    laungage: { type: Sequelize.STRING, defaultValue: 'ja_JP' },
-    welcome: { type: Sequelize.BOOLEAN, defaultValue: false },
-    welcomeCh: { type: Sequelize.STRING, defaultValue: null },
-    welcomeMessage: { type: Sequelize.TEXT, defaultValue: 'まずはルールを確認しよう!' },
-    leave: { type: Sequelize.BOOLEAN, defaultValue: false },
-    leaveCh: { type: Sequelize.STRING, defaultValue: null },
-    reportCh: { type: Sequelize.STRING, defaultValue: null },
-    reportRoleMention: { type: Sequelize.BOOLEAN, defaultValue: false },
-    reportRole: { type: Sequelize.STRING, defaultValue: null },
-    timeoutLog: { type: Sequelize.BOOLEAN, defaultValue: false },
-    timeoutLogCh: { type: Sequelize.STRING, defaultValue: null },
-    timeoutDm: { type: Sequelize.BOOLEAN, defaultValue: false },
-    banLog: { type: Sequelize.BOOLEAN, defaultValue: false },
-    banLogCh: { type: Sequelize.STRING, defaultValue: null },
-    banDm: { type: Sequelize.BOOLEAN, defaultValue: false },
-    linkOpen: { type: Sequelize.BOOLEAN, defaultValue: false },
-    dj: { type: Sequelize.BOOLEAN, defaultValue: false },
-    djRole: { type: Sequelize.STRING, defaultValue: null },
+const client = new discord.Client({
+    intents: [
+        discord.GatewayIntentBits.Guilds,
+        discord.GatewayIntentBits.GuildBans,
+        discord.GatewayIntentBits.GuildMessages,
+        discord.GatewayIntentBits.GuildMembers,
+        discord.GatewayIntentBits.MessageContent,
+    ],
+    allowedMentions: { parse: [ discord.AllowedMentionsTypes.Role ] },
+    partials: [ discord.Partials.Channel, discord.Partials.GuildMember, discord.Partials.Message, discord.Partials.User ],
 });
 
-if (replitMode) {
-    'use strict';
-    const http = require('http');
-    http.createServer(function(req, res) {
-        res.write('ready nouniku!!');
-        res.end();
-    }).listen(8080);
-}
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    logging: false,
+    dialect: 'mysql',
+    dialectOptions: {
+        ssl:'Amazon RDS',
+    },
+});
 
-client.on('debug', (e) => {if (debugMode) console.log(e);});
+// const sequelize = new Sequelize({
+//     host: 'localhost',
+//     dialect: 'sqlite',
+//     logging: false,
+//     storage: 'models/.config.sqlite',
+// });
 
-// ready nouniku!!
-client.on('ready', () => {
-    Configs.sync({ alter: true });
+const basicModel = require('./models/basic')(sequelize);
+const welcomeMModel = require('./models/welcomeM')(sequelize);
+const logModel = require('./models/log')(sequelize);
+const verificationModel = require('./models/verification')(sequelize);
+
+const interactions = new DiscordInteractions(client);
+interactions.loadInteractions('./commands');
+
+client.once('ready', () => {
+    basicModel.sync({ alter: true });
+    welcomeMModel.sync({ alter: true });
+    logModel.sync({ alter: true });
+    verificationModel.sync({ alter: true });
+
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
     console.table({
         'Bot User': client.user.tag,
@@ -67,50 +55,62 @@ client.on('ready', () => {
         'Watching': `${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0)} Members`,
         'Discord.js': `v${discord.version}`,
         'Node.js': process.version,
-        'Plattform': `${process.platform} | ${process.arch}`,
+        'Platform': `${process.platform} | ${process.arch}`,
         'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
-    if (guildCommand) commands.register(client, guildId);
-    else commands.register(client);
-    client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`);
+
+    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
+    if (guildCommand) interactions.registerCommands(guildId);
+    else interactions.registerCommands();
+
+    cron.schedule('0 * * * *', date => {
+        client.sequelize = sequelize;
+        require('./cron/verificationChange/index').execute(client, date);
+    });
 });
 
-client.on('guildCreate', () => client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`));
-client.on('guildDelete', () => client.user.setActivity(`${client.guilds.cache.size} serverで導入中!`));
+client.on('guildCreate', () => client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
+client.on('guildDelete', guild => {
+    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
+    basicModel.destroy({ where: { serverId: guild.id } });
+    logModel.destroy({ where: { serverId: guild.id } });
+    verificationModel.destroy({ where: { serverId: guild.id } });
+});
 
-client.on('guildMemberAdd', member => moduleExecute(member, guildMemberAdd));
-client.on('guildMemberRemove', member => moduleExecute(member, guildMemberRemove));
-client.on('messageCreate', message => moduleExecute(message, messageCreate));
+client.on('guildBanAdd', ban => moduleExecute(require('./events/guildBanAdd/index'), ban));
+client.on('guildBanRemove', member => moduleExecute(require('./events/guildBanRemove/index'), member));
+client.on('guildMemberAdd', member => moduleExecute(require('./events/guildMemberAdd/index'), member));
+client.on('guildMemberRemove', member => moduleExecute(require('./events/guildMemberRemove/index'), member));
+client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(require('./events/guildMemberUpdate/index'), oldMember, newMember));
+client.on('messageCreate', message => moduleExecute(require('./events/messageCreate/index'), message));
 
 client.on('interactionCreate', async interaction => {
-    if (blackList_guild.includes(interaction.guild.id) || blackList_user.includes(interaction.guild.ownerId)) {
-        const embed = new discord.MessageEmbed()
-            .setDescription([
-                `🚫 このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。`,
-                '禁止された理由や詳細は`nonick-mc#1017`までお問い合わせください。',
-            ].join('\n'))
-            .setColor('RED');
+    if (blackList.guilds.includes(interaction.guild?.id) || blackList.users.includes(interaction.guild?.ownerId)) {
+        const embed = new discord.EmbedBuilder()
+            .setDescription(`このサーバーでの**${client.user.username}**の使用は開発者により禁止されています。禁止された理由や詳細は\`nonick-mc#1017\`までお問い合わせください。`)
+            .setColor('Red');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
-
-    const cmd = commands.getCommand(interaction);
-    try {
-        await Configs.findOrCreate({ where:{ serverId: interaction.guildId } });
-        cmd.exec(interaction, client, Configs);
+    if (interaction.guild) {
+        await basicModel.findOrCreate({ where: { serverId: interaction.guildId } });
+        await welcomeMModel.findOrCreate({ where: { serverId: interaction.guildId } });
+        await logModel.findOrCreate({ where: { serverId: interaction.guildId } });
+        await verificationModel.findOrCreate({ where: { serverId: interaction.guildId } });
+        interaction.sequelize = sequelize;
     }
-    catch (err) {
-        console.log(err);
-    }
+    interactions.run(interaction).catch(err => {if (err.code !== 0) console.warn(err);});
 });
 
-async function moduleExecute(param, module) {
-    if (blackList_guild.includes(param.guild.id) || blackList_user.includes(param.guild.ownerId)) return;
-    await Configs.findOrCreate({ where:{ serverId: param.guild.id } });
-    try {
-        module.execute(client, param, Configs);
-    } catch (e) {
-        console.log(`[エラー!] サーバーID:${param.guild.id}\n${e}`);
+async function moduleExecute(module, param, param2) {
+    if (blackList.guilds.includes(param.guild?.id) || blackList.users.includes(param.guild?.ownerId)) return;
+    if (param.guild) {
+        await basicModel.findOrCreate({ where: { serverId: param.guild.id } });
+        await welcomeMModel.findOrCreate({ where: { serverId: param.guild.id } });
+        await logModel.findOrCreate({ where: { serverId: param.guild.id } });
+        await verificationModel.findOrCreate({ where: { serverId: param.guild.id } });
+        param.sequelize = sequelize;
     }
+    module.execute(param, param2);
 }
 
 client.login(process.env.BOT_TOKEN);

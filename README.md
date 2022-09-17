@@ -1,30 +1,21 @@
-
 # NoNICK.js
-「分かりやすい」をモットーに開発した多機能DiscordBOTです。
-一つ一つの機能の自由度が高く、ユーザーの希望にできる限り沿った設定が可能です。
-
-# 🔧Features
-【機能】
-* **入退室ログ機能** ... BOTが稼働しているサーバーの入室した・退出したログを送信することができます。
-* **報告機能** ... サーバー内で送信されたメッセージやユーザーをサーバー管理者に通報することができる機能です。(Discordの公式サポートに通報するものではありません)
-
-【コマンド】
-* **settingコマンド** ... 各機能の詳しい設定を行えるコントロールパネルを送信できるコマンドです。機能の有効化・無効化に加え、設定項目の調整も行えます。
-* **timeoutコマンド** ... サーバーにいるメンバーにタイムアウト(ミュート)を設定させるコマンドです。公式の機能より細かく設定させることができ、一分単位での調整が可能で最大28日間のタイムアウトが可能です。。
-* **banコマンド** ... メンバーをサーバーからBANできる機能です。IDのみでのBANも可能なので、荒らしをして抜けていったメンバーの追加処分や、他コミュニティで荒らしをしたユーザーの対策に有効です。
+「分かりやすい」をモットーに開発した、完全無料で使える多機能DiscordBOT
 
 # ✨Requirement
-このBOTの動作には以下のnpmライブラリが必要です。
+このBOTは以下のnpmパッケージを使用しています。
 
-* @discordjs/opus@0.5.3
-* discord-api-types@0.31.2
-* discord-player@5.2.2
-* discord.js@13.8.0
-* dotenv@16.0.0
-* eslint@8.17.0
-* ffmpeg-static@5.0.0
-* sequelize@6.19.0
-* sqlite3@5.0.8
+* @djs-tools/interactions@1.0.3
+* @octokit/rest@19.0.4
+* axios@0.27.2
+* discord-api-types@0.37.5
+* discord.js@14.3.0
+* dotenv@16.0.2
+* eslint@8.23.0 (必須ではない)
+* mysql2@2.3.3
+* node-cron@3.0.2
+* octokit@2.0.7
+* sequelize@6.21.6
+* sqlite3@5.0.11 (SQLiteを使用する場合のみ)
 
 # 🔮Installation
 Release欄から必要に応じたバージョンのソースコードをダウンロードしましょう。  
@@ -36,35 +27,30 @@ npm i
 # 💻Usage
 このBOTを起動する前に、BOTのトークンを保存する`.env`とBOTの設定を保存する`config.json`の２つのファイルを用意する必要があります。
 
-① `.env.sample`を開き、中に書いてある指示に従ってBOTのTOKENを入力し、保存します。  
-その後、ファイル名を`.env`に変更します。  
-(注意:tokenは漏洩するとサーバー荒らし等に使用される場合があるため、取り扱いには十分注意してください。)
-```
-BOT_TOKEN = ここにBOTのトークンを入力
-```
-② `config.json` を`index.js`と同じディレクトリに作成し、以下のコードを入力し、保存します。
+① `.env.sample`を基に、`index.js`と同じディレクトリに`.env`ファイルを作成します
+② `config.json` を`index.js`と同じディレクトリに作成します。
 ```json
 {
     "$schema": "./.schema.json",
-    "clientId":"クライアントID",
+    "clientId":"BOTのクライアントID",
+    "guildId":"スラッシュコマンドを登録するサーバーのID",
     "guildCommand": true,
-    "guildId":"ギルドID",
-    "debugMode": false,
-    "replitMode": false,
-    "blackList_guild": ["ブラックリストに登録するギルドID"],
-    "blackList_user": ["ブラックリストに登録するユーザーID"]
+
+    "blackList": {
+        "guilds": ["BOTの使用を制限するサーバーのID"],
+        "users": ["BOTの使用を制限するユーザーのID (このユーザーがオーナーのサーバーが使用できなくなります)"]
+    }
 }
 ```
 ヒント: `"$schema": "./.schema.json"`をjsonファイルに追加すると、設定項目の候補表示が有効になります。
 
 ③ 以上の設定が終わったら、ターミナルで `node .` と入力することでBOTの起動が可能です。
+
+# 📑Files
+* index.js... NoNICK.jsを起動するファイル。
+* resetCommand.js... BOTに登録されているコマンドをすべて削除するファイル `config.json`の`guildCommand`がtrueになっている場合はギルドコマンドも全て削除されます。
+* sqliteToMysql_v3.0.js... v3.0準拠のSQLiteからMySQLへデータを移行できるファイル
+* syncSQLite_v3.0.. v2.1以下のSQLiteをv3.0準拠のSQLiteに変換するファイル
+
 # 🎓License
-
-このプログラムを使用する際は、MITライセンスに加えて以下の禁止事項を守る必要があります。
-### 禁止事項
-* 自作発言
-* NoNICK.jsのなりすましや悪意あるコードの挿入等、このプログラムを悪用すること
-* infoコマンド等、このBOT内に存在するクレジット表記の改変・削除をすること
-
-# Note
-* カスタマイズしたDiscordBOTの動作不良に関しては問い合わせても対応できかねます。
+* 自作発言をしない限り、MITライセンスに基づいた使用が可能となります。

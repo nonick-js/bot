@@ -1,50 +1,40 @@
 const discord = require('discord.js');
 
-/**
-* @callback InteractionCallback
-* @param {discord.MessageContextMenuInteraction} interaction
-* @param {discord.Client} client
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'setting-back', type: 'BUTTON' },
-    /** @type {InteractionCallback} */
+/** @type {import('@djs-tools/interactions').ButtonRegister} */
+const ping_command = {
+    data: {
+        customId: 'setting-back',
+        type: 'BUTTON',
+    },
     exec: async (interaction) => {
-        const embed = new discord.MessageEmbed()
-            .setTitle('🛠 NoNICK.js - 設定')
-            .setDescription('NoNICK.jsのコントロールパネルへようこそ!\nここではこのBOTの設定を変更することができます!' + discord.Formatters.codeBlock('markdown', 'セレクトメニューから閲覧・変更したい設定を選択しよう!'))
-            .setColor('GREEN');
-        const button = new discord.MessageActionRow().addComponents(
-            new discord.MessageButton()
-                .setCustomId('setting-whatsnew')
+        const embed = new discord.EmbedBuilder()
+            .setTitle('🛠 設定')
+            .setDescription([
+                `**${interaction.client.user.username}**のコントロールパネルへようこそ！`,
+                'ここではこのBOTの設定を変更することができます。[詳細はこちら](https://nonick.gitbook.io/nonick.js/introduction/setting)',
+                '```セレクトメニューから設定を閲覧・変更したい機能を選択しよう！```',
+            ].join('\n'))
+            .setColor('Green');
+        const button = new discord.ActionRowBuilder().addComponents(
+            new discord.ButtonBuilder()
+                .setCustomId('setting-whatsNew')
                 .setLabel('What\'s New')
                 .setEmoji('966588719643631666')
-                .setStyle('PRIMARY'),
-            new discord.MessageButton()
-                .setCustomId('setting-laungage')
-                .setEmoji('🌐')
-                .setStyle('SECONDARY'),
+                .setStyle(discord.ButtonStyle.Primary),
         );
-        const select = new discord.MessageActionRow().addComponents(
-            new discord.MessageSelectMenu()
-                .setCustomId('setting-select')
-                .setPlaceholder('ここから選択')
+        const select = new discord.ActionRowBuilder().addComponents(
+            new discord.SelectMenuBuilder()
+                .setCustomId('setting-featureCategory')
                 .addOptions([
-                    { label: '入退室ログ', value: 'setting-welcomemessage', emoji: '🚪' },
+                    { label: '入退室ログ機能', value: 'setting-welcomeMessage', emoji: '🚪' },
                     { label: '通報機能', value: 'setting-report', emoji: '📢' },
-                    { label: 'リンク展開', value: 'setting-linkOpen', emoji: '🔗' },
-                    { label: '/music コマンド', value: 'setting-music', emoji: '966596708484149289' },
-                    { label: '/timeout コマンド', value: 'setting-timeout', emoji: '966596708484149289' },
-                    { label: '/ban コマンド', value: 'setting-ban', emoji: '966596708484149289' },
+                    { label: 'リンク展開機能', value: 'setting-messageExpansion', emoji: '🔗' },
+                    { label: 'ログ機能', value: 'setting-log', emoji: '📑' },
+                    { label: '認証レベル自動変更機能', value: 'setting-verification', emoji: '✅' },
                 ]),
         );
-        interaction.update({ embeds: [embed], components: [select, button], ephemeral: true });
+
+        interaction.update({ embeds: [embed], components: [select, button] });
     },
 };
+module.exports = [ ping_command ];

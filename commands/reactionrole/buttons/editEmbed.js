@@ -1,56 +1,56 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 
-/**
-* @callback InteractionCallback
-* @param {discord.ButtonInteraction} interaction
-* @param {...any} [args]
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'|'MODAL'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'reactionRole-EditEmbed', type: 'BUTTON' },
-    /** @type {InteractionCallback} */
+/** @type {import('@djs-tools/interactions').ButtonRegister} */
+const ping_command = {
+    data: {
+        customId: 'reactionRole-editEmbed',
+        type: 'BUTTON',
+    },
     exec: async (interaction) => {
         const embed = interaction.message.embeds[0];
-        const modal = new discord.Modal()
-            .setCustomId('reactionRole-update')
-            .setTitle('パネルの編集')
+
+        const modal = new discord.ModalBuilder()
+            .setCustomId('reactionRole-editEmbedModal')
+            .setTitle('埋め込みの編集')
             .addComponents(
-                new discord.MessageActionRow().addComponents(
-                    new discord.TextInputComponent()
+                new discord.ActionRowBuilder().addComponents(
+                    new discord.TextInputBuilder()
                         .setCustomId('title')
-                        .setLabel('埋め込みのタイトル')
+                        .setLabel('タイトル')
                         .setMaxLength(1000)
-                        .setValue(`${embed.title}`)
-                        .setStyle('SHORT')
-                        .setRequired(true),
+                        .setValue(embed.title)
+                        .setStyle(discord.TextInputStyle.Short),
                 ),
-                new discord.MessageActionRow().addComponents(
-                    new discord.TextInputComponent()
+                new discord.ActionRowBuilder().addComponents(
+                    new discord.TextInputBuilder()
                         .setCustomId('description')
-                        .setLabel('埋め込みの説明')
-                        .setPlaceholder('このリアクションロールについて説明しよう')
+                        .setLabel('説明')
                         .setMaxLength(4000)
-                        .setValue(`${embed.description}`)
-                        .setStyle('PARAGRAPH')
-                        .setRequired(true),
+                        .setValue(embed?.description || '')
+                        .setStyle(discord.TextInputStyle.Paragraph)
+                        .setRequired(false),
                 ),
-                new discord.MessageActionRow().addComponents(
-                    new discord.TextInputComponent()
+                new discord.ActionRowBuilder().addComponents(
+                    new discord.TextInputBuilder()
+                        .setCustomId('color')
+                        .setLabel('カラーコード')
+                        .setMaxLength(7)
+                        .setPlaceholder('#ffffff')
+                        .setValue(embed.hexColor || '')
+                        .setStyle(discord.TextInputStyle.Short),
+                ),
+                new discord.ActionRowBuilder().addComponents(
+                    new discord.TextInputBuilder()
                         .setCustomId('image')
-                        .setLabel('埋め込みに乗せる画像のURL')
-                        .setPlaceholder('URLのみ対応しています。')
-                        .setMaxLength(500)
-                        .setValue(embed.image ? embed.image.url : 'なし')
-                        .setStyle('SHORT'),
+                        .setLabel('埋め込み内画像に設定するURL')
+                        .setMaxLength(1000)
+                        .setValue(embed.image?.url || '')
+                        .setStyle(discord.TextInputStyle.Short)
+                        .setRequired(false),
                 ),
             );
         interaction.showModal(modal);
     },
 };
+module.exports = [ ping_command ];

@@ -1,113 +1,241 @@
 const discord = require('discord.js');
-const btn = new discord.MessageActionRow().addComponents([
-	new discord.MessageButton()
-		.setCustomId('previousbtn')
-		.setEmoji('◀️')
-		.setStyle('PRIMARY'),
-	new discord.MessageButton()
-		.setCustomId('nextbtn')
-		.setEmoji('▶')
-		.setStyle('PRIMARY'),
-]);
-const dbtn = new discord.MessageActionRow().addComponents([
-	new discord.MessageButton()
-		.setDisabled(true)
-		.setCustomId('previousbtn')
-		.setEmoji('◀️')
-		.setStyle('PRIMARY'),
-	new discord.MessageButton()
-		.setDisabled(true)
-		.setCustomId('nextbtn')
-		.setEmoji('▶')
-		.setStyle('PRIMARY'),
-]);
-module.exports = {
+class Pagination {
+	#pages
+	#previousButton
+	#nextButton
+	#current
+	#senderOnly
+	#sended
 	/**
-	 *
-	 * @param {discord.interaction} interaction
-	 * @param {discord.MessageEmbed[]} pages
-	 * @param {boolean} [ephemeral]
+	 * @constructor
+	 * @param {discord.EmbedBuilder[]} pages ページ
 	 */
-	interaction: async (interaction, pages, ephemeral = false) => {
-		let currentPage = 0;
-		const curPage = await interaction.reply({
-		embeds: [pages[currentPage].setFooter({ text:`Page ${currentPage + 1} / ${pages.length}` })],
-		components: [btn], fetchReply: true,
-			ephemeral: ephemeral,
-	});
-		const filter = (i) => i.customId === 'previousbtn' || i.customId === 'nextbtn';
-		const collector = await curPage.createMessageComponentCollector({
-		filter, time: 600000,
-	});
-		collector.on('collect', async (i) => {
-			if (i.user.id === interaction.member.id) {
-		switch (i.customId) {
-		case 'previousbtn':
-			currentPage = currentPage > 0 ? --currentPage : pages.length - 1;
-			break;
-		case 'nextbtn':
-			currentPage = currentPage + 1 < pages.length ? ++currentPage : 0;
-			break;
-		}
-		await i.deferUpdate();
-		await i.editReply({
-			embeds: [pages[currentPage].setFooter({ text:`Page ${currentPage + 1} / ${pages.length}` })],
-			components: [btn],
-		});
-		collector.resetTimer();
-			}
-	});
+	constructor(...pages) {
+		/**
+		 * @type {discord.EmbedBuilder[]}
+		 */
+		this.#pages = pages ?? [];
+		/**
+		 * @type {discord.ButtonBuilder}
+		 */
+		this.#previousButton = new discord.ButtonBuilder()
+			.setCustomId('pagination:previousButton')
+			.setEmoji('◀️')
+			.setStyle(discord.ButtonStyle.Secondary);
+		/**
+		 * @type {discord.ButtonBuilder}
+		 */
+		this.#nextButton = new discord.ButtonBuilder()
+			.setCustomId('pagination:nextButton')
+			.setEmoji('▶')
+			.setStyle(discord.ButtonStyle.Secondary);
+		/**
+		 * @type {number}
+		 */
+		this.#current = 0;
+		/**
+		 * @type {boolean}
+		 */
+		this.#senderOnly = true;
+		/**
+		 * @type {boolean}
+		 */
+		this.#sended = false;
+	}
 
-	collector.on('end', () => {
-		if (!curPage.deleted) {
-			curPage.edit({
-				embeds: [pages[currentPage].setFooter({ text:`Page ${currentPage + 1} / ${pages.length}` })],
-				components: [dbtn],
-			});
-		}
-	});
-	},
+	#sendedTest() {
+		if(this.#sended) throw new Error('This message sended!');
+	}
+
 	/**
-	 *
+	 * メッセージを送った本人のみ使えるようにするか
+	 * @param {boolean} only
+	 */
+	useSenderOnly(only) {
+		this.#sendedTest();
+		this.#senderOnly = only;
+		return this;
+	}
+
+	/**
+	 * 戻るボタンのラベル
+	 * @param {string} label
+	 */
+	setPreviousButtonSetLabel(label) {
+		this.#sendedTest();
+		this.#previousButton.setLabel(label);
+		return this;
+	}
+
+	/**
+	 * 戻るボタンの絵文字
+	 * @param {discord.EmojiIdentifierResolvable} emoji
+	 */
+	setPreviousButtonSetEmoji(emoji) {
+		this.#sendedTest();
+		this.#previousButton.setEmoji(emoji);
+		return this;
+	}
+
+	/**
+	 * 戻るボタンのスタイル
+	 * @param {discord.ButtonStyle} style
+	 */
+	setPreviousButtonSetStyle(style) {
+		this.#sendedTest();
+		this.#previousButton.setStyle(style);
+		return this;
+	}
+
+	/**
+	 * 進むボタンのラベル
+	 * @param {string} label
+	 */
+	setNextButtonSetLabel(label) {
+		this.#sendedTest();
+		this.#nextButton.setLabel(label);
+		return this;
+	}
+
+	/**
+	 * 進むボタンの絵文字
+	 * @param {discord.EmojiIdentifierResolvable} emoji
+	 */
+	setNextButtonSetEmoji(emoji) {
+		this.#sendedTest();
+		this.#nextButton.setEmoji(emoji);
+		return this;
+	}
+
+	/**
+	 * 進むボタンのスタイル
+	 * @param {discord.ButtonStyle} style
+	 */
+	setNextButtonSetStyle(style) {
+		this.#sendedTest();
+		this.#nextButton.setStyle(style);
+		return this;
+	}
+
+	/**
+	 * ページを追加する
+	 * @param {discord.EmbedBuilder} page ページ
+	 */
+	addPage(page) {
+		this.#sendedTest();
+		this.#pages.push(page);
+		return this;
+	}
+
+	/**
+	 * 複数のページを追加する
+	 * @param {discord.EmbedBuilder[]} pages ページ
+	 */
+	addPages(...pages) {
+		this.#sendedTest();
+		this.#pages.push(...pages);
+		return this;
+	}
+
+	/**
+	 * 送信する
+	 * @param {discord.DMChannel | discord.PartialDMChannel | discord.NewsChannel | discord.TextChannel | discord.ThreadChannel | discord.VoiceChannel} channel
+	 * @param {discord.MessageOptions} options
+	 * @param {discord.Message?} message
+	 */
+	async sendMessage(channel, options = {}, message = null) {
+		if(!this.#pages.length) throw new Error('pages length 0');
+		const currentEmbed = this.#pages[this.#current];
+		const msg = await channel.send({
+			...options,
+			embeds: [...(options.embeds || []), currentEmbed.setFooter({ ...currentEmbed.footer, text: `${currentEmbed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })],
+			components: [...(options.components || []), new discord.ActionRowBuilder().addComponents(this.#previousButton, this.#nextButton)]
+		});
+		this.#sended = true;
+		const filter = (i) => i.customId === 'pagination:previousButton' || i.customId === 'pagination:nextButton';
+		const collector = msg.createMessageComponentCollector({
+			filter, time: 600_000
+		});
+		collector.on('collect', async i => {
+			if(!message) return
+			if(this.#senderOnly && !i.user.equals(message.author)) return;
+			if(i.customId === 'pagination:previousButton') {
+				this.#current = (this.#pages.length + --this.#current) % this.#pages.length;
+			}
+			if(i.customId === 'pagination:nextButton') {
+				this.#current = ++this.#current % this.#pages.length;
+			}
+			const embed = this.#pages[this.#current];
+			await i.deferUpdate();
+			await i.editReply({
+				embeds: [embed.setFooter({ ...embed.footer, text: `${embed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })]
+			});
+			collector.resetTimer();
+		});
+		collector.on('end', () => {
+			if(msg) {
+				// 元データ: components: msg.components.map(row => row.components.map(button => filter(button) ? discord.ButtonBuilder.from(button).setDisabled(true) : button))
+				// 元データにバグが含まれている + 今現在メッセージURL展開以外に使用しないため、直接コンポーネントを指定する
+				const dbutton = new discord.ActionRowBuilder().addComponents(
+					new discord.ButtonBuilder()
+						.setDisabled(true)
+						.setCustomId('pagination:previousButton')
+						.setEmoji('◀️')
+						.setStyle(discord.ButtonStyle.Secondary),
+					new discord.ButtonBuilder()
+						.setDisabled(true)
+						.setCustomId('pagination:nextButton')
+						.setEmoji('▶')
+						.setStyle(discord.ButtonStyle.Secondary),
+				);
+				msg.edit({
+					components: [dbutton]
+				});
+			}
+		});
+	}
+
+	/**
 	 * @param {discord.Message} message
-	 * @param {discord.MessageEmbed[]} pages
+	 * @param {discord.MessageOptions} options
 	 */
-	message: async (message, pages) => {
-		let currentPage = 0;
-		const curPage = await message.reply({
-			embeds: [pages[currentPage].setFooter({ text:`Page ${currentPage + 1} / ${pages.length}` })],
-			components: [btn], fetchReply: true,
-		});
-		const filter = (i) => i.customId === 'previousbtn' || i.customId === 'nextbtn';
-		const collector = curPage.createMessageComponentCollector({
-			filter, time: 600000,
-		});
-		collector.on('collect', async (i) => {
-			if (i.user.id === message.author.id) {
-			switch (i.customId) {
-			case 'previousbtn':
-				currentPage = currentPage > 0 ? --currentPage : pages.length - 1;
-				break;
-			case 'nextbtn':
-				currentPage = currentPage + 1 < pages.length ? ++currentPage : 0;
-				break;
-		}
-		await i.deferUpdate();
-		await i.editReply({
-			embeds: [pages[currentPage].setFooter({ text:`Page ${currentPage + 1} / ${pages.length}` })],
-			components: [btn],
-		});
-		collector.resetTimer();
-			}
-	});
+	async replyMessage(message, options = {}) {
+		options.reply = { messageReference: options.reply?.messageReference ?? message, failIfNotExists: options.reply?.failIfNotExists}
+		await this.sendMessage(message.channel, options, message);
+	}
 
-	collector.on('end', () => {
-		if (curPage) {
-			curPage.edit({
-				embeds: [pages[currentPage].setFooter({ text:`Page ${currentPage + 1} / ${pages.length}` })],
-				components: [dbtn],
-			});
-		}
+	/**
+	 * @param {discord.Interaction} interaction
+	 * @param {discord.InteractionReplyOptions} options
+	 */
+	async replyInteraction(interaction, options = {}) {
+		if(!this.#pages.length) throw new Error('pages length 0');
+		const currentEmbed = this.#pages[this.#current];
+		const msg = await interaction.reply({
+			...options,
+			embeds: [...(options.embeds || []), currentEmbed.setFooter({ ...currentEmbed.footer, text: `${currentEmbed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })],
+			components: [...(options.components || []), new discord.ActionRowBuilder().addComponents(this.#previousButton, this.#nextButton)]
 		});
-	},
-};
+		this.#sended = true;
+		const filter = (i) => i.customId === 'pagination:previousButton' || i.customId === 'pagination:nextButton';
+		const collector = msg.createMessageComponentCollector({
+			filter, time: 600_000
+		});
+		collector.on('collect', async i => {
+			if(this.#senderOnly && interaction && !i.user.equals(interaction.user)) return;
+			if(i.customId === 'pagination:previousButton') {
+				this.#current = (this.#pages.length + --this.#current) % this.#pages.length;
+			}
+			if(i.customId === 'pagination:nextButton') {
+				this.#current = ++this.#current % this.#pages.length;
+			}
+			const embed = this.#pages[this.#current];
+			i.update({
+				embeds: [embed.setFooter({ ...embed.footer, text: `${embed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })]
+			});
+			collector.resetTimer();
+		});
+	}
+}
+
+module.exports = Pagination;

@@ -1,42 +1,36 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
+const { settingSwitcher } = require('../../../../modules/switcher');
 
-/**
-* @callback InteractionCallback
-* @param {discord.MessageContextMenuInteraction} interaction
-* @param {...any} [args]
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'} type
-*/
+/** @type {import('@djs-tools/interactions').ButtonRegister} */
+const ping_command = {
+    data: {
+        customId: 'setting-reportRoleMention',
+        type: 'BUTTON',
+    },
+    exec: async (interaction) => {
+        const Model = await require('../../../../models/basic')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
+        const { reportRole, reportRoleMention } = Model.get();
 
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'setting-reportRoleMention', type: 'BUTTON' },
-    /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
-        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-        const reportRoleMention = config.get('reportRoleMention');
-        const reportRole = config.get('reportRole');
         const embed = interaction.message.embeds[0];
-        const select = interaction.message.components[0];
         const button = interaction.message.components[1];
 
-        if (reportRoleMention) {
-            Configs.update({ reportRoleMention: false }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(1, 1, { name: 'ロールメンション', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true });
-            button.components[1]
-                .setLabel('有効化')
-                .setStyle('SUCCESS');
-        } else {
-            Configs.update({ reportRoleMention: true }, { where: { serverId: interaction.guild.id } });
-            embed.spliceFields(1, 1, { name: 'ロールメンション', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効 (${discord.Formatters.roleMention(reportRole)})`, inline:true });
-            button.components[1]
-                .setLabel('無効化')
-                .setStyle('DANGER');
+        let err = false;
+        Model.update({ reportRoleMention: reportRoleMention ? false : true }).catch(() => err = true);
+
+        if (err) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ 設定を正しく保存できませんでした。時間を置いて再試行してください。')
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, error] });
         }
-        interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+
+        embed.fields[1].value = settingSwitcher('STATUS_ROLE', !reportRoleMention, reportRole);
+        button.components[1] = discord.ButtonBuilder.from(button.components[1])
+            .setLabel(settingSwitcher('BUTTON_LABEL', !reportRoleMention))
+            .setStyle(settingSwitcher('BUTTON_STYLE', !reportRoleMention));
+
+        interaction.update({ embeds: [embed], components: [interaction.message.components[0], button] });
     },
 };
+module.exports = [ ping_command ];

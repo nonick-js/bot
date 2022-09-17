@@ -1,49 +1,48 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
+const { settingSwitcher } = require('../../../modules/switcher');
 
-/**
-* @callback InteractionCallback
-* @param {discord.ModalSubmitInteraction} interaction
-* @param {...any} [args]
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'|'MODAL'} type
-*/
-
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'setting-Role', type: 'MODAL' },
-    /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
-        /** @type {Array} 設定する項目 splice位置 */
-        const settingInfo = interaction.components[0].components[0].customId.split(',');
-        const textInput = interaction.components[0].components[0].value;
-
-        /** @type {discord.MessageEmbed} */
+/** @type {import('@djs-tools/interactions').ModalRegister} */
+const ping_command = {
+    data: {
+        customId: 'setting-Role',
+        type: 'MODAL',
+    },
+    exec: async (interaction) => {
+        const customId = interaction.components[0].components[0].customId;
+        const value = interaction.components[0].components[0].value;
         const embed = interaction.message.embeds[0];
-        const select = interaction.message.components[0];
         const button = interaction.message.components[1];
 
-        // 埋め込みのFieldを編集する場所
-        const name = embed.fields[parseInt(settingInfo[1], 10)].name;
-        const config = await Configs.findOne({ where: { serverId: interaction.guildId } });
-        const configMention = config.get(settingInfo[0] + 'Mention');
+        const settingData = [
+            { key: 'reportRole', model: 'basic', embedIndex: 1, enableButtonModel: 'reportRoleMention' },
+        ];
+        const setting = settingData.find(v => v.key == customId);
+        const role = interaction.guild.roles.cache.find(v => v.name == value);
 
-        try {
-            const roleId = interaction.guild.roles.cache.find((role) => role.name === textInput).id;
-            Configs.update({ [settingInfo[0]]: roleId }, { where: { serverId: interaction.guildId } });
-            button.components[1].setDisabled(false);
-            if (configMention) embed.spliceFields(parseInt(settingInfo[1], 10), 1, { name: name, value: discord.Formatters.formatEmoji('758380151544217670') + ' 有効' + '(' + discord.Formatters.roleMention(roleId) + ')', inline:true });
-            interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+        if (!role) {
+            const roleNotFound = new discord.EmbedBuilder()
+                .setDescription(`⚠️ ${discord.inlineCode(value)}という名前のロールは存在しません！`)
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, roleNotFound] });
         }
-        catch {
-            const roleNotFound = new discord.MessageEmbed()
-                .setTitle('エラー!')
-                .setDescription(`⚠️ ${discord.Formatters.inlineCode(textInput)}という名前のロールは存在しません!`)
-                .setColor('RED');
-            interaction.update({ embeds: [embed, roleNotFound], components: [select, button], ephemeral:true });
+
+        const Model = await require(`../../../models/${setting.model}`)(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
+
+        let err = false;
+        Model.update({ [setting.key]: role.id }).catch(() => err = true);
+
+        if (err) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ 設定を正しく保存できませんでした。時間を置いて再試行してください。')
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, error] });
         }
+
+        embed.fields[setting.embedIndex].value = settingSwitcher('STATUS_ROLE', Model.get(setting.enableButtonModel), role.id);
+        button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(false);
+
+        interaction.update({ embeds: [embed], components: [interaction.message.components[0], button] });
     },
 };
+module.exports = [ ping_command ];

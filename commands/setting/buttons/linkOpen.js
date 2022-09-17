@@ -1,46 +1,37 @@
+// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
+const { settingSwitcher } = require('../../../modules/switcher');
 
-/**
-* @callback InteractionCallback
-* @param {discord.MessageContextMenuInteraction} interaction
-* @param {...any} [args]
-* @returns {void}
-*/
-/**
-* @typedef ContextMenuData
-* @prop {string} customid
-* @prop {'BUTTON'|'SELECT_MENU'|'MODAL'} type
-*/
+/** @type {import('@djs-tools/interactions').ButtonRegister} */
+const ping_command = {
+    data: {
+        customId: 'setting-messageExpansion',
+        type: 'BUTTON',
+    },
+    exec: async (interaction) => {
+        const Model = await require('../../../models/basic')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
+        const messageExpansion = Model.get('messageExpansion');
 
-module.exports = {
-    /** @type {discord.ApplicationCommandData|ContextMenuData} */
-    data: { customid: 'setting-linkOpen', type: 'BUTTON' },
-    /** @type {InteractionCallback} */
-    exec: async (interaction, client, Configs) => {
-        const config = await Configs.findOne({ where: { serverId: interaction.guild.id } });
-        const linkOpen = config.get('linkOpen');
-
-        /** @type {discord.MessageEmbed} */
         const embed = interaction.message.embeds[0];
-        /** @type {discord.MessageActionRow} */
         const select = interaction.message.components[0];
-        /** @type {discord.MessageActionRow} */
         const button = interaction.message.components[1];
 
-        if (linkOpen) {
-            Configs.update({ linkOpen: false }, { where: { serverId: interaction.guildId } });
-            embed.spliceFields(0, 1, { name: 'リンク展開', value: `${discord.Formatters.formatEmoji('758380151238033419')}無効`, inline:true });
-            button.components[1]
-                .setLabel('有効化')
-                .setStyle('SUCCESS');
+        let err = false;
+        Model.update({ messageExpansion: messageExpansion ? false : true }).catch(() => err = true);
+
+        if (err) {
+            const error = new discord.EmbedBuilder()
+                .setDescription('❌ 設定を正しく保存できませんでした。時間を置いて再試行してください。')
+                .setColor('Red');
+            return interaction.update({ embeds: [embed, error] });
         }
-        else {
-            Configs.update({ linkOpen: true }, { where: { serverId: interaction.guildId } });
-            embed.spliceFields(0, 1, { name: 'リンク展開', value: `${discord.Formatters.formatEmoji('758380151544217670')}有効`, inline:true });
-            button.components[1]
-                .setLabel('無効化')
-                .setStyle('DANGER');
-        }
-        interaction.update({ embeds: [embed], components: [select, button], ephemeral:true });
+
+        embed.fields[0].value = settingSwitcher('STATUS_ENABLE', !messageExpansion);
+        button.components[1] = discord.ButtonBuilder.from(button.components[1])
+            .setLabel(settingSwitcher('BUTTON_LABEL', !messageExpansion))
+            .setStyle(settingSwitcher('BUTTON_STYLE', !messageExpansion));
+
+        interaction.update({ embeds: [embed], components: [select, button] });
     },
 };
+module.exports = [ ping_command ];
