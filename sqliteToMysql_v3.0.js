@@ -55,7 +55,7 @@ async function sqliteToMysql(param) {
 
         switch (param) {
             case 'basic':
-                MySQLModel.update({
+                await MySQLModel.update({
                     reportCh: model.reportCh,
                     reportRoleMention: model.reportRoleMention,
                     reportRole: model.reportRole,
@@ -63,7 +63,7 @@ async function sqliteToMysql(param) {
                 });
                 break;
             case 'welcomeM':
-                MySQLModel.update({
+                await MySQLModel.update({
                     welcome: model.welcome,
                     welcomeCh: model.welcomeCh,
                     welcomeMessage: model.welcomeMessage,
@@ -73,7 +73,7 @@ async function sqliteToMysql(param) {
                 });
                 break;
             case 'log':
-                MySQLModel.update({
+                await MySQLModel.update({
                     log: model.log,
                     logCh: model.logCh,
                     bot: model.bot,
@@ -83,7 +83,7 @@ async function sqliteToMysql(param) {
                 });
                 break;
             case 'verification':
-                MySQLModel.update({
+                await MySQLModel.update({
                     verification: model.verification,
                     oldLevel: model.oldLevel,
                     newLevel: model.newLevel,
