@@ -53,7 +53,7 @@ const ping_command = {
             }
             component.components[0] = discord.SelectMenuBuilder.from(component.components[0])
                 .addOptions({ label: displayName || role.name, description: description || undefined, value: role.id, emoji: unicodeEmoji?.[0] ?? emoji?.id });
-            interaction.update({ components: [component, interaction.message.components[1] ] });
+            interaction.update({ embeds: [interaction.message.embeds[0]], components: [component, interaction.message.components[1] ] });
         }
     },
 };

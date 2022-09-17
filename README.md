@@ -27,14 +27,7 @@ npm i
 # 💻Usage
 このBOTを起動する前に、BOTのトークンを保存する`.env`とBOTの設定を保存する`config.json`の２つのファイルを用意する必要があります。
 
-① `.env.sample`を基に、`index.js`と同じディレクトリに`.env`ファイルを作成します。  
-```
-BOT_TOKEN = DiscordBOTのトークン
-DB_NAME = MySQLのデータベース名
-DB_USER = MySQLにログインするユーザーのユーザー名
-DB_PASSWORD = MySQLにログインするユーザーのパスワード
-DB_HOST = 接続先
-```
+① `.env.sample`を基に、`index.js`と同じディレクトリに`.env`ファイルを作成します
 ② `config.json` を`index.js`と同じディレクトリに作成します。
 ```json
 {
@@ -53,5 +46,11 @@ DB_HOST = 接続先
 
 ③ 以上の設定が終わったら、ターミナルで `node .` と入力することでBOTの起動が可能です。
 
+# 📑Files
+* index.js... NoNICK.jsを起動するファイル。
+* resetCommand.js... BOTに登録されているコマンドをすべて削除するファイル `config.json`の`guildCommand`がtrueになっている場合はギルドコマンドも全て削除されます。
+* sqliteToMysql_v3.0.js... v3.0準拠のSQLiteからMySQLへデータを移行できるファイル
+* syncSQLite_v3.0.. v2.1以下のSQLiteをv3.0準拠のSQLiteに変換するファイル
+
 # 🎓License
-* 自作発言をしなければMITライセンスの基、このプログラムを使用することが可能です。
+* 自作発言をしない限り、MITライセンスに基づいた使用が可能となります。

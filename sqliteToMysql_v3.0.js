@@ -11,8 +11,12 @@ console.info('SQLiteの接続に成功しました。');
 
 const MySQL = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
-    dialect: 'mysql',
+    port: process.env.DB_PORT,
     logging: false,
+    dialect: 'mysql',
+    dialectOptions: {
+        ssl:'Amazon RDS',
+    },
 });
 console.info('MySQLへの接続に成功しました。');
 
@@ -45,46 +49,46 @@ async function syncDB(param) {
 
 async function sqliteToMysql(param) {
     const SQLiteModel = await require(`./models/${param}`)(SQLite).findAll();
-    SQLiteModel.forEach(async (v) => {
-        await require(`./models/${param}`)(MySQL).findOrCreate({ where: { serverId: v.serverId } });
-        const MySQLModel = await require(`./models/${param}`)(MySQL).findOne({ where: { serverId: v.serverId } });
+    SQLiteModel.forEach(async (model) => {
+        await require(`./models/${param}`)(MySQL).findOrCreate({ where: { serverId: model.serverId } });
+        const MySQLModel = await require(`./models/${param}`)(MySQL).findOne({ where: { serverId: model.serverId } });
 
         switch (param) {
             case 'basic':
                 MySQLModel.update({
-                    reportCh: v.reportCh,
-                    reportRoleMention: v.reportRoleMention,
-                    reportRole: v.reportRole,
-                    messageExpansion: v.messageExpansion,
+                    reportCh: model.reportCh,
+                    reportRoleMention: model.reportRoleMention,
+                    reportRole: model.reportRole,
+                    messageExpansion: model.messageExpansion,
                 });
                 break;
             case 'welcomeM':
                 MySQLModel.update({
-                    welcome: v.welcome,
-                    welcomeCh: v.welcomeCh,
-                    welcomeMessage: v.welcomeMessage,
-                    leave: v.leave,
-                    leaveCh: v.leaveCh,
-                    leaveMessage: v.leaveMessage,
+                    welcome: model.welcome,
+                    welcomeCh: model.welcomeCh,
+                    welcomeMessage: model.welcomeMessage,
+                    leave: model.leave,
+                    leaveCh: model.leaveCh,
+                    leaveMessage: model.leaveMessage,
                 });
                 break;
             case 'log':
                 MySQLModel.update({
-                    log: v.log,
-                    logCh: v.logCh,
-                    bot: v.bot,
-                    timeout: v.timeout,
-                    kick: v.kick,
-                    ban: v.ban,
+                    log: model.log,
+                    logCh: model.logCh,
+                    bot: model.bot,
+                    timeout: model.timeout,
+                    kick: model.kick,
+                    ban: model.ban,
                 });
                 break;
             case 'verification':
                 MySQLModel.update({
-                    verification: v.verification,
-                    oldLevel: v.oldLevel,
-                    newLevel: v.newLevel,
-                    startChangeTime: v.startChangeTime,
-                    endChangeTime: v.endChangeTime,
+                    verification: model.verification,
+                    oldLevel: model.oldLevel,
+                    newLevel: model.newLevel,
+                    startChangeTime: model.startChangeTime,
+                    endChangeTime: model.endChangeTime,
                 });
                 break;
         }

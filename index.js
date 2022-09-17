@@ -19,9 +19,21 @@ const client = new discord.Client({
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
-    dialect: 'mysql',
+    port: process.env.DB_PORT,
     logging: false,
+    dialect: 'mysql',
+    dialectOptions: {
+        ssl:'Amazon RDS',
+    },
 });
+
+// const sequelize = new Sequelize({
+//     host: 'localhost',
+//     dialect: 'sqlite',
+//     logging: false,
+//     storage: 'models/.config.sqlite',
+// });
+
 const basicModel = require('./models/basic')(sequelize);
 const welcomeMModel = require('./models/welcomeM')(sequelize);
 const logModel = require('./models/log')(sequelize);
@@ -54,7 +66,7 @@ client.once('ready', () => {
     cron.schedule('0 * * * *', date => {
         client.sequelize = sequelize;
         require('./cron/verificationChange/index').execute(client, date);
-    }, { timezone: 'Japan' });
+    });
 });
 
 client.on('guildCreate', () => client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));

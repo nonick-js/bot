@@ -197,7 +197,7 @@ const ping_command = {
                             ),
                     );
 
-                    interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, logEventSelect] });
+                    interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, logEventSelect, button] });
                     break;
                 }
             }

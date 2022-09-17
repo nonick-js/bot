@@ -10,7 +10,7 @@ const discord = require('discord.js');
 module.exports = {
     /** @type {verificationChangeCallback} */
     async execute(client, date) {
-        const hour = date.getHours();
+        const hour = date.getHours() - 9 < 0 ? date.getHours() + 24 - 9 : date.getHours() - 9;
 
         require('./startVerificationChange').execute(client, hour);
         require('./endVerificationChange').execute(client, hour);
