@@ -1,14 +1,14 @@
 const discord = require('discord.js');
 class Pagination {
-	#pages
-	#previousButton
-	#nextButton
-	#current
-	#senderOnly
-	#sended
+	#pages;
+	#previousButton;
+	#nextButton;
+	#current;
+	#senderOnly;
+	#sended;
 	/**
 	 * @constructor
-	 * @param {discord.EmbedBuilder[]} pages ページ
+	 * @param {discord.Embed[]} pages ページ
 	 */
 	constructor(...pages) {
 		/**
@@ -44,7 +44,7 @@ class Pagination {
 	}
 
 	#sendedTest() {
-		if(this.#sended) throw new Error('This message sended!');
+		if (this.#sended) throw new Error('This message sended!');
 	}
 
 	/**
@@ -144,36 +144,36 @@ class Pagination {
 	 * @param {discord.Message?} message
 	 */
 	async sendMessage(channel, options = {}, message = null) {
-		if(!this.#pages.length) throw new Error('pages length 0');
+		if (!this.#pages.length) throw new Error('pages length 0');
 		const currentEmbed = this.#pages[this.#current];
 		const msg = await channel.send({
 			...options,
 			embeds: [...(options.embeds || []), currentEmbed.setFooter({ ...currentEmbed.footer, text: `${currentEmbed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })],
-			components: [...(options.components || []), new discord.ActionRowBuilder().addComponents(this.#previousButton, this.#nextButton)]
+			components: [...(options.components || []), new discord.ActionRowBuilder().addComponents(this.#previousButton, this.#nextButton)],
 		});
 		this.#sended = true;
 		const filter = (i) => i.customId === 'pagination:previousButton' || i.customId === 'pagination:nextButton';
 		const collector = msg.createMessageComponentCollector({
-			filter, time: 600_000
+			filter, time: 600_000,
 		});
 		collector.on('collect', async i => {
-			if(!message) return
-			if(this.#senderOnly && !i.user.equals(message.author)) return;
-			if(i.customId === 'pagination:previousButton') {
+			if (!message) return;
+			if (this.#senderOnly && !i.user.equals(message.author)) return;
+			if (i.customId === 'pagination:previousButton') {
 				this.#current = (this.#pages.length + --this.#current) % this.#pages.length;
 			}
-			if(i.customId === 'pagination:nextButton') {
+			if (i.customId === 'pagination:nextButton') {
 				this.#current = ++this.#current % this.#pages.length;
 			}
 			const embed = this.#pages[this.#current];
 			await i.deferUpdate();
 			await i.editReply({
-				embeds: [embed.setFooter({ ...embed.footer, text: `${embed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })]
+				embeds: [discord.EmbedBuilder.from(embed).setFooter({ ...embed.footer, text: `${embed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })],
 			});
 			collector.resetTimer();
 		});
 		collector.on('end', () => {
-			if(msg) {
+			if (msg) {
 				// 元データ: components: msg.components.map(row => row.components.map(button => filter(button) ? discord.ButtonBuilder.from(button).setDisabled(true) : button))
 				// 元データにバグが含まれている + 今現在メッセージURL展開以外に使用しないため、直接コンポーネントを指定する
 				const dbutton = new discord.ActionRowBuilder().addComponents(
@@ -189,7 +189,7 @@ class Pagination {
 						.setStyle(discord.ButtonStyle.Secondary),
 				);
 				msg.edit({
-					components: [dbutton]
+					components: [dbutton],
 				});
 			}
 		});
@@ -200,7 +200,7 @@ class Pagination {
 	 * @param {discord.MessageOptions} options
 	 */
 	async replyMessage(message, options = {}) {
-		options.reply = { messageReference: options.reply?.messageReference ?? message, failIfNotExists: options.reply?.failIfNotExists}
+		options.reply = { messageReference: options.reply?.messageReference ?? message, failIfNotExists: options.reply?.failIfNotExists };
 		await this.sendMessage(message.channel, options, message);
 	}
 
@@ -209,29 +209,29 @@ class Pagination {
 	 * @param {discord.InteractionReplyOptions} options
 	 */
 	async replyInteraction(interaction, options = {}) {
-		if(!this.#pages.length) throw new Error('pages length 0');
+		if (!this.#pages.length) throw new Error('pages length 0');
 		const currentEmbed = this.#pages[this.#current];
 		const msg = await interaction.reply({
 			...options,
 			embeds: [...(options.embeds || []), currentEmbed.setFooter({ ...currentEmbed.footer, text: `${currentEmbed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })],
-			components: [...(options.components || []), new discord.ActionRowBuilder().addComponents(this.#previousButton, this.#nextButton)]
+			components: [...(options.components || []), new discord.ActionRowBuilder().addComponents(this.#previousButton, this.#nextButton)],
 		});
 		this.#sended = true;
 		const filter = (i) => i.customId === 'pagination:previousButton' || i.customId === 'pagination:nextButton';
 		const collector = msg.createMessageComponentCollector({
-			filter, time: 600_000
+			filter, time: 600_000,
 		});
 		collector.on('collect', async i => {
-			if(this.#senderOnly && interaction && !i.user.equals(interaction.user)) return;
-			if(i.customId === 'pagination:previousButton') {
+			if (this.#senderOnly && interaction && !i.user.equals(interaction.user)) return;
+			if (i.customId === 'pagination:previousButton') {
 				this.#current = (this.#pages.length + --this.#current) % this.#pages.length;
 			}
-			if(i.customId === 'pagination:nextButton') {
+			if (i.customId === 'pagination:nextButton') {
 				this.#current = ++this.#current % this.#pages.length;
 			}
 			const embed = this.#pages[this.#current];
 			i.update({
-				embeds: [embed.setFooter({ ...embed.footer, text: `${embed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })]
+				embeds: [embed.setFooter({ ...embed.footer, text: `${embed.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })],
 			});
 			collector.resetTimer();
 		});

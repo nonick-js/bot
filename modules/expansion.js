@@ -7,11 +7,11 @@ function urlExpansion(message) {
 	const results = [...message.content.matchAll(/https:\/\/(?:.+\.)?discord(?:.+)?.com\/channels\/(?<guildId>\d+)\/(?<channelId>\d+)\/(?<messageId>\d+)/g)];
 	results.forEach(async result => {
 		try {
-			const guild = await message.client.guilds.fetch(result.groups.guildId);
+			const guild = await message.client.guilds.fetch(result.groups.guildId).catch(() => {});
 			if (!guild) throw new URIError(`サーバーID:\`${result.groups.guildId}\`に入っていません`);
-			const channel = await guild.channels.fetch(result.groups.channelId);
+			const channel = await guild.channels.fetch(result.groups.channelId).catch(() => {});
 			if (!(channel && channel.isTextBased())) throw new URIError(`チャンネルID:\`${result.groups.guildId}\`が存在しないもしくはアクセスできません`);
-			const msg = await channel.messages.fetch(result.groups.messageId);
+			const msg = await channel.messages.fetch(result.groups.messageId).catch(() => {});
 			if (!msg) throw new URIError(`メッセージID:\`${result.groups.messageId}\`が存在しないもしくはアクセスできません`);
 
 			const pagination = new Pagination();
@@ -40,7 +40,6 @@ function urlExpansion(message) {
 				.replyMessage(message, { allowedMentions: { parse: [] } });
 		}
 		catch (err) {
-			console.error(err);
 			const em = new discord.EmbedBuilder()
 				.setTitle('エラー!')
 				.setColor('FF0000')
