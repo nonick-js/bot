@@ -4,7 +4,7 @@ module.exports = function(sequelize) {
     class log extends Model {}
 
     return log.init({
-        serverId: { type: DataTypes.STRING },
+        serverId: { type: DataTypes.STRING, unique: true },
         log: { type: DataTypes.BOOLEAN, defaultValue: false },
         logCh: { type: DataTypes.STRING, defaultValue: null },
         bot: { type: DataTypes.BOOLEAN, defaultValue: false },

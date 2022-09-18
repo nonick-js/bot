@@ -43,10 +43,10 @@ const interactions = new DiscordInteractions(client);
 interactions.loadInteractions('./commands');
 
 client.once('ready', () => {
-    basicModel.sync({ alter: true });
-    welcomeMModel.sync({ alter: true });
-    logModel.sync({ alter: true });
-    verificationModel.sync({ alter: true });
+    basicModel.sync({ alter: false });
+    welcomeMModel.sync({ alter: false });
+    logModel.sync({ alter: false });
+    verificationModel.sync({ alter: false });
 
     console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
     console.table({
@@ -69,12 +69,20 @@ client.once('ready', () => {
     });
 });
 
-client.on('guildCreate', () => client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
+client.on('guildCreate', guild => {
+    client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
+    basicModel.create({ serverId: guild.id }).catch(() => {});
+    welcomeMModel.create({ serverId: guild.id }).catch(() => {});
+    logModel.create({ serverId: guild.id }).catch(() => {});
+    verificationModel.create({ serverId: guild.id }).catch(() => {});
+});
+
 client.on('guildDelete', guild => {
     client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
-    basicModel.destroy({ where: { serverId: guild.id } });
-    logModel.destroy({ where: { serverId: guild.id } });
-    verificationModel.destroy({ where: { serverId: guild.id } });
+    basicModel.destroy({ where: { serverId: guild.id } }).catch(() => {});
+    welcomeMModel.destroy({ where: { serverId: guild.id } }).catch(() => {});
+    logModel.destroy({ where: { serverId: guild.id } }).catch(() => {});
+    verificationModel.destroy({ where: { serverId: guild.id } }).catch(() => {});
 });
 
 client.on('guildBanAdd', ban => moduleExecute(require('./events/guildBanAdd/index'), ban));
@@ -91,11 +99,11 @@ client.on('interactionCreate', async interaction => {
             .setColor('Red');
         return interaction.reply({ embeds: [embed], ephemeral: true });
     }
-    if (interaction.guild) {
-        await basicModel.findOrCreate({ where: { serverId: interaction.guildId } });
-        await welcomeMModel.findOrCreate({ where: { serverId: interaction.guildId } });
-        await logModel.findOrCreate({ where: { serverId: interaction.guildId } });
-        await verificationModel.findOrCreate({ where: { serverId: interaction.guildId } });
+    if (interaction.guild && interaction.type == discord.InteractionType.ApplicationCommand) {
+        await basicModel.findOrCreate({ where: { serverId: interaction.guildId } }).catch(() => {});
+        await welcomeMModel.findOrCreate({ where: { serverId: interaction.guildId } }).catch(() => {});
+        await logModel.findOrCreate({ where: { serverId: interaction.guildId } }).catch(() => {});
+        await verificationModel.findOrCreate({ where: { serverId: interaction.guildId } }).catch(() => {});
         interaction.sequelize = sequelize;
     }
     interactions.run(interaction).catch(err => {if (err.code !== 0) console.warn(err);});

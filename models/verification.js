@@ -4,7 +4,7 @@ module.exports = function(sequelize) {
     class verification extends Model {}
 
     return verification.init({
-        serverId: { type: DataTypes.STRING },
+        serverId: { type: DataTypes.STRING, unique: true },
         verification: { type: DataTypes.BOOLEAN, defaultValue: 0 },
         oldLevel: { type: DataTypes.INTEGER, defaultValue: null },
         newLevel: { type: DataTypes.INTEGER, defaultValue: null },

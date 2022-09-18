@@ -4,7 +4,7 @@ module.exports = function(sequelize) {
     class welcomeM extends Model {}
 
     return welcomeM.init({
-        serverId: { type: DataTypes.STRING },
+        serverId: { type: DataTypes.STRING, unique: true },
         welcome: { type: DataTypes.BOOLEAN, defaultValue: false },
         welcomeCh: { type: DataTypes.STRING, defaultValue: null },
         welcomeMessage: { type: DataTypes.TEXT, defaultValue: [
