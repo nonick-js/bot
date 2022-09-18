@@ -17,22 +17,22 @@ const client = new discord.Client({
     partials: [ discord.Partials.Channel, discord.Partials.GuildMember, discord.Partials.Message, discord.Partials.User ],
 });
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    logging: false,
-    dialect: 'mysql',
-    dialectOptions: {
-        ssl:'Amazon RDS',
-    },
-});
-
-// const sequelize = new Sequelize({
-//     host: 'localhost',
-//     dialect: 'sqlite',
+// const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
 //     logging: false,
-//     storage: 'models/.config.sqlite',
+//     dialect: 'mysql',
+//     dialectOptions: {
+//         ssl:'Amazon RDS',
+//     },
 // });
+
+const sequelize = new Sequelize({
+    host: 'localhost',
+    dialect: 'sqlite',
+    logging: false,
+    storage: 'models/.config.sqlite',
+});
 
 const basicModel = require('./models/basic')(sequelize);
 const welcomeMModel = require('./models/welcomeM')(sequelize);
