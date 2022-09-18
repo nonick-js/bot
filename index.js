@@ -2,7 +2,7 @@ const discord = require('discord.js');
 const cron = require('node-cron');
 const Sequelize = require('sequelize');
 const { DiscordInteractions } = require('@djs-tools/interactions');
-const { guildId, guildCommand, blackList } = require('./config.json');
+const { guildId, guildCommand, blackList, statusMessage } = require('./config.json');
 require('dotenv').config();
 
 const client = new discord.Client({
@@ -60,6 +60,7 @@ client.once('ready', () => {
     });
 
     client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
+    client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
     if (guildCommand) interactions.registerCommands(guildId);
     else interactions.registerCommands();
 
@@ -69,9 +70,9 @@ client.once('ready', () => {
     });
 });
 
-client.on('guildCreate', () => client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
+client.on('guildCreate', () => client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
 client.on('guildDelete', guild => {
-    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
+    client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
     basicModel.destroy({ where: { serverId: guild.id } });
     logModel.destroy({ where: { serverId: guild.id } });
     verificationModel.destroy({ where: { serverId: guild.id } });
@@ -103,13 +104,7 @@ client.on('interactionCreate', async interaction => {
 
 async function moduleExecute(module, param, param2) {
     if (blackList.guilds.includes(param.guild?.id) || blackList.users.includes(param.guild?.ownerId)) return;
-    if (param.guild) {
-        await basicModel.findOrCreate({ where: { serverId: param.guild.id } });
-        await welcomeMModel.findOrCreate({ where: { serverId: param.guild.id } });
-        await logModel.findOrCreate({ where: { serverId: param.guild.id } });
-        await verificationModel.findOrCreate({ where: { serverId: param.guild.id } });
-        param.sequelize = sequelize;
-    }
+    if (param.guild) param.sequelize = sequelize;
     module.execute(param, param2);
 }
 
