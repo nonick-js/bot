@@ -44,7 +44,7 @@ const ping_command = {
         interaction.message.embeds[0].fields[1].value = time;
 
         button.components[1] = discord.ButtonBuilder.from(button.components[1])
-            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime && endChangeTime));
+            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime !== null && endChangeTime !== null));
 
         interaction.update({ embeds: [interaction.message.embeds[0]], components: [interaction.message.components[0], interaction.message.components[1]] });
     },
