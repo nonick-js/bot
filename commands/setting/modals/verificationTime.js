@@ -16,7 +16,7 @@ const ping_command = {
         const oldModel = await require('../../../models/verification')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
 
         try {
-            if (isNaN(Number(value)) || Number(value) < -1 || Number(value) > 23) throw '無効な値です！';
+            if (isNaN(Number(value)) || Math.sign(value) == -1 || Number(value) > 23) throw '無効な値です！';
             if (customId == 'startChangeTime' && value == oldModel.get('endChangeTime')) throw '終了時刻と同じ時間に設定することはできません！';
             if (customId == 'endChangeTime' && value == oldModel.get('startChangeTime')) throw '開始時刻と同じ時間に設定することはできません！';
         }
@@ -44,7 +44,7 @@ const ping_command = {
         interaction.message.embeds[0].fields[1].value = time;
 
         button.components[1] = discord.ButtonBuilder.from(button.components[1])
-            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime && endChangeTime));
+            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime !== null && endChangeTime !== null));
 
         interaction.update({ embeds: [interaction.message.embeds[0]], components: [interaction.message.components[0], interaction.message.components[1]] });
     },

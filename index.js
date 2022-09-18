@@ -2,7 +2,7 @@ const discord = require('discord.js');
 const cron = require('node-cron');
 const Sequelize = require('sequelize');
 const { DiscordInteractions } = require('@djs-tools/interactions');
-const { guildId, guildCommand, blackList } = require('./config.json');
+const { guildId, guildCommand, blackList, statusMessage } = require('./config.json');
 require('dotenv').config();
 
 const client = new discord.Client({
@@ -17,22 +17,22 @@ const client = new discord.Client({
     partials: [ discord.Partials.Channel, discord.Partials.GuildMember, discord.Partials.Message, discord.Partials.User ],
 });
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    logging: false,
-    dialect: 'mysql',
-    dialectOptions: {
-        ssl:'Amazon RDS',
-    },
-});
-
-// const sequelize = new Sequelize({
-//     host: 'localhost',
-//     dialect: 'sqlite',
+// const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
 //     logging: false,
-//     storage: 'models/.config.sqlite',
+//     dialect: 'mysql',
+//     dialectOptions: {
+//         ssl:'Amazon RDS',
+//     },
 // });
+
+const sequelize = new Sequelize({
+    host: 'localhost',
+    dialect: 'sqlite',
+    logging: false,
+    storage: 'models/.config.sqlite',
+});
 
 const basicModel = require('./models/basic')(sequelize);
 const welcomeMModel = require('./models/welcomeM')(sequelize);
@@ -59,7 +59,7 @@ client.once('ready', () => {
         'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
 
-    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
+    client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
     if (guildCommand) interactions.registerCommands(guildId);
     else interactions.registerCommands();
 
@@ -69,9 +69,9 @@ client.once('ready', () => {
     });
 });
 
-client.on('guildCreate', () => client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
+client.on('guildCreate', () => client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
 client.on('guildDelete', guild => {
-    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
+    client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
     basicModel.destroy({ where: { serverId: guild.id } });
     logModel.destroy({ where: { serverId: guild.id } });
     verificationModel.destroy({ where: { serverId: guild.id } });
@@ -103,13 +103,7 @@ client.on('interactionCreate', async interaction => {
 
 async function moduleExecute(module, param, param2) {
     if (blackList.guilds.includes(param.guild?.id) || blackList.users.includes(param.guild?.ownerId)) return;
-    if (param.guild) {
-        await basicModel.findOrCreate({ where: { serverId: param.guild.id } });
-        await welcomeMModel.findOrCreate({ where: { serverId: param.guild.id } });
-        await logModel.findOrCreate({ where: { serverId: param.guild.id } });
-        await verificationModel.findOrCreate({ where: { serverId: param.guild.id } });
-        param.sequelize = sequelize;
-    }
+    if (param.guild) param.sequelize = sequelize;
     module.execute(param, param2);
 }
 

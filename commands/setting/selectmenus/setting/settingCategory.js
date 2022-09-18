@@ -169,7 +169,7 @@ const ping_command = {
                             .setCustomId('setting-verification')
                             .setLabel(settingSwitcher('BUTTON_LABEL', verification))
                             .setStyle(settingSwitcher('BUTTON_STYLE', verification))
-                            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime && endChangeTime)),
+                            .setDisabled(settingSwitcher('BUTTON_DISABLE', newLevel && startChangeTime !== null && endChangeTime !== null)),
                         new discord.ButtonBuilder()
                             .setCustomId('setting-startChangeTime')
                             .setLabel('開始時刻')

@@ -13,7 +13,7 @@ const ping_command = {
         const { reportCh } = Model.get();
 
 		const user = interaction.targetMessage.author;
-		const member = interaction.guild.members.fetch(user.id).catch(() => {});
+		const member = await interaction.guild.members.fetch(user.id).catch(() => {});
 
 		try {
 			if (!reportCh && interaction.member.permissions.has(discord.PermissionFlagsBits.ManageGuild)) throw '**この機能を使用するには追加で設定が必要です。**\n`/setting`で通報機能の設定を開き、通報を受け取るチャンネルを設定してください。';

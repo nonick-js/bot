@@ -37,7 +37,7 @@ const ping_command = {
             new discord.ButtonBuilder()
                 .setLabel('ドキュメント')
                 .setStyle(discord.ButtonStyle.Link)
-                .setURL('https://nonick.gitbook.io/nonick.js'),
+                .setURL('https://docs.nonick-js.com'),
         );
 
         interaction.reply({ embeds: [embed], components: [button], ephemeral:true });
