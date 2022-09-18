@@ -13,7 +13,7 @@ module.exports = {
         if (!newMember?.communicationDisabledUntil || oldMember?.communicationDisabledUntilTimestamp == newMember?.communicationDisabledUntilTimestamp) return;
 
         const logModel = await require('../../models/log')(oldMember.sequelize).findOne({ where: { serverId: newMember.guild.id } });
-        if (!logModel.get('log') || !logModel.get('timeout')) return;
+        if (!logModel?.get('log') || !logModel?.get('timeout')) return;
 
         const auditLogs = await newMember.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberUpdate, limit: 3 }).catch(() => {});
         const timeoutLog = auditLogs?.entries?.find(v => v.target == newMember.user);

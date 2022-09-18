@@ -11,6 +11,7 @@ module.exports = {
     async execute(member) {
         const welcomeMModel = await require('../../models/welcomeM')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
         const logModel = await require('../../models/log')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
+        if (!welcomeMModel || !logModel) return;
         const { welcome, welcomeCh, welcomeMessage } = welcomeMModel.get();
         const { log, logCh, bot } = logModel.get();
         if (!welcome) return;
