@@ -4,7 +4,7 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ModalRegister} */
 const ping_command = {
     data: {
-        customId: 'reactionRole-deleteRole',
+        customId: 'reactionRole-deleteRoleModal',
         type: 'MODAL',
     },
     exec: async (interaction) => {
@@ -14,11 +14,9 @@ const ping_command = {
         const button = interaction.message.components[1];
 
         const role = interaction.guild.roles.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput'));
-        const replace = select.components[0].options.findIndex((v) => v.value == role.id);
 
         try {
             if (!role) throw 'その名前のロールは存在しません！';
-            if (replace == 1) throw 'このロールはパネルに追加されていません！';
         } catch (err) {
             const errorEmbed = new discord.EmbedBuilder()
                 .setDescription(`❌ ${err}`)
@@ -27,7 +25,7 @@ const ping_command = {
         }
 
         select.components[0] = discord.SelectMenuBuilder.from(select.components[0])
-            .setOptions(select.components[0].options.splice(replace - 1, 1));
+            .setOptions(select.components[0].options.filter(v => v.value !== role.id));
         interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, button] });
     },
 };
