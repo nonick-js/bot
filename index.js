@@ -59,7 +59,6 @@ client.once('ready', () => {
         'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
 
-    client.user.setActivity({ name: `/info | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
     client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
     if (guildCommand) interactions.registerCommands(guildId);
     else interactions.registerCommands();
