@@ -1,5 +1,6 @@
 node_modules
 models/.config.sqlite
 .env
+.vscode
 config.json
 updateMemo.txt
