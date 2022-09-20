@@ -24,7 +24,7 @@ const ping_command = {
             .setFields(
                 { name: '💾メモリ使用量', value: `${ram > 500 ? `${emojies.warning} \`${ram}\`MB` : `\`${ram}\`MB` }`, inline: true },
                 { name: '🌐Ping', value: `\`${interaction.client.ws.ping}\`ms`, inline: true },
-                { name: '💽Discord.js', value: `v${discord.version}`, inline: true },
+                { name: '💽Discord.js', value: `\`v${discord.version}\``, inline: true },
                 { name: '💻プラットフォーム', value: `\`${process.platform}\``, inline: true },
                 { name: '📡導入数', value: `\`${interaction.client.guilds.cache.size}\`サーバー`, inline: true },
                 { name: '👥総メンバー数', value: `\`${interaction.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0)}\` 人`, inline: true },
