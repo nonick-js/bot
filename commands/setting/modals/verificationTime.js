@@ -16,7 +16,7 @@ const ping_command = {
         const oldModel = await require('../../../models/verification')(interaction.sequelize).findOne({ where: { serverId: interaction.guildId } });
 
         try {
-            if (isNaN(Number(value)) || Math.sign(value) == -1 || Number(value) > 23) throw '無効な値です！';
+            if (isNaN(Number(value)) || Math.sign(value) == -1 || Number(value) > 23 || !Number.isInteger(value)) throw '無効な値です！';
             if (customId == 'startChangeTime' && value == oldModel.get('endChangeTime')) throw '終了時刻と同じ時間に設定することはできません！';
             if (customId == 'endChangeTime' && value == oldModel.get('startChangeTime')) throw '開始時刻と同じ時間に設定することはできません！';
         }
