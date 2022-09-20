@@ -25,7 +25,7 @@ const ping_command = {
                         '**必要な権限**: `ウェブフックの管理`',
                     ].join('\n');
                 }
-                if (!iconURL.startsWith('https://') || iconURL.startsWith('http://')) throw 'アイコンのURLが無効です！';
+                if (iconURL && (!iconURL.startsWith('https://') || iconURL.startsWith('http://'))) throw 'アイコンのURLが無効です！';
                 if (!webhooks) throw ('何らかの原因でWebhookが正しく作成されませんでした。時間をおいて再度お試しください。');
             } catch (err) {
                 const error = new discord.EmbedBuilder()
@@ -34,7 +34,7 @@ const ping_command = {
                 return interaction.editReply({ embeds: [interaction.message.embeds[0], error] });
             }
 
-            await myWebhook.edit({ name: name, avatar: iconURL, channel: interaction.channel.id });
+            myWebhook.edit({ name: name, avatar: iconURL, channel: interaction.channel.id });
             myWebhook.send({ embeds: [interaction.message.embeds[0]] })
                 .then(() => {
                     const success = new discord.EmbedBuilder()
