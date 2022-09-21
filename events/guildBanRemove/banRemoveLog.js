@@ -10,7 +10,7 @@ module.exports = {
     /** @type {guildBanRemoveCallback} */
     async execute(ban) {
         const logModel = await require('../../models/log')(ban.sequelize).findOne({ where: { serverId: ban.guild.id } });
-        if (!logModel.get('log') || !logModel.get('ban')) return;
+        if (!logModel?.get('log') || !logModel?.get('ban')) return;
 
         const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanRemove, limit: 3 }).catch(() => {});
         const banLog = auditLogs?.entries?.find(v => v.target == ban.user);

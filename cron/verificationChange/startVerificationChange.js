@@ -28,9 +28,11 @@ module.exports = {
 
             const guild = await client.guilds.fetch(v.serverId).catch(() => {});
             if (!guild) return;
+            const oldVerificationLevel = guild.verificationLevel;
 
             guild.setVerificationLevel(v.newLevel)
                 .then(async () => {
+                    await verificationModel.update({ oldLevel: oldVerificationLevel });
                     if (!log || !logModel.get('bot')) return;
 
                     const channel = await guild.channels.fetch(logCh).catch(() => {});

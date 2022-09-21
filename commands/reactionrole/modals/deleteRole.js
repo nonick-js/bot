@@ -14,6 +14,7 @@ const ping_command = {
         const button = interaction.message.components[1];
 
         const role = interaction.guild.roles.cache.find((v) => v.name === interaction.fields.getTextInputValue('textinput'));
+        const options = select.components[0].options;
 
         try {
             if (!role) throw 'その名前のロールは存在しません！';
@@ -25,7 +26,7 @@ const ping_command = {
         }
 
         select.components[0] = discord.SelectMenuBuilder.from(select.components[0])
-            .setOptions(select.components[0].options.filter(v => v.value !== role.id));
+            .setOptions(options.filter(v => v.value !== role.id));
         interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, button] });
     },
 };

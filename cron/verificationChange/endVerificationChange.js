@@ -18,7 +18,7 @@ module.exports = {
     /** @type {verificationChangeCallback} */
     async execute(client, hour) {
         const lists = await require('../../models/verification')(client.sequelize).findAll({ attributes: ['serverId', 'verification', 'oldLevel', 'endChangeTime'] });
-        const taskLists = lists.filter(v => v.endChangeTime == hour && v.oldLevel);
+        const taskLists = lists.filter(v => v.endChangeTime == hour && v.verification && v.oldLevel);
         if (!taskLists) return;
 
         taskLists.forEach(async (v) => {

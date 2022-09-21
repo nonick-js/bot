@@ -11,7 +11,7 @@ module.exports = {
     /** @type {messageCreateCallback} */
     async execute(message) {
         const Model = await require('../../models/basic')(message.sequelize).findOne({ where: { serverId: message.guild.id } });
-        if (!Model.get('messageExpansion')) return;
+        if (!Model?.get('messageExpansion')) return;
 
         expansion.urlExpansion(message);
     },

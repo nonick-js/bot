@@ -10,7 +10,7 @@ module.exports = {
     /** @type {MemberRemoveCallback} */
     async execute(member) {
         const logModel = await require('../../models/log')(member.sequelize).findOne({ where: { serverId: member.guild.id } });
-        if (!logModel.get('log') || !logModel.get('kick')) return;
+        if (!logModel?.get('log') || !logModel?.get('kick')) return;
 
         const auditLogs = await member.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberKick, limit: 3 }).catch(() => {});
         const kickLog = auditLogs?.entries?.find(v => v.target == member.user);
