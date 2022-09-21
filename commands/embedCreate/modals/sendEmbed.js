@@ -14,9 +14,7 @@ const ping_command = {
             const name = interaction.fields.getTextInputValue('name') || 'NoNICK.js';
             const iconURL = interaction.fields.getTextInputValue('iconURL');
 
-            const webhooks = await interaction.guild.fetchWebhooks();
-            /** @type {import('discord.js').Webhook} */
-            const myWebhook = webhooks?.find(webhook => webhook.owner == interaction.client.user) || await interaction.channel.createWebhook({ name: name }).catch(() => {});
+            const webhooks = await interaction.guild.fetchWebhooks().catch(() => {});
 
             try {
                 if (!interaction.guild.members.me.permissions.has(discord.PermissionFlagsBits.ManageWebhooks)) {
@@ -34,6 +32,8 @@ const ping_command = {
                 return interaction.editReply({ embeds: [interaction.message.embeds[0], error] });
             }
 
+            /** @type {import('discord.js').Webhook} */
+            const myWebhook = webhooks?.find(webhook => webhook.owner == interaction.client.user) || await interaction.channel.createWebhook({ name: name }).catch(() => {});
             myWebhook.edit({ name: name, avatar: iconURL, channel: interaction.channel.id });
             myWebhook.send({ embeds: [interaction.message.embeds[0]] })
                 .then(() => {
