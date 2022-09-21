@@ -48,15 +48,13 @@ client.once('ready', () => {
     logModel.sync({ alter: true });
     verificationModel.sync({ alter: true });
 
-    console.log(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
+    console.log(`[${new Date().toLocaleString({ timeZone: 'Asia/Tokyo' })}][INFO]ready!`);
     console.table({
         'Bot User': client.user.tag,
         'Guild(s)': `${client.guilds.cache.size} Servers`,
         'Watching': `${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0)} Members`,
         'Discord.js': `v${discord.version}`,
         'Node.js': process.version,
-        'Platform': `${process.platform} | ${process.arch}`,
-        'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
     });
 
     client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
