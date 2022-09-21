@@ -32,6 +32,10 @@ const sequelize = new Sequelize({
     dialect: 'sqlite',
     logging: false,
     storage: 'models/.config.sqlite',
+    retry: {
+        match: [/SQLITE_BUSY/],
+        max: 5,
+    },
 });
 
 const basicModel = require('./models/basic')(sequelize);
