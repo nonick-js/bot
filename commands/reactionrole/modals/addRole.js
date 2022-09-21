@@ -43,7 +43,7 @@ const ping_command = {
                     .setMinValues(0)
                     .setOptions({ label: displayName || role?.name, description: description || undefined, value: role.id, emoji: unicodeEmoji?.[0] ?? emoji?.id }),
             );
-            interaction.update({ components: [select, component] });
+            interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, component] });
         } else {
             if (component.components[0].options.find((v) => v.value == role.id)) {
                 const embed = new discord.EmbedBuilder()

@@ -52,7 +52,7 @@ const ping_command = {
                 .setStyle(discord.ButtonStyle.Secondary),
             new discord.ButtonBuilder()
                 .setCustomId('reactionRole-changeMode')
-                .setLabel('単一選択')
+                .setLabel('複数選択')
                 .setStyle(discord.ButtonStyle.Success),
             new discord.ButtonBuilder()
                 .setCustomId('reactionRole-sendPanel')
@@ -60,7 +60,7 @@ const ping_command = {
                 .setStyle(discord.ButtonStyle.Primary),
         );
 
-        interaction.reply({ content: '**プレビューモード**\n「送信」ボタンを押すとこのチャンネルにパネルを送信します。', embeds: [embed], components: [button], ephemeral: true });
+        interaction.reply({ content: '**プレビューモード**\n「送信」ボタンを押すとこのチャンネルにパネルを送信します。\n` 現在の選択モード: 単一選択 `', embeds: [embed], components: [button], ephemeral: true });
     },
 };
 module.exports = [ ping_command ];

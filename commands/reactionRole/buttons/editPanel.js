@@ -24,7 +24,7 @@ const ping_command = {
             return interaction.update({ embeds: [interaction.message.embeds[0], error] });
         }
 
-        if (interaction.message.components[1].components[3].label == '複数選択') {
+        if (interaction.message.components[1].components[3].label == '単一選択') {
             select.components[0] = discord.SelectMenuBuilder.from(select.components[0])
                 .setMaxValues(select.components[0].options.length);
         }
