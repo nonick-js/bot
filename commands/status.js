@@ -12,7 +12,7 @@ const ping_command = {
     data: {
         name: 'status',
         description: 'このBOTのステータスを表示します',
-        dmPermission: false,
+        dmPermission: true,
         type: 'CHAT_INPUT',
     },
     exec: async (interaction) => {
