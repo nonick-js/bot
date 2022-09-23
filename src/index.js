@@ -2,7 +2,7 @@ const discord = require('discord.js');
 const cron = require('node-cron');
 const Sequelize = require('sequelize');
 const { DiscordInteractions } = require('@djs-tools/interactions');
-const { guildId, guildCommand, blackList, statusMessage } = require('./config.json');
+const { guildId, guildCommand, blackList, statusMessage } = require('../../config.json');
 require('dotenv').config();
 
 const client = new discord.Client({
@@ -34,10 +34,10 @@ const sequelize = new Sequelize({
     storage: 'models/.config.sqlite',
 });
 
-const basicModel = require('./models/basic')(sequelize);
-const welcomeMModel = require('./models/welcomeM')(sequelize);
-const logModel = require('./models/log')(sequelize);
-const verificationModel = require('./models/verification')(sequelize);
+const basicModel = require('../models/basic')(sequelize);
+const welcomeMModel = require('../models/welcomeM')(sequelize);
+const logModel = require('../models/log')(sequelize);
+const verificationModel = require('../models/verification')(sequelize);
 
 const interactions = new DiscordInteractions(client);
 interactions.loadInteractions('./commands');
@@ -65,7 +65,7 @@ client.once('ready', () => {
 
     cron.schedule('0 * * * *', date => {
         client.sequelize = sequelize;
-        require('./cron/verificationChange/index').execute(client, date);
+        require('../cron/verificationChange/index').execute(client, date);
     });
 });
 
@@ -77,12 +77,12 @@ client.on('guildDelete', guild => {
     verificationModel.destroy({ where: { serverId: guild.id } });
 });
 
-client.on('guildBanAdd', ban => moduleExecute(require('./events/guildBanAdd/index'), ban));
-client.on('guildBanRemove', member => moduleExecute(require('./events/guildBanRemove/index'), member));
-client.on('guildMemberAdd', member => moduleExecute(require('./events/guildMemberAdd/index'), member));
-client.on('guildMemberRemove', member => moduleExecute(require('./events/guildMemberRemove/index'), member));
-client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(require('./events/guildMemberUpdate/index'), oldMember, newMember));
-client.on('messageCreate', message => moduleExecute(require('./events/messageCreate/index'), message));
+client.on('guildBanAdd', ban => moduleExecute(require('../events/guildBanAdd/index'), ban));
+client.on('guildBanRemove', member => moduleExecute(require('../events/guildBanRemove/index'), member));
+client.on('guildMemberAdd', member => moduleExecute(require('../events/guildMemberAdd/index'), member));
+client.on('guildMemberRemove', member => moduleExecute(require('../events/guildMemberRemove/index'), member));
+client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(require('../events/guildMemberUpdate/index'), oldMember, newMember));
+client.on('messageCreate', message => moduleExecute(require('../events/messageCreate/index'), message));
 
 client.on('interactionCreate', async interaction => {
     if (blackList.guilds.includes(interaction.guild?.id) || blackList.users.includes(interaction.guild?.ownerId)) {
