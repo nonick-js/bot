@@ -1,5 +1,4 @@
 // eslint-disable-next-line no-unused-vars
-const os = require('os');
 const discord = require('discord.js');
 const emojies = {
     warning: discord.formatEmoji('1021382599467352114'),

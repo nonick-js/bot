@@ -4,8 +4,9 @@ const feature = [
     '通報機能',
     'ログ機能',
     '認証レベル自動変更機能',
-    'リアクションロール',
-    'timeoutコマンド',
+    '/reactionrole',
+    '/embed',
+    '/timeout',
 ];
 
 /** @type {import('@djs-tools/interactions').ChatInputRegister} */
