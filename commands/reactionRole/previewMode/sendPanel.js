@@ -11,7 +11,7 @@ const ping_command = {
 		const button = interaction.message.components[1];
 
     try {
-      if (select.components[0].type == discord.ComponentType.Button) throw ['まだ一つもロールを追加していません！'];
+      if (select.components[0].type == discord.ComponentType.Button) throw ['まだ一つもロールを追加していません！', null];
       if (!interaction.channel.permissionsFor(interaction.guild.members.me).has(discord.PermissionFlagsBits.ViewChannel | discord.PermissionFlagsBits.SendMessages | discord.PermissionFlagsBits.EmbedLinks)) { throw [
         `#${interaction.channel} での ${interaction.client.user.username} の権限が不足しています！`,
         '**必要な権限**: `チャンネルを見る` `メッセージを送信` `埋め込みリンク`',
