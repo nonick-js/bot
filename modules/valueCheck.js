@@ -2,18 +2,9 @@
 const discord = require('discord.js');
 
 /**
- * @callback textChannelCheckCallback
  * @param {discord.Channel} channel
  * @param {discord.Interaction} interaction
  */
-
-/**
- * @callback memberRoleCheckCallback
- * @param {discord.Role} role
- * @param {discord.Interaction} interaction
- */
-
-/** @type {textChannelCheckCallback} */
 function textChannelCheck(channel, interaction) {
   try {
     if (!channel) throw ['その名前のチャンネルが見つかりません！', null];
@@ -31,15 +22,17 @@ function textChannelCheck(channel, interaction) {
   }
 }
 
-/** @type {memberRoleCheckCallback} */
+/**
+ * @param {discord.Role} role
+ * @param {discord.Interaction} interaction
+ */
 const memberRoleCheck = (role, interaction) => {
   try {
-      if (!role) throw ['その名前のロールは存在しません！', null];
-      if (role.managed) throw ['そのロールは外部サービスによって管理されています！', null];
+      if (!role) throw 'その名前のロールは存在しません！';
+      if (role.managed) throw 'そのロールは外部サービスによって管理されています！';
   } catch (err) {
     const error = new discord.EmbedBuilder()
-      .setAuthor({ name: err[0], iconURL: 'https://cdn.discordapp.com/attachments/958791423161954445/1022819275456651294/mark_batsu_illust_899.png' })
-      .setDescription(err[1])
+      .setAuthor({ name: err, iconURL: 'https://cdn.discordapp.com/attachments/958791423161954445/1022819275456651294/mark_batsu_illust_899.png' })
       .setColor('Red');
     return interaction.update({ embeds: [interaction.message.embeds[0], error] });
   }
