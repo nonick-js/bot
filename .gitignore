@@ -1,4 +1,5 @@
 node_modules
+.vscode
 models/.config.sqlite
 .env
 config.json
