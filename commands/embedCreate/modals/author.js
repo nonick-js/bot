@@ -24,7 +24,7 @@ const ping_command = {
         function urlCheck(param) {
             if (!param) return null;
             else if (param.startsWith('https://') || param.startsWith('http://')) return param;
-            else return interaction.message.embeds[0].author[Object.keys({ param })[0]];
+            else return interaction.message.embeds[0]?.author?.[Object.keys({ param })[0]];
         }
     },
 };

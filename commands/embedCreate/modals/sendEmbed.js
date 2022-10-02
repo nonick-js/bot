@@ -8,9 +8,8 @@ const ping_command = {
         type: 'MODAL',
     },
     exec: async (interaction) => {
-        await interaction.deferUpdate();
-
         if (interaction.fields.getTextInputValue('name') || interaction.fields.getTextInputValue('iconURL')) {
+
             const name = interaction.fields.getTextInputValue('name') || 'NoNICK.js';
             const iconURL = interaction.fields.getTextInputValue('iconURL');
 
@@ -29,6 +28,7 @@ const ping_command = {
                 const error = new discord.EmbedBuilder()
                     .setDescription(`❌ ${err}`)
                     .setColor('Red');
+                await interaction.deferUpdate();
                 return interaction.editReply({ embeds: [interaction.message.embeds[0], error] });
             }
 
@@ -65,14 +65,14 @@ const ping_command = {
                     const success = new discord.EmbedBuilder()
                         .setDescription('✅ 埋め込みを送信しました!')
                         .setColor('Green');
-                    interaction.editReply({ content: ' ', embeds: [success], components:[] });
+                    interaction.update({ content: ' ', embeds: [success], components:[] });
                 })
                 .catch((err) => {
                     const error = new discord.EmbedBuilder()
                         .setTitle('エラー！')
                         .setDescription(`以下のエラー文を直前の動作と共にサポートサーバーへ送信してください。\n\`\`\`${err}\`\`\``)
                         .setColor('Red');
-                    interaction.editReply({ embeds: [interaction.message.embeds[0], error] });
+                    interaction.update({ embeds: [interaction.message.embeds[0], error] });
                 });
         }
     },
