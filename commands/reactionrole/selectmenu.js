@@ -37,7 +37,7 @@ const ping_command = {
         .setColor('Green');
       return interaction.followUp({ embeds: [embed], ephemeral: true });
     } else {
-      return interaction.followUp({ content: '`❌` このチャンネルでは使用できません', ephemeral: true });
+      return interaction.followUp({ content: '❌ このチャンネルでは使用できません', ephemeral: true });
     }
   },
 };

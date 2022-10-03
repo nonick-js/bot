@@ -237,6 +237,7 @@ const selectMenuInteraction_featureCategory = {
     },
 };
 
+/** @type {import('@djs-tools/interactions').SelectMenuRegister} */
 const selectMenuInteraction_settingCategory = {
   data: {
     customId: 'setting-settingCategory',

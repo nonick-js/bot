@@ -21,7 +21,7 @@ const commandInteraction = {
 
 		const Config = await Configs.findOne({ serverId: interaction.guildId });
 		Config.verification.newLevel = Number(interaction.values);
-		await Config.save({ wtimeout: 3000 });
+		await Config.save({ wtimeout: 1500 });
 
     embed.fields[2].value = levelData[Number(interaction.values) - 1];
 

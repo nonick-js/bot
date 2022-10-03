@@ -44,7 +44,7 @@ const modalInteraction = {
 
     const Config = await Configs.findOne({ serverId: interaction.guildId });
     Config.report.channel = channel.id;
-		await Config.save({ wtimeout: 3000 });
+		await Config.save({ wtimeout: 1500 });
 
     embed.fields[0].value = discord.channelMention(Config.report.channel);
     interaction.update({ embeds: [embed], components: [interaction.message.components[0], interaction.message.components[1]] });

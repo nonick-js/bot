@@ -14,7 +14,7 @@ const buttonInteraction = {
 
     const Config = await Configs.findOne({ serverId: interaction.guildId });
     Config.report.mention = !Config.report.mention;
-		await Config.save({ wtimeout: 3000 });
+		await Config.save({ wtimeout: 1500 });
 
     embed.fields[1].value = settingSwitcher('STATUS_ROLE', Config.report.mention, Config.report.mentionRole);
     button.components[1] = discord.ButtonBuilder.from(button.components[1])

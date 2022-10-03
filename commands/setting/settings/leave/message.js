@@ -45,7 +45,7 @@ const modalInteraction = {
 
     const Config = await Configs.findOne({ serverId: interaction.guildId });
     Config.leave.message = message;
-		await Config.save({ wtimeout: 3000 });
+		await Config.save({ wtimeout: 1500 });
 
 		embed.fields[1].value = settingSwitcher('STATUS_CH', Config.leave.enable, Config.leave.channel) + `\n\n> ${welcomeM_preview(Config.leave.message).split('\n').join('\n> ')}`;
 

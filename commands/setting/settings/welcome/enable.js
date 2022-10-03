@@ -15,7 +15,7 @@ const buttonInteraction = {
 
 		const Config = await Configs.findOne({ serverId: interaction.guildId });
     Config.welcome.enable = !Config.welcome.enable;
-		await Config.save({ wtimeout: 3000 });
+		await Config.save({ wtimeout: 1500 });
 
     embed.fields[0].value = settingSwitcher('STATUS_CH', Config.welcome.enable, Config.welcome.channel) + `\n\n> ${welcomeM_preview(Config.welcome.message).split('\n').join('\n> ')}`;
 

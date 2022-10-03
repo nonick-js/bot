@@ -14,7 +14,7 @@ const buttonInteraction = {
 
     const Config = await Configs.findOne({ serverId: interaction.guildId });
     Config.log.enable = !Config.log.enable;
-		await Config.save({ wtimeout: 3000 });
+		await Config.save({ wtimeout: 1500 });
 
     embed.fields[0].value = settingSwitcher('STATUS_CH', Config.log.enable, Config.log.channel);
     button.components[1] = discord.ButtonBuilder.from(button.components[1])

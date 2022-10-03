@@ -52,7 +52,7 @@ const modalInteraction = {
     }
 
     Config.verification.endChangeTime = Number(time);
-		await Config.save({ wtimeout: 3000 });
+		await Config.save({ wtimeout: 1500 });
 
     const status = (Config.verification.startChangeTime !== null ? `**${Config.verification.startChangeTime}:00**` : '未設定') + ' ～ ' + (Config.verification.endChangeTime !== null ? `**${Config.verification.endChangeTime}:00**` : '未設定');
     interaction.message.embeds[0].fields[1].value = status;

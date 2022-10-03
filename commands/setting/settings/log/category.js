@@ -47,7 +47,7 @@ const buttonInteraction = {
 
     const Config = await Configs.findOne({ serverId: interaction.guildId });
     Config.log.category = Object.assign({}, ...events.map(v => ({ [v.value]: false })));
-		await Config.save({ wtimeout: 3000 });
+		await Config.save({ wtimeout: 1500 });
 
     embed.fields[1].value = 'なし';
     button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(true);

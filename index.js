@@ -52,12 +52,12 @@ client.on('guildDelete', guild => {
   Config.findByIdAndDelete({ serverId: guild.id });
 });
 
-client.on('guildBanAdd', ban => moduleExecute(require('../events/guildBanAdd/index'), ban));
-client.on('guildBanRemove', member => moduleExecute(require('../events/guildBanRemove/index'), member));
-client.on('guildMemberAdd', member => moduleExecute(require('../events/guildMemberAdd/index'), member));
-client.on('guildMemberRemove', member => moduleExecute(require('../events/guildMemberRemove/index'), member));
-client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(require('../events/guildMemberUpdate/index'), oldMember, newMember));
-client.on('messageCreate', message => moduleExecute(require('../events/messageCreate/index'), message));
+client.on('guildBanAdd', ban => moduleExecute(require('./events/guildBanAdd/index'), ban));
+client.on('guildBanRemove', member => moduleExecute(require('./events/guildBanRemove/index'), member));
+client.on('guildMemberAdd', member => moduleExecute(require('./events/guildMemberAdd/index'), member));
+client.on('guildMemberRemove', member => moduleExecute(require('./events/guildMemberRemove/index'), member));
+client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(require('./events/guildMemberUpdate/index'), oldMember, newMember));
+client.on('messageCreate', message => moduleExecute(require('./events/messageCreate/index'), message));
 
 client.on('interactionCreate', async interaction => {
   if (blackList.guilds.includes(interaction.guild?.id) || blackList.users.includes(interaction.guild?.ownerId)) {
