@@ -1,69 +1,54 @@
-// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
+const Configs = require('../../schemas/configSchema');
+
 const verificationStatusData = [
-    { key: 0, name: '設定しない', description: '無制限' },
-    { key: 1, name: '低', description: 'メール認証がされているアカウントのみ' },
-    { key: 2, name: '中', description: 'Discordに登録してから5分以上経過したアカウントのみ' },
-    { key: 3, name: '高', description: 'このサーバーのメンバーとなってから10分以上経過したメンバーのみ' },
-    { key: 4, name: '最高', description: '電話認証がされているアカウントのみ' },
+	{ name: '設定しない', description: '無制限' },
+	{ name: '低', description: 'メール認証がされているアカウントのみ' },
+	{ name: '中', description: 'Discordに登録してから5分以上経過したアカウントのみ' },
+	{ name: '高', description: 'このサーバーのメンバーとなってから10分以上経過したメンバーのみ' },
+	{ name: '最高', description: '電話認証がされているアカウントのみ' },
 ];
 
-/**
- * @callback verificationChangeCallback
- * @param {import('discord.js').Client} client
- * @param {Date} date
- */
-
 module.exports = {
-    /** @type {verificationChangeCallback} */
-    async execute(client, hour) {
-        const lists = await require('../../models/verification')(client.sequelize).findAll({ attributes: ['serverId', 'verification', 'oldLevel', 'endChangeTime'] });
-        const taskLists = lists.filter(v => v.endChangeTime == hour && v.oldLevel);
-        if (!taskLists) return;
+	/**
+	 * @param {discord.Client} client
+	 * @param {number} hour
+	 */
+	async execute(client, hour) {
+		const taskLists = await Configs.find({ verification: { enable: true, startChangeTime: hour } });
+		if (!taskLists) return;
 
-        taskLists.forEach(async (v) => {
-            const logModel = await require('../../models/log')(client.sequelize).findOne({ where: { serverId: v.serverId } });
-            const verificationModel = await require('../../models/verification')(client.sequelize).findOne({ where: { serverId: v.serverId } });
-            const { log, logCh } = logModel.get();
+		taskLists.forEach(async (Config) => {
+			const guild = await client.guilds.fetch(Config.serverId).catch(() => {});
+			if (!guild) return;
 
-            const guild = await client.guilds.fetch(v.serverId).catch(() => {});
-            if (!guild) return;
+			guild.setVerificationLevel(Config.verification.oldLevel)
+				.then(async () => {
+					if (!Config.log.enable || !Config.log.category.bot) return;
 
-            guild.setVerificationLevel(v.oldLevel)
-                .then(async () => {
-                    if (!log || !logModel.get('bot')) return;
+					const channel = await guild.channels.fetch(Config.log.channel).catch(() => {});
+					if (!channel) {
+						Config.log.enable = false;
+						Config.log.channel = null;
+						return Config.save({ wtimeout: 1500 });
+					}
 
-                    const channel = await guild.channels.fetch(logCh).catch(() => {});
-                    if (!channel) return logModel.update({ log: false, logCh: null });
-                    const verificationStatus = verificationStatusData.find(w => w.key == v.oldLevel);
+					const embed = new discord.EmbedBuilder()
+						.setTitle('認証レベル自動変更 - 終了')
+						.setDescription([
+								`サーバーの認証レベルを**${verificationStatusData[Config.verification.oldLevel].name}**に戻しました。`,
+								`\`${verificationStatusData[Config.verification.oldLevel].description}\``,
+								'[レベルがうまく戻らない場合](https://docs.nonick-js.com/features/verification/#上手く動かない時は)',
+						].join('\n'))
+						.setColor('Green');
 
-                    const errorEmbed = new discord.EmbedBuilder()
-                        .setTitle('認証レベル自動変更')
-                        .setDescription([
-                            `サーバーの認証レベルを**${verificationStatus.name}**に変更しました。`,
-                            `\`${verificationStatus.description}\``,
-                        ].join('\n'))
-                        .setColor('Green');
-
-                    channel.send({ embeds: [errorEmbed] }).catch(() => logModel.update({ log: false, logCh: null }));
-                })
-                .catch(async () => {
-                    verificationModel.update({ verification: false });
-                    if (!log || !logModel.get('bot')) return;
-
-                    const channel = await guild.channels.fetch(logCh).catch(() => {});
-                    if (!channel) return logModel.update({ log: false, logCh: null });
-
-                    const errorEmbed = new discord.EmbedBuilder()
-                        .setTitle('認証レベル自動変更機能')
-                        .setDescription([
-                            '❌ 機能がOFFになりました。',
-                            '**理由:** BOTに`サーバーを管理`権限が付与されていない or **コミュニティサーバー**に認証レベル`無制限`を設定しようとしている',
-                        ].join('\n'))
-                        .setColor('516ff5');
-
-                    channel.send({ embeds: [errorEmbed] }).catch(() => logModel.update({ log: false, logCh: null }));
-                });
-        });
-    },
+					channel.send({ embeds: [embed] }).catch(() => {});
+					Config.save({ wtimeout: 1500 });
+				})
+				.catch(async () => {
+					Config.verification.enable = false;
+					Config.save({ wtimeout: 1500 });
+				});
+		});
+	},
 };
