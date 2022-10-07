@@ -1,38 +1,34 @@
-// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
-
-/**
- * @callback guildBanRemoveCallback
- * @param {discord.GuildMember} member
- */
+const Configs = require('../../schemas/configSchema');
 
 module.exports = {
-    /** @type {guildBanRemoveCallback} */
-    async execute(ban) {
-        const logModel = await require('../../models/log')(ban.sequelize).findOne({ where: { serverId: ban.guild.id } });
-        if (!logModel.get('log') || !logModel.get('ban')) return;
+	/** @param {discord.GuildMember} member*/
+  async execute(ban) {
+    const Config = await Configs.findOne({ serverId: ban.guild.id });
+    const log = Config.log;
 
-        const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanRemove, limit: 3 }).catch(() => {});
-        const banLog = auditLogs?.entries?.find(v => v.target == ban.user);
-        if (!banLog) return;
+    if (!log.enable || !log.category.ban) return;
 
-        const channel = await ban.guild.channels.fetch(logModel.get('logCh')).catch(() => {});
+    const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanRemove, limit: 3 }).catch(() => {});
+    const banLog = auditLogs?.entries?.find(v => v.target == ban.user);
+    if (!banLog) return;
 
-        try {
-            if (!channel) throw '';
-            if (!channel.permissionsFor(ban.guild.members.me).has(discord.PermissionFlagsBits.ViewChannel, discord.PermissionFlagsBits.SendMessages, discord.PermissionFlagsBits.EmbedLinks)) throw '';
-        } catch {
-            return logModel.update({ log: false, logCh: null }).catch(() => {});
-        }
+    const channel = await ban.guild.channels.fetch(log.channel).catch(() => {});
 
-        const embed = new discord.EmbedBuilder()
-            .setTitle('🔨BAN解除')
-            .setDescription(`${ban.user} (\`${ban.user.id}\`)`)
-            .setThumbnail(ban.user.displayAvatarURL())
-            .setColor('Blue')
-            .setFooter({ text: banLog.executor.tag, iconURL: banLog.executor.displayAvatarURL() })
-            .setTimestamp();
+		if (!channel) {
+			log.enable = false;
+			log.channel = null;
+			return Config.save({ wtimeout: 1500 });
+		}
 
-        channel.send({ embeds: [embed] }).catch(() => logModel.update({ log: false, logCh: null }).catch(() => {}));
-    },
+		const embed = new discord.EmbedBuilder()
+				.setTitle('🔨BAN解除')
+				.setDescription(`${ban.user} (\`${ban.user.id}\`)`)
+				.setThumbnail(ban.user.displayAvatarURL())
+				.setColor('Blue')
+				.setFooter({ text: banLog.executor.tag, iconURL: banLog.executor.displayAvatarURL() })
+				.setTimestamp();
+
+		channel.send({ embeds: [embed] }).catch(() => {});
+  },
 };
