@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const discord = require('discord.js');
 const Configs = require('../../schemas/configSchema');
 

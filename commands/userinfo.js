@@ -45,7 +45,7 @@ const contextMenuInteraction = {
 		const nickName = interaction.targetMember.nickname;
 		const joinTime = discord.time(Math.floor(interaction.targetMember.joinedTimestamp / 1000), 'D');
 		const boostTime = Math.floor(interaction.targetMember.premiumSinceTimestamp / 1000);
-		const timeoutDisableTIme = Math.floor(interaction.targetMember.communicationDisabledUntilTimestamp / 1000);
+		const timeoutDisableTime = Math.floor(interaction.targetMember.communicationDisabledUntilTimestamp / 1000);
 		const roles = interaction.targetMember.roles.cache.filter(role => role.name !== '@everyone').sort((before, after) => {
 				if (before.position > after.position) return -1;
 				return 1;
@@ -67,7 +67,7 @@ const contextMenuInteraction = {
 				);
 
 		if (boostTime) embed.addFields({ name: `${discord.formatEmoji('896591259886567434')} SERVER BOOST`, value: `ブーストを開始した日: ${discord.time(boostTime, 'D')} (${discord.time(boostTime, 'R')})` });
-		if (timeoutDisableTIme && Date.now() > timeoutDisableTIme && interaction.member.permissions.has(discord.PermissionFlagsBits.ModerateMembers)) embed.addFields({ name: `${discord.formatEmoji('1016740772340576306')} タイムアウトが解除される時間`, value: `${discord.time(timeoutDisableTIme, 'D')} (${discord.time(timeoutDisableTIme, 'R')})` });
+		if (timeoutDisableTime && Date.now() > timeoutDisableTime && interaction.member.permissions.has(discord.PermissionFlagsBits.ModerateMembers)) embed.addFields({ name: `${discord.formatEmoji('1016740772340576306')} タイムアウトが解除される時間`, value: `${discord.time(timeoutDisableTime, 'D')} (${discord.time(timeoutDisableTime, 'R')})` });
 		if (interaction.targetUser.displayAvatarURL() !== interaction.targetMember.displayAvatarURL()) {
 			embed.setAuthor({ name: interaction.targetUser.tag, iconURL: interaction.targetUser.displayAvatarURL() });
 			embed.setThumbnail(interaction.targetMember.displayAvatarURL());

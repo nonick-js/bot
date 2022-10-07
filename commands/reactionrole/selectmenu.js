@@ -37,7 +37,10 @@ const ping_command = {
         .setColor('Green');
       return interaction.followUp({ embeds: [embed], ephemeral: true });
     } else {
-      return interaction.followUp({ content: '❌ このチャンネルでは使用できません', ephemeral: true });
+      const errorEmbed = new discord.EmbedBuilder()
+				.setAuthor({ name: 'このチャンネルでは使用できません', iconURL: 'https://cdn.discordapp.com/attachments/958791423161954445/1022819275456651294/mark_batsu_illust_899.png' })
+        .setColor('Red');
+      return interaction.followUp({ embeds: [errorEmbed], ephemeral: true });
     }
   },
 };
