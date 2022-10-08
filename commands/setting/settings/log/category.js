@@ -20,11 +20,9 @@ const selectMenuInteraction = {
     ];
     const category = categoryData.map(v => ({ key: v.key, value: v.value, enable: values.includes(v.key) }));
 
-    await Configs.findOneAndUpdate(
-      { serverId: interaction.guildId },
-      { $set: { log: { category: Object.assign({}, ...category.map(v => ({ [v.key]: v.enable }))) } } },
-      { new: true },
-    );
+    const Config = await Configs.findOne({ serverId: interaction.guildId });
+    Config.log.category = Object.assign({}, ...category.map(v => ({ [v.key]: v.enable })));
+    Config.save({ wtimeout: 1500 });
 
     embed.fields[1].value = category.filter(v => v.enable).map(v => `\`${v.value}\``).join(' ') || 'なし';
     button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(embed.fields[1].value == 'なし');
@@ -47,7 +45,7 @@ const buttonInteraction = {
 
     const Config = await Configs.findOne({ serverId: interaction.guildId });
     Config.log.category = Object.assign({}, ...events.map(v => ({ [v.value]: false })));
-		await Config.save({ wtimeout: 1500 });
+		Config.save({ wtimeout: 1500 });
 
     embed.fields[1].value = 'なし';
     button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(true);
