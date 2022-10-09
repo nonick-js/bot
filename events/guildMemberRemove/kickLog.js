@@ -5,8 +5,8 @@ module.exports = {
 	/** @param {discord.GuildMember} member */
 	async execute(member) {
 		const Config = await Configs.findOne({ serverId: member.guild.id });
-		const log = Config.log;
-		if (!log.enable || !log.category.kick) return;
+		const log = Config?.log;
+		if (!log?.enable || !log?.category?.kick) return;
 
 		const auditLogs = await member.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberKick, limit: 3 }).catch(() => {});
 		const kickLog = auditLogs?.entries?.find(v => v.target == member.user);

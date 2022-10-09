@@ -25,10 +25,10 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true,
 }).then(console.info('mongoDBの接続に成功しました。'));
 
-const Config = require('./schemas/configSchema');
+const Configs = require('./schemas/configSchema');
 
 client.once('ready', () => {
-  console.info(`[${new Date().toLocaleTimeString('ja-JP')}][INFO]ready!`);
+  console.info(`[${new Date().toLocaleString({ timeZone: 'Asia/Tokyo' })}][INFO]ready!`);
   console.table({
     'Bot User': client.user.tag,
     'Guild(s)': `${client.guilds.cache.size} Servers`,
@@ -46,10 +46,13 @@ client.once('ready', () => {
   cron.schedule('0 * * * *', date => { require('./cron/verificationChange/index').execute(client, date); });
 });
 
-client.on('guildCreate', () => client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
+client.on('guildCreate', async (guild) => {
+  client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
+  if (!(await Configs.findOne({ serverId: guild.id }))) Configs.create({ serverId: guild.id });
+});
 client.on('guildDelete', guild => {
   client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
-  Config.findByIdAndDelete({ serverId: guild.id });
+  Configs.findOneAndDelete({ serverId: guild.id });
 });
 
 client.on('guildBanAdd', ban => moduleExecute(require('./events/guildBanAdd/index'), ban));
@@ -66,13 +69,12 @@ client.on('interactionCreate', async interaction => {
       .setColor('Red');
     return interaction.reply({ embeds: [embed], ephemeral: true });
   }
-  if (interaction.guild && !(await Config.findOne({ serverId: interaction.guildId }))) await Config.create({ serverId: interaction.guild.id });
+  if (interaction.guild && !(await Configs.findOne({ serverId: interaction.guildId }))) await Configs.create({ serverId: interaction.guild.id });
 
   interactions.run(interaction).catch(err => {
     if (err.code == 1) {
       const embed = new discord.EmbedBuilder()
-        .setAuthor({ name: 'ストップ！', iconURL: 'https://cdn.discordapp.com/attachments/958791423161954445/1022819275456651294/mark_batsu_illust_899.png' })
-        .setDescription('コマンドは只今クールタイム中です！時間を置いて再試行してください。')
+        .setAuthor({ name: 'コマンドは只今クールタイム中です！時間を置いて再試行してください。', iconURL: 'https://cdn.discordapp.com/attachments/958791423161954445/1022819275456651294/mark_batsu_illust_899.png' })
         .setColor('Red');
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }

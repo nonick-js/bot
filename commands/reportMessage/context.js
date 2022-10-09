@@ -29,7 +29,7 @@ const ping_command = {
 		try {
 			if (!user) throw 'そのユーザーは通報できません！';
 			if (user.system) throw 'システムメッセージは通報できません！';
-			if (!member && user.bot && user.discriminator == '0000') throw 'Webhookは通報できません！';
+			if (interaction.targetMessage.webhookId) throw 'Webhookは通報できません！';
 			if (user == interaction.user) throw '自分自身を通報しようとしています...';
 			if (member == interaction.guild.members.me) throw `${interaction.client.user.username} 自身を通報することはできません！`;
 			if (member?.permissions?.has(discord.PermissionFlagsBits.ManageMessages)) throw 'このコマンドでサーバー運営者を通報することはできません！';

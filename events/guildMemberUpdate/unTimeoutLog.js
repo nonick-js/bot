@@ -10,8 +10,8 @@ module.exports = {
 		if (!oldMember?.communicationDisabledUntilTimestamp || newMember?.communicationDisabledUntilTimestamp || oldMember?.communicationDisabledUntilTimestamp == newMember?.communicationDisabledUntilTimestamp) return;
 
 		const Config = await Configs.findOne({ serverId: oldMember.id });
-		const log = Config.log;
-		if (!log.enable || !log.category.timeout) return;
+		const log = Config?.log;
+		if (!log?.enable || !log?.category?.timeout) return;
 
 		const auditLogs = await newMember.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberUpdate, limit: 3 }).catch(() => {});
 		const timeoutLog = auditLogs?.entries?.find(v => v.target == newMember.user);

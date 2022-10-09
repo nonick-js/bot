@@ -11,8 +11,8 @@ module.exports = {
 		if (newMember.communicationDisabledUntilTimestamp < Date.now()) return;
 
 		const Config = await Configs.findOne({ serverId: oldMember.guild.id });
-		const log = Config.log;
-		if (!log.enable || !log.category.timeout) return;
+		const log = Config?.log;
+		if (!log?.enable || !log?.category?.timeout) return;
 
 		const auditLogs = await newMember.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberUpdate, limit: 3 }).catch(() => {});
 		const timeoutLog = auditLogs?.entries?.find(v => v.target == newMember.user);

@@ -18,7 +18,7 @@ module.exports = {
 		const taskLists = await Configs.find({ verification: { enable: true, startChangeTime: hour } });
 		if (!taskLists) return;
 
-		taskLists.forEach(async (Config) => {
+		taskLists.filter(v => v.verification.oldLevel).forEach(async (Config) => {
 			const guild = await client.guilds.fetch(Config.serverId).catch(() => {});
 			if (!guild) return;
 

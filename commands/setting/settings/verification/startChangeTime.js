@@ -41,7 +41,7 @@ const modalInteraction = {
     const Config = await Configs.findOne({ serverId: interaction.guildId });
 
     try {
-      if (isNaN(Number(time)) || Math.sign(time) == -1 || Number(time) > 23) throw '無効な値です！';
+      if (isNaN(Number(time)) || Math.sign(time) == -1 || Number(time) > 23 || !Number.isInteger(Number(time))) throw '無効な値です！';
       if (Number(time) == Config.verification.startChangeTime) throw '開始時刻と同じ時間に設定することはできません！';
     }
     catch (err) {

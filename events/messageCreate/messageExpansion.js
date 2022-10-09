@@ -7,7 +7,7 @@ module.exports = {
 	/** @param {discord.Message} message */
 	async execute(message) {
 		const Config = await Configs.findOne({ serverId: message.guildId });
-		if (!Config.messageExpansion) return;
+		if (!Config?.messageExpansion) return;
 
 		expansion.urlExpansion(message);
 	},

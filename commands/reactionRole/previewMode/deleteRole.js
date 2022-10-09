@@ -45,7 +45,6 @@ const modalInteraction = {
 	},
 	exec: async (interaction) => {
 		const select = interaction.message.components[0];
-		const button = interaction.message.components[1];
     const options = select.components[0].options;
 
 		const role = interaction.guild.roles.cache.find((v) => v.name === interaction.fields.getTextInputValue('name'));
@@ -54,7 +53,7 @@ const modalInteraction = {
 		if (interaction.replied) return;
 
 		select.components[0] = discord.SelectMenuBuilder.from(select.components[0]).setOptions(options.filter(v => v.value !== role.id));
-		interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, button] });
+		interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, interaction.message.components[1]] });
 	},
 };
 

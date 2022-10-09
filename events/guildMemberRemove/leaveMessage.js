@@ -6,8 +6,8 @@ module.exports = {
 	/** @param {discord.GuildMember} member */
 	async execute(member) {
 		const Config = await Configs.findOne({ serverId: member.guild.id });
-		const leave = Config.leave;
-		if (!leave.enable) return;
+		const leave = Config?.leave;
+		if (!leave?.enable) return;
 
 		const channel = await member.guild.channels.fetch(leave.channel).catch(() => {});
 		if (!channel) {

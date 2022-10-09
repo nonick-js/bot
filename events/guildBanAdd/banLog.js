@@ -5,8 +5,8 @@ module.exports = {
 	/** @param {discord.GuildBan} ban */
   async execute(ban) {
 		const Config = await Configs.findOne({ serverId: ban.guild.id });
-		const log = Config.log;
-    if (!log.enable || !log.category.ban) return;
+		const log = Config?.log;
+    if (!log?.enable || !log?.category?.ban) return;
 
 		const auditLogs = await ban.guild.fetchAuditLogs({ type: discord.AuditLogEvent.MemberBanAdd, limit: 3 }).catch(() => {});
 		const banLog = auditLogs?.entries?.find(v => v.target == ban.user);

@@ -4,7 +4,7 @@ module.exports = {
 	 * @param {Date} date
 	 */
 	async execute(client, date) {
-		const hour = date.getHours() - 9 < 0 ? date.getHours() + 24 - 9 : date.getHours() - 9;
+		const hour = date.getHours() - 9 < 23 ? date.getHours() + 9 - 24 : date.getHours() + 9;
 
 		require('./startVerificationChange').execute(client, hour);
 		require('./endVerificationChange').execute(client, hour);
