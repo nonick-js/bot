@@ -7,10 +7,10 @@ const discord = require('discord.js');
  */
 
 module.exports = {
-    /** @type {MemberAddCallback} */
-    async execute(member) {
-        if (member.user == member.client.user) return;
+  /** @type {MemberAddCallback} */
+  async execute(member) {
+    if (member.user == member.client.user) return;
 
-        require('./welcomeMessage').execute(member);
-    },
+    require('./welcomeMessage').execute(member);
+  },
 };

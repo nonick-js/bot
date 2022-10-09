@@ -7,10 +7,10 @@ const discord = require('discord.js');
  */
 
 module.exports = {
-    /** @type {guildBanRemoveCallback} */
-    async execute(ban) {
-        if (ban.user == ban.client.user) return;
+  /** @type {guildBanRemoveCallback} */
+  async execute(ban) {
+    if (ban.user == ban.client.user) return;
 
-        require('./banRemoveLog').execute(ban);
-    },
+    require('./banRemoveLog').execute(ban);
+  },
 };
