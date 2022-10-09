@@ -44,7 +44,7 @@ const modalInteraction = {
 		const iconURL = interaction.fields.getTextInputValue('iconURL');
 
 		if (name || iconURL) {
-			await interaction.deferReply();
+			await interaction.deferUpdate();
 
 			const webhooks = await interaction.guild.fetchWebhooks().catch(() => {});
 
@@ -55,7 +55,7 @@ const modalInteraction = {
 						'**必要な権限**: `ウェブフックの管理`',
 					];
 				}
-				if (!iconURL.startsWith('http://') || !iconURL.startsWith('https://')) throw ['アイコンのURLが無効です！', null];
+				if (iconURL && !(iconURL?.startsWith('http://') || iconURL?.startsWith('https://'))) throw ['アイコンのURLが無効です！', null];
 				if (!webhooks) throw ['何らかの原因でWebhookが正しく作成されませんでした...', '時間をおいて再度お試しください。'];
 			} catch (err) {
 				const error = new discord.EmbedBuilder()
@@ -67,7 +67,7 @@ const modalInteraction = {
 
 			/** @type {discord.Webhook} */
 			const myWebhook = webhooks?.find(webhook => webhook.owner.id == interaction.client.user.id) || await interaction.channel.createWebhook({ name: name || 'NoNICK.js' }).catch(() => {});
-			myWebhook.edit({ name: name || 'NoNICK.js', avatar: iconURL || interaction.client.user.displayAvatarURL(), channel: interaction.channel.id });
+			await myWebhook.edit({ name: name || 'NoNICK.js', avatar: iconURL, channel: interaction.channel.id });
 			myWebhook.send({ embeds: [interaction.message.embeds[0]] })
 				.then(() => {
 					const successEmbed = new discord.EmbedBuilder()
