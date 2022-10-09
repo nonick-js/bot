@@ -8,7 +8,6 @@ module.exports = {
 	 */
 	async execute(oldMember, newMember) {
 		if (!newMember?.communicationDisabledUntilTimestamp || oldMember?.communicationDisabledUntilTimestamp == newMember?.communicationDisabledUntilTimestamp) return;
-		if (newMember.communicationDisabledUntilTimestamp < Date.now()) return;
 
 		const Config = await Configs.findOne({ serverId: oldMember.guild.id });
 		const log = Config?.log;

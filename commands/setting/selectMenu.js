@@ -130,12 +130,11 @@ const selectMenuInteraction_featureCategory = {
 
         const logCategoryData = [
           { name: 'bot', value: `${interaction.client.user.username}` },
-          { name: 'messageDelete', value: 'メッセージ削除' },
           { name: 'timeout', value: 'タイムアウト' },
           { name: 'kick', value: 'Kick' },
           { name: 'ban', value: 'BAN' },
         ];
-        const enableLogCategory = logCategoryData.filter(v => log[v.name]).map(v => `\`${v.value}\``);
+        const enableLogCategory = logCategoryData.filter(v => log.category[v.name]).map(v => `\`${v.value}\``);
 
         const embed = new discord.EmbedBuilder()
           .setAuthor({ name: '設定 - ログ機能', iconURL: interaction.client.user.displayAvatarURL() })
@@ -303,7 +302,7 @@ const selectMenuInteraction_settingCategory = {
         }
     }
 
-            interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, button] });
+      interaction.update({ embeds: [interaction.message.embeds[0]], components: [select, button] });
     }
 
     if (interaction.values[0].startsWith('category-report')) {
