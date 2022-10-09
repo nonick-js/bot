@@ -11,7 +11,7 @@ const commandInteraction = {
       .setAuthor({ name: '設定', iconURL: interaction.client.user.displayAvatarURL() })
       .setDescription([
         `**${interaction.client.user.username}**のコントロールパネルへようこそ！`,
-        'ここではこのBOTの設定を変更することができます。[詳細はこちら](https://nonick.gitbook.io/nonick.js/introduction/setting)',
+        'ここではこのBOTの設定を変更することができます。[詳細はこちら](https://docs.nonick-js.com/tutorial/setting/)',
         '```セレクトメニューから設定を閲覧・変更したい機能を選択しよう！```',
       ].join('\n'))
       .setColor('Green');
