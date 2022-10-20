@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const Configs = require('../../schemas/configSchema');
+const Configs = require('../../../schemas/configSchema');
 
 /** @type {import('@djs-tools/interactions').MessageRegister} */
 const ping_command = {
@@ -10,20 +10,21 @@ const ping_command = {
 	},
 	exec: async (interaction) => {
 		const Config = await Configs.findOne({ serverId: interaction.guildId });
-		const report = Config.report;
 
 		const user = interaction.targetMessage.author;
 		const member = await interaction.guild.members.fetch(user.id).catch(() => {});
 
-		try {
-			if (!report.channel && interaction.member.permissions.has(discord.PermissionFlagsBits.ManageGuild)) throw '**この機能を使用するには追加で設定が必要です。**\n`/setting`で通報機能の設定を開き、通報を受け取るチャンネルを設定してください。';
-			if (!report.channel) throw '**この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。';
-		} catch (warn) {
-			const warnEmbed = new discord.EmbedBuilder()
-				.setDescription(`⚠️ ${warn}`)
+		if (!Config?.report?.channel) {
+			const warnEmbed_admin = new discord.EmbedBuilder()
+				.setDescription('**この機能を使用するには追加で設定が必要です。**\n`/setting`で通報機能の設定を開き、通報を受け取るチャンネルを設定してください。')
 				.setColor('Blue')
-				.setImage(interaction.member.permissions.has(discord.PermissionFlagsBits.ManageGuild) ? 'https://cdn.discordapp.com/attachments/958791423161954445/976117804879192104/unknown.png' : null);
-			return interaction.reply({ embeds: [warnEmbed], ephemeral: true });
+				.setImage('https://cdn.discordapp.com/attachments/958791423161954445/976117804879192104/unknown.png');
+
+			const warnEmbed = new discord.EmbedBuilder()
+				.setDescription('**この機能を使用するには追加で設定が必要です。**\nBOTの設定権限を持っている人に連絡してください。')
+				.setColor('Blue');
+
+			return interaction.reply({ embeds: [interaction.member.permissions.has(discord.PermissionFlagsBits.ManageGuild) ? warnEmbed_admin : warnEmbed], ephemeral: true });
 		}
 
 		try {
@@ -49,7 +50,7 @@ const ping_command = {
 						.setCustomId(interaction.targetMessage.id)
 						.setLabel('通報する理由')
 						.setPlaceholder('通報はサーバー運営にのみ公開されます。Discord公式には送信されません。')
-						.setMaxLength(4000)
+						.setMaxLength(1500)
 						.setStyle(discord.TextInputStyle.Paragraph)
 						.setRequired(true),
 				),
