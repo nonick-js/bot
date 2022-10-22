@@ -1,10 +1,10 @@
 const discord = require('discord.js');
-const { memberRoleCheck } = require('../../../modules/valueCheck');
+const { memberRoleCheck } = require('../../../../modules/valueCheck');
 
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const buttonInteraction = {
   data: {
-    customId: 'reactionRole-deleteRole',
+    customId: 'reactionRole_selectMenu-deleteRole',
     type: 'BUTTON',
   },
   exec: async (interaction) => {
@@ -21,7 +21,7 @@ const buttonInteraction = {
     if (select.components[0].options.length == 1) return interaction.update({ embeds: [interaction.message.embeds[0]], components: [button] });
 
     const modal = new discord.ModalBuilder()
-      .setCustomId('reactionRole-deleteRoleModal')
+      .setCustomId('reactionRole_selectMenu-deleteRoleModal')
       .setTitle('ロール削除')
       .addComponents(
         new discord.ActionRowBuilder().addComponents(
@@ -40,7 +40,7 @@ const buttonInteraction = {
 /** @type {import('@djs-tools/interactions').ModalRegister} */
 const modalInteraction = {
 	data: {
-		customId: 'reactionRole-deleteRoleModal',
+		customId: 'reactionRole_selectMenu-deleteRoleModal',
 		type: 'MODAL',
 	},
 	exec: async (interaction) => {

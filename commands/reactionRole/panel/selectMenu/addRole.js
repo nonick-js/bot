@@ -1,14 +1,13 @@
 const discord = require('discord.js');
-const { memberRoleCheck } = require('../../../modules/valueCheck');
+const { memberRoleCheck } = require('../../../../modules/valueCheck');
 
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const buttonInteraction = {
   data: {
-    customId: 'reactionRole-addRole',
+    customId: 'reactionRole_selectMenu-addRole',
     type: 'BUTTON',
   },
   exec: async (interaction) => {
-    /** @type {discord.Embed} */
     /** @type {discord.ActionRowComponent} */
     const select = interaction.message.components[0].components[0];
 
@@ -20,7 +19,7 @@ const buttonInteraction = {
     }
 
     const modal = new discord.ModalBuilder()
-      .setCustomId('reactionRole-addRoleModal')
+      .setCustomId('reactionRole_selectMenu-addRoleModal')
       .setTitle('ロールを追加')
       .addComponents(
         new discord.ActionRowBuilder().addComponents(
@@ -64,7 +63,7 @@ const buttonInteraction = {
 /** @type {import('@djs-tools/interactions').ModalRegister} */
 const modalInteraction = {
   data: {
-    customId: 'reactionRole-addRoleModal',
+    customId: 'reactionRole_selectMenu-addRoleModal',
     type: 'MODAL',
   },
   exec: async (interaction) => {

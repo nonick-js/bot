@@ -3,7 +3,7 @@ const discord = require('discord.js');
 /** @type {import('@djs-tools/interactions').ButtonRegister} */
 const ping_command = {
   data: {
-    customId: 'reactionRole-sendPanel',
+    customId: 'reactionRole_selectMenu-sendPanel',
     type: 'BUTTON',
   },
   exec: async (interaction) => {

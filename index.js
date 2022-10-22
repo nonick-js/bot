@@ -2,7 +2,7 @@ const discord = require('discord.js');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
 const { DiscordInteractions } = require('@djs-tools/interactions');
-const { guildId, guildCommand, blackList, statusMessage } = require('./config.json');
+const { guildId, guildCommand, blackList, statusMessage, dbName } = require('./config.json');
 require('dotenv').config();
 
 const client = new discord.Client({
@@ -21,11 +21,13 @@ const interactions = new DiscordInteractions(client);
 interactions.loadInteractions('./commands');
 
 mongoose.connect(process.env.MONGODB_URI, {
+  dbName: dbName,
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(console.info('mongoDBの接続に成功しました。'));
+}).then(console.info('mongoDBにログインしました。'));
 
 const Configs = require('./schemas/configSchema');
+const FeatureData = require('./schemas/featureDataSchema');
 
 client.once('ready', () => {
   console.info(`[${new Date().toLocaleString({ timeZone: 'Asia/Tokyo' })}][INFO]ready!`);
@@ -46,21 +48,20 @@ client.once('ready', () => {
   cron.schedule('0 * * * *', date => { require('./cron/verificationChange/index').execute(client, date); });
 });
 
-client.on('guildCreate', async (guild) => {
-  client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
-  if (!(await Configs.findOne({ serverId: guild.id }))) Configs.create({ serverId: guild.id });
-});
+client.on('guildCreate', () => client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing }));
 client.on('guildDelete', guild => {
   client.user.setActivity({ name: `${statusMessage} | ${client.guilds.cache.size} server`, type: discord.ActivityType.Competing });
   Configs.findOneAndDelete({ serverId: guild.id });
+  FeatureData.findOneAndDelete({ serverId: guild.id });
 });
 
-client.on('guildBanAdd', ban => moduleExecute(require('./events/guildBanAdd/index'), ban));
-client.on('guildBanRemove', member => moduleExecute(require('./events/guildBanRemove/index'), member));
-client.on('guildMemberAdd', member => moduleExecute(require('./events/guildMemberAdd/index'), member));
-client.on('guildMemberRemove', member => moduleExecute(require('./events/guildMemberRemove/index'), member));
-client.on('guildMemberUpdate', (oldMember, newMember) => moduleExecute(require('./events/guildMemberUpdate/index'), oldMember, newMember));
-client.on('messageCreate', message => moduleExecute(require('./events/messageCreate/index'), message));
+client.on('guildBanAdd', ban => require('./events/guildBanAdd/index').execute(ban));
+client.on('guildBanRemove', member => require('./events/guildBanRemove/index').execute(member));
+client.on('guildMemberAdd', member => require('./events/guildMemberAdd/index').execute(member));
+client.on('guildMemberRemove', member => require('./events/guildMemberRemove/index').execute(member));
+client.on('guildMemberUpdate', (oldMember, newMember) => require('./events/guildMemberUpdate/index').execute(oldMember, newMember));
+client.on('messageCreate', message => require('./events/messageCreate/index').execute(message));
+client.on('messageDelete', message => require('./events/messageDelete/index').execute(message));
 
 client.on('interactionCreate', async interaction => {
   if (blackList.guilds.includes(interaction.guild?.id) || blackList.users.includes(interaction.guild?.ownerId)) {
@@ -69,22 +70,25 @@ client.on('interactionCreate', async interaction => {
       .setColor('Red');
     return interaction.reply({ embeds: [embed], ephemeral: true });
   }
-  if (interaction.guild && !(await Configs.findOne({ serverId: interaction.guildId }))) await Configs.create({ serverId: interaction.guild.id });
+  if (interaction.guild) {
+    await Configs.findOrCreate({ serverId: interaction.guildId });
+  }
 
-  interactions.run(interaction).catch(err => {
+  interactions.run(interaction).catch(async err => {
     if (err.code == 1) {
       const embed = new discord.EmbedBuilder()
         .setAuthor({ name: 'コマンドは只今クールタイム中です！時間を置いて再試行してください。', iconURL: 'https://cdn.discordapp.com/attachments/958791423161954445/1022819275456651294/mark_batsu_illust_899.png' })
         .setColor('Red');
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
-    if (err.code !== 0) console.warn(err);
-    });
+    else if (err.code == 0) {
+      if (!interaction.guild) return;
+      require('./commands/reactionRole/panel/button/rolePanel_interaction').execute(interaction);
+    }
+    else {
+      console.warn(err);
+    }
+  });
 });
-
-async function moduleExecute(module, param, param2) {
-  if (blackList.guilds.includes(param.guild?.id) || blackList.users.includes(param.guild?.ownerId)) return;
-  module.execute(param, param2);
-}
 
 client.login(process.env.BOT_TOKEN);

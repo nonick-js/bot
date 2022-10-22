@@ -20,6 +20,7 @@ const buttonInteraction = {
             .setLabel('タイトル')
             .setMaxLength(1000)
             .setValue(embed.title)
+            .setPlaceholder('例) ロール付与パネル')
             .setStyle(discord.TextInputStyle.Short),
         ),
         new discord.ActionRowBuilder().addComponents(
@@ -28,6 +29,7 @@ const buttonInteraction = {
             .setLabel('説明')
             .setMaxLength(4000)
             .setValue(embed?.description || '')
+            .setPlaceholder('例) 自分にあったロールを選んで自分を表現しちゃおう！')
             .setStyle(discord.TextInputStyle.Paragraph)
             .setRequired(false),
         ),
