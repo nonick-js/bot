@@ -21,7 +21,7 @@ const modalInteraction = {
 			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
-		const channel = await interaction.guild.channels.fetch(Config?.report?.channel).catch(() => {});
+		const channel = await interaction.guild.channels.fetch(Config.report.channel).catch(() => {});
 		if (!channel) {
 			await Config.updateOne({ $set: { 'report.channel': null } });
 			Config.save({ wtimeout: 1500 });
