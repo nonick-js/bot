@@ -27,7 +27,7 @@ function urlExpansion(message) {
 				.addFields(
 					{ name: '送信時刻', value: discord.time(msg.createdAt), inline:true },
 				);
-			const contentEmbeds = (msg.content.match(/.{1,1024}/g) ?? []).map(content => {
+			const contentEmbeds = (msg.content.match(/.{1,1024}/gs) ?? []).map(content => {
 				return new discord.EmbedBuilder(infoEmbed.toJSON())
 					.setDescription(content);
 			});
