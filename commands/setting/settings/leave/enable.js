@@ -13,15 +13,19 @@ const buttonInteraction = {
     const embed = interaction.message.embeds[0];
     const button = interaction.message.components[1];
 
-		const Config = await Configs.findOne({ serverId: interaction.guildId });
-    Config.leave.enable = !Config.leave.enable;
-		await Config.save({ wtimeout: 1500 });
+    const res = await Configs.findOneAndUpdate(
+      { serverId: interaction.guildId },
+      { $setOnInsert: { serverId: interaction.guildId } },
+      { upsert: true, new: true },
+    );
+    res.leave.enable = !res.leave.enable;
+    res.save({ wtimeout: 1500 });
 
-    embed.fields[1].value = settingSwitcher('STATUS_CH', Config.leave.enable, Config.leave.channel) + `\n\n> ${welcomeM_preview(Config.leave.message).split('\n').join('\n> ')}`;
+    embed.fields[1].value = settingSwitcher('STATUS_CH', res.leave.enable, res.leave.channel) + `\n\n> ${welcomeM_preview(res.leave.message).split('\n').join('\n> ')}`;
 
     button.components[1] = discord.ButtonBuilder.from(button.components[1])
-      .setLabel(settingSwitcher('BUTTON_LABEL', Config.leave.enable))
-      .setStyle(settingSwitcher('BUTTON_STYLE', Config.leave.enable)),
+      .setLabel(settingSwitcher('BUTTON_LABEL', res.leave.enable))
+      .setStyle(settingSwitcher('BUTTON_STYLE', res.leave.enable)),
 
     interaction.update({ embeds: [embed], components: [interaction.message.components[0], button] });
   },

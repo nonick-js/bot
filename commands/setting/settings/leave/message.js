@@ -40,14 +40,16 @@ const modalInteraction = {
 	},
 	exec: async (interaction) => {
 		const message = interaction.fields.getTextInputValue('message');
-
 		const embed = interaction.message.embeds[0];
 
-    const Config = await Configs.findOne({ serverId: interaction.guildId });
-    Config.leave.message = message;
-		await Config.save({ wtimeout: 1500 });
+		const res = await Configs.findOneAndUpdate(
+			{ serverId: interaction.guildId },
+			{ $set: { 'leave.message': message }, $setOnInsert: { serverId: interaction.guildId } },
+			{ upsert: true, new: true },
+		);
+		res.save({ wtimeout: 1500 });
 
-		embed.fields[1].value = settingSwitcher('STATUS_CH', Config.leave.enable, Config.leave.channel) + `\n\n> ${welcomeM_preview(Config.leave.message).split('\n').join('\n> ')}`;
+		embed.fields[1].value = settingSwitcher('STATUS_CH', res.leave.enable, res.leave.channel) + `\n\n> ${welcomeM_preview(res.leave.message).split('\n').join('\n> ')}`;
 
 		interaction.update({ embeds: [embed] });
 	},

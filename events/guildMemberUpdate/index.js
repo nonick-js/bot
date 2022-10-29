@@ -1,17 +1,15 @@
-// eslint-disable-next-line no-unused-vars
-const discord = require('discord.js');
-const { blackList } = require('../../config.json');
+const utils = require('../../modules/utils');
 
 module.exports = {
 	/**
-	 * @param {discord.GuildMember} oldMember
-	 * @param {discord.GuildMember} newMember
+	 * @param {import('discord.js').GuildMember} oldMember
+	 * @param {import('discord.js').GuildMember} newMember
 	 */
 	async execute(oldMember, newMember) {
-		if (blackList.guilds.includes(oldMember.guild.id) || blackList.users.includes(oldMember.guild.ownerId)) return;
+		if (utils.isBlocked(oldMember.guild)) return;
 		if (oldMember.user == oldMember.client.user || !newMember) return;
 
-		require('./timeoutLog').execute(oldMember, newMember);
-		require('./unTimeoutLog').execute(oldMember, newMember);
+		require('./timeoutLog').execute;
+		require('./unTimeoutLog').execute;
 	},
 };

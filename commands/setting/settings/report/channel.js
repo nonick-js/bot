@@ -42,11 +42,14 @@ const modalInteraction = {
     await textChannelCheck(channel, interaction);
     if (interaction.replied) return;
 
-    const Config = await Configs.findOne({ serverId: interaction.guildId });
-    Config.report.channel = channel.id;
-		await Config.save({ wtimeout: 1500 });
+    const res = await Configs.findOneAndUpdate(
+      { serverId: interaction.guildId },
+      { $set: { 'report.channel': channel.id }, $setOnInsert: { serverId: interaction.guildId } },
+      { upsert: true, new: true },
+    );
+    res.save({ wtimeout: 1500 });
 
-    embed.fields[0].value = discord.channelMention(Config.report.channel);
+    embed.fields[0].value = discord.channelMention(res.report.channel);
     interaction.update({ embeds: [embed], components: [interaction.message.components[0], interaction.message.components[1]] });
   },
 };

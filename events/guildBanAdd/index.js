@@ -1,13 +1,11 @@
-// eslint-disable-next-line no-unused-vars
-const discord = require('discord.js');
-const { blackList } = require('../../config.json');
+const utils = require('../../modules/utils');
 
 module.exports = {
-  /** @param {discord.GuildBan} ban */
+  /** @param {import('discord.js').GuildBan} ban */
   async execute(ban) {
-    if (blackList.guilds.includes(ban.guild.id) || blackList.users.includes(ban.guild.ownerId)) return;
+    if (utils.isBlocked(ban.guild)) return;
     if (ban.user == ban.client.user) return;
 
-    require('./banLog').execute(ban);
+    require('./banLog').execute;
   },
 };

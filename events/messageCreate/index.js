@@ -1,18 +1,11 @@
-// eslint-disable-next-line no-unused-vars
-const discord = require('discord.js');
-const { blackList } = require('../../config.json');
-
-/**
- * @callback messageCreateCallback
- * @param {discord.Message} message
- */
+const utils = require('../../modules/utils');
 
 module.exports = {
-	/** @type {messageCreateCallback} */
+	/** @param {import('discord.js').Message} */
 	async execute(message) {
-		if (blackList.guilds.includes(message.guild.id) || blackList.users.includes(message.guild.ownerId)) return;
+		if (utils.isBlocked(message.guild)) return;
 		if (message.author.bot || message.author == message.client.user || !message.guild) return;
 
-		require('./messageExpansion').execute(message);
+		require('./messageExpansion').execute;
 	},
 };

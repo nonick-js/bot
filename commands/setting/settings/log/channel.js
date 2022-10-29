@@ -44,11 +44,14 @@ const modalInteraction = {
     await textChannelCheck(channel, interaction);
     if (interaction.replied) return;
 
-    const Config = await Configs.findOne({ serverId: interaction.guildId });
-    Config.log.channel = channel.id;
-		await Config.save({ wtimeout: 1500 });
+    const res = await Configs.findOneAndUpdate(
+      { serverId: interaction.guildId },
+      { $set: { 'log.channel': channel.id }, $setOnInsert: { serverId: interaction.guildId } },
+      { upsert: true, new: true },
+    );
+    res.save({ wtimeout: 1500 });
 
-    embed.fields[0].value = settingSwitcher('STATUS_CH', Config.log.enable, Config.log.channel);
+    embed.fields[0].value = settingSwitcher('STATUS_CH', res.log.enable, res.log.channel);
     button.components[1] = discord.ButtonBuilder.from(button.components[1]).setDisabled(false);
 
     interaction.update({ embeds: [embed], components: [interaction.message.components[0], button] });
