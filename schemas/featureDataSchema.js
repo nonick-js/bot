@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const findOrCreate = require('mongoose-findorcreate');
 
 const featureDataSchema = new mongoose.Schema({
   serverId: { type: mongoose.SchemaTypes.String, required: true, unique: true },
@@ -12,5 +11,4 @@ const featureDataSchema = new mongoose.Schema({
   },
 });
 
-featureDataSchema.plugin(findOrCreate);
 module.exports = mongoose.model('FeatureData', featureDataSchema);

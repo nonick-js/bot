@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const findOrCreate = require('mongoose-findorcreate');
 
 const configSchema = new mongoose.Schema({
   serverId: { type: mongoose.SchemaTypes.String, required: true, unique: true },
@@ -48,5 +47,4 @@ const configSchema = new mongoose.Schema({
 	},
 });
 
-configSchema.plugin(findOrCreate);
 module.exports = mongoose.model('Config', configSchema);

@@ -11,6 +11,10 @@
 			"description": "GuildCommandとして登録するサーバーID",
 			"maxLength": 19
 		},
+		"guildCommandMode": {
+			"type": "boolean",
+			"description": "一般向けコマンドをGuildCommandとして登録するか"
+		},
 		"statusMessage": {
 			"type": "string",
 			"description": "BOTのステータスメッセージ"
@@ -18,6 +22,22 @@
 		"dbName": {
 			"type": "string",
 			"description": "MongoDBのデータベース名"
+		},
+		"Admin": {
+			"type": "object",
+			"description": "取り扱い注意！Discord内でBOTの管理が行えるようになります",
+			"properties": {
+				"guild": {
+					"type": "string",
+					"description": "管理者用コマンドを登録するサーバーID",
+					"maxLength": 19
+				},"users": {
+					"type": "array",
+					"description": "管理者用コマンドの使用を許可するユーザーID",
+					"maxLength": 19,
+					"items": {}
+				}
+			}
 		},
 		"blackList": {
 			"type": "object",
@@ -37,28 +57,7 @@
 				}
 			},
 			"required": [ "guilds", "users" ]
-		},
-		"beta": {
-			"type": "object",
-			"description": "サーバーのオーナーに指定したサーバーのロールが付与されていないとBOTの全機能が使用できなくなります (注意: これを有効にするとBOTの動作が若干遅くなります)",
-			"properties": {
-				"enable": {
-					"type": "boolean",
-					"description": "BETAモードを有効にするか？"
-				},
-				"guildId": {
-					"type": "string",
-					"description": "サーバーID",
-					"maxLength": 19
-				},
-				"roleId": {
-					"type": "string",
-					"description": "ロールID",
-					"maxLength": 19
-				}
-			},
-			"required": [ "enable", "guildId", "roleId" ]
 		}
 	},
-	"required": [ "$schema", "clientId", "guildCommand", "statusMessage", "dbName", "blackList", "beta" ]
+	"required": [ "$schema", "clientId", "guildCommand", "statusMessage", "dbName", "blackList", "beta", "ownerGuildId", "guildCommandMode" ]
 }
