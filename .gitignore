@@ -4,3 +4,4 @@ models/.config.sqlite
 .env
 config.json
 updateMemo.txt
+commands_old
