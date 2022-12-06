@@ -5,7 +5,7 @@ const date = require('../modules/date');
 const commandInteraction = {
   data: {
     name: 'timeout',
-    description: 'ユーザーをタイムアウト 公式の機能より柔軟な設定が可能です',
+    description: 'ユーザーをタイムアウト (公式の機能より柔軟な設定が可能です)',
     options: [
       {
         name: 'user',

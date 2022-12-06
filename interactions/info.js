@@ -48,4 +48,5 @@ const commandInteraction = {
     interaction.reply({ embeds: [embed], components: [button], ephemeral: true });
   },
 };
+
 module.exports = [ commandInteraction ];

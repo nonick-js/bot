@@ -6,7 +6,7 @@ const CheckPermission = require('./_permissionCheck');
 const commandInteraction = {
   data: {
     name: 'reload',
-    description: '🔧 BOTを再起動します',
+    description: '[🔧] BOTを再起動します',
     guildId: admin.guild,
     defaultMemberPermissions: PermissionFlagsBits.Administrator,
     dmPermission: false,
