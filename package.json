@@ -22,7 +22,7 @@
     "@akki256/discord-interaction": "^1.0.1",
     "@octokit/rest": "^19.0.4",
     "axios": "^0.27.2",
-    "discord-api-types": "^0.37.5",
+    "discord-api-types": "^0.37.21",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.2",
     "mongoose": "^6.6.1",
