@@ -84,7 +84,7 @@ const modalInteraction = {
 
     try {
       if (!message) throw '通報しようとしているメッセージは削除されました';
-      if (!channel || !channel?.permissionsFor(interaction.guild.members.me)?.has(PermissionFlagsBits.SendMessages)) {
+      if (!channel || !channel?.permissionsFor(interaction.guild.members.me)?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)) {
         await GuildConfig.updateOne({ $set: { 'report.channel': null } });
         GuildConfig.save({ wtimeout: 1500 });
         throw '現在の設定で通報を送信することができませんでした。サーバーの管理者にご連絡ください';
@@ -118,7 +118,7 @@ const modalInteraction = {
       .setThumbnail(message.author.displayAvatarURL());
 
     channel.send({
-      content: GuildConfig?.report?.mention ? `${GuildConfig?.report?.mentionRole}\n${content}` : content,
+      content: GuildConfig?.report?.mention?.enable ? `${GuildConfig?.report?.mention?.role}\n${content}` : content,
       embeds: [embed],
       components: [components],
     })
