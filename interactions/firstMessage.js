@@ -1,4 +1,5 @@
-const { PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ApplicationCommandOptionType, EmbedBuilder, Colors, ButtonStyle } = require('discord.js');
+const { PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ApplicationCommandOptionType, ButtonStyle } = require('discord.js');
+const { errorEmbed } = require('../utils/embeds');
 
 /** @type {import('@akki256/discord-interaction').ChatInputRegister} */
 const commandInteraction = {
@@ -29,12 +30,11 @@ const commandInteraction = {
 
     const firstMessage = await interaction.channel.messages.fetch({ after: 1, limit: 1 }).catch(() => {});
 
-    if (!firstMessage) {
-      const embed = new EmbedBuilder()
-        .setDescription('`❌` このチャンネルにはまだメッセージが1つも投稿されていません！')
-        .setColor(Colors.Red);
-
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+    try {
+      if (!firstMessage) throw '予期せぬエラーにより、メッセージを取得できませんでした';
+      if (!firstMessage?.first()) throw 'このチャンネルにはまだメッセージが1つも投稿されていません';
+    } catch (err) {
+      return interaction.reply({ embeds: [errorEmbed(err)], ephemeral: true });
     }
 
     const button = new ActionRowBuilder().setComponents(
