@@ -1,11 +1,14 @@
-const { AuditLogEvent, PermissionFlagsBits, EmbedBuilder, formatEmoji, inlineCode, Colors, codeBlock, Events } = require('discord.js');
+const { AuditLogEvent, EmbedBuilder, formatEmoji, inlineCode, Colors, codeBlock, Events } = require('discord.js');
 const ConfigSchema = require('../schemas/configSchema');
+const { isBlocked } = require('../utils/functions');
 
 const kickLog = {
   name: Events.GuildMemberRemove,
   once: false,
   /** @param {import('discord.js').GuildMember} member */
   async execute(member) {
+    if (isBlocked(member.guild)) return;
+
     const GuildConfig = await ConfigSchema.findOne({ serverId: member.guild.id });
     if (!GuildConfig?.log?.enable || !GuildConfig?.log?.category?.kick) return;
 
@@ -18,10 +21,7 @@ const kickLog = {
     if (!log || log?.createdAt < member.joinedAt) return;
 
     const channel = await member.guild.channels.fetch(GuildConfig.log.channel).catch(() => {});
-    if (
-      !channel?.permissionsFor(member.guild.members.me)
-        ?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)
-    ) {
+    if (!channel) {
       await GuildConfig.updateOne({
         $set: {
           'log.enable': false,

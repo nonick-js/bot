@@ -1,4 +1,4 @@
-const { Events, AuditLogEvent, PermissionFlagsBits, EmbedBuilder, formatEmoji, inlineCode, Colors, codeBlock, time } = require('discord.js');
+const { Events, AuditLogEvent, EmbedBuilder, formatEmoji, inlineCode, Colors, codeBlock, time } = require('discord.js');
 const ConfigSchema = require('../schemas/configSchema');
 const { isBlocked } = require('../utils/functions');
 
@@ -11,7 +11,7 @@ const timeoutLog = {
 	 */
 	async execute(oldMember, newMember) {
     if (
-      !isBlocked(newMember.guild) ||
+      isBlocked(newMember.guild) ||
       !newMember.communicationDisabledUntilTimestamp ||
       oldMember.communicationDisabledUntilTimestamp == newMember.communicationDisabledUntilTimestamp ||
       newMember.communicationDisabledUntilTimestamp < Date.now()
@@ -29,10 +29,7 @@ const timeoutLog = {
     if (!log) return;
 
     const channel = await oldMember.guild.channels.fetch(GuildConfig.log.channel).catch(() => {});
-    if (
-      !channel.permissionsFor(newMember.guild.members.me)
-        ?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)
-    ) {
+    if (!channel) {
       await GuildConfig.updateOne({
         $set: {
           'log.enable': false,
@@ -70,7 +67,7 @@ const unTimeoutLog = {
 	 */
 	async execute(oldMember, newMember) {
     if (
-      !isBlocked(newMember.guild) ||
+      isBlocked(newMember.guild) ||
       !oldMember.communicationDisabledUntilTimestamp ||
       newMember.communicationDisabledUntilTimestamp ||
       oldMember.communicationDisabledUntilTimestamp == newMember.communicationDisabledUntilTimestamp
@@ -88,10 +85,7 @@ const unTimeoutLog = {
     if (!log) return;
 
     const channel = await newMember.guild.channels.fetch(GuildConfig.log.channel).catch(() => {});
-    if (
-      channel?.permissionsFor(newMember.guild.members.me)
-        ?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)
-    ) {
+    if (channel) {
       GuildConfig.updateOne({
         $set: {
           'log.enable': false,

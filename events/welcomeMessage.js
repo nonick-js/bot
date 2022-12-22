@@ -1,6 +1,6 @@
 const ConfigSchema = require('../schemas/configSchema');
 const PlaceHolder = require('../modules/placeholder');
-const { PermissionFlagsBits, EmbedBuilder, Colors, Events } = require('discord.js');
+const { EmbedBuilder, Colors, Events } = require('discord.js');
 const { isBlocked } = require('../utils/functions');
 
 const welcomeMessage = {
@@ -8,16 +8,13 @@ const welcomeMessage = {
   once: false,
   /** @param {import('discord.js').GuildMember} member */
   async execute(member) {
-    if (!isBlocked(member.guild)) return;
+    if (isBlocked(member.guild)) return;
 
     const GuildConfig = await ConfigSchema.findOne({ serverId: member.guild.id });
     if (!GuildConfig?.welcome?.enable) return;
 
     const channel = await member.guild.channels.fetch(GuildConfig?.welcome?.channel).catch(() => {});
-    if (
-      !channel?.permissionsFor(member.guild.members.me)
-        ?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)
-    ) {
+    if (!channel) {
       await GuildConfig.updateOne({
         $set: {
           'welcome.enable': false,

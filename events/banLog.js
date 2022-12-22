@@ -1,4 +1,4 @@
-const { AuditLogEvent, EmbedBuilder, inlineCode, Colors, codeBlock, PermissionFlagsBits, formatEmoji, Events } = require('discord.js');
+const { AuditLogEvent, EmbedBuilder, inlineCode, Colors, codeBlock, formatEmoji, Events } = require('discord.js');
 const ConfigSchema = require('../schemas/configSchema');
 const { isBlocked } = require('../utils/functions');
 
@@ -22,10 +22,7 @@ const banAddLog = {
 
     /** @param {import('discord.js').TextChannel} */
     const channel = await ban.guild.channels.fetch(GuildConfig.log.channel).catch(() => {});
-    if (
-      !channel?.permissionsFor(ban.guild.members.me)
-        ?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)
-    ) {
+    if (!channel) {
       await GuildConfig.updateOne({
         $set: {
           'log.enable': false,
@@ -71,10 +68,7 @@ const banRemoveLog = {
 
     /** @param {import('discord.js').TextChannel} */
     const channel = await ban.guild.channels.fetch(GuildConfig.log.channel).catch(() => {});
-    if (
-      !channel?.permissionsFor(ban.guild.members.me)
-        ?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)
-    ) {
+    if (!channel) {
       await GuildConfig.updateOne({
         $set: {
           'log.enable': false,

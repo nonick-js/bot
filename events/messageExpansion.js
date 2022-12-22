@@ -8,7 +8,7 @@ const messageExpansion = {
   once: false,
   /** @param {import('discord.js').Message} message */
 	async execute(message) {
-    if (!isBlocked(message.guild)) return;
+    if (isBlocked(message.guild)) return;
 
     const GuildConfig = await ConfigSchema.findOne({ serverId: message.guildId });
     if (!GuildConfig?.messageExpansion) return;
