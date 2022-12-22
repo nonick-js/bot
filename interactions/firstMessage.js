@@ -25,6 +25,7 @@ const commandInteraction = {
     type: 'CHAT_INPUT',
   },
   exec: async (interaction) => {
+    await interaction.deferReply();
     const content = interaction.options.getString('content');
     const label = interaction.options.getString('label');
 
@@ -44,8 +45,8 @@ const commandInteraction = {
         .setStyle(ButtonStyle.Link),
     );
 
-    interaction.reply({
-      content: content ?? '下のボタンをクリックすると、このチャンネルの最初のメッセージへ移動します',
+    interaction.followUp({
+      content: content ?? undefined,
       components: [button],
     });
   },
