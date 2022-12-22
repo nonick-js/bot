@@ -23,15 +23,16 @@ const configSchema = new mongoose.Schema({
 
   report: {
     channel: { type: mongoose.SchemaTypes.String, default: null },
-    mention: { type: mongoose.SchemaTypes.Boolean, default: false },
-    mentionRole: { type: mongoose.SchemaTypes.String, default: null },
+    mention: {
+      enable: { type: mongoose.SchemaTypes.Boolean, default: false },
+      role: { type: mongoose.SchemaTypes.String, default: null },
+    },
   },
 
   log: {
     enable: { type: mongoose.SchemaTypes.Boolean, default: false },
     channel: { type: mongoose.SchemaTypes.String, default: null },
     category: {
-      bot: { type: mongoose.SchemaTypes.Boolean, default: false },
       timeout: { type: mongoose.SchemaTypes.Boolean, default: false },
       kick: { type: mongoose.SchemaTypes.Boolean, default: false },
       ban: { type: mongoose.SchemaTypes.Boolean, default: false },
@@ -40,10 +41,18 @@ const configSchema = new mongoose.Schema({
 
   verification: {
     enable: { type: mongoose.SchemaTypes.Boolean, default: 0 },
-		oldLevel: { type: mongoose.SchemaTypes.Number, default: null },
-    newLevel: { type: mongoose.SchemaTypes.Number, default: null },
-    startChangeTime: { type: mongoose.SchemaTypes.Number, default: null },
-    endChangeTime: { type: mongoose.SchemaTypes.Number, default: null },
+    log: {
+      enable: { type: mongoose.SchemaTypes.Boolean, default: 0 },
+      channel: { type: mongoose.SchemaTypes.String, default: null },
+    },
+    level: {
+      old: { type: mongoose.SchemaTypes.Number, default: null },
+      new: { type: mongoose.SchemaTypes.Number, default: null },
+    },
+    time: {
+      start: { type: mongoose.SchemaTypes.Number, default: null },
+      end: { type: mongoose.SchemaTypes.Number, default: null },
+    },
 	},
 });
 
