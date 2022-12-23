@@ -16,7 +16,7 @@ const commandInteraction = {
       {
         name: 'label',
         description: 'ボタンの名前',
-        maxLength: 50,
+        maxLength: 80,
         type: ApplicationCommandOptionType.String,
       },
     ],
@@ -25,18 +25,11 @@ const commandInteraction = {
     type: 'CHAT_INPUT',
   },
   exec: async (interaction) => {
-    await interaction.deferReply();
     const content = interaction.options.getString('content');
     const label = interaction.options.getString('label');
 
     const firstMessage = await interaction.channel.messages.fetch({ after: 1, limit: 1 }).catch(() => {});
-
-    try {
-      if (!firstMessage) throw '予期せぬエラーにより、メッセージを取得できませんでした';
-      if (!firstMessage?.first()) throw 'このチャンネルにはまだメッセージが1つも投稿されていません';
-    } catch (err) {
-      return interaction.reply({ embeds: [errorEmbed(err)], ephemeral: true });
-    }
+    if (!firstMessage?.first()) return interaction.reply({ embeds: [errorEmbed('最初のメッセージを取得できませんでした')], ephemeral: true });
 
     const button = new ActionRowBuilder().setComponents(
       new ButtonBuilder()
@@ -45,10 +38,11 @@ const commandInteraction = {
         .setStyle(ButtonStyle.Link),
     );
 
-    interaction.followUp({
+    interaction.reply({
       content: content ?? undefined,
       components: [button],
     });
   },
 };
+
 module.exports = [ commandInteraction ];
