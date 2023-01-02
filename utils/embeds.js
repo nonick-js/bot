@@ -18,7 +18,7 @@ const errorEmbed = (err, temporarily) => {
     .setDescription('`❌` ' + err)
     .setColor(Colors.Red);
 
-  if (temporarily) return embed.setFooter({ text: '(このメッセージは数秒後に自動で削除されます)' });
+  if (temporarily) return embed.setFooter({ text: 'このメッセージは数秒後に自動で削除されます' });
   return embed;
 };
 

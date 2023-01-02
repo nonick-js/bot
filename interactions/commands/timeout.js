@@ -1,5 +1,6 @@
 const { ApplicationCommandOptionType, PermissionFlagsBits, Colors, EmbedBuilder, codeBlock } = require('discord.js');
-const date = require('../modules/date');
+const date = require('../../modules/date');
+const { errorEmbed } = require('../../utils/embeds');
 
 /** @type {import('@akki256/discord-interaction').ChatInputRegister} */
 const commandInteraction = {
@@ -60,11 +61,7 @@ const commandInteraction = {
       if (interaction.user.id !== interaction.guild.ownerId &&
         interaction.member.roles.highest.position < member.roles.highest.position) throw 'あなたの権限ではこのユーザーをタイムアウトできません';
     } catch (err) {
-      const embed = new EmbedBuilder()
-        .setDescription('`❌` ' + err)
-        .setColor(Colors.Red);
-
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.reply({ embeds: [errorEmbed(err)], ephemeral: true });
     }
 
     member.timeout(duration, (reason ?? '理由が入力されていません') + ` by ${interaction.user.tag}`)
