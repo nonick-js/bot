@@ -1,5 +1,5 @@
 const { EmbedBuilder, Colors } = require('discord.js');
-const { admin } = require('../../config.json');
+const { admin } = require('../../../config.json');
 
 /** @param {import('discord.js').BaseInteraction} interaction */
 const CheckPermission = (interaction) => {

@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const { ApplicationCommandOptionType, PermissionFlagsBits, EmbedBuilder, Colors } = require('discord.js');
-const { admin } = require('../../config.json');
+const { admin } = require('../../../config.json');
 const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 const CheckPermission = require('./_permissionCheck');
 
@@ -9,7 +9,7 @@ const CheckPermission = require('./_permissionCheck');
 const commandInteraction = {
   data: {
     name: 'blacklist',
-    description: '[🔧] ブラックリストを管理します',
+    description: '🔧 ブラックリストを管理します',
     options: [
       {
         name: 'add',
@@ -38,7 +38,7 @@ const commandInteraction = {
       },
       {
         name: 'remove',
-        description: '[🔧] ブラックリストから削除',
+        description: '🔧 ブラックリストから削除',
         type: ApplicationCommandOptionType.Subcommand,
         options: [
           {

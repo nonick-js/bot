@@ -1,12 +1,12 @@
 const { PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const { admin } = require('../../config.json');
+const { admin } = require('../../../config.json');
 const CheckPermission = require('./_permissionCheck');
 
 /** @type {import('@djs-tools/interactions').ChatInputRegister} */
 const commandInteraction = {
   data: {
     name: 'reload',
-    description: '[🔧] BOTを再起動します',
+    description: '🔧 BOTを再起動します',
     guildId: admin.guild,
     defaultMemberPermissions: PermissionFlagsBits.Administrator,
     dmPermission: false,
