@@ -1,5 +1,5 @@
 const { PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ApplicationCommandOptionType, ButtonStyle } = require('discord.js');
-const { errorEmbed } = require('../utils/embeds');
+const { errorEmbed } = require('../../utils/embeds');
 
 /** @type {import('@akki256/discord-interaction').ChatInputRegister} */
 const commandInteraction = {
@@ -38,10 +38,7 @@ const commandInteraction = {
         .setStyle(ButtonStyle.Link),
     );
 
-    interaction.reply({
-      content: content ?? undefined,
-      components: [button],
-    });
+    interaction.reply({ content: content ?? undefined, components: [button] });
   },
 };
 
