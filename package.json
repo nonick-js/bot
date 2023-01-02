@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon ."
+    "dev": "nodemon .",
+    "reset": "node .\\resetCommands.js"
   },
   "repository": {
     "type": "git",
@@ -23,12 +24,10 @@
     "@octokit/rest": "^19.0.4",
     "axios": "^0.27.2",
     "discord-api-types": "^0.37.21",
-    "discord.js": "^14.6.0",
+    "discord.js": "^14.7.1",
     "dotenv": "^16.0.2",
-    "mongoose": "^6.6.1",
-    "mongoose-findorcreate": "^3.0.0",
+    "mongoose": "^6.8.1",
     "node-cron": "^3.0.2",
-    "octokit": "^2.0.7",
     "sequelize": "^6.21.6",
     "sqlite3": "^5.0.11"
   },
