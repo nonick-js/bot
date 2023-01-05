@@ -1,5 +1,5 @@
 const { EmbedBuilder, ModalBuilder, time, Colors, PermissionFlagsBits, ActionRowBuilder, TextInputBuilder, TextInputStyle, codeBlock, formatEmoji } = require('discord.js');
-const ConfigSchema = require('../../schemas/configSchema');
+const ConfigSchema = require('../../../schemas/configSchema');
 const Buttons = require('./buttons');
 
 /** @type {import('@akki256/discord-interaction').UserRegister} */
@@ -82,7 +82,7 @@ const modalInteraction = {
 
     try {
       if (!user) throw 'ユーザーの情報の取得に失敗したため、通報を送信できませんでした';
-      if (!channel || !channel?.permissionsFor(interaction.guild.members.me)?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)) {
+      if (!channel?.sendable) {
         await GuildConfig.updateOne({ $set: { 'report.channel': null } });
         GuildConfig.save({ wtimeout: 1500 });
         throw '現在の設定で通報を送信することができませんでした。サーバーの管理者にご連絡ください';

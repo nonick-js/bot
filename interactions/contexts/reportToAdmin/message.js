@@ -1,5 +1,5 @@
 const { Colors, PermissionFlagsBits, TextInputStyle, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, codeBlock } = require('discord.js');
-const ConfigSchema = require('../../schemas/configSchema');
+const ConfigSchema = require('../../../schemas/configSchema');
 const Buttons = require('./buttons');
 
 /** @type {import('@akki256/discord-interaction').MessageRegister} */
@@ -84,7 +84,7 @@ const modalInteraction = {
 
     try {
       if (!message) throw '通報しようとしているメッセージは削除されました';
-      if (!channel || !channel?.permissionsFor(interaction.guild.members.me)?.has(PermissionFlagsBits.SendMessages | PermissionFlagsBits.ViewChannel)) {
+      if (!channel?.sendable) {
         await GuildConfig.updateOne({ $set: { 'report.channel': null } });
         GuildConfig.save({ wtimeout: 1500 });
         throw '現在の設定で通報を送信することができませんでした。サーバーの管理者にご連絡ください';
