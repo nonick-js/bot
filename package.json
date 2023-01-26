@@ -1,35 +1,32 @@
 {
-  "name": "discordbot-nonick",
+  "name": "nonick.js",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
-    "dev": "nodemon .",
-    "reset": "node .\\resetCommands.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nonick-mc/DiscordBot-NoNICK.js.git"
+    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
+    "start": "node build/src/index.js",
+    "reset": "node --loader ts-node/esm src/index.ts",
+    "build": "tsc -p ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nonick-mc/DiscordBot-NoNICK.js/issues"
-  },
-  "homepage": "https://github.com/nonick-mc/DiscordBot-NoNICK.js#readme",
-  "dependencies": {
-    "@akki256/discord-interaction": "^1.0.1",
-    "@octokit/rest": "^19.0.4",
-    "axios": "^0.27.2",
-    "discord-api-types": "^0.37.21",
-    "discord.js": "^14.7.1",
-    "dotenv": "^16.0.2",
-    "mongoose": "^6.8.1",
-    "node-cron": "^3.0.2"
-  },
   "devDependencies": {
-    "eslint": "^8.23.0"
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@akki256/discord-interaction": "^2.0.1",
+    "@haileybot/captcha-generator": "^1.7.0",
+    "@napi-rs/canvas": "^0.1.34",
+    "@swc/core": "^1.3.27",
+    "@swc/helpers": "^0.4.14",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "axios": "^1.2.3",
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.32.0",
+    "mongoose": "^6.8.3",
+    "ts-node": "^10.9.1"
   }
 }

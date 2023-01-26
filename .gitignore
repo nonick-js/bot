@@ -1,7 +1,8 @@
+# Directory
 node_modules
-models/.config.sqlite
+build
 .vscode
+
+# File
 .env
 config.json
-updateMemo.txt
-commands_old
