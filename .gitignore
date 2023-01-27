@@ -1,7 +1,6 @@
 # Directory
 node_modules
 build
-.vscode
 
 # File
 .env
