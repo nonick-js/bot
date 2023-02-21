@@ -22,19 +22,18 @@ const userInfoContext = new UserContext(
     name: 'ユーザーの情報',
     dmPermission: false,
   },
-  async (interaction): Promise<void> => {
+  async (interaction) => {
+
     await interaction.deferReply({ ephemeral: true });
 
     const user = interaction.targetUser;
     const member = interaction.targetMember;
-
     const userFlags = user?.flags?.toArray();
     const userFlagsEmojies = userFlags?.map(v => flagEmojies.get(v)).filter(Boolean);
-
     const createTime = time(Math.floor(user.createdTimestamp / 1000), 'D');
 
     if (!(member instanceof GuildMember)) {
-      interaction.followUp({
+      return interaction.followUp({
         embeds: [
           new EmbedBuilder()
             .setAuthor({ name: user.tag })
@@ -48,18 +47,14 @@ const userInfoContext = new UserContext(
             ),
         ],
       });
-      return;
     }
 
     const nickName = member.nickname ?? 'なし';
     const joinTime = member.joinedTimestamp ? time(Math.floor(member.joinedTimestamp / 1000), 'D') : 'エラー';
-
     const roles = member.roles.cache
       .filter(role => role.name !== '@everyone')
-      .sort((before, after) => {
-        if (before.position > after.position) return -1;
-        return 1;
-      })?.map(role => role?.toString())?.join(' ') || 'なし';
+      .sort((before, after) => before.position > after.position ? -1 : 1)
+      ?.map(role => role?.toString())?.join(' ') || 'なし';
 
     const embed = new EmbedBuilder()
       .setAuthor({ name: user.tag })
@@ -104,6 +99,7 @@ const userInfoContext = new UserContext(
     }
 
     interaction.followUp({ embeds: [embed] });
+
   },
 );
 

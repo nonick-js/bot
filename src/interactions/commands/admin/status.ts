@@ -11,7 +11,8 @@ const statusCommand = new ChatInput(
     dmPermission: false,
   },
   { guildId: Config.admin.guild },
-  async (interaction): Promise<void> => {
+  async (interaction) => {
+
     await checkPermission(interaction);
     if (interaction.replied) return;
 
@@ -32,6 +33,7 @@ const statusCommand = new ChatInput(
       ],
       ephemeral: true,
     });
+
   },
 );
 

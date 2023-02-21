@@ -24,7 +24,7 @@ export function toMS(text: string): number {
   return ms;
 }
 
-export function toText(time: number = 0, compact: boolean = false, pass: any[] = []): string {
+export function toText(time = 0, compact = false, pass: any[] = []): string {
   const absMs = Math.abs(time);
   const duration = [
     { short:'y', long:'year', duration:Math.floor(absMs / dur.year) },

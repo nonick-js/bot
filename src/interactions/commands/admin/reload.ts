@@ -13,7 +13,8 @@ const reloadCommand = new ChatInput(
   {
     guildId: Config.admin.guild,
   },
-  async (interaction): Promise<void> => {
+  async (interaction) => {
+
     await checkPermission(interaction);
     if (interaction.replied) return;
 
@@ -27,6 +28,7 @@ const reloadCommand = new ChatInput(
     });
 
     process.exit();
+
   },
 );
 

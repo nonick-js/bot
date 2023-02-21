@@ -17,7 +17,6 @@
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
 		"comma-style": "error",
-		"curly": ["error", "multi-line", "consistent"],
 		"dot-location": ["error", "property"],
 		"handle-callback-err": "off",
 		"keyword-spacing": "error",
@@ -29,7 +28,8 @@
 		"no-lonely-if": "error",
 		"no-unused-vars": "off",
 		"no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
-		"no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
+		// "no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
+		"no-shadow": "off",
 		"no-trailing-spaces": ["error"],
 		"no-var": "error",
 		"object-curly-spacing": ["error", "always"],
@@ -50,6 +50,7 @@
 		"@typescript-eslint/no-unused-vars": ["error"],
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-empty-function": "off",
-		"@typescript-eslint/no-var-requires": "off"
+		"@typescript-eslint/no-var-requires": "off",
+		"@typescript-eslint/no-shadow": ["error"]
 	}
 }

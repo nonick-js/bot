@@ -1,55 +1,103 @@
+import { BaseMessageOptions, ChannelType, Colors } from 'discord.js';
 import { model, Schema, SchemaTypes } from 'mongoose';
 
-const ServerSettings = new Schema({
-  serverId: { type: SchemaTypes.String, require: true, unique: true },
+type CustomMessageOptions = Pick<BaseMessageOptions, 'content' | 'files' | 'embeds'>;
+type LogCategoryOptions = { enable: boolean, channel: (string | null) }
 
-  messageExpansion: { type: SchemaTypes.Boolean, default: false },
-
-  welcomeMessage: {
-    enable: { type: SchemaTypes.Boolean, default: false },
-    channel: { type: SchemaTypes.String, default: null },
-    message: { type: SchemaTypes.String, default: '![user] **(![userTag])** さん、**![serverName]**へようこそ！' },
+export interface IServerSettings {
+  serverId: string,
+  message: {
+    join: { enable: boolean, channel: (string | null), messageOptions: CustomMessageOptions },
+    leave: { enable: boolean, channel: (string | null), messageOptions: CustomMessageOptions },
+    expansion: {
+      enable: boolean,
+      ignore: { types: (ChannelType[]), ids: (string[]) }
+    },
   },
-
-  leaveMessage: {
-    enable: { type: SchemaTypes.Boolean, default: false },
-    channel: { type: SchemaTypes.String, default: null },
-    message: { type: SchemaTypes.String, default: '**![userTag]** さんがサーバーを退室しました👋' },
-  },
-
   report: {
-    channel: { type: SchemaTypes.String, default: null },
-    mention: {
-      enable: { type: SchemaTypes.Boolean, default: false },
-      role: { type: SchemaTypes.String, default: null },
-    },
+    channel: (string | null),
+    mention: { enable: boolean; role: (string | null) },
   },
-
   log: {
-    enable: { type: SchemaTypes.Boolean, default: false },
-    channel: { type: SchemaTypes.String, default: null },
-    category: {
-      timeout: { type: SchemaTypes.Boolean, default: false },
-      kick: { type: SchemaTypes.Boolean, default: false },
-      ban: { type: SchemaTypes.Boolean, default: false },
+    timeout: LogCategoryOptions;
+    kick: LogCategoryOptions;
+    ban: LogCategoryOptions;
+  },
+  changeVerificationLevel: {
+    enable: boolean,
+    log: { enable: boolean, channel: (string | null) },
+    level: { old: (number | null), new: (number | null) },
+    time: { start: (number | null), end: (number | null) },
+  },
+}
+
+const ServerSettings = new Schema<IServerSettings>({
+  serverId: { type: String, required: true, unique: true },
+  message: {
+    join: {
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
+      messageOptions: {
+        type: SchemaTypes.Mixed,
+        default: { embeds: [ {
+          title: 'WELCOME',
+          description: '![user] **(![userTag])** さん、**![serverName]**へようこそ！',
+          color: Colors.Green,
+        } ] },
+      },
+    },
+    leave: {
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
+      messageOptions: {
+        type: SchemaTypes.Mixed,
+        default: { content: '**![userTag]** さんがサーバーを退室しました👋' },
+      },
+    },
+    expansion: {
+      enable: { type: Boolean, default: false },
+      ignore: {
+        types: { type: [Number], default: [] },
+        ids: { type: [String], default: [] },
+      },
     },
   },
-
-  verification: {
-    enable: { type: SchemaTypes.Boolean },
+  report: {
+    channel: { type: String, default: null },
+    mention: {
+      enable: { type: Boolean, default: false },
+      role: { type: String, default: null },
+    },
+  },
+  log: {
+    timeout: {
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
+    },
+    kick: {
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
+    },
+    ban: {
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
+    },
+  },
+  changeVerificationLevel: {
+    enable: { type: Boolean, default: false },
     log: {
-      enable: { type: SchemaTypes.Boolean },
-      channel: { type: SchemaTypes.String },
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
     },
     level: {
-      before: { type: SchemaTypes.Number },
-      after: { type: SchemaTypes.Number },
+      old: { type: Number, default: null },
+      new: { type: Number, default: null },
     },
     time: {
-      start: { type: SchemaTypes.Number },
-      end: { type: SchemaTypes.Number },
+      start: { type: Number, default: null },
+      end: { type: Number, default: null },
     },
-	},
+  },
 });
 
-export default model('ServerSettings', ServerSettings);
+export default model<IServerSettings>('ServerSettings', ServerSettings);

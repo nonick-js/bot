@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, GuildChannel, PermissionFlagsBits } from 'discord.js';
+import { ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, PermissionFlagsBits } from 'discord.js';
 import { ChatInput } from '@akki256/discord-interaction';
 
 const firstMessageCommand = new ChatInput(
@@ -14,7 +14,7 @@ const firstMessageCommand = new ChatInput(
       },
       {
         name: 'label',
-        description: 'ボタンの名前',
+        description: 'ボタンのテキスト',
         maxLength: 80,
         type: ApplicationCommandOptionType.String,
       },
@@ -23,10 +23,7 @@ const firstMessageCommand = new ChatInput(
     dmPermission: false,
   },  { coolTime: 50000 },
   async (interaction): Promise<void> => {
-    if (!(interaction.channel instanceof GuildChannel)) {
-      interaction.reply({ content: '`❌` チャンネルにアクセスできませんでした', ephemeral: true });
-      return;
-    }
+    if (!interaction.channel) return;
 
     interaction.channel.messages.fetch({ after: '1', limit: 1 })
       .then((messages) => {
@@ -42,7 +39,9 @@ const firstMessageCommand = new ChatInput(
           ],
         });
       })
-      .catch(() => interaction.reply({ content: '`❌` メッセージを取得できませんでした', ephemeral: true }));
+      .catch(() => {
+        interaction.reply({ content: '`❌` メッセージを取得できませんでした', ephemeral: true });
+      });
   },
 );
 
