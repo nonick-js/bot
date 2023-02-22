@@ -167,7 +167,7 @@ ControlPanelMessages.set(FeatureType.MessageExpansion, new ControlPanelComponent
         },
         {
           name: '例外 (チャンネル)',
-          value: setting?.message.expansion.ignore.ids?.map(v => channelMention(v)).join(' ') || 'なし',
+          value: setting?.message.expansion.ignore.channels?.map(v => channelMention(v)).join(' ') || 'なし',
           inline: true,
         },
       ),
@@ -219,7 +219,7 @@ ControlPanelMessages.set(FeatureType.MessageExpansion, new ControlPanelComponent
     ),
     new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(
       new ChannelSelectMenuBuilder()
-        .setCustomId('nonick-js:setting-message-expansion-ignore-ids')
+        .setCustomId('nonick-js:setting-message-expansion-ignore-channels')
         .setPlaceholder('例外設定 (チャンネル)')
         .setChannelTypes([ ChannelType.GuildText, ChannelType.GuildForum, ChannelType.GuildVoice, ChannelType.GuildStageVoice ])
         .setMinValues(0)

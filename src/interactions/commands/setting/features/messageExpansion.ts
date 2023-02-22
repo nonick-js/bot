@@ -31,11 +31,11 @@ const ignoreSetting = [
 
   // 例外 (チャンネル)
   new SelectMenu(
-    { customId: 'nonick-js:setting-message-expansion-ignore-ids', type: SelectMenuType.Channel },
+    { customId: 'nonick-js:setting-message-expansion-ignore-channels', type: SelectMenuType.Channel },
     async (interaction) => {
       const res = await ServerSettings.findOneAndUpdate(
         { serverId: interaction.guildId },
-        { $set: { 'message.expansion.ignore.ids': interaction.values } },
+        { $set: { 'message.expansion.ignore.channels': interaction.values } },
         { upsert: true, new: true },
       );
 

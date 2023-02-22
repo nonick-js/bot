@@ -15,7 +15,7 @@ const messageExpansion = new DiscordEventBuilder({
     if (
       !Setting?.message.expansion.enable ||
       Setting.message.expansion.ignore.types.includes(message.channel.type) ||
-      Setting.message.expansion.ignore.ids.includes(message.channelId)
+      Setting.message.expansion.ignore.channels.includes(message.channelId)
     ) return;
 
     urlExpansion(message, message.guildId ?? undefined);

@@ -13,7 +13,7 @@ export interface IServerSettings {
       enable: boolean,
       ignore: {
         types: (ChannelType[]),
-        ids: (string[]),
+        channels: (string[]),
       },
     },
   },
@@ -32,6 +32,7 @@ export interface IServerSettings {
     level: { old: (number | null), new: (number | null) },
     time: { start: (number | null), end: (number | null) },
   },
+  autoPublic: { enable: boolean, channels: string[] },
   autoMod: {
     enable: boolean,
     log: { enable: boolean, channel: (string | null) },
@@ -73,7 +74,7 @@ const ServerSettings = new Schema<IServerSettings>({
       enable: { type: Boolean, default: false },
       ignore: {
         types: { type: [Number], default: [] },
-        ids: { type: [String], default: [] },
+        channels: { type: [String], default: [] },
       },
     },
   },
