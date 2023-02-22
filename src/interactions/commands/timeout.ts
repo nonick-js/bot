@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, Colors, EmbedBuilder, GuildMember, PermissionFlagsBits } from 'discord.js';
+import { ApplicationCommandOptionType, codeBlock, Colors, EmbedBuilder, GuildMember, PermissionFlagsBits } from 'discord.js';
 import { ChatInput } from '@akki256/discord-interaction';
 import { toMS } from '../../module/date';
 
@@ -73,6 +73,16 @@ const timeoutCommand = new ChatInput(
             new EmbedBuilder()
               .setDescription(`\`✅\` ${member}を **${day}**日**${hour}**時間**${minute}**分 タイムアウトしました`)
               .setColor(Colors.Green),
+          ],
+          ephemeral: true,
+        });
+      })
+      .catch((err) => {
+        interaction.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setDescription(`\`❌\` タイムアウトに失敗しました。\n${codeBlock(err)}`)
+              .setColor(Colors.Red),
           ],
           ephemeral: true,
         });
