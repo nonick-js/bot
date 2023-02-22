@@ -11,7 +11,10 @@ export interface IServerSettings {
     leave: { enable: boolean, channel: (string | null), messageOptions: CustomMessageOptions },
     expansion: {
       enable: boolean,
-      ignore: { types: (ChannelType[]), ids: (string[]) }
+      ignore: {
+        types: (ChannelType[]),
+        ids: (string[]),
+      },
     },
   },
   report: {
@@ -28,6 +31,18 @@ export interface IServerSettings {
     log: { enable: boolean, channel: (string | null) },
     level: { old: (number | null), new: (number | null) },
     time: { start: (number | null), end: (number | null) },
+  },
+  autoMod: {
+    enable: boolean,
+    log: { enable: boolean, channel: (string | null) },
+    filter: {
+      inviteUrl: boolean,
+      token: boolean,
+    },
+    ignore: {
+      channels: string[],
+      roles: string[],
+    },
   },
 }
 
@@ -96,6 +111,21 @@ const ServerSettings = new Schema<IServerSettings>({
     time: {
       start: { type: Number, default: null },
       end: { type: Number, default: null },
+    },
+  },
+  autoMod: {
+    enable: { type: Boolean, default: false },
+    log: {
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
+    },
+    filter: {
+      inviteUrl: { type: Boolean, default: false },
+      token: { type: Boolean, default: false },
+    },
+    ignore: {
+      channels: { type: [String], default: [] },
+      roles: { type: [String], default: [] },
     },
   },
 });
