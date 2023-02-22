@@ -80,7 +80,7 @@ const userInfoContext = new UserContext(
       });
     }
 
-    if (member.communicationDisabledUntilTimestamp) {
+    if (member.isCommunicationDisabled()) {
       if (Date.now() > member.communicationDisabledUntilTimestamp) return;
       if (!interaction.inCachedGuild()) return;
       if (!interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers)) return;
