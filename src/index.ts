@@ -13,7 +13,7 @@ import changeVerificationLevel from './cron/changeVerificationLevel';
 
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds,         GatewayIntentBits.GuildBans,
+    GatewayIntentBits.Guilds,         GatewayIntentBits.GuildModeration,
     GatewayIntentBits.GuildMessages,  GatewayIntentBits.GuildMembers,
     GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages,
   ],
