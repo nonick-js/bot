@@ -45,7 +45,7 @@ client.once(Events.ClientReady, () => {
   interactions.registerCommands({ guildId, deleteNoLoad: true });
   events.register(path.resolve(__dirname, './events'));
 
-  cron.schedule('*/30 * * * * *', () => changeVerificationLevel(client));
+  cron.schedule('0 * * * *', () => changeVerificationLevel(client));
 });
 
 client.on(Events.InteractionCreate, interaction => {
