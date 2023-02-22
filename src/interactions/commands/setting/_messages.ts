@@ -217,16 +217,13 @@ ControlPanelMessages.set(FeatureType.MessageExpansion, new ControlPanelComponent
           ].map(options => ({ ...options, default: setting?.message.expansion.ignore.types.includes(Number(options.value)) })),
         ),
     ),
-    new ActionRowBuilder<ButtonBuilder>().setComponents(
-      new ButtonBuilder()
-        .setCustomId('nonick-js:setting-message-expansion-ignore-addChannel')
-        .setEmoji(WhiteEmojies.addMark)
-        .setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder()
-        .setCustomId('nonick-js:setting-message-expansion-ignore-deleteAll')
-        .setLabel('例外チャンネルを全削除')
-        .setStyle(ButtonStyle.Danger)
-        .setDisabled(!setting?.message.expansion.ignore.ids.length),
+    new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(
+      new ChannelSelectMenuBuilder()
+        .setCustomId('nonick-js:setting-message-expansion-ignore-ids')
+        .setPlaceholder('例外設定 (チャンネル)')
+        .setChannelTypes([ ChannelType.GuildText, ChannelType.GuildForum, ChannelType.GuildVoice, ChannelType.GuildStageVoice ])
+        .setMinValues(0)
+        .setMaxValues(25),
     ),
   ], { name: '例外設定', description: 'URL展開を行わないチャンネルを設定', emoji: WhiteEmojies.setting }),
 );
@@ -407,9 +404,9 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
     new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
       new StringSelectMenuBuilder()
         .setCustomId('nonick-js:setting-automod-filter')
+        .setPlaceholder('有効にするフィルタを選択')
         .setMinValues(0)
         .setMaxValues(2)
-        .setPlaceholder('有効にするフィルタを選択')
         .setOptions(
           [
             { label: 'このサーバー以外の招待リンク', value: 'inviteUrl', emoji: WhiteEmojies.message },
@@ -445,7 +442,7 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
     new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(
       new ChannelSelectMenuBuilder()
         .setCustomId('nonick-js:setting-automod-ignore-channels')
-        .setPlaceholder('チャンネルを選択')
+        .setPlaceholder('例外設定 (チャンネル)')
         .setChannelTypes([ ChannelType.GuildText, ChannelType.GuildForum, ChannelType.GuildVoice, ChannelType.GuildStageVoice ])
         .setMinValues(0)
         .setMaxValues(25),
@@ -453,7 +450,7 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
     new ActionRowBuilder<RoleSelectMenuBuilder>().setComponents(
       new RoleSelectMenuBuilder()
         .setCustomId('nonick-js:setting-automod-ignore-roles')
-        .setPlaceholder('ロールを選択')
+        .setPlaceholder('例外設定 (ロール)')
         .setMinValues(0)
         .setMaxValues(25),
     ),
