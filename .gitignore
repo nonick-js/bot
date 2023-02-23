@@ -6,3 +6,4 @@ build
 .env
 .vscode
 config.json
+changelog.md
