@@ -114,6 +114,10 @@ const ServerSettings = new Schema<IServerSettings>({
       end: { type: Number, default: null },
     },
   },
+  autoPublic: {
+    enable: { type: Boolean, default: false },
+    channels: { type: [String], default: [] },
+  },
   autoMod: {
     enable: { type: Boolean, default: false },
     log: {

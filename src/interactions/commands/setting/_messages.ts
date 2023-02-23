@@ -11,6 +11,7 @@ export enum FeatureType {
   MessageExpansion = 'messageExpansion',
   EventLog = 'eventLog',
   ChangeVerificationLevel = 'changeVerificationLevel',
+  AutoPublic = 'autoPublic',
   AutoModPlus = 'autoModPlus',
 }
 
@@ -365,6 +366,46 @@ ControlPanelMessages.set(FeatureType.ChangeVerificationLevel, new ControlPanelCo
   ], { name: 'ログ設定', description: '認証レベルを変更した際にログを送信する', emoji: WhiteEmojies.setting }),
 );
 
+// 自動アナウンス公開
+ControlPanelMessages.set(FeatureType.AutoPublic, new ControlPanelComponentPagination()
+  .setMessageOptions((setting) => ({
+    embeds: [
+      new EmbedBuilder()
+        .setTitle('`🔧` 設定 - 自動アナウンス公開')
+        .setDescription('```設定したアナウンスチャンネルに投稿されたメッセージを自動で公開します。(BOTが投稿したメッセージは公開されません)```')
+        .setColor(Colors.Blurple)
+        .setFields(
+          {
+            name: '一般設定',
+            value: booleanStatus(setting?.autoPublic.enable),
+            inline: true,
+          },
+          {
+            name: 'チャンネル',
+            value: setting?.autoPublic.channels.map(v => channelMention(v)).join(' ') || 'なし',
+            inline: true,
+          },
+        ),
+    ],
+  }))
+  .addActionRows((setting) => [
+    new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(
+      new ChannelSelectMenuBuilder()
+        .setCustomId('nonick-js:setting-autoPublic-channels')
+        .setPlaceholder('チャンネルを選択')
+        .setChannelTypes(ChannelType.GuildAnnouncement)
+        .setMinValues(0)
+        .setMaxValues(5),
+    ),
+    new ActionRowBuilder<ButtonBuilder>().setComponents(
+      new ButtonBuilder()
+        .setCustomId('nonick-js:setting-autoPublic-enable')
+        .setLabel(buttonLabelStatus(setting?.autoPublic.enable))
+        .setStyle(buttonStyleStatus(setting?.autoPublic.enable)),
+    ),
+  ], { name: '一般設定', emoji: WhiteEmojies.setting }),
+);
+
 // AutoMod Plus
 ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagination()
   .setMessageOptions((setting) => ({
@@ -373,7 +414,7 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
         .setTitle('`🔧` 設定 - AutoMod Plus')
         .setDescription([
           `${formatEmoji('1021382601031823371')}${formatEmoji('1021383211147870280')} この機能は予告なく仕様が変更される場合があります。`,
-          '```DiscordのAutoModでは設定が難しい、高度なメッセージフィルターを有効にします。\n有効なフィルターに検知されたメッセージは自動的に削除されます。```',
+          '```標準のAutoModでは設定が難しい、高度なメッセージフィルターを有効にします。フィルターに検知されたメッセージは自動的に削除されます。```',
         ].join('\n'))
         .setColor(Colors.Blurple)
         .setFields(

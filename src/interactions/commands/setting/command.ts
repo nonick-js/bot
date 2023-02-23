@@ -17,6 +17,7 @@ const command = new ChatInput(
           { name: 'メッセージURL展開', value: FeatureType.MessageExpansion },
           { name: 'イベントログ', value: FeatureType.EventLog },
           { name: '自動認証レベル変更', value: FeatureType.ChangeVerificationLevel },
+          { name: '自動アナウンス公開', value: FeatureType.AutoPublic },
           { name: 'AutoMod Plus (ベータ)', value: FeatureType.AutoModPlus },
         ],
         type: ApplicationCommandOptionType.String,
@@ -50,10 +51,11 @@ const command = new ChatInput(
             .setMinValues(0)
             .setOptions(
               { label: '入退室メッセージ', value: FeatureType.JoinAndLeaveMessage, description: 'メンバーの参加・脱退時にメッセージを送信', emoji: '🚪' },
-              { label: 'サーバー内通報', value: FeatureType.ReportToAdmin, description: 'メンバーがメッセージやユーザーを通報できるように', emoji: '📢' },
+              { label: 'サーバー内通報', value: FeatureType.ReportToAdmin, description: 'メンバーがメッセージやユーザーを通報できるように', emoji: '💬' },
               { label: 'メッセージURL展開', value: FeatureType.MessageExpansion, description: '送信されたDiscordのメッセージURLの内容を送信', emoji: '🔗' },
               { label: 'イベントログ', value: FeatureType.EventLog, description: 'サーバー内で起こったイベントのログを送信', emoji: '📃' },
               { label: '自動認証レベル変更', value: FeatureType.ChangeVerificationLevel, description: 'サーバーの認証レベルを自動で変更', emoji: '✅' },
+              { label: '自動アナウンス公開', value: FeatureType.AutoPublic, description: 'アナウンスChに投稿されたメッセージを自動で公開', emoji: '📢' },
               { label: 'AutoMod Plus (ベータ)', value: FeatureType.AutoModPlus, description: '不適切なメッセージの送信をブロック', emoji: '🛡' },
             ),
         ),
