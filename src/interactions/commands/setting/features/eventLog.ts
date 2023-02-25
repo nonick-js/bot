@@ -67,4 +67,25 @@ const banLogSetting = [
   ),
 ];
 
-module.exports = [...timeoutLogSetting, ...kickLogSetting, ...banLogSetting];
+const voiceLogSetting = [
+  // 有効・無効化
+  new Button(
+    { customId: 'nonick-js:setting-log-voice-enable' },
+    async (interaction) => {
+      const Setting = await ServerSettings.findOne({ serverId: interaction.guildId });
+      changeToggleSetting(interaction, { $set: { 'log.voice.enable': !Setting?.log.voice.enable } }, FeatureType.EventLog);
+    },
+  ),
+
+  // 送信先
+  new Button(
+    { customId: 'nonick-js:setting-log-voice-channel' },
+    (interaction) => interaction.showModal(channelModal.setCustomId('nonick-js:setting-log-voice-channel-modal')),
+  ),
+  new Modal(
+    { customId: 'nonick-js:setting-log-voice-channel-modal' },
+    (interaction) => changeChannelSetting(interaction, 'log.voice.channel', FeatureType.EventLog),
+  ),
+];
+
+module.exports = [...timeoutLogSetting, ...kickLogSetting, ...banLogSetting, ...voiceLogSetting];

@@ -295,7 +295,21 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
         .setEmoji(WhiteEmojies.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: 'BANログ', emoji: WhiteEmojies.setting }),
+  ], { name: 'BANログ', emoji: WhiteEmojies.setting })
+  .addActionRows((setting) => [
+    new ActionRowBuilder<ButtonBuilder>().setComponents(
+      new ButtonBuilder()
+        .setCustomId('nonick-js:setting-log-voice-enable')
+        .setLabel(buttonLabelStatus(setting?.log.voice.enable))
+        .setStyle(buttonStyleStatus(setting?.log.voice.enable))
+        .setDisabled(!setting?.log.voice.channel),
+      new ButtonBuilder()
+        .setCustomId('nonick-js:setting-log-voice-channel')
+        .setLabel('送信先')
+        .setEmoji(WhiteEmojies.channel)
+        .setStyle(ButtonStyle.Secondary),
+    ),
+  ], { name: 'VCログ', emoji: WhiteEmojies.setting }),
 );
 
 // 自動認証レベル変更
