@@ -25,6 +25,7 @@ export interface IServerSettings {
     timeout: LogCategoryOptions;
     kick: LogCategoryOptions;
     ban: LogCategoryOptions;
+    voice: LogCategoryOptions;
   },
   changeVerificationLevel: {
     enable: boolean,
