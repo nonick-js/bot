@@ -1,4 +1,4 @@
-import { ChannelType, Colors, EmbedBuilder, Events, formatEmoji, NewsChannel } from 'discord.js';
+import { ChannelType, Colors, EmbedBuilder, Events, formatEmoji } from 'discord.js';
 import { GrayEmojies } from '../../module/emojies';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
@@ -31,12 +31,12 @@ const voiceLog = new DiscordEventBuilder({
 						.setDescription([
 							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
 							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動元:** ${oldState.channel.id}`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動先:** ${newState.channel.id}`
+							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動先:** ${newState.channel.id}`,
 						].join('\n'))
 						.setColor(Colors.Yellow)
 						.setThumbnail(newState.member.displayAvatarURL())
-						.setTimestamp()
-				] })
+						.setTimestamp(),
+				] });
 		}
 		else if (!oldState.channel && newState.channel) {
 			channel
@@ -45,12 +45,12 @@ const voiceLog = new DiscordEventBuilder({
 						.setTitle('`🔊` チャンネル参加')
 						.setDescription([
 							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${newState.channel.id}`
+							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${newState.channel.id}`,
 						].join('\n'))
 						.setColor(Colors.Red)
 						.setThumbnail(newState.member.displayAvatarURL())
-						.setTimestamp()
-				] })
+						.setTimestamp(),
+				] });
 		}
 		else if (oldState.channel && !newState.channel) {
 			channel
@@ -59,12 +59,12 @@ const voiceLog = new DiscordEventBuilder({
 						.setTitle('`🔊` チャンネル退出')
 						.setDescription([
 							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${oldState.channel.id}`
+							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${oldState.channel.id}`,
 						].join('\n'))
 						.setColor(Colors.Red)
 						.setThumbnail(newState.member.displayAvatarURL())
-						.setTimestamp()
-				] })
+						.setTimestamp(),
+				] });
 		}
 	},
 });
