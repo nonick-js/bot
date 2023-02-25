@@ -22,7 +22,7 @@ const firstMessageCommand = new ChatInput(
     defaultMemberPermissions: PermissionFlagsBits.ManageChannels | PermissionFlagsBits.ManageMessages,
     dmPermission: false,
   },  { coolTime: 50000 },
-  async (interaction): Promise<void> => {
+  async (interaction) => {
     if (!interaction.channel) return;
 
     interaction.channel.messages.fetch({ after: '1', limit: 1 })

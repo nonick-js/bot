@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config();
 
-import { AllowedMentionsTypes, Client, codeBlock, Colors, EmbedBuilder, Events, GatewayIntentBits, Partials, version } from 'discord.js';
+import { ActivityType, AllowedMentionsTypes, Client, codeBlock, Colors, EmbedBuilder, Events, GatewayIntentBits, Partials, version } from 'discord.js';
 import { DiscordInteractions, DiscordInteractionsErrorCodes, InteractionsError } from '@akki256/discord-interaction';
 import { DiscordEvents } from './module/events';
 import { guildId, admin } from '../config.json';
@@ -10,6 +10,7 @@ import { isBlocked } from './module/functions';
 import mongoose from 'mongoose';
 import cron from 'node-cron';
 import changeVerificationLevel from './cron/changeVerificationLevel';
+import ServerSettings from './schemas/ServerSettings';
 
 const client = new Client({
   intents: [
@@ -44,8 +45,16 @@ client.once(Events.ClientReady, () => {
 
   interactions.registerCommands({ guildId, deleteNoLoad: true });
   events.register(path.resolve(__dirname, './events'));
+  reloadActivity();
 
   cron.schedule('0 * * * *', () => changeVerificationLevel(client));
+});
+
+client.on(Events.GuildCreate, () => reloadActivity());
+client.on(Events.GuildDelete, async (guild) => {
+  const res = await ServerSettings.findOneAndDelete({ serverId: guild.id });
+  await res?.save({ wtimeout: 1500 });
+  reloadActivity();
 });
 
 client.on(Events.InteractionCreate, interaction => {
@@ -80,6 +89,10 @@ process.on('uncaughtException', (err) => {
     ] });
   });
 });
+
+function reloadActivity() {
+  client.user?.setActivity({ name: `${client.guilds.cache.size} サーバー`, type: ActivityType.Competing });
+}
 
 client.login(process.env.BOT_TOKEN);
 mongoose.set('strictQuery', false);
