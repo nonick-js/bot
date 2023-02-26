@@ -252,6 +252,11 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
           value: `${booleanStatus(setting?.log.ban.enable)}\n${channelStatus(setting?.log.ban.channel)}`,
           inline: true,
         },
+        {
+          name: 'VC',
+          value: `${booleanStatus(setting?.log.voice.enable)}\n${channelStatus(setting?.log.voice.channel)}`,
+          inline: true,
+        },
       ),
   ] }))
   .addActionRows((setting) => [

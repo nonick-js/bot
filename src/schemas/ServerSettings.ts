@@ -99,6 +99,10 @@ const ServerSettings = new Schema<IServerSettings>({
       enable: { type: Boolean, default: false },
       channel: { type: String, default: null },
     },
+    voice: {
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
+    },
   },
   changeVerificationLevel: {
     enable: { type: Boolean, default: false },

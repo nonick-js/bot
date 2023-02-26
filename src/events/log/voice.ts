@@ -6,7 +6,7 @@ import ServerSettings from '../../schemas/ServerSettings';
 
 const voiceLog = new DiscordEventBuilder({
 	type: Events.VoiceStateUpdate,
-	async execute(oldState, newState) {
+	execute: async (oldState, newState) => {
 
 		if (isBlocked(newState.guild) || !newState.member) return;
 
@@ -30,8 +30,8 @@ const voiceLog = new DiscordEventBuilder({
 						.setTitle('`🔊` チャンネル移動')
 						.setDescription([
 							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動元:** ${oldState.channel.id}`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動先:** ${newState.channel.id}`,
+							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動元:** ${oldState.channel} [${oldState.channel.name}]`,
+							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動先:** ${newState.channel} [${newState.channel.name}]`,
 						].join('\n'))
 						.setColor(Colors.Yellow)
 						.setThumbnail(newState.member.displayAvatarURL())
@@ -45,9 +45,9 @@ const voiceLog = new DiscordEventBuilder({
 						.setTitle('`🔊` チャンネル参加')
 						.setDescription([
 							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${newState.channel.id}`,
+							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${newState.channel} [${newState.channel.name}]`,
 						].join('\n'))
-						.setColor(Colors.Red)
+						.setColor(Colors.Green)
 						.setThumbnail(newState.member.displayAvatarURL())
 						.setTimestamp(),
 				] });
@@ -59,7 +59,7 @@ const voiceLog = new DiscordEventBuilder({
 						.setTitle('`🔊` チャンネル退出')
 						.setDescription([
 							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${oldState.channel.id}`,
+							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${oldState.channel} [${oldState.channel.name}]`,
 						].join('\n'))
 						.setColor(Colors.Red)
 						.setThumbnail(newState.member.displayAvatarURL())
