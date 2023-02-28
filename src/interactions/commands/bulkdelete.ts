@@ -14,11 +14,6 @@ const bulkDeleteMessagesCommand = new ChatInput(
         type: ApplicationCommandOptionType.Number,
         required: true,
       },
-      {
-        name: 'user',
-        description: 'この引数に指定されたユーザーのメッセージのみを消去します',
-        type: ApplicationCommandOptionType.User,
-      },
     ],
     dmPermission: false,
     defaultMemberPermissions: PermissionFlagsBits.ManageMessages,
@@ -32,47 +27,24 @@ const bulkDeleteMessagesCommand = new ChatInput(
       return interaction.reply({ content: '`❌` BOTの権限が不足しているため、メッセージを削除できませんでした。', ephemeral: true });
 
     const bulkCount = interaction.options.getNumber('messages', true);
-    const user = interaction.options.getUser('user');
 
-    if (!user) {
-      interaction.channel.bulkDelete(bulkCount, true)
-        .then((msgs) => interaction.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setDescription(`\`✅\` メッセージを\`${msgs.size}件\`削除しました`)
-              .setColor(Colors.Green),
-          ],
-          ephemeral: true,
-        }))
-        .catch((err) => interaction.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setDescription(`\`❌\` メッセージの削除に失敗しました。\n${codeBlock(err)}`)
-              .setColor(Colors.Red),
-          ],
-          ephemeral: true,
-        }));
-    }
-    else {
-      const messages = await interaction.channel.messages.fetch({ limit: bulkCount });
-      interaction.channel.bulkDelete(messages.filter(v => v.author.id == user.id), true)
-        .then((msgs) => interaction.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setDescription(`\`✅\` ${user}が投稿したメッセージを\`${msgs.size}件\`削除しました`)
-              .setColor(Colors.Green),
-          ],
-          ephemeral: true,
-        }))
-        .catch((err) => interaction.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setDescription(`\`❌\` メッセージの削除に失敗しました。\n${codeBlock(err)}`)
-              .setColor(Colors.Red),
-          ],
-          ephemeral: true,
-        }));
-    }
+    interaction.channel.bulkDelete(bulkCount, true)
+      .then((msgs) => interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setDescription(`\`✅\` メッセージを\`${msgs.size}件\`削除しました`)
+            .setColor(Colors.Green),
+        ],
+        ephemeral: true,
+      }))
+      .catch((err) => interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setDescription(`\`❌\` メッセージの削除に失敗しました。\n${codeBlock(err)}`)
+            .setColor(Colors.Red),
+        ],
+        ephemeral: true,
+      }));
 
   },
 );
