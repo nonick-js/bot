@@ -1,7 +1,7 @@
 import { ChannelType, Colors, EmbedBuilder, Events } from 'discord.js';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
-import { PlaceHolder } from '../../module/placeholder';
+import { PlaceHolder } from '../../module/format';
 import ServerSettings from '../../schemas/ServerSettings';
 
 const joinMessage = new DiscordEventBuilder({

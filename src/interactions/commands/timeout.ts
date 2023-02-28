@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, codeBlock, Colors, EmbedBuilder, GuildMember, PermissionFlagsBits } from 'discord.js';
 import { ChatInput } from '@akki256/discord-interaction';
-import { toMS } from '../../module/date';
+import { Duration } from '../../module/format';
 
 const timeoutCommand = new ChatInput(
   {
@@ -43,15 +43,15 @@ const timeoutCommand = new ChatInput(
     if (!interaction.inCachedGuild()) return;
 
     const member = interaction.options.getMember('user');
-    const duration = (
-      toMS(`${interaction.options.getNumber('day') || 0}d`)
-      + toMS(`${interaction.options.getNumber('hour') || 0}h`)
-      + toMS(`${interaction.options.getNumber('minute') || 0}m`)
-    );
+    const duration = Duration.toMS([
+      `${interaction.options.getNumber('day') ?? 0}d`,
+      `${interaction.options.getNumber('hour') ?? 0}h`,
+      `${interaction.options.getNumber('minute') ?? 0}m`,
+    ].join(''));
 
     if (duration == 0)
       return interaction.reply({ content: '`❌` 合計時間は1分以上から設定できます。', ephemeral: true });
-    if (toMS('28d') <= duration)
+    if (Duration.toMS('28d') <= duration)
       return interaction.reply({ content: '`❌` 28日以上のタイムアウトはできません。', ephemeral: true });
     if (!(member instanceof GuildMember))
       return interaction.reply({ content: '`❌` このユーザーはサーバーにいません。', ephemeral: true });
@@ -64,14 +64,10 @@ const timeoutCommand = new ChatInput(
 
     member.timeout(duration, `${interaction.options.getString('reason') ?? '理由が入力されていません'} - ${interaction.user.tag}`)
       .then(() => {
-        const day = Math.floor(duration / toMS('1d'));
-        const hour = Math.floor((duration % toMS('1d') / toMS('1h')));
-        const minute = ((duration % toMS('1d')) % toMS('1h')) / toMS('1m');
-
         interaction.reply({
           embeds: [
             new EmbedBuilder()
-              .setDescription(`\`✅\` ${member}を **${day}**日**${hour}**時間**${minute}**分 タイムアウトしました`)
+              .setDescription(Duration.format(duration, `\`✅\` ${member}を **%d**日**%h**時間**%m**分 タイムアウトしました`))
               .setColor(Colors.Green),
           ],
           ephemeral: true,
