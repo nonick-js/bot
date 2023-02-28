@@ -40,7 +40,7 @@ const autoModFilter = new Map([
 ControlPanelMessages.set(FeatureType.JoinAndLeaveMessage, new ControlPanelComponentPagination()
   .setMessageOptions((setting) => ({ embeds: [
     new EmbedBuilder()
-    .setTitle('`🔧` 設定 - 入退室メッセージ')
+    .setTitle('`🔧` 設定: 入退室メッセージ')
     .setDescription('```メンバーがサーバーに参加したり脱退したりした際にメッセージを送信します。(メッセージは各設定の「プレビュー」ボタンで確認できます。)```')
     .setColor(Colors.Blurple)
     .setFields(
@@ -108,7 +108,7 @@ ControlPanelMessages.set(FeatureType.JoinAndLeaveMessage, new ControlPanelCompon
 ControlPanelMessages.set(FeatureType.ReportToAdmin, new ControlPanelComponentPagination()
   .setMessageOptions((setting) => ({ embeds: [
     new EmbedBuilder()
-      .setTitle('`🔧` 設定 - サーバー内通報')
+      .setTitle('`🔧` 設定: サーバー内通報')
       .setDescription('```メンバーがルールに違反したメッセージやユーザーをモデレーターに通報できるようになります。```')
       .setColor(Colors.Blurple)
       .setFields(
@@ -153,7 +153,7 @@ ControlPanelMessages.set(FeatureType.ReportToAdmin, new ControlPanelComponentPag
 ControlPanelMessages.set(FeatureType.MessageExpansion, new ControlPanelComponentPagination()
   .setMessageOptions((setting) => ({ embeds: [
     new EmbedBuilder()
-      .setTitle('`🔧` 設定 - メッセージURL展開')
+      .setTitle('`🔧` 設定: メッセージURL展開')
       .setDescription('```DiscordのメッセージURLが送信された際に、そのメッセージの内容や送信者の情報を送信します。```')
       .setColor(Colors.Blurple)
       .setFields(
@@ -233,7 +233,7 @@ ControlPanelMessages.set(FeatureType.MessageExpansion, new ControlPanelComponent
 ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPagination()
   .setMessageOptions((setting) => ({ embeds: [
     new EmbedBuilder()
-      .setTitle('`🔧`設定 - イベントログ')
+      .setTitle('`🔧`設定: イベントログ')
       .setDescription('```サーバー内で起こったイベントのログを送信します。```')
       .setColor(Colors.Blurple)
       .setFields(
@@ -321,7 +321,7 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
 ControlPanelMessages.set(FeatureType.ChangeVerificationLevel, new ControlPanelComponentPagination()
   .setMessageOptions((setting) => ({ embeds: [
     new EmbedBuilder()
-      .setTitle('`🔧` 設定 - 自動認証レベル変更')
+      .setTitle('`🔧` 設定: 自動認証レベル変更')
       .setDescription('```決まった時間の間、サーバーの認証レベルを自動で変更します。```')
       .setColor(Colors.Blurple)
       .setFields(
@@ -390,7 +390,7 @@ ControlPanelMessages.set(FeatureType.AutoPublic, new ControlPanelComponentPagina
   .setMessageOptions((setting) => ({
     embeds: [
       new EmbedBuilder()
-        .setTitle('`🔧` 設定 - 自動アナウンス公開')
+        .setTitle('`🔧` 設定: 自動アナウンス公開')
         .setDescription('```設定したアナウンスチャンネルに投稿されたメッセージを自動で公開します。(BOTが投稿したメッセージは公開されません)```')
         .setColor(Colors.Blurple)
         .setFields(
@@ -430,7 +430,7 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
   .setMessageOptions((setting) => ({
     embeds: [
       new EmbedBuilder()
-        .setTitle('`🔧` 設定 - AutoMod Plus')
+        .setTitle('`🔧` 設定: AutoMod Plus')
         .setDescription([
           `${formatEmoji('1021382601031823371')}${formatEmoji('1021383211147870280')} この機能は予告なく仕様が変更される場合があります。`,
           '```標準のAutoModでは設定が難しい、高度なメッセージフィルターを有効にします。フィルターに検知されたメッセージは自動的に削除されます。```',
