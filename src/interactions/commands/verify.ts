@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ApplicationCommandOptionType, AttachmentBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, GuildMemberRoleManager, PermissionFlagsBits } from 'discord.js';
 import { ChatInput, Button } from '@akki256/discord-interaction';
-import Captcha from '@haileybot/captcha-generator';
+import { Captcha } from 'captcha-canvas';
 
 const duringAuthentication = new Set();
 
@@ -74,7 +74,7 @@ const verifyCommand = new ChatInput(
     interaction.reply({
       embeds: [
         new EmbedBuilder()
-          .setTitle(`\`✅\` 認証 - ${verifyTypeName.get(verifyType)!}`)
+          .setTitle(`\`✅\` 認証: ${verifyTypeName.get(verifyType)!}`)
           .setDescription(interaction.options.getString('description')?.replace('  ', '\n') || null)
           .setColor(interaction.options.getNumber('color') ?? Colors.Green)
           .setImage(interaction.options.getAttachment('image')?.url || null)
@@ -116,31 +116,34 @@ const verifyButton = new Button(
 
     if (interaction.customId == 'nonick-js:verify-image') {
       await interaction.deferReply({ ephemeral: true });
-      const captcha = new Captcha(250);
+      const captcha = new Captcha();
+      captcha.addDecoy();
+      captcha.drawTrace();
+      captcha.drawCaptcha();
 
       interaction.user
         .send({
           embeds: [
             new EmbedBuilder()
-              .setAuthor({ name: `${interaction.guild.name} - 画像認証`, iconURL: interaction.guild.iconURL() ?? undefined })
+              .setAuthor({ name: `${interaction.guild.name}: 画像認証`, iconURL: interaction.guild.iconURL() ?? undefined })
               .setDescription([
-                '下の画像に表示された一意の文字列をこのDMに送信してください。',
+                '下の画像に表示された、緑色の文字列をこのDMに送信してください。',
                 '> ⚠️一定時間経過したり、複数回間違えると新しい認証を発行する必要があります。',
               ].join('\n'))
               .setColor(Colors.Blurple)
-              .setImage('attachment://nonick-js-captcha.jpeg')
-              .setFooter({ text: 'NoNICK.jsはパスワードやQRコードの読み取りを要求することは決してありません' }),
+              .setImage('attachment://nonick-js-captcha.png')
+              .setFooter({ text: 'NoNICK.jsはパスワードの入力やQRコードの読み取りを要求することは決してありません。' }),
           ],
-          files: [new AttachmentBuilder(captcha.JPEGStream, { name: 'nonick-js-captcha.jpeg' })],
+          files: [new AttachmentBuilder(await captcha.png, { name: 'nonick-js-captcha.png' })],
         })
         .then(() => {
           duringAuthentication.add(interaction.user.id);
-          interaction.followUp({ content: '`📨` DMで認証を続けてください' });
+          interaction.followUp({ content: '`📨` DMで認証を続けてください。' });
 
           const collector = interaction.user.dmChannel!.createMessageCollector({ filter: v => v.author.id == interaction.user.id,  time: 60_000, max: 3 });
 
           collector.on('collect', tryMessage => {
-            if (!(tryMessage.content === captcha.value)) return;
+            if (!(tryMessage.content === captcha.text)) return;
 
             roles.add(roleId)
               .then(() => interaction.user.send('`✅` 認証に成功しました！'))
