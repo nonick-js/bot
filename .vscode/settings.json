@@ -1,11 +1,14 @@
 {
-    "cSpell.words": [
-        "Blurple",
-        "dbutton",
-        "discordjs",
-        "Greyple",
-        "Hypesquad",
-        "reactionrole",
-        "whatsnew"
-    ]
+  "cSpell.words": [
+    "Blurple",
+    "DBNAME",
+    "emojies",
+    "haileybot",
+    "Hypesquad",
+    "moderatable",
+    "Wenhook",
+    "wtimeout"
+  ],
+  "eslint.packageManager": "pnpm",
+  "npm.packageManager": "pnpm",
 }
