@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, channelMention, ChannelSelectMenuBuilder, ChannelType, Colors, EmbedBuilder, formatEmoji, inlineCode, roleMention, RoleSelectMenuBuilder, StringSelectMenuBuilder } from 'discord.js';
-import { GrayEmojies, WhiteEmojies } from '../../../module/emojies';
+import { GrayEmojies, WhiteEmojies } from '../../module/emojies';
 import { ControlPanelComponentPagination } from './_pagination';
-import { booleanStatus, buttonLabelStatus, buttonStyleStatus, channelStatus, roleStatus } from '../../../module/settingStatus';
+import { booleanStatus, buttonLabelStatus, buttonStyleStatus, channelStatus, roleStatus } from '../../module/settingStatus';
 
 export const ControlPanelMessages = new Map<FeatureType, ControlPanelComponentPagination>();
 

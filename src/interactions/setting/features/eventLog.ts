@@ -1,5 +1,5 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import ServerSettings from '../../../../schemas/ServerSettings';
+import ServerSettings from '../../../schemas/ServerSettings';
 import { changeChannelSetting, changeToggleSetting } from '../_functions';
 import { FeatureType } from '../_messages';
 import { channelModal } from '../_modals';

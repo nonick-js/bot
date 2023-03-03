@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, codeBlock, Colors, EmbedBuilder, GuildMember, PermissionFlagsBits } from 'discord.js';
 import { ChatInput } from '@akki256/discord-interaction';
-import { Duration } from '../../module/format';
+import { Duration } from '../module/format';
 
 const timeoutCommand = new ChatInput(
   {

@@ -1,11 +1,11 @@
 import { ActionRowBuilder, Colors, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { changeToggleSetting, changeChannelSetting } from '../_functions';
 import { Button, Modal } from '@akki256/discord-interaction';
-import { isURL } from '../../../../module/functions';
-import { PlaceHolder } from '../../../../module/format';
+import { isURL } from '../../../module/functions';
+import { PlaceHolder } from '../../../module/format';
 import { FeatureType } from '../_messages';
 import { channelModal } from '../_modals';
-import ServerSettings from '../../../../schemas/ServerSettings';
+import ServerSettings from '../../../schemas/ServerSettings';
 
 const joinAndLeaveMessagePlaceHolder = new PlaceHolder()
   .register('serverName', ({ guild }) => guild.name)

@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonInteraction, ComponentType, MessageComponentInteraction, ModalSubmitInteraction, StringSelectMenuBuilder, TextChannel } from 'discord.js';
 import { AnyObject, Document, UpdateQuery } from 'mongoose';
 import { ControlPanelMessages, FeatureType } from './_messages';
-import ServerSettings, { IServerSettings } from '../../../schemas/ServerSettings';
+import ServerSettings, { IServerSettings } from '../../schemas/ServerSettings';
 import { ControlPanelComponentPagination } from './_pagination';
 
 export async function changeToggleSetting(interaction: ButtonInteraction, updateQuery: UpdateQuery<AnyObject>, key: FeatureType) {

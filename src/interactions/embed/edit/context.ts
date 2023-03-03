@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, formatEmoji, PermissionFlagsBits, StringSelectMenuBuilder } from 'discord.js';
 import { MessageContext, Button } from '@akki256/discord-interaction';
-import { embedEditButtons } from '../../commands/embed/_components';
+import { embedEditButtons } from '../../embed/create/_components';
 import { WhiteEmojies } from '../../../module/emojies';
 
 const context = new MessageContext(

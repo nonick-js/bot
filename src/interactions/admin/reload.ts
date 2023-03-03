@@ -1,7 +1,7 @@
 import { Colors, EmbedBuilder, PermissionFlagsBits } from 'discord.js';
 import { ChatInput } from '@akki256/discord-interaction';
-import { checkPermission } from '../../../module/functions';
-import Config from '../../../../config.json';
+import { checkPermission } from '../../module/functions';
+import Config from '../../../config.json';
 
 const reloadCommand = new ChatInput(
   {

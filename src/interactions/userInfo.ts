@@ -1,6 +1,6 @@
 import { bold, Colors, EmbedBuilder, formatEmoji, GuildMember, inlineCode, PermissionFlagsBits, time } from 'discord.js';
 import { UserContext } from '@akki256/discord-interaction';
-import { WhiteEmojies } from '../../module/emojies';
+import { WhiteEmojies } from '../module/emojies';
 
 const flagEmojies = new Map([
   ['Staff',                 '966753508739121222'],

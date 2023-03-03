@@ -1,6 +1,6 @@
 import { Button, Modal } from '@akki256/discord-interaction';
 import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, ComponentType, EmbedBuilder, formatEmoji, Colors } from 'discord.js';
-import { BlurpleEmojies } from '../../../module/emojies';
+import { BlurpleEmojies } from '../../module/emojies';
 
 const actionButton = new Button(
   { customId: /^nonick-js:report-(completed|ignore)$/ },

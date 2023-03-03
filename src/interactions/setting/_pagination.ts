@@ -1,5 +1,5 @@
 import { ActionRowBuilder, BaseMessageOptions, ButtonBuilder, ChannelSelectMenuBuilder, ComponentType, Interaction, RoleSelectMenuBuilder, StringSelectMenuBuilder } from 'discord.js';
-import ServerSettings, { IServerSettings } from '../../../schemas/ServerSettings';
+import ServerSettings, { IServerSettings } from '../../schemas/ServerSettings';
 
 interface indexPageSelectOptions {
   name?: string,

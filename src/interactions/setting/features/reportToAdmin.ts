@@ -1,7 +1,7 @@
 import { Button, Modal } from '@akki256/discord-interaction';
 import { changeChannelSetting, changeMentionRoleSetting, changeToggleSetting } from '../_functions';
 import { channelModal, roleModal } from '../_modals';
-import ServerSettings from '../../../../schemas/ServerSettings';
+import ServerSettings from '../../../schemas/ServerSettings';
 import { FeatureType } from '../_messages';
 
 const generalSetting = [
