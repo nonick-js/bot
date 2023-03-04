@@ -14,7 +14,7 @@ const addRoleSelectButton = new Button(
 
     const roleSelect = interaction.message.components[0].components[0];
     const selectStatusButton = interaction.message.components[1].components[3];
-    const webhook = (await interaction.guild.fetchWebhooks()).find(v => v.owner?.id == interaction.client.user.id);
+    const webhook = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id == interaction.client.user.id);
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId!).catch(() => undefined);
 

@@ -15,7 +15,7 @@ const context = new MessageContext(
     if (!interaction.appPermissions?.has(PermissionFlagsBits.ManageWebhooks))
       return interaction.reply({ content: '`❌` この機能を使用するにはBOTに`ウェブフックの管理`権限を付与する必要があります。', ephemeral: true });
 
-    const myWebhookId = (await interaction.guild.fetchWebhooks()).find(v => v.owner?.id == interaction.client.user.id)?.id;
+    const myWebhookId = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id == interaction.client.user.id)?.id;
     if (!myWebhookId || !interaction.targetMessage.webhookId || myWebhookId !== interaction.targetMessage.webhookId)
       return interaction.reply({ content: '`❌` NoNICK.jsを使用し、かつ現在も有効なWebhookで投稿した埋め込みのみ編集できます。', ephemeral: true });
 
