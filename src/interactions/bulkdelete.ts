@@ -11,7 +11,7 @@ const bulkDeleteMessagesCommand = new ChatInput(
         description: '削除するメッセージの数',
         maxValue: 100,
         minValue: 2,
-        type: ApplicationCommandOptionType.Number,
+        type: ApplicationCommandOptionType.Integer,
         required: true,
       },
     ],

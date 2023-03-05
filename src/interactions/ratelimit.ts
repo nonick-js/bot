@@ -10,7 +10,7 @@ const setRateLimitCommand = new ChatInput(
         name: 'duration',
         description: '秒数',
         maxValue: 21600,
-        type: ApplicationCommandOptionType.Number,
+        type: ApplicationCommandOptionType.Integer,
         required: true,
       },
     ],
