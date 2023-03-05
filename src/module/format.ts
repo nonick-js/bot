@@ -1,26 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export namespace PlaceHolder {
-  export type Prefix = '!' | '#' | '%' | '&' | '-' | '=' | '^';
-  export type Brackets = '[]' | '{}' | '()' | '<>' | '';
-}
-
-export class PlaceHolder<T extends Readonly<Record<string, any>>> {
-  private holder: Map<string, { key: string, callback: (params: T) => string }>;
-  constructor(private _prefix: PlaceHolder.Prefix = '!', private _brackets: PlaceHolder.Brackets = '[]') {
+export class PlaceHolder<T extends Readonly<Record<string, unknown>>> {
+  private holder: Map<string, { key: string, callback: (params: Partial<T>) => unknown }>;
+  private startBracket!: string;
+  private endBracket!: string;
+  constructor(private _prefix: PlaceHolder.Prefix = '!', brackets: PlaceHolder.Brackets = '[]') {
     this.holder = new Map();
+    this.brackets = brackets;
   }
 
-  private _parse(str: string, params: T): string {
-    const [start, end] = this.getBrackets();
-    return str.replace(new RegExp(`(?<!\\\\)\\${this._prefix}(?<!\\\\)\\${start}(\\w+)(?<!\\\\)\\${end}`, 'g'), (input, key) => {
+  private _parse(str: string, params: Partial<T>): string {
+    return str.replace(new RegExp(`(?<!\\\\)\\${this._prefix}(?<!\\\\)\\${this.startBracket}(\\w+)(?<!\\\\)\\${this.endBracket}`, 'g'), (input, key) => {
       const placeholder = this.holder.get(key);
-      return placeholder?.callback?.(params) ?? input;
+      return String(placeholder?.callback?.(params) || input);
     });
   }
 
-  parse(str: string, params: T): string;
-  parse(obj: Readonly<Record<string | number | symbol, any>>, params: T): string;
-  parse(str: string | Readonly<Record<string | number | symbol, any>>, params: T) {
+  parse(str: string, params: Partial<T>): string;
+  parse(obj: Readonly<Record<string | number | symbol, unknown>>, params: Partial<T>): string;
+  parse(str: string | Readonly<Record<string | number | symbol, unknown>>, params: Partial<T>) {
     if (typeof str === 'string') return this._parse(str, params);
     return JSON.parse(JSON.stringify(str), (_, value) => {
       if (typeof value === 'string') return this._parse(value, params);
@@ -28,7 +24,7 @@ export class PlaceHolder<T extends Readonly<Record<string, any>>> {
     });
   }
 
-  register(key: string, callback: (param: T) => string, force = false) {
+  register(key: string, callback: (params: Partial<T>) => unknown, force = false) {
     if (!key) throw new TypeError('A placeholder must be specified');
     if (!force && this.holder.has(key)) throw new TypeError('The placeholder is already registered');
     this.holder.set(key, { key, callback });
@@ -36,13 +32,7 @@ export class PlaceHolder<T extends Readonly<Record<string, any>>> {
   }
 
   list() {
-    const [start, end] = this.getBrackets();
-    return Array.from(this.holder.keys(), key => `${this._prefix}${start}${key}${end}`);
-  }
-
-  private getBrackets() {
-    const [start = '', end = ''] = this._brackets.split('');
-    return [start, end];
+    return Array.from(this.holder.keys(), key => `${this._prefix}${this.startBracket}${key}${this.endBracket}`);
   }
 
   get prefix() {
@@ -50,16 +40,27 @@ export class PlaceHolder<T extends Readonly<Record<string, any>>> {
   }
 
   set prefix(prefix: PlaceHolder.Prefix) {
+    if (!PlaceHolder.allowPrefix.includes(prefix)) throw new TypeError(`${prefix} can't be used for prefix. Only the following values can be used (${PlaceHolder.allowPrefix.join(',')})`);
     this._prefix = prefix;
   }
 
   get brackets() {
-    return this._brackets;
+    return [this.startBracket, this.endBracket].join('') as PlaceHolder.Brackets;
   }
 
   set brackets(brackets: PlaceHolder.Brackets) {
-    this._brackets = brackets;
+    if (!PlaceHolder.allowBrackets.includes(brackets)) throw new TypeError(`${brackets} can't be used for prefix. Only the following values can be used (${PlaceHolder.allowBrackets.join(',')})`);
+    const [start, end] = brackets.split('');
+    this.startBracket = start;
+    this.endBracket = end;
   }
+}
+
+export namespace PlaceHolder {
+  export const allowPrefix = ['!', '#', '%', '&', '-', '=', '^'] as const;
+  export type Prefix = typeof allowPrefix[number];
+  export const allowBrackets = ['[]', '{}', '()', '<>'] as const;
+  export type Brackets = typeof allowBrackets[number];
 }
 
 export namespace Duration {
@@ -74,7 +75,7 @@ export namespace Duration {
   };
   export type List = keyof typeof durations;
 
-  const holder = new PlaceHolder<Partial<Record<List, number>>>('%', '');
+  const holder = new PlaceHolder<Partial<Record<List, number>>>('%', '{}');
   Object.keys(durations).forEach(key => {
     holder.register(key, data => {
       const date = data[key as List];
@@ -99,12 +100,14 @@ export namespace Duration {
   }
 
   export function format(ms: number, compact: boolean, pass: List[]): string;
-  export function format(ms: number, formatS: string): string;
-  export function format(ms = 0, formatS: string | boolean = '', pass: List[] = []): string {
-    if (typeof formatS === 'string' && formatS) return holder.parse(formatS, parse(ms, Object.keys(durations).filter(v => !formatS.includes(`%${v}`)) as List[]));
+  export function format(ms: number, template: string): string;
+  export function format(ms = 0, template: string | boolean = '', pass: List[] = []): string {
+    if (typeof template === 'string' && template) {
+      return holder.parse(template, parse(ms, Object.keys(durations).filter(v => !template.includes(`%{${v}}`)) as List[]));
+    }
     return Object.entries(parse(ms, pass)).map(([short, duration]) => {
       const { long } = durations[short as List];
-      return `${Math.sign(ms) == -1 ? '-' : ''}${duration}${formatS ? short : long}`;
+      return `${Math.sign(ms) == -1 ? '-' : ''}${duration}${template ? short : long}`;
     }).join(' ');
   }
 }

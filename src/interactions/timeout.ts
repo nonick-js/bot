@@ -67,7 +67,7 @@ const timeoutCommand = new ChatInput(
         interaction.reply({
           embeds: [
             new EmbedBuilder()
-              .setDescription(Duration.format(duration, `\`✅\` ${member}を **%d**日**%h**時間**%m**分 タイムアウトしました`))
+              .setDescription(Duration.format(duration, `\`✅\` ${member}を **%{d}**日**%{h}**時間**%{m}**分 タイムアウトしました`))
               .setColor(Colors.Green),
           ],
           ephemeral: true,
