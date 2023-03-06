@@ -1,4 +1,4 @@
-import { ChannelType, Colors, EmbedBuilder, Events } from 'discord.js';
+import { ChannelType, Colors, EmbedBuilder, Events, Guild, User } from 'discord.js';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { PlaceHolder } from '../../module/format';
@@ -31,12 +31,12 @@ const leaveMessage = new DiscordEventBuilder({
         .catch(() => {});
     }
     else {
-      const leaveMessagePlaceHolder = new PlaceHolder()
-        .register('serverName', ({ guild }) => guild.name)
-        .register('memberCount', ({ guild }) => guild.memberCount)
+      const leaveMessagePlaceHolder = new PlaceHolder<{ guild: Guild, user: User }>()
+        .register('serverName', ({ guild }) => guild?.name)
+        .register('memberCount', ({ guild }) => guild?.memberCount)
         .register('user', ({ user }) => `${user}`)
-        .register('userName', ({ user }) => user.username)
-        .register('userTag', ({ user }) => user.tag);
+        .register('userName', ({ user }) => user?.username)
+        .register('userTag', ({ user }) => user?.tag);
 
       const option = Setting.message.leave.messageOptions;
       if (!option) return;

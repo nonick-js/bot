@@ -44,7 +44,7 @@ client.once(Events.ClientReady, () => {
     'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
   });
 
-  interactions.registerCommands({ guildId, deleteNoLoad: true });
+  interactions.registerCommands({ guildId: guildId ?? undefined, deleteNoLoad: true });
   events.register(path.resolve(__dirname, './events'));
   reloadActivity();
 

@@ -1,4 +1,4 @@
-import { ActionRowBuilder, Colors, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { ActionRowBuilder, Colors, EmbedBuilder, Guild, ModalBuilder, TextInputBuilder, TextInputStyle, User } from 'discord.js';
 import { changeToggleSetting, changeChannelSetting } from '../_functions';
 import { Button, Modal } from '@akki256/discord-interaction';
 import { isURL } from '../../../module/functions';
@@ -7,12 +7,12 @@ import { FeatureType } from '../_messages';
 import { channelModal } from '../_modals';
 import ServerSettings from '../../../schemas/ServerSettings';
 
-const joinAndLeaveMessagePlaceHolder = new PlaceHolder()
-  .register('serverName', ({ guild }) => guild.name)
-  .register('memberCount', ({ guild }) => guild.memberCount)
+const joinAndLeaveMessagePlaceHolder = new PlaceHolder<{ guild: Guild | null, user: User | null }>()
+  .register('serverName', ({ guild }) => guild?.name)
+  .register('memberCount', ({ guild }) => guild?.memberCount)
   .register('user', ({ user }) => `${user}`)
-  .register('userName', ({ user }) => user.username)
-  .register('userTag', ({ user }) => user.tag);
+  .register('userName', ({ user }) => user?.username)
+  .register('userTag', ({ user }) => user?.tag);
 
 const joinMessageSetting = [
   // 有効・無効化
