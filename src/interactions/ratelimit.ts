@@ -1,5 +1,5 @@
 import { ChatInput } from '@akki256/discord-interaction';
-import { ApplicationCommandOptionType, codeBlock, Colors, EmbedBuilder, PermissionFlagsBits } from 'discord.js';
+import { ApplicationCommandOptionType, codeBlock, Colors, EmbedBuilder, PermissionFlagsBits, StageChannel } from 'discord.js';
 
 const setRateLimitCommand = new ChatInput(
   {
@@ -21,7 +21,9 @@ const setRateLimitCommand = new ChatInput(
   async (interaction) => {
 
     if (!interaction.inCachedGuild() || !interaction.channel) return;
-    const duration = interaction.options.getNumber('duration', true);
+    const duration = interaction.options.getInteger('duration', true);
+
+    if (interaction.channel instanceof StageChannel) return interaction.reply({ content: '`❌` 現在ステージチャンネルで低速モードを変更することはできません。', ephemeral: true });
 
     if (!interaction.appPermissions?.has(PermissionFlagsBits.ManageChannels))
       return interaction.reply({ content: '`❌` BOTの権限が不足しているため、低速モードを変更できませんでした。', ephemeral: true });
