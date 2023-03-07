@@ -3,17 +3,17 @@ import { UserContext } from '@akki256/discord-interaction';
 import { WhiteEmojies } from '../module/emojies';
 
 const flagEmojies = new Map([
-  ['Staff',                 '966753508739121222'],
-  ['Partner',               '966753508860768357'],
-  ['CertifiedModerator',    '959536411894243378'],
-  ['Hypesquad',             '966753508961439745'],
+  ['Staff', '966753508739121222'],
+  ['Partner', '966753508860768357'],
+  ['CertifiedModerator', '959536411894243378'],
+  ['Hypesquad', '966753508961439745'],
   ['HypeSquadOnlineHouse1', '966753508843978872'],
   ['HypeSquadOnlineHouse2', '966753508927889479'],
-	['HypeSquadOnlineHouse3', '966753508776890459'],
-  ['BugHunterLevel1',       '966753508848205925'],
-  ['BugHunterLevel2',       '966753508755898410'],
-	['ActiveDeveloper',       '1040345950318768218'],
-  ['VerifiedDeveloper',     '966753508705583174'],
+  ['HypeSquadOnlineHouse3', '966753508776890459'],
+  ['BugHunterLevel1', '966753508848205925'],
+  ['BugHunterLevel2', '966753508755898410'],
+  ['ActiveDeveloper', '1040345950318768218'],
+  ['VerifiedDeveloper', '966753508705583174'],
   ['PremiumEarlySupporter', '966753508751736892'],
 ]);
 
@@ -67,7 +67,7 @@ const userInfoContext = new UserContext(
       .setFields(
         { name: 'アカウント作成日', value: createTime, inline: true },
         { name: 'サーバー参加日', value: joinTime, inline: true },
-        { name: 'バッジ', value: userFlagsEmojies ? userFlagsEmojies.map(v => formatEmoji(v || '0')).join('') : 'なし', inline: true },
+        { name: 'バッジ', value: userFlagsEmojies?.length ? userFlagsEmojies.map(v => formatEmoji(v || '0')).join('') : 'なし', inline: true },
         { name: 'ロール', value: roles },
       );
 
