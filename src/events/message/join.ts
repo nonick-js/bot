@@ -15,11 +15,7 @@ const joinMessage = new DiscordEventBuilder({
 
     const channel = await member.guild.channels.fetch(Setting.message.join.channel).catch(() => null);
 
-    if (channel?.type !== ChannelType.GuildText) {
-      Setting.message.join.enable = false;
-      Setting.message.join.channel = null;
-      return Setting.save({ wtimeout: 1500 });
-    }
+    if (channel?.type !== ChannelType.GuildText) return;
 
     if (member.user.bot) {
       channel.send({
