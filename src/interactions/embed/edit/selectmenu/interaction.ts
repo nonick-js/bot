@@ -14,15 +14,15 @@ const roleSelect = new SelectMenu(
     await roles.remove(interaction.component.options.map(opt => opt.value).filter(opt => !interaction.values.includes(opt))).catch(() => error = true);
     await roles.add(interaction.values).catch(() => error = true);
 
-    if (error) {
+    if (error)
       return interaction.followUp({
         embeds: [new EmbedBuilder().setDescription('`❌` 一部ロールが付与/解除できませんでした。').setColor(Colors.Red)],
         ephemeral: true,
       });
-    }
+
 
     await interaction.followUp({
-      embeds: [new EmbedBuilder() .setDescription('`✅` ロールを更新しました！').setColor(Colors.Green)],
+      embeds: [new EmbedBuilder().setDescription('`✅` ロールを更新しました！').setColor(Colors.Green)],
       ephemeral: true,
     });
     setTimeout(() => interaction.deleteReply(), 3_000);

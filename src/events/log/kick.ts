@@ -34,7 +34,7 @@ const kickLog = new DiscordEventBuilder({
           .setThumbnail(auditLog.target.displayAvatarURL())
           .setTimestamp(),
       ],
-    }).catch(() => {});
+    }).catch(() => { });
 
   },
 });

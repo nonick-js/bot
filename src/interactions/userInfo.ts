@@ -3,17 +3,17 @@ import { UserContext } from '@akki256/discord-interaction';
 import { WhiteEmojies } from '../module/emojies';
 
 const flagEmojies = new Map([
-  ['Staff',                 '966753508739121222'],
-  ['Partner',               '966753508860768357'],
-  ['CertifiedModerator',    '959536411894243378'],
-  ['Hypesquad',             '966753508961439745'],
+  ['Staff', '966753508739121222'],
+  ['Partner', '966753508860768357'],
+  ['CertifiedModerator', '959536411894243378'],
+  ['Hypesquad', '966753508961439745'],
   ['HypeSquadOnlineHouse1', '966753508843978872'],
   ['HypeSquadOnlineHouse2', '966753508927889479'],
-	['HypeSquadOnlineHouse3', '966753508776890459'],
-  ['BugHunterLevel1',       '966753508848205925'],
-  ['BugHunterLevel2',       '966753508755898410'],
-	['ActiveDeveloper',       '1040345950318768218'],
-  ['VerifiedDeveloper',     '966753508705583174'],
+  ['HypeSquadOnlineHouse3', '966753508776890459'],
+  ['BugHunterLevel1', '966753508848205925'],
+  ['BugHunterLevel2', '966753508755898410'],
+  ['ActiveDeveloper', '1040345950318768218'],
+  ['VerifiedDeveloper', '966753508705583174'],
   ['PremiumEarlySupporter', '966753508751736892'],
 ]);
 
@@ -32,7 +32,7 @@ const userInfoContext = new UserContext(
     const userFlagsEmojies = userFlags?.map(v => flagEmojies.get(v)).filter(Boolean);
     const createTime = time(Math.floor(user.createdTimestamp / 1000), 'D');
 
-    if (!(member instanceof GuildMember)) {
+    if (!(member instanceof GuildMember))
       return interaction.followUp({
         embeds: [
           new EmbedBuilder()
@@ -47,7 +47,7 @@ const userInfoContext = new UserContext(
             ),
         ],
       });
-    }
+
 
     const nickName = member.nickname ?? 'なし';
     const joinTime = member.joinedTimestamp ? time(Math.floor(member.joinedTimestamp / 1000), 'D') : 'エラー';

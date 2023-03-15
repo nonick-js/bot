@@ -12,7 +12,7 @@ const generalSetting = [
   ),
   new Modal(
     { customId: 'nonick-js:setting-report-channel-modal' },
-    (interaction) =>  changeChannelSetting(interaction, 'report.channel', FeatureType.ReportToAdmin),
+    (interaction) => changeChannelSetting(interaction, 'report.channel', FeatureType.ReportToAdmin),
   ),
 ];
 

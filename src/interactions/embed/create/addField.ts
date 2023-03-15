@@ -5,7 +5,7 @@ const addFieldButton = new Button(
   { customId: 'nonick-js:embedMaker-addField' },
   async (interaction) => {
 
-    if (interaction.message.embeds[0].fields.length == 25)
+    if (interaction.message.embeds[0].fields.length === 25)
       return interaction.reply({ content: '`❌` これ以上フィールドを追加できません。', ephemeral: true });
 
     interaction.showModal(

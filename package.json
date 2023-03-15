@@ -34,5 +34,13 @@
     "dotenv": "^16.0.3",
     "mongoose": "^6.9.1",
     "node-cron": "^3.0.2"
+  },
+  "override": {
+    "discord-api-types": "0.37.35"
+  },
+  "pnpm": {
+    "overrides": {
+      "discord-api-types": "0.37.35"
+    }
   }
 }

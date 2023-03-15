@@ -16,18 +16,18 @@ const reportContext = new MessageContext(
     const user = message.author;
     const member = await interaction.guild.members.fetch(user.id).catch(() => undefined);
 
-    if (!Setting?.report?.channel) {
+    if (!Setting?.report?.channel)
       if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild))
         return interaction.reply({ content: '`❌` この機能を使用するには追加で設定が必要です。`/setting`で報告を受け取るチャンネルを設定してください。', ephemeral: true });
       else
         return interaction.reply({ content: '`❌` 現在この機能を利用できません。サーバーの管理者に連絡してください。', ephemeral: true });
-    }
+
 
     if (user.system || message.webhookId)
       return interaction.reply({ content: '`❌` システムメッセージやWebhookは報告できません。', ephemeral: true });
-    if (user.id == interaction.user.id)
+    if (user.id === interaction.user.id)
       return interaction.reply({ content: '`❌` 自分自身を報告しようとしています。', ephemeral: true });
-    if (user.id == interaction.client.user.id)
+    if (user.id === interaction.client.user.id)
       return interaction.reply({ content: `\`❌\` ${interaction.client.user.username}を報告することは出来ません。`, ephemeral: true });
     if (member && member?.permissions?.has(PermissionFlagsBits.ManageMessages))
       return interaction.reply({ content: '`❌` サーバー運営のメッセージを報告することはできません。', ephemeral: true });
@@ -109,7 +109,7 @@ const reportContextModal = new Modal(
       })
       .then(msg => {
         interaction.reply({ content: '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました', ephemeral: true });
-        msg.startThread({ name: `${message.author.username}への通報` }).catch(() => {});
+        msg.startThread({ name: `${message.author.username}への通報` }).catch(() => { });
       })
       .catch(() => interaction.reply({ content: '`❌` 報告の送信中にエラーが発生しました', ephemeral: true }));
   },

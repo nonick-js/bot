@@ -21,15 +21,17 @@ const leaveMessage = new DiscordEventBuilder({
       return Setting.save({ wtimeout: 1500 });
     }
 
-    if (member.user.bot) {
+    if (member.user.bot)
       channel
-        .send({ embeds: [
-          new EmbedBuilder()
-            .setAuthor({ name: `${member.user.username} の連携が解除されました`, iconURL: member.user.displayAvatarURL() })
-            .setColor(Colors.Red),
-        ] })
-        .catch(() => {});
-    }
+        .send({
+          embeds: [
+            new EmbedBuilder()
+              .setAuthor({ name: `${member.user.username} の連携が解除されました`, iconURL: member.user.displayAvatarURL() })
+              .setColor(Colors.Red),
+          ],
+        })
+        .catch(() => { });
+
     else {
       const leaveMessagePlaceHolder = new PlaceHolder<{ guild: Guild, user: User }>()
         .register('serverName', ({ guild }) => guild?.name)
@@ -45,14 +47,12 @@ const leaveMessage = new DiscordEventBuilder({
       const user = member.user;
 
       const content = leaveMessagePlaceHolder.parse(option.content || '', ({ guild, user })) || undefined;
-      const embeds = option.embeds?.map(v => EmbedBuilder.from(v)).map(v => {
-        return EmbedBuilder.from(v)
-          .setTitle(leaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
-          .setDescription(leaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
-          .setURL(v.data.url || null)
-          .setColor(Colors.Green)
-          .setThumbnail(member.user.displayAvatarURL());
-      });
+      const embeds = option.embeds?.map(v => EmbedBuilder.from(v)).map(v => EmbedBuilder.from(v)
+        .setTitle(leaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
+        .setDescription(leaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
+        .setURL(v.data.url || null)
+        .setColor(Colors.Green)
+        .setThumbnail(member.user.displayAvatarURL()));
 
       channel.send({ content, embeds });
     }

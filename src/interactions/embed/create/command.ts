@@ -69,7 +69,7 @@ const embedCommand = new ChatInput(
     if (!interaction.inCachedGuild() || !interaction.channel) return;
     const subCommand = interaction.options.getSubcommand(true);
 
-    if (subCommand == 'create') {
+    if (subCommand === 'create') {
       const title = interaction.options.getString('title');
       const description = interaction.options.getString('description');
 
@@ -89,7 +89,7 @@ const embedCommand = new ChatInput(
       });
     }
 
-    if (subCommand == 'import') {
+    if (subCommand === 'import') {
       await interaction.deferReply({ ephemeral: true });
       const attachment = interaction.options.getAttachment('json', true);
 

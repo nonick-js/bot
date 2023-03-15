@@ -1,5 +1,8 @@
 lockfileVersion: 5.4
 
+overrides:
+  discord-api-types: 0.37.35
+
 specifiers:
   '@akki256/discord-interaction': ^2.1.1
   '@napi-rs/canvas': ^0.1.34

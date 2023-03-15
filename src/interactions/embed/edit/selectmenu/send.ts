@@ -14,7 +14,7 @@ const addRoleSelectButton = new Button(
 
     const roleSelect = interaction.message.components[0].components[0];
     const selectStatusButton = interaction.message.components[1].components[3];
-    const webhook = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id == interaction.client.user.id);
+    const webhook = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id === interaction.client.user.id);
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId!).catch(() => undefined);
 
@@ -22,9 +22,9 @@ const addRoleSelectButton = new Button(
       return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
     if (!webhook || webhook?.id !== targetMessage.webhookId)
       return interaction.reply({ content: '`❌` このメッセージは更新できません。', ephemeral: true });
-    if (targetMessage.components.length == 5)
+    if (targetMessage.components.length === 5)
       return interaction.reply({ content: '`❌` これ以上コンポーネントを追加できません！', ephemeral: true });
-    if (targetMessage.components[0]?.components[0]?.type == ComponentType.Button)
+    if (targetMessage.components[0]?.components[0]?.type === ComponentType.Button)
       return interaction.reply({ content: '`❌` セレクトメニューとボタンは同じメッセージに追加できません。', ephemeral: true });
 
     const embeds = interaction.message.embeds;
@@ -32,19 +32,21 @@ const addRoleSelectButton = new Button(
     await interaction.update({ content: '`⌛` コンポーネントを追加中...', embeds: [], components: [] });
 
     webhook
-      .editMessage(targetMessage, { components: [
-        ...targetMessage.components,
-        new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
-          StringSelectMenuBuilder
-            .from(roleSelect.toJSON())
-            .setCustomId(`${roleSelect.customId}-${targetMessage.components.length + 1}`)
-            .setMaxValues(selectStatusButton.customId == 'nonick-js:embedMaker-selectRole-selectMode-multi' ? roleSelect.options.length : 1),
-        ),
-      ] })
+      .editMessage(targetMessage, {
+        components: [
+          ...targetMessage.components,
+          new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+            StringSelectMenuBuilder
+              .from(roleSelect.toJSON())
+              .setCustomId(`${roleSelect.customId}-${targetMessage.components.length + 1}`)
+              .setMaxValues(selectStatusButton.customId === 'nonick-js:embedMaker-selectRole-selectMode-multi' ? roleSelect.options.length : 1),
+          ),
+        ],
+      })
       .then(() => interaction.editReply({ content: '`✅` コンポーネントを追加しました！', embeds, components: [components[1]] }))
       .catch(() => interaction.editReply({ content: '`❌` コンポーネントの更新中に問題が発生しました。', embeds, components }));
 
   },
 );
 
-module.exports = [ addRoleSelectButton ];
+module.exports = [addRoleSelectButton];

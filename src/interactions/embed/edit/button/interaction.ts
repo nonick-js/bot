@@ -9,7 +9,7 @@ const roleButton = new Button(
     const roleId = interaction.customId.replace('nonick-js:roleButton-', '');
     const roles = interaction.member.roles;
 
-    if (roles.cache.has(roleId)) {
+    if (roles.cache.has(roleId))
       roles.remove(roleId)
         .then(async () => {
           await interaction.reply({
@@ -24,8 +24,8 @@ const roleButton = new Button(
             ephemeral: true,
           });
         });
-    }
-    else {
+
+    else
       roles.add(roleId)
         .then(async () => {
           await interaction.reply({
@@ -40,7 +40,7 @@ const roleButton = new Button(
             ephemeral: true,
           });
         });
-    }
+
 
   },
 );

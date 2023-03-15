@@ -10,9 +10,7 @@ const reloadCommand = new ChatInput(
     defaultMemberPermissions: PermissionFlagsBits.Administrator,
     dmPermission: false,
   },
-  {
-    guildId: Config.admin.guild,
-  },
+  { guildId: Config.admin.guild },
   async (interaction) => {
 
     await checkPermission(interaction);

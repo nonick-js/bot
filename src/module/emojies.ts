@@ -37,6 +37,4 @@ export const BlurpleEmojies = {
   admin: '1064924738960490546',
 };
 
-export const OtherEmojies = {
-  space: '1064892783804043344',
-};
+export const OtherEmojies = { space: '1064892783804043344' };

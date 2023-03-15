@@ -23,49 +23,55 @@ const voiceLog = new DiscordEventBuilder({
 			return;
 		}
 
-		if (oldState.channel && newState.channel && !oldState.channel.equals(newState.channel)) {
+		if (oldState.channel && newState.channel && !oldState.channel.equals(newState.channel))
 			channel
-				.send({ embeds: [
-					new EmbedBuilder()
-						.setTitle('`🔊` チャンネル移動')
-						.setDescription([
-							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動元:** ${oldState.channel} [${oldState.channel.name}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル移動先:** ${newState.channel} [${newState.channel.name}]`,
-						].join('\n'))
-						.setColor(Colors.Yellow)
-						.setThumbnail(newState.member.displayAvatarURL())
-						.setTimestamp(),
-				] });
-		}
-		else if (!oldState.channel && newState.channel) {
+				.send({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle('`🔊` チャンネル移動')
+							.setDescription([
+								`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
+								`${formatEmoji(GrayEmojies.channel)} **チャンネル移動元:** ${oldState.channel} [${oldState.channel.name}]`,
+								`${formatEmoji(GrayEmojies.channel)} **チャンネル移動先:** ${newState.channel} [${newState.channel.name}]`,
+							].join('\n'))
+							.setColor(Colors.Yellow)
+							.setThumbnail(newState.member.displayAvatarURL())
+							.setTimestamp(),
+					],
+				});
+
+		else if (!oldState.channel && newState.channel)
 			channel
-				.send({ embeds: [
-					new EmbedBuilder()
-						.setTitle('`🔊` チャンネル参加')
-						.setDescription([
-							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${newState.channel} [${newState.channel.name}]`,
-						].join('\n'))
-						.setColor(Colors.Green)
-						.setThumbnail(newState.member.displayAvatarURL())
-						.setTimestamp(),
-				] });
-		}
-		else if (oldState.channel && !newState.channel) {
+				.send({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle('`🔊` チャンネル参加')
+							.setDescription([
+								`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
+								`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${newState.channel} [${newState.channel.name}]`,
+							].join('\n'))
+							.setColor(Colors.Green)
+							.setThumbnail(newState.member.displayAvatarURL())
+							.setTimestamp(),
+					],
+				});
+
+		else if (oldState.channel && !newState.channel)
 			channel
-				.send({ embeds: [
-					new EmbedBuilder()
-						.setTitle('`🔊` チャンネル退出')
-						.setDescription([
-							`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${oldState.channel} [${oldState.channel.name}]`,
-						].join('\n'))
-						.setColor(Colors.Red)
-						.setThumbnail(newState.member.displayAvatarURL())
-						.setTimestamp(),
-				] });
-		}
+				.send({
+					embeds: [
+						new EmbedBuilder()
+							.setTitle('`🔊` チャンネル退出')
+							.setDescription([
+								`${formatEmoji(GrayEmojies.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
+								`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${oldState.channel} [${oldState.channel.name}]`,
+							].join('\n'))
+							.setColor(Colors.Red)
+							.setThumbnail(newState.member.displayAvatarURL())
+							.setTimestamp(),
+					],
+				});
+
 	},
 });
 

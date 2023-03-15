@@ -13,11 +13,23 @@
 	"parser": "@typescript-eslint/parser",
 	"plugins": ["@typescript-eslint"],
 	"rules": {
+		"@typescript-eslint/no-empty-function": "off",
+		"@typescript-eslint/no-namespace": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/no-shadow": ["error"],
+		"@typescript-eslint/no-unused-vars": ["error"],
+		"@typescript-eslint/no-var-requires": "off",
+		"arrow-body-style": ["error", "as-needed"],
 		"arrow-spacing": ["warn", { "before": true, "after": true }],
+		"camelcase": ["error", {"properties": "never"}],
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
 		"comma-style": "error",
+		"curly": ["error", "multi"],
+		"default-case": "error",
 		"dot-location": ["error", "property"],
+		"eqeqeq": ["error", "always", {"null": "ignore"}],
+		"func-style": ["error", "declaration", { "allowArrowFunctions": true }],
 		"handle-callback-err": "off",
 		"keyword-spacing": "error",
 		"max-nested-callbacks": ["error", { "max": 4 }],
@@ -26,32 +38,30 @@
 		"no-floating-decimal": "error",
 		"no-inline-comments": "error",
 		"no-lonely-if": "error",
-		"no-unused-vars": "off",
 		"no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
-		// "no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
 		"no-shadow": "off",
 		"no-trailing-spaces": ["error"],
+		"no-unused-vars": "off",
 		"no-var": "error",
+		"object-curly-newline": ["error", { "multiline": true }],
 		"object-curly-spacing": ["error", "always"],
 		"prefer-const": "error",
 		"quotes": ["error", "single"],
 		"semi": ["error", "always"],
 		"space-before-blocks": "error",
-		"space-before-function-paren": ["error", {
-			"anonymous": "never",
-			"named": "never",
-			"asyncArrow": "always"
-		}],
+		"space-before-function-paren": [
+			"error",
+			{
+				"anonymous": "never",
+				"named": "never",
+				"asyncArrow": "always"
+			}
+		],
 		"space-in-parens": "error",
 		"space-infix-ops": "error",
 		"space-unary-ops": "error",
 		"spaced-comment": "error",
-		"yoda": "error",
-		"@typescript-eslint/no-unused-vars": ["error"],
-		"@typescript-eslint/no-non-null-assertion": "off",
-		"@typescript-eslint/no-empty-function": "off",
-		"@typescript-eslint/no-var-requires": "off",
-		"@typescript-eslint/no-shadow": ["error"],
-		"@typescript-eslint/no-namespace": "off"
-	}
+		"yoda": "error"
+	},
+	"root": true
 }

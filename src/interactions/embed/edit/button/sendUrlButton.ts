@@ -51,7 +51,7 @@ const sendLinkButtonModal = new Modal(
     const label = interaction.fields.getTextInputValue('label');
     const url = interaction.fields.getTextInputValue('url');
     const emojiNameOrId = interaction.fields.getTextInputValue('emojiNameOrId');
-    const emoji = interaction.guild.emojis.cache.find(v => v.name == emojiNameOrId)?.id || emojiNameOrId.match(emojiRegex)?.[0];
+    const emoji = interaction.guild.emojis.cache.find(v => v.name === emojiNameOrId)?.id || emojiNameOrId.match(emojiRegex)?.[0];
 
     if (!label && !emoji)
       return interaction.reply({ content: '`❌` ボタンのテキストと絵文字はどちらは必ず入力する必要があります', ephemeral: true });
@@ -69,7 +69,7 @@ const sendLinkButtonModal = new Modal(
     if (!interaction.guild.members.me?.permissions.has(PermissionFlagsBits.ManageWebhooks))
       return interaction.reply({ content: '`❌` この機能を使用するにはBOTに`ウェブフックの管理`権限を付与する必要があります。', ephemeral: true });
 
-    const webhook = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id == interaction.client.user.id);
+    const webhook = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id === interaction.client.user.id);
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId!).catch(() => undefined);
 
@@ -77,15 +77,15 @@ const sendLinkButtonModal = new Modal(
       return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
     if (!webhook || webhook?.id !== targetMessage.webhookId)
       return interaction.reply({ content: '`❌` このメッセージは更新できません。', ephemeral: true });
-    if (targetMessage.components[4]?.components?.length == 5)
+    if (targetMessage.components[4]?.components?.length === 5)
       return interaction.reply({ content: '`❌` これ以上コンポーネントを追加できません！', ephemeral: true });
-    if (targetMessage.components[0]?.components[0]?.type == ComponentType.StringSelect)
+    if (targetMessage.components[0]?.components[0]?.type === ComponentType.StringSelect)
       return interaction.reply({ content: '`❌` セレクトメニューとボタンは同じメッセージに追加できません。', ephemeral: true });
 
     const updatedComponents = targetMessage.components.map(v => ActionRowBuilder.from(v) as ActionRowBuilder<ButtonBuilder>);
     const lastActionRow = updatedComponents.slice(-1)[0];
 
-    if (!lastActionRow || lastActionRow.components.length == 5)
+    if (!lastActionRow || lastActionRow.components.length === 5)
       updatedComponents.push(new ActionRowBuilder<ButtonBuilder>().setComponents(button));
     else
       updatedComponents.splice(updatedComponents.length - 1, 1, ActionRowBuilder.from(lastActionRow).addComponents(button) as ActionRowBuilder<ButtonBuilder>);

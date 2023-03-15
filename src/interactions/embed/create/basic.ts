@@ -77,14 +77,16 @@ const setBasicTextsModal = new Modal(
     }
 
     interaction
-      .update({ embeds: [
-        EmbedBuilder
-          .from(interaction.message.embeds[0])
-          .setTitle(title || null)
-          .setURL(url || null)
-          .setDescription(description || null)
-          .setColor(color),
-      ] })
+      .update({
+        embeds: [
+          EmbedBuilder
+            .from(interaction.message.embeds[0])
+            .setTitle(title || null)
+            .setURL(url || null)
+            .setDescription(description || null)
+            .setColor(color),
+        ],
+      })
       .catch(() => {
         interaction.reply({ content: '`❌` 埋め込みの更新に失敗しました。埋め込みの制限を超えた可能性があります。', ephemeral: true });
       });

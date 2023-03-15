@@ -20,24 +20,24 @@ const banLog = new DiscordEventBuilder({
 
     if (!channel?.isTextBased()) return;
 
-    if (auditLog.action == AuditLogEvent.MemberBanAdd) {
+    if (auditLog.action === AuditLogEvent.MemberBanAdd)
       channel.send({
         embeds: [
           new EmbedBuilder()
-          .setTitle('`🔨` BAN')
-          .setDescription([
-            `${formatEmoji(GrayEmojies.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.id}\`]`,
-            '',
-            `${formatEmoji(BlurpleEmojies.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
-            `${formatEmoji(BlurpleEmojies.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
-          ].join('\n'))
-          .setColor(Colors.Red)
-          .setThumbnail(auditLog.target.displayAvatarURL())
-          .setTimestamp(),
+            .setTitle('`🔨` BAN')
+            .setDescription([
+              `${formatEmoji(GrayEmojies.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.id}\`]`,
+              '',
+              `${formatEmoji(BlurpleEmojies.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
+              `${formatEmoji(BlurpleEmojies.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
+            ].join('\n'))
+            .setColor(Colors.Red)
+            .setThumbnail(auditLog.target.displayAvatarURL())
+            .setTimestamp(),
         ],
-      }).catch(() => {});
-    }
-    else if (auditLog.action == AuditLogEvent.MemberBanRemove) {
+      }).catch(() => { });
+
+    else if (auditLog.action === AuditLogEvent.MemberBanRemove)
       channel.send({
         embeds: [
           new EmbedBuilder()
@@ -52,8 +52,8 @@ const banLog = new DiscordEventBuilder({
             .setThumbnail(auditLog.target.displayAvatarURL())
             .setTimestamp(),
         ],
-      }).catch(() => {});
-    }
+      }).catch(() => { });
+
   },
 });
 

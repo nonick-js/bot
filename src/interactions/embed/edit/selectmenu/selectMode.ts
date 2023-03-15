@@ -5,7 +5,7 @@ const changeSelectMode = new Button(
   { customId: /^nonick-js:embedMaker-selectRole-selectMode-(single|multi)$/ },
   (interaction) => {
 
-    const isSingleMode = interaction.customId == 'nonick-js:embedMaker-selectRole-selectMode-single';
+    const isSingleMode = interaction.customId === 'nonick-js:embedMaker-selectRole-selectMode-single';
     const editButtons = interaction.message.components[1];
 
     const newSelectModeButton = new ButtonBuilder()

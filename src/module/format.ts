@@ -95,19 +95,19 @@ export namespace Duration {
       .sort(([, { time: a }], [, { time: b }]) => b - a)
       .map(([k, v], i, a) => ({ ...v, short: k, diff: a[i - 1]?.[1]?.time / v.time }))
       .map(({ short, long, time, diff }) => ({ short, long, duration: isNaN(diff) ? Math.floor(absMs / time) : Math.floor(Math.floor(absMs / time) % diff) }))
-      .filter(({ duration }) => duration != 0)
+      .filter(({ duration }) => duration !== 0)
       .map(v => [v.short, v.duration])) as Partial<Record<List, number>>;
   }
 
   export function format(ms: number, compact: boolean, pass: List[]): string;
   export function format(ms: number, template: string): string;
   export function format(ms = 0, template: string | boolean = '', pass: List[] = []): string {
-    if (typeof template === 'string' && template) {
+    if (typeof template === 'string' && template)
       return holder.parse(template, parse(ms, Object.keys(durations).filter(v => !template.includes(`%{${v}}`)) as List[]));
-    }
+
     return Object.entries(parse(ms, pass)).map(([short, duration]) => {
       const { long } = durations[short as List];
-      return `${Math.sign(ms) == -1 ? '-' : ''}${duration}${template ? short : long}`;
+      return `${Math.sign(ms) === -1 ? '-' : ''}${duration}${template ? short : long}`;
     }).join(' ');
   }
 }

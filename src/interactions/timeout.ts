@@ -49,13 +49,13 @@ const timeoutCommand = new ChatInput(
       `${interaction.options.getNumber('minute') ?? 0}m`,
     ].join(''));
 
-    if (duration == 0)
+    if (duration === 0)
       return interaction.reply({ content: '`❌` 合計時間は1分以上から設定できます。', ephemeral: true });
     if (Duration.toMS('28d') <= duration)
       return interaction.reply({ content: '`❌` 28日以上のタイムアウトはできません。', ephemeral: true });
     if (!(member instanceof GuildMember))
       return interaction.reply({ content: '`❌` このユーザーはサーバーにいません。', ephemeral: true });
-    if (member.id == interaction.user.id)
+    if (member.id === interaction.user.id)
       return interaction.reply({ content: '`❌` 自分自身にコマンドを使用しています', ephemeral: true });
     if (!member.moderatable)
       return interaction.reply({ content: '`❌` 権限不足によりタイムアウトに失敗しました', ephemeral: true });

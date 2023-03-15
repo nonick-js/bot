@@ -58,15 +58,17 @@ const generalSetting = [
         return interaction.reply({ content: '`❌` 開始時間に無効な値が入力されました。', ephemeral: true });
       if (isNaN(end) || end > 23 || end < 0)
         return interaction.reply({ content: '`❌` 終了時間に無効な値が入力されました。', ephemeral: true });
-      if (start == end)
+      if (start === end)
         return interaction.reply({ content: '`❌` 開始時間と終了時間を同じ値に設定することはできません。', ephemeral: true });
 
       const res = await ServerSettings.findOneAndUpdate(
         { serverId: interaction.guildId },
-        { $set: {
-          'changeVerificationLevel.time.start': start,
-          'changeVerificationLevel.time.end': end,
-        } },
+        {
+          $set: {
+            'changeVerificationLevel.time.start': start,
+            'changeVerificationLevel.time.end': end,
+          },
+        },
         { upsert: true, new: true },
       );
 

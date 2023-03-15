@@ -122,14 +122,12 @@ const joinMessageSetting = [
       const user = interaction.user;
 
       const content = joinAndLeaveMessagePlaceHolder.parse(option.content || '', { guild, user }) || undefined;
-      const embeds = option.embeds?.map(v => EmbedBuilder.from(v)).map(v => {
-        return EmbedBuilder.from(v)
-          .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
-          .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
-          .setURL(v.data.url || null)
-          .setColor(Colors.Green)
-          .setThumbnail(user.displayAvatarURL());
-      });
+      const embeds = option.embeds?.map(v => EmbedBuilder.from(v)).map(v => EmbedBuilder.from(v)
+        .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
+        .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
+        .setURL(v.data.url || null)
+        .setColor(Colors.Green)
+        .setThumbnail(user.displayAvatarURL()));
 
       interaction.reply({ content, embeds, ephemeral: true });
     },
@@ -209,14 +207,12 @@ const leaveMessageSetting = [
       const user = interaction.user;
 
       const content = joinAndLeaveMessagePlaceHolder.parse(option.content || '', { guild, user }) || undefined;
-      const embeds = option.embeds?.map(v => EmbedBuilder.from(v)).map(v => {
-        return EmbedBuilder.from(v)
-          .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
-          .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
-          .setURL(v.data.url || null)
-          .setColor(Colors.Green)
-          .setThumbnail(user.displayAvatarURL());
-      });
+      const embeds = option.embeds?.map(v => EmbedBuilder.from(v)).map(v => EmbedBuilder.from(v)
+        .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
+        .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
+        .setURL(v.data.url || null)
+        .setColor(Colors.Green)
+        .setThumbnail(user.displayAvatarURL()));
 
       interaction.reply({ content, embeds, ephemeral: true });
     },

@@ -22,7 +22,7 @@ const timeoutLog = new DiscordEventBuilder({
 
     if (!channel?.isTextBased() || !(member instanceof GuildMember)) return;
 
-    if (Date.parse(timeoutChange.new as string) > Date.now()) {
+    if (Date.parse(timeoutChange.new as string) > Date.now())
       channel.send({
         embeds: [
           new EmbedBuilder()
@@ -38,9 +38,9 @@ const timeoutLog = new DiscordEventBuilder({
             .setThumbnail(auditLog.target.displayAvatarURL())
             .setTimestamp(),
         ],
-      }).catch(() => {});
-    }
-    else {
+      }).catch(() => { });
+
+    else
       channel.send({
         embeds: [
           new EmbedBuilder()
@@ -55,8 +55,8 @@ const timeoutLog = new DiscordEventBuilder({
             .setThumbnail(auditLog.target.displayAvatarURL())
             .setTimestamp(),
         ],
-      }).catch(() => {});
-    }
+      }).catch(() => { });
+
 
   },
 });

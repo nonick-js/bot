@@ -56,11 +56,13 @@ const ServerSettings = new Schema<IServerSettings>({
       channel: { type: String, default: null },
       messageOptions: {
         type: SchemaTypes.Mixed,
-        default: { embeds: [ {
-          title: 'WELCOME',
-          description: '![user] **(![userTag])** さん、**![serverName]**へようこそ！',
-          color: Colors.Green,
-        } ] },
+        default: {
+          embeds: [{
+            title: 'WELCOME',
+            description: '![user] **(![userTag])** さん、**![serverName]**へようこそ！',
+            color: Colors.Green,
+          }],
+        },
       },
     },
     leave: {
