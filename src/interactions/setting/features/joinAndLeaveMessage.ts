@@ -1,18 +1,11 @@
-import { ActionRowBuilder, Colors, EmbedBuilder, Guild, ModalBuilder, TextInputBuilder, TextInputStyle, User } from 'discord.js';
+import { ActionRowBuilder, Colors, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { changeToggleSetting, changeChannelSetting } from '../_functions';
 import { Button, Modal } from '@akki256/discord-interaction';
 import { isURL } from '../../../module/functions';
-import { PlaceHolder } from '../../../module/format';
+import { joinAndLeaveMessagePlaceHolder } from '../../../module/placeholders';
 import { FeatureType } from '../_messages';
 import { channelModal } from '../_modals';
 import ServerSettings from '../../../schemas/ServerSettings';
-
-const joinAndLeaveMessagePlaceHolder = new PlaceHolder<{ guild: Guild | null, user: User | null }>()
-  .register('serverName', ({ guild }) => guild?.name)
-  .register('memberCount', ({ guild }) => guild?.memberCount)
-  .register('user', ({ user }) => `${user}`)
-  .register('userName', ({ user }) => user?.username)
-  .register('userTag', ({ user }) => user?.tag);
 
 const joinMessageSetting = [
   // 有効・無効化
@@ -113,6 +106,7 @@ const joinMessageSetting = [
   new Button(
     { customId: 'nonick-js:setting-message-join-preview' },
     async (interaction) => {
+      if (!interaction.inCachedGuild()) return;
       const Setting = await ServerSettings.findOne({ serverId: interaction.guildId });
 
       const option = Setting?.message.join.messageOptions;
@@ -121,17 +115,18 @@ const joinMessageSetting = [
       const guild = interaction.guild;
       const user = interaction.user;
 
-      const content = joinAndLeaveMessagePlaceHolder.parse(option.content || '', { guild, user }) || undefined;
-      const embeds = option.embeds?.map(v => EmbedBuilder.from(v)).map(v => {
-        return EmbedBuilder.from(v)
-          .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
-          .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
-          .setURL(v.data.url || null)
-          .setColor(Colors.Green)
-          .setThumbnail(user.displayAvatarURL());
+      interaction.reply({
+        content: joinAndLeaveMessagePlaceHolder.parse(option.content || '', ({ guild, user })) || undefined,
+        embeds: option.embeds?.map(v => EmbedBuilder.from(v)).map(v => {
+          return EmbedBuilder.from(v)
+            .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
+            .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
+            .setURL(v.data.url || null)
+            .setColor(Colors.Green)
+            .setThumbnail(interaction.user.displayAvatarURL());
+        }),
+        ephemeral: true,
       });
-
-      interaction.reply({ content, embeds, ephemeral: true });
     },
   ),
 ];
@@ -200,6 +195,7 @@ const leaveMessageSetting = [
   new Button(
     { customId: 'nonick-js:setting-message-leave-preview' },
     async (interaction) => {
+      if (!interaction.inCachedGuild()) return;
       const Setting = await ServerSettings.findOne({ serverId: interaction.guildId });
 
       const option = Setting?.message.leave.messageOptions;
@@ -208,17 +204,18 @@ const leaveMessageSetting = [
       const guild = interaction.guild;
       const user = interaction.user;
 
-      const content = joinAndLeaveMessagePlaceHolder.parse(option.content || '', { guild, user }) || undefined;
-      const embeds = option.embeds?.map(v => EmbedBuilder.from(v)).map(v => {
-        return EmbedBuilder.from(v)
-          .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
-          .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
-          .setURL(v.data.url || null)
-          .setColor(Colors.Green)
-          .setThumbnail(user.displayAvatarURL());
+      interaction.reply({
+        content: joinAndLeaveMessagePlaceHolder.parse(option.content || '', ({ guild, user })) || undefined,
+        embeds: option.embeds?.map(v => EmbedBuilder.from(v)).map(v => {
+          return EmbedBuilder.from(v)
+            .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
+            .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
+            .setURL(v.data.url || null)
+            .setColor(Colors.Green)
+            .setThumbnail(interaction.user.displayAvatarURL());
+        }),
+        ephemeral: true,
       });
-
-      interaction.reply({ content, embeds, ephemeral: true });
     },
   ),
 ];
