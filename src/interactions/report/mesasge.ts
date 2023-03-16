@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ComponentType, EmbedBuilder, formatEmoji, Message, ModalBuilder, PermissionFlagsBits, roleMention, spoiler, TextChannel, TextInputBuilder, TextInputStyle, time } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ComponentType, EmbedBuilder, escapeSpoiler, formatEmoji, Message, ModalBuilder, PermissionFlagsBits, roleMention, TextChannel, TextInputBuilder, TextInputStyle, time } from 'discord.js';
 import { MessageContext, Modal } from '@akki256/discord-interaction';
 import ServerSettings from '../../schemas/ServerSettings';
 import { BlurpleEmojies, GrayEmojies } from '../../module/emojies';
@@ -86,7 +86,7 @@ const reportContextModal = new Modal(
             .setColor(Colors.DarkButNotBlack)
             .setThumbnail(message.author.displayAvatarURL())
             .setFields(
-              { name: 'メッセージ', value: spoiler(message.content) },
+              { name: 'メッセージ', value: escapeSpoiler(message.content) },
               { name: '理由', value: interaction.components[0].components[0].value },
             ),
         ],
