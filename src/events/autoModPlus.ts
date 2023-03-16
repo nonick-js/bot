@@ -1,4 +1,4 @@
-import { EmbedBuilder, Events, formatEmoji, GuildBasedChannel, Message, resolveColor, spoiler, time } from 'discord.js';
+import { EmbedBuilder, escapeSpoiler, Events, formatEmoji, GuildBasedChannel, Message, PermissionFlagsBits, resolveColor, time } from 'discord.js';
 import { GrayEmojies } from '../module/emojies';
 import { DiscordEventBuilder } from '../module/events';
 import { getServerSetting } from '../module/mongo/middleware';
@@ -19,7 +19,7 @@ const shortUrlDomain = [
 const autoModPlus = new DiscordEventBuilder({
 	type: Events.MessageCreate,
 	execute: async (message) => {
-		if (!message.inGuild() || !message.member || message.author.bot || message.author.system) return;
+		if (!message.inGuild() || !message.member || message.author.bot || message.author.system || message.member.permissions.has(PermissionFlagsBits.ManageGuild)) return;
 		const setting = await getServerSetting(message.guildId, 'autoMod');
 		if (
 			!setting?.enable ||
@@ -46,12 +46,13 @@ function deleteMessage(message: Message<true>, channel: GuildBasedChannel | null
 				new EmbedBuilder()
 					.setTitle('`✋` メッセージブロック')
 					.setDescription([
-						`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${message.channel} [${message.channel.name}]`,
-						`${formatEmoji(GrayEmojies.member)} **送信者:** ${message.author} [${message.author.tag}]`,
+						`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
+						`${formatEmoji(GrayEmojies.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
 						`${formatEmoji(GrayEmojies.schedule)} **送信時刻:** ${time(message.createdAt)}`,
 					].join('\n'))
 					.setColor(resolveColor('#2b2d31'))
-					.setFields({ name: 'メッセージ', value: spoiler(message.content) })
+					.setThumbnail(message.author.displayAvatarURL())
+					.setFields({ name: 'メッセージ', value: escapeSpoiler(message.content) })
 					.setFooter({ text: `ルール: ${rule}` }),
 			],
 		});

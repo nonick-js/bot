@@ -442,10 +442,7 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
     embeds: [
       new EmbedBuilder()
         .setTitle('`🔧` 設定: AutoMod Plus')
-        .setDescription([
-          `${formatEmoji('1021382601031823371')}${formatEmoji('1021383211147870280')} この機能は予告なく仕様が変更される場合があります。`,
-          '```標準のAutoModでは設定が難しい、高度なメッセージフィルターを有効にします。フィルターに検知されたメッセージは自動的に削除されます。```',
-        ].join('\n'))
+        .setDescription('```標準のAutoModでは設定が難しい、高度なメッセージフィルターを有効にします。フィルターに検知されたメッセージは自動的に削除されます。```')
         .setColor(Colors.Blurple)
         .setFields(
           {
@@ -468,7 +465,8 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
               `${formatEmoji(GrayEmojies.member)} **ロール:** ${setting?.autoMod.ignore.roles.map(v => roleMention(v)).join(' ') || 'なし'}`,
             ].join('\n'),
           },
-        ),
+        )
+        .setFooter({ text: 'Tips:「サーバー管理」権限を持つユーザーはこのフィルターに検知されなくなります。' }),
     ],
   }))
   .addActionRows((setting) => [
@@ -489,11 +487,8 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-automod-enable')
-        .setLabel('現在有効にできません')
-        .setStyle(ButtonStyle.Success)
-        .setDisabled(true),
-      // .setLabel(buttonLabelStatus(setting?.autoMod.enable))
-      // .setStyle(buttonStyleStatus(setting?.autoMod.enable)),
+        .setLabel(buttonLabelStatus(setting?.autoMod.enable))
+        .setStyle(buttonStyleStatus(setting?.autoMod.enable)),
     ),
   ], { name: '一般設定', emoji: WhiteEmojies.setting })
   .addActionRows((setting) => [
