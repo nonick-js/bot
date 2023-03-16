@@ -34,6 +34,7 @@ const verificationLevel = [
 const autoModFilter = new Map([
   ['inviteUrl', '招待URL'],
   ['token', 'Discordトークン'],
+  ['shortUrl', '短縮URL'],
 ]);
 
 // 入退室メッセージ
@@ -441,10 +442,7 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
     embeds: [
       new EmbedBuilder()
         .setTitle('`🔧` 設定: AutoMod Plus')
-        .setDescription([
-          `${formatEmoji('1021382601031823371')}${formatEmoji('1021383211147870280')} この機能は予告なく仕様が変更される場合があります。`,
-          '```標準のAutoModでは設定が難しい、高度なメッセージフィルターを有効にします。フィルターに検知されたメッセージは自動的に削除されます。```',
-        ].join('\n'))
+        .setDescription('```標準のAutoModでは設定が難しい、高度なメッセージフィルターを有効にします。フィルターに検知されたメッセージは自動的に削除されます。```')
         .setColor(Colors.Blurple)
         .setFields(
           {
@@ -467,7 +465,8 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
               `${formatEmoji(GrayEmojies.member)} **ロール:** ${setting?.autoMod.ignore.roles.map(v => roleMention(v)).join(' ') || 'なし'}`,
             ].join('\n'),
           },
-        ),
+        )
+        .setFooter({ text: 'Tips:「サーバー管理」権限を持つユーザーはこのフィルターに検知されなくなります。' }),
     ],
   }))
   .addActionRows((setting) => [
@@ -476,22 +475,20 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
         .setCustomId('nonick-js:setting-automod-filter')
         .setPlaceholder('有効にするフィルタを選択')
         .setMinValues(0)
-        .setMaxValues(2)
+        .setMaxValues(3)
         .setOptions(
           [
             { label: 'このサーバー以外の招待リンク', value: 'inviteUrl', emoji: WhiteEmojies.message },
             { label: 'Discordトークン', value: 'token', emoji: WhiteEmojies.message },
+            { label: '短縮URL', value: 'shortUrl', emoji: WhiteEmojies.message },
           ].map(options => ({ ...options, default: Object.entries(setting?.autoMod.filter || {}).filter(v => v[1]).map(v => v[0]).includes(options.value) })),
         ),
     ),
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-automod-enable')
-        .setLabel('現在有効にできません')
-        .setStyle(ButtonStyle.Success)
-        .setDisabled(true),
-      // .setLabel(buttonLabelStatus(setting?.autoMod.enable))
-      // .setStyle(buttonStyleStatus(setting?.autoMod.enable)),
+        .setLabel(buttonLabelStatus(setting?.autoMod.enable))
+        .setStyle(buttonStyleStatus(setting?.autoMod.enable)),
     ),
   ], { name: '一般設定', emoji: WhiteEmojies.setting })
   .addActionRows((setting) => [
