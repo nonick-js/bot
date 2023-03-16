@@ -1,4 +1,4 @@
-import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, User } from 'discord.js';
+import { AuditLogEvent, ChannelType, Colors, EmbedBuilder, Events, formatEmoji, User } from 'discord.js';
 import { GrayEmojies, BlurpleEmojies } from '../../module/emojies';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
@@ -18,7 +18,7 @@ const kickLog = new DiscordEventBuilder({
     const channel = await guild.channels.fetch(Setting.log.kick.channel).catch(() => null);
     const executor = await auditLog.executor?.fetch();
 
-    if (!channel?.isTextBased()) return;
+    if (channel?.type !== ChannelType.GuildText) return;
 
     channel.send({
       embeds: [

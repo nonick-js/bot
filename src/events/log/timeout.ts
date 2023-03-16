@@ -1,4 +1,4 @@
-import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildMember, time, User } from 'discord.js';
+import { AuditLogEvent, ChannelType, Colors, EmbedBuilder, Events, formatEmoji, GuildMember, time, User } from 'discord.js';
 import { BlurpleEmojies, GrayEmojies } from '../../module/emojies';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
@@ -20,7 +20,7 @@ const timeoutLog = new DiscordEventBuilder({
     const member = await guild.members.fetch(auditLog.target.id).catch(() => null);
     const executor = await auditLog.executor?.fetch();
 
-    if (!channel?.isTextBased() || !(member instanceof GuildMember)) return;
+    if (channel?.type !== ChannelType.GuildText || !(member instanceof GuildMember)) return;
 
     if (Date.parse(timeoutChange.new as string) > Date.now())
       channel.send({
