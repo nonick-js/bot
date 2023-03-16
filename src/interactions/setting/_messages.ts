@@ -34,6 +34,7 @@ const verificationLevel = [
 const autoModFilter = new Map([
   ['inviteUrl', '招待URL'],
   ['token', 'Discordトークン'],
+  ['shortUrl', '短縮URL'],
 ]);
 
 // 入退室メッセージ
@@ -476,11 +477,12 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
         .setCustomId('nonick-js:setting-automod-filter')
         .setPlaceholder('有効にするフィルタを選択')
         .setMinValues(0)
-        .setMaxValues(2)
+        .setMaxValues(3)
         .setOptions(
           [
             { label: 'このサーバー以外の招待リンク', value: 'inviteUrl', emoji: WhiteEmojies.message },
             { label: 'Discordトークン', value: 'token', emoji: WhiteEmojies.message },
+            { label: '短縮URL', value: 'shortUrl', emoji: WhiteEmojies.message },
           ].map(options => ({ ...options, default: Object.entries(setting?.autoMod.filter || {}).filter(v => v[1]).map(v => v[0]).includes(options.value) })),
         ),
     ),

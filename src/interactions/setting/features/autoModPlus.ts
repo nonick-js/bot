@@ -25,6 +25,7 @@ const generalSetting = [
           $set: {
             'autoMod.filter.inviteUrl': values.includes('inviteUrl'),
             'autoMod.filter.token': values.includes('token'),
+            'autoMod.filter.shortUrl': values.includes('shortUrl'),
           },
         },
         { upsert: true, new: true },

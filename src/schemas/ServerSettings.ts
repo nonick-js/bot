@@ -40,6 +40,7 @@ export interface IServerSettings {
     filter: {
       inviteUrl: boolean,
       token: boolean,
+      shortUrl: boolean,
     },
     ignore: {
       channels: string[],
@@ -134,6 +135,7 @@ const ServerSettings = new Schema<IServerSettings>({
     filter: {
       inviteUrl: { type: Boolean, default: false },
       token: { type: Boolean, default: false },
+      shortUrl: { type: Boolean, default: false },
     },
     ignore: {
       channels: { type: [String], default: [] },
