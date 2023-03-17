@@ -1,21 +1,19 @@
-import { ChannelType, Colors, EmbedBuilder, Events } from 'discord.js';
+import { Colors, EmbedBuilder, Events } from 'discord.js';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
-import ServerSettings from '../../schemas/ServerSettings';
 import { joinAndLeaveMessagePlaceHolder } from '../../module/placeholders';
+import { getServerSetting } from '../../module/mongo/middleware';
 
 const joinMessage = new DiscordEventBuilder({
   type: Events.GuildMemberAdd,
   execute: async (member) => {
-
     if (isBlocked(member.guild)) return;
 
-    const Setting = await ServerSettings.findOne({ serverId: member.guild.id });
-    if (!Setting?.message.join.enable || !Setting.message.join.channel) return;
+    const setting = await getServerSetting(member.guild.id, 'message');
+    if (!setting?.join.enable || !setting.join.channel) return;
 
-    const channel = await member.guild.channels.fetch(Setting.message.join.channel).catch(() => null);
-
-    if (channel?.type !== ChannelType.GuildText) return;
+    const channel = await member.guild.channels.fetch(setting.join.channel).catch(() => null);
+    if (!channel?.isTextBased()) return;
 
     if (member.user.bot)
       channel.send({
@@ -28,7 +26,7 @@ const joinMessage = new DiscordEventBuilder({
         .catch(() => { });
 
     else {
-      const option = Setting.message.join.messageOptions;
+      const option = setting.join.messageOptions;
       if (!option) return;
 
       const guild = member.guild;
@@ -43,7 +41,6 @@ const joinMessage = new DiscordEventBuilder({
           .setColor(Colors.Green)
           .setThumbnail(member.user.displayAvatarURL())),
       });
-
     }
   },
 });

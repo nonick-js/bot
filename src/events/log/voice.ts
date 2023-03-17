@@ -1,27 +1,19 @@
-import { ChannelType, Colors, EmbedBuilder, Events, formatEmoji } from 'discord.js';
+import { Colors, EmbedBuilder, Events, formatEmoji } from 'discord.js';
 import { GrayEmojies } from '../../module/emojies';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
-import ServerSettings from '../../schemas/ServerSettings';
+import { getServerSetting } from '../../module/mongo/middleware';
 
 const voiceLog = new DiscordEventBuilder({
 	type: Events.VoiceStateUpdate,
 	execute: async (oldState, newState) => {
-
 		if (isBlocked(newState.guild) || !newState.member) return;
 
-		const Setting = await ServerSettings.findOne({ serverId: newState.guild.id });
+		const setting = await getServerSetting(newState.guild.id, 'log');
+		if (!setting?.voice.enable || !setting?.voice.channel) return;
 
-		if (!Setting?.log.voice.enable || !Setting?.log.voice.channel) return;
-
-		const channel = await newState.guild.channels.fetch(Setting?.log.voice.channel).catch(() => null);
-
-		if (channel?.type !== ChannelType.GuildText) {
-			Setting.log.voice.enable = false;
-			Setting.log.voice.channel = null;
-			Setting.save({ wtimeout: 1500 });
-			return;
-		}
+		const channel = await newState.guild.channels.fetch(setting.voice.channel).catch(() => null);
+		if (!channel?.isTextBased()) return;
 
 		if (oldState.channel && newState.channel && !oldState.channel.equals(newState.channel))
 			channel
@@ -71,7 +63,6 @@ const voiceLog = new DiscordEventBuilder({
 							.setTimestamp(),
 					],
 				});
-
 	},
 });
 

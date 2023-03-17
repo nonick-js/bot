@@ -1,7 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ComponentType, EmbedBuilder, formatEmoji, ModalBuilder, PermissionFlagsBits, roleMention, TextChannel, TextInputBuilder, TextInputStyle, time, User } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ComponentType, EmbedBuilder, formatEmoji, ModalBuilder, PermissionFlagsBits, roleMention, TextInputBuilder, TextInputStyle, time, User } from 'discord.js';
 import { Modal, UserContext } from '@akki256/discord-interaction';
-import ServerSettings from '../../schemas/ServerSettings';
 import { BlurpleEmojies, GrayEmojies } from '../../module/emojies';
+import { getServerSetting } from '../../module/mongo/middleware';
 
 const reportContext = new UserContext(
   {
@@ -11,11 +11,11 @@ const reportContext = new UserContext(
   async (interaction) => {
     if (!interaction.inCachedGuild()) return;
 
-    const Setting = await ServerSettings.findOne({ serverId: interaction.guildId });
+    const setting = await getServerSetting(interaction.guildId, 'report');
     const user = interaction.targetUser;
     const member = interaction.targetMember;
 
-    if (!Setting?.report?.channel)
+    if (!setting?.channel)
       if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild))
         return interaction.reply({ content: '`❌` この機能を使用するには追加で設定が必要です。`/setting`で報告を受け取るチャンネルを設定してください。', ephemeral: true });
       else
@@ -52,23 +52,18 @@ const reportContextModal = new Modal(
   async (interaction) => {
     if (!interaction.inCachedGuild() || !interaction.channel || interaction.components[0].components[0].type !== ComponentType.TextInput) return;
 
-    const Setting = await ServerSettings.findOne({ serverId: interaction.guildId });
-    if (!Setting?.report.channel) return interaction.reply({ content: '`❌` 報告の送信中にエラーが発生しました', ephemeral: true });
+    const setting = await getServerSetting(interaction.guildId, 'report');
+    if (!setting?.channel) return interaction.reply({ content: '`❌` 報告の送信中にエラーが発生しました', ephemeral: true });
 
     const user = await interaction.client.users.fetch(interaction.components[0].components[0].customId).catch(() => undefined);
-    const channel = await interaction.guild.channels.fetch(Setting.report.channel).catch(() => undefined);
+    const channel = await interaction.guild.channels.fetch(setting.channel).catch(() => undefined);
 
-    if (!(user instanceof User))
+    if (!(user instanceof User) || !channel?.isTextBased())
       return interaction.reply({ content: '`❌` 報告の送信中にエラーが発生しました', ephemeral: true });
-    if (!(channel instanceof TextChannel)) {
-      interaction.reply({ content: '`❌` 報告の送信中にエラーが発生しました', ephemeral: true });
-      Setting.report.channel = null;
-      return Setting.save({ wtimeout: 1_500 });
-    }
 
     channel
       .send({
-        content: Setting.report.mention?.enable ? roleMention(Setting.report.mention.role || '0') : undefined,
+        content: setting.mention?.enable ? roleMention(setting.mention.role || '0') : undefined,
         embeds: [
           new EmbedBuilder()
             .setTitle('`📢` ユーザーの通報')

@@ -1,24 +1,22 @@
-import { AuditLogEvent, ChannelType, Colors, EmbedBuilder, Events, formatEmoji, User } from 'discord.js';
+import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, User } from 'discord.js';
 import { BlurpleEmojies, GrayEmojies } from '../../module/emojies';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
-import ServerSettings from '../../schemas/ServerSettings';
+import { getServerSetting } from '../../module/mongo/middleware';
 
 const banLog = new DiscordEventBuilder({
   type: Events.GuildAuditLogEntryCreate,
   execute: async (auditLog, guild) => {
-
     if (isBlocked(guild)) return;
     if (![AuditLogEvent.MemberBanAdd, AuditLogEvent.MemberBanRemove].includes(auditLog.action) || !(auditLog.target instanceof User)) return;
 
-    const Setting = await ServerSettings.findOne({ serverId: guild.id });
+    const setting = await getServerSetting(guild.id, 'log');
+    if (!setting?.ban.enable || !setting?.ban.channel) return;
 
-    if (!Setting?.log.ban.enable || !Setting.log.ban.channel) return;
-
-    const channel = await guild.channels.fetch(Setting.log.ban.channel).catch(() => null);
+    const channel = await guild.channels.fetch(setting.ban.channel).catch(() => null);
     const executor = await auditLog.executor?.fetch();
 
-    if (channel?.type !== ChannelType.GuildText) return;
+    if (!channel?.isTextBased()) return;
 
     if (auditLog.action === AuditLogEvent.MemberBanAdd)
       channel.send({
@@ -53,7 +51,6 @@ const banLog = new DiscordEventBuilder({
             .setTimestamp(),
         ],
       }).catch(() => { });
-
   },
 });
 

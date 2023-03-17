@@ -21,12 +21,15 @@ const autoModPlus = new DiscordEventBuilder({
 	execute: async (message) => {
 		if (!message.inGuild() || !message.member || message.author.bot || message.author.system || message.member.permissions.has(PermissionFlagsBits.ManageGuild)) return;
 		const setting = await getServerSetting(message.guildId, 'autoMod');
+
 		if (
 			!setting?.enable ||
 			setting.ignore.channels.includes(message.channelId) ||
 			message.member.roles.cache.some(role => setting.ignore.roles.includes(role.id))
 		) return;
+
 		const logCh = setting.log.enable && setting.log.channel ? await message.guild.channels.fetch(setting.log.channel) : null;
+
 		if (setting.filter.inviteUrl) {
 			const invites = await message.guild.invites.fetch();
 			if (new RegExp(`(https?:\\/\\/)?(.*\\.)?discord(app)?\\.(com\\/invite|gg)\\/(?!${invites.map(invite => invite.code).join('|')})`).test(message.content)) deleteMessage(message, logCh, 'サーバー招待リンク');
@@ -41,21 +44,22 @@ const autoModPlus = new DiscordEventBuilder({
 
 function deleteMessage(message: Message<true>, channel: GuildBasedChannel | null, rule?: string) {
 	message.delete().then(() => {
-		if (channel?.isTextBased()) channel.send({
-			embeds: [
-				new EmbedBuilder()
-					.setTitle('`✋` メッセージブロック')
-					.setDescription([
-						`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
-						`${formatEmoji(GrayEmojies.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
-						`${formatEmoji(GrayEmojies.schedule)} **送信時刻:** ${time(message.createdAt)}`,
-					].join('\n'))
-					.setColor(resolveColor('#2b2d31'))
-					.setThumbnail(message.author.displayAvatarURL())
-					.setFields({ name: 'メッセージ', value: escapeSpoiler(message.content) })
-					.setFooter({ text: `ルール: ${rule}` }),
-			],
-		});
+		if (channel?.isTextBased())
+			channel.send({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle('`✋` メッセージブロック')
+						.setDescription([
+							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
+							`${formatEmoji(GrayEmojies.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
+							`${formatEmoji(GrayEmojies.schedule)} **送信時刻:** ${time(message.createdAt)}`,
+						].join('\n'))
+						.setColor(resolveColor('#2b2d31'))
+						.setThumbnail(message.author.displayAvatarURL())
+						.setFields({ name: 'メッセージ', value: escapeSpoiler(message.content) })
+						.setFooter({ text: `ルール: ${rule}` }),
+				],
+			});
 	});
 }
 

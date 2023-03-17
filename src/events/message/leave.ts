@@ -1,21 +1,19 @@
-import { ChannelType, Colors, EmbedBuilder, Events } from 'discord.js';
+import { Colors, EmbedBuilder, Events } from 'discord.js';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
-import ServerSettings from '../../schemas/ServerSettings';
 import { joinAndLeaveMessagePlaceHolder } from '../../module/placeholders';
+import { getServerSetting } from '../../module/mongo/middleware';
 
 const leaveMessage = new DiscordEventBuilder({
   type: Events.GuildMemberRemove,
   execute: async (member) => {
-
     if (isBlocked(member.guild)) return;
 
-    const Setting = await ServerSettings.findOne({ serverId: member.guild.id });
-    if (!Setting?.message.leave.enable || !Setting.message.leave.channel) return;
+    const setting = await getServerSetting(member.guild.id, 'message');
+    if (!setting?.leave.enable || !setting.leave.channel) return;
 
-    const channel = await member.guild.channels.fetch(Setting.message.leave.channel).catch(() => null);
-
-    if (channel?.type !== ChannelType.GuildText) return;
+    const channel = await member.guild.channels.fetch(setting.leave.channel).catch(() => null);
+    if (!channel?.isTextBased()) return;
 
     if (member.user.bot)
       channel.send({
@@ -27,7 +25,7 @@ const leaveMessage = new DiscordEventBuilder({
       }).catch(() => { });
 
     else {
-      const option = Setting.message.leave.messageOptions;
+      const option = setting.leave.messageOptions;
       if (!option) return;
 
       const guild = member.guild;

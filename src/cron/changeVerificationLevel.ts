@@ -1,4 +1,4 @@
-import { ChannelType, Client, Colors, EmbedBuilder, Guild, inlineCode } from 'discord.js';
+import { Client, Colors, EmbedBuilder, Guild, inlineCode } from 'discord.js';
 import { Document } from 'mongoose';
 import ServerSettings, { IServerSettings } from '../schemas/ServerSettings';
 
@@ -45,12 +45,7 @@ async function sendLog(guild: Guild, setting: (Document<unknown, unknown, IServe
   if (!setting.changeVerificationLevel.log.enable || !setting.changeVerificationLevel.log.channel) return;
 
   const channel = await guild.channels.fetch(setting.changeVerificationLevel.log.channel).catch(() => null);
-
-  if (channel?.type !== ChannelType.GuildText) {
-    setting.changeVerificationLevel.log.enable = false;
-    setting.changeVerificationLevel.log.channel = null;
-    return setting.save({ wtimeout: 1500 });
-  }
+  if (!channel?.isTextBased()) return;
 
   channel
     .send({
