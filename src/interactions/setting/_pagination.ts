@@ -37,7 +37,7 @@ export class ControlPanelComponentPagination {
       value: String(index),
       description: option?.description,
       emoji: option?.emoji,
-      default: index == 0,
+      default: index === 0,
     });
     return this;
   }
@@ -68,33 +68,33 @@ export class ControlPanelComponentPagination {
     });
 
     const collector = message.createMessageComponentCollector({
-      filter: v => v.customId == 'pagination:componentSelect',
+      filter: v => v.customId === 'pagination:componentSelect',
       componentType: ComponentType.StringSelect,
       time: 600_000,
     });
 
     collector.on('collect', async i => {
       this.#current = Number(i.values[0]);
-      const i_CurrentComponents = this.components[this.#current];
-      const i_Setting = await ServerSettings.findOne({ serverId: interaction.guildId });
+      const iCurrentComponents = this.components[this.#current];
+      const iSetting = await ServerSettings.findOne({ serverId: interaction.guildId });
 
       const newComponentSelect = StringSelectMenuBuilder
         .from(i.component)
         .setOptions(i.component.options.map(
-          ({ label, value, description, emoji }) => ({ label, value, description, emoji, default: value == i.values[0] }),
+          ({ label, value, description, emoji }) => ({ label, value, description, emoji, default: value === i.values[0] }),
         ));
 
       i.update({
-        ...this.options(i_Setting),
+        ...this.options(iSetting),
         components: [
           new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(newComponentSelect),
-          ...i_CurrentComponents(i_Setting),
+          ...iCurrentComponents(iSetting),
         ],
       });
 
       collector.resetTimer();
     });
 
-    collector.on('end', () => {});
+    collector.on('end', () => { });
   }
 }

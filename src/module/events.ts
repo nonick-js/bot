@@ -56,12 +56,12 @@ export class DiscordEvents {
   register(basePath: string, predicate?: (value: fs.Dirent) => boolean) {
     this.getAllPath(basePath, predicate).forEach(filePath => {
       const eventData = require(filePath) as DiscordEvent<keyof ClientEvents> | DiscordEvent<keyof ClientEvents>[];
-      if (Array.isArray(eventData)) {
+      if (Array.isArray(eventData))
         eventData.forEach(event => this.pushEvent(event));
-      }
-      else {
+
+      else
         this.pushEvent(eventData);
-      }
+
     });
   }
 
@@ -75,19 +75,19 @@ export class DiscordEvents {
       });
     }
     if (event.once) {
-      if (!this.data[event.type]?.once.length) {
+      if (!this.data[event.type]?.once.length)
         this.client.once(event.type, (...args: ClientEvents[T]) => {
           this.data[event.type]?.once.forEach((execute, i) => {
             execute(...args);
             this.data[event.type]?.once.splice(i, 1);
           });
         });
-      }
+
       this.data[event.type]?.once.push(event.execute);
     }
-    else {
+    else
       this.data[event.type]?.on.push(event.execute);
-    }
+
   }
 
   private getAllPath(basePath: string, predicate?: (value: fs.Dirent) => boolean, pre = new Set<string>()) {

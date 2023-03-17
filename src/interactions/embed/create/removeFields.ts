@@ -9,27 +9,29 @@ const removeFieldButton = new Button(
 
     const embed = interaction.message.embeds[0];
 
-    if (embed.fields.length == 0)
+    if (embed.fields.length === 0)
       return interaction.reply({ content: '`❌` フィールドがありません', ephemeral: true });
-    if (embed.fields.length == 1)
+    if (embed.fields.length === 1)
       return interaction.update({ embeds: [EmbedBuilder.from(embed).setFields()] });
 
-    interaction.update({ components: [
-      new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
-        new StringSelectMenuBuilder()
-          .setCustomId('nonick-js:embedMaker-removeFieldSelect')
-          .setOptions([
-            { label: '削除せず戻る', value: 'back', emoji: WhiteEmojies.reply },
-            ...embed.fields.map((v, index) => ({
-              label: v.name,
-              value: String(index),
-              description: v.value.length > 20 ? `${v.value.substring(0, 20)} ...` : v.value,
-              emoji: WhiteEmojies.message,
-            })),
-          ])
-          .setPlaceholder('削除するフィールドを選択'),
-      ),
-    ] });
+    interaction.update({
+      components: [
+        new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+          new StringSelectMenuBuilder()
+            .setCustomId('nonick-js:embedMaker-removeFieldSelect')
+            .setOptions([
+              { label: '削除せず戻る', value: 'back', emoji: WhiteEmojies.reply },
+              ...embed.fields.map((v, index) => ({
+                label: v.name,
+                value: String(index),
+                description: v.value.length > 20 ? `${v.value.substring(0, 20)} ...` : v.value,
+                emoji: WhiteEmojies.message,
+              })),
+            ])
+            .setPlaceholder('削除するフィールドを選択'),
+        ),
+      ],
+    });
 
   },
 );
@@ -41,7 +43,7 @@ const removeFieldSelect = new SelectMenu(
     const embed = interaction.message.embeds[0];
     const value = interaction.values[0];
 
-    if (value == 'back')
+    if (value === 'back')
       return interaction.update({ components: [...embedCreateButtons] });
 
     interaction.update({

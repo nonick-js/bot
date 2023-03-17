@@ -30,9 +30,17 @@
     "@types/node": "^18.13.0",
     "@types/node-cron": "^3.0.7",
     "axios": "^1.3.2",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
     "mongoose": "^6.9.1",
     "node-cron": "^3.0.2"
+  },
+  "override": {
+    "discord-api-types": "0.37.35"
+  },
+  "pnpm": {
+    "overrides": {
+      "discord-api-types": "0.37.35"
+    }
   }
 }

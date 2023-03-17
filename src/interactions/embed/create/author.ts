@@ -40,7 +40,7 @@ const setAuthorButton = new Button(
               .setStyle(TextInputStyle.Short)
               .setRequired(false),
           ),
-      ),
+        ),
     );
 
   },

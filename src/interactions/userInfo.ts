@@ -32,7 +32,7 @@ const userInfoContext = new UserContext(
     const userFlagsEmojies = userFlags?.map(v => flagEmojies.get(v)).filter(Boolean);
     const createTime = time(Math.floor(user.createdTimestamp / 1000), 'D');
 
-    if (!(member instanceof GuildMember)) {
+    if (!(member instanceof GuildMember))
       return interaction.followUp({
         embeds: [
           new EmbedBuilder()
@@ -47,7 +47,7 @@ const userInfoContext = new UserContext(
             ),
         ],
       });
-    }
+
 
     const nickName = member.nickname ?? 'なし';
     const joinTime = member.joinedTimestamp ? time(Math.floor(member.joinedTimestamp / 1000), 'D') : 'エラー';

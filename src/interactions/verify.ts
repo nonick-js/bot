@@ -61,13 +61,13 @@ const verifyCommand = new ChatInput(
 
     if (!interaction.inCachedGuild()) return;
 
-    const verifyTypeName = new Map([ ['button', 'ボタン'], ['image', '画像'] ]);
+    const verifyTypeName = new Map([['button', 'ボタン'], ['image', '画像']]);
     const verifyType = interaction.options.getString('type', true);
     const role = interaction.options.getRole('role', true);
 
     if (!interaction.guild.members.me?.permissions.has(PermissionFlagsBits.ManageRoles))
       return interaction.reply({ content: `\`❌\` **${interaction.user.username}**に\`ロールを管理\`権限を付与してください！`, ephemeral: true });
-    if (role.managed || role.id == interaction.guild.roles.everyone.id)
+    if (role.managed || role.id === interaction.guild.roles.everyone.id)
       return interaction.reply({ content: '`❌` そのロールは認証に使用することはできません', ephemeral: true });
     if (!role.editable)
       return interaction.reply({ content: '`❌` そのロールはBOTより高い位置にあるため、認証に使用することはできません', ephemeral: true });
@@ -109,13 +109,13 @@ const verifyButton = new Button(
     if (roles.cache.has(roleId))
       return interaction.reply({ content: '`✅` 既に認証されています。', ephemeral: true });
 
-    if (interaction.customId == 'nonick-js:verify-button') {
+    if (interaction.customId === 'nonick-js:verify-button')
       roles.add(roleId, '認証')
         .then(() => interaction.reply({ content: '`✅` 認証に成功しました！', ephemeral: true }))
         .catch(() => interaction.reply({ content: '`❌` ロールを付与できませんでした。サーバーの管理者にご連絡ください', ephemeral: true }));
-    }
 
-    if (interaction.customId == 'nonick-js:verify-image') {
+
+    if (interaction.customId === 'nonick-js:verify-image') {
       await interaction.deferReply({ ephemeral: true });
 
       const { image, text } = Captcha.create({ color: '#4b9d6e' }, {}, { amount: 5, blur: 25 }, { rotate: 15, skew: true });
@@ -139,7 +139,7 @@ const verifyButton = new Button(
           duringAuthentication.add(interaction.user.id);
           interaction.followUp({ content: '`📨` DMで認証を続けてください。' });
 
-          const collector = interaction.user.dmChannel!.createMessageCollector({ filter: v => v.author.id == interaction.user.id,  time: 60_000, max: 3 });
+          const collector = interaction.user.dmChannel!.createMessageCollector({ filter: v => v.author.id === interaction.user.id, time: 60_000, max: 3 });
 
           collector.on('collect', tryMessage => {
             if (tryMessage.content !== text) return;
@@ -151,12 +151,12 @@ const verifyButton = new Button(
           });
 
           collector.on('end', (collection) => {
-            if (collection.size == 3) {
+            if (collection.size === 3) {
               interaction.user.send({ content: '`❌` 試行回数を超えて認証に失敗しました。次回の認証は`5分後`から可能になります。' });
               setTimeout(() => duringAuthentication.delete(interaction.user.id), 300_000);
-            } else {
+            } else
               duringAuthentication.delete(interaction.user.id);
-            }
+
           });
         })
         .catch(() => {

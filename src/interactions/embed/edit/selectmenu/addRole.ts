@@ -7,7 +7,7 @@ const addRoleButton = new Button(
 
     const firstComponent = interaction.message.components[0].components[0];
 
-    if (firstComponent.type == ComponentType.StringSelect && firstComponent.options.length == 25)
+    if (firstComponent.type === ComponentType.StringSelect && firstComponent.options.length === 25)
       return interaction.reply({ content: '`❌` これ以上ロールを追加することはできません！' });
 
     interaction.showModal(
@@ -65,8 +65,8 @@ const addRoleModal = new Modal(
     const roleNameOrId = interaction.fields.getTextInputValue('roleNameOrId');
     const emojiNameOrId = interaction.fields.getTextInputValue('emojiNameOrId');
 
-    const role = interaction.guild?.roles.cache.find(v => v.name == roleNameOrId || v.id == roleNameOrId);
-    const emoji = interaction.guild.emojis.cache.find(v => v.name == emojiNameOrId) || emojiNameOrId.match(emojiRegex)?.[0];
+    const role = interaction.guild?.roles.cache.find(v => v.name === roleNameOrId || v.id === roleNameOrId);
+    const emoji = interaction.guild.emojis.cache.find(v => v.name === emojiNameOrId) || emojiNameOrId.match(emojiRegex)?.[0];
 
     if (!(role instanceof Role))
       return interaction.reply({ content: '`❌` 入力された値に一致するロールが見つかりませんでした。', ephemeral: true });
@@ -80,8 +80,9 @@ const addRoleModal = new Modal(
       value: role.id,
     };
 
-    if (interaction.message.components[0].components[0].type !== ComponentType.StringSelect) {
-      interaction.update({ components: [
+    if (interaction.message.components[0].components[0].type !== ComponentType.StringSelect)
+      interaction.update({
+        components: [
           new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
             new StringSelectMenuBuilder()
               .setCustomId('nonick-js:roleSelectMenu')
@@ -89,9 +90,10 @@ const addRoleModal = new Modal(
               .setOptions(newOption),
           ),
           interaction.message.components[0],
-      ] });
-    }
-    else {
+        ],
+      });
+
+    else
       interaction.update({
         content: null,
         components: [
@@ -103,7 +105,7 @@ const addRoleModal = new Modal(
           interaction.message.components[1],
         ],
       });
-    }
+
 
   },
 );

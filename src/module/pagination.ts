@@ -15,10 +15,10 @@ export class EmbedPagination {
       .setCustomId('pagination:previousButton')
       .setEmoji('◀️')
       .setStyle(ButtonStyle.Secondary),
-    this.#nextButton = new ButtonBuilder()
-      .setCustomId('pagination:nextButton')
-      .setEmoji('▶')
-      .setStyle(ButtonStyle.Secondary);
+      this.#nextButton = new ButtonBuilder()
+        .setCustomId('pagination:nextButton')
+        .setEmoji('▶')
+        .setStyle(ButtonStyle.Secondary);
 
     this.#current = 0;
     this.#senderOnly = true;
@@ -94,13 +94,13 @@ export class EmbedPagination {
     const currentEmbed = this.#pages[this.#current];
     const msg = await channel.send({
       embeds: [...(options.embeds || []), currentEmbed.setFooter({ text: `${currentEmbed.data.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })],
-			components: [...(options.components || []), new ActionRowBuilder<ButtonBuilder>().addComponents(this.#previousButton, this.#nextButton)],
+      components: [...(options.components || []), new ActionRowBuilder<ButtonBuilder>().addComponents(this.#previousButton, this.#nextButton)],
       ...options,
     });
     this.#sended = true;
 
     const collector = msg.createMessageComponentCollector({
-      filter: v => v.customId == 'pagination:previousButton' || v.customId == 'pagination:nextButton',
+      filter: v => v.customId === 'pagination:previousButton' || v.customId === 'pagination:nextButton',
       componentType: ComponentType.Button,
       time: 300_000,
     });
@@ -109,8 +109,8 @@ export class EmbedPagination {
       if (!message) return;
       if (this.#senderOnly && !i.user.equals(message.author)) return;
 
-      if (i.customId == 'pagination:previousButton') this.#current = (this.#pages.length + --this.#current) % this.#pages.length;
-      if (i.customId == 'pagination:nextButton') this.#current = ++this.#current % this.#pages.length;
+      if (i.customId === 'pagination:previousButton') this.#current = (this.#pages.length + --this.#current) % this.#pages.length;
+      if (i.customId === 'pagination:nextButton') this.#current = ++this.#current % this.#pages.length;
 
       const embed = this.#pages[this.#current];
       await i.deferUpdate();
@@ -120,12 +120,14 @@ export class EmbedPagination {
 
     collector.on('end', () => {
       if (!msg) return;
-      msg.edit({ components: [
-        new ActionRowBuilder<ButtonBuilder>().addComponents(
-          this.#previousButton.setDisabled(true),
-          this.#nextButton.setDisabled(true),
-        ),
-      ] });
+      msg.edit({
+        components: [
+          new ActionRowBuilder<ButtonBuilder>().addComponents(
+            this.#previousButton.setDisabled(true),
+            this.#nextButton.setDisabled(true),
+          ),
+        ],
+      });
     });
 
   }
@@ -142,13 +144,13 @@ export class EmbedPagination {
     const currentEmbed = this.#pages[this.#current];
     const msg = await interaction.reply({
       embeds: [...(options.embeds || []), currentEmbed.setFooter({ text: `${currentEmbed.data.footer?.text || ''}Page ${this.#current + 1} / ${this.#pages.length}` })],
-			components: [...(options.components || []), new ActionRowBuilder<ButtonBuilder>().addComponents(this.#previousButton, this.#nextButton)],
+      components: [...(options.components || []), new ActionRowBuilder<ButtonBuilder>().addComponents(this.#previousButton, this.#nextButton)],
       fetchReply: true,
     });
     this.#sended = true;
 
     const collector = msg.createMessageComponentCollector({
-      filter: v => v.customId == 'pagination:previousButton' || v.customId == 'pagination:nextButton',
+      filter: v => v.customId === 'pagination:previousButton' || v.customId === 'pagination:nextButton',
       componentType: ComponentType.Button,
       time: 300_000,
     });
@@ -156,8 +158,8 @@ export class EmbedPagination {
     collector.on('collect', async i => {
       if (this.#senderOnly && !i.user.equals(interaction.user)) return;
 
-      if (i.customId == 'pagination:previousButton') this.#current = (this.#pages.length + --this.#current) % this.#pages.length;
-      if (i.customId == 'pagination:nextButton') this.#current = ++this.#current % this.#pages.length;
+      if (i.customId === 'pagination:previousButton') this.#current = (this.#pages.length + --this.#current) % this.#pages.length;
+      if (i.customId === 'pagination:nextButton') this.#current = ++this.#current % this.#pages.length;
 
       const embed = this.#pages[this.#current];
       await i.update({ embeds: [embed.setFooter({ text: `Page ${this.#current + 1} / ${this.#pages.length}` })] });
@@ -166,12 +168,14 @@ export class EmbedPagination {
 
     collector.on('end', () => {
       if (!msg) return;
-      msg.edit({ components: [
-        new ActionRowBuilder<ButtonBuilder>().addComponents(
-          this.#previousButton.setDisabled(true),
-          this.#nextButton.setDisabled(true),
-        ),
-      ] });
+      msg.edit({
+        components: [
+          new ActionRowBuilder<ButtonBuilder>().addComponents(
+            this.#previousButton.setDisabled(true),
+            this.#nextButton.setDisabled(true),
+          ),
+        ],
+      });
     });
   }
 

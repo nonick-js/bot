@@ -17,7 +17,7 @@ export async function changeChannelSetting(interaction: ModalSubmitInteraction, 
   if (!interaction.isFromMessage() || !interaction.inCachedGuild()) return;
 
   const nameOrId = interaction.fields.getTextInputValue('nameOrId');
-  const channel = interaction.guild.channels.cache.find(v => v.name == nameOrId || v.id == nameOrId);
+  const channel = interaction.guild.channels.cache.find(v => v.name === nameOrId || v.id === nameOrId);
 
   if (!channel)
     return interaction.reply({ content: '`❌` 条件に一致するチャンネルが見つかりませんでした。', ephemeral: true });
@@ -37,7 +37,7 @@ export async function changeMentionRoleSetting(interaction: ModalSubmitInteracti
   if (!interaction.isFromMessage() || !interaction.inCachedGuild()) return;
 
   const nameOrId = interaction.fields.getTextInputValue('nameOrId');
-  const role = interaction.guild.roles.cache.find(v => v.name == nameOrId || v.id == nameOrId);
+  const role = interaction.guild.roles.cache.find(v => v.name === nameOrId || v.id === nameOrId);
 
   if (!role) return interaction.reply({ content: '`❌` 条件に一致するロールが見つかりませんでした。', ephemeral: true });
 

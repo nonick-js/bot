@@ -11,9 +11,9 @@ export function urlExpansion(message: Message, guildId?: string) {
 
 			const guild = await message.client.guilds.fetch(result.groups.guildId!);
 			if (!guild) throw new URIError(`サーバーID:\`${result.groups.guildId}\`に入っていません`);
-			const channel = await guild.channels.fetch(result.groups.channelId).catch(() => {});
+			const channel = await guild.channels.fetch(result.groups.channelId).catch(() => { });
 			if (!(channel && channel.isTextBased())) throw new URIError(`チャンネルID:\`${result.groups.guildId}\`が存在しないもしくはアクセスできません`);
-			const msg = await channel.messages.fetch(result.groups.messageId).catch(() => {});
+			const msg = await channel.messages.fetch(result.groups.messageId).catch(() => { });
 			if (!msg) throw new URIError(`メッセージID:\`${result.groups.messageId}\`が存在しないもしくはアクセスできません`);
 
 			const pagination = new EmbedPagination();
@@ -27,16 +27,12 @@ export function urlExpansion(message: Message, guildId?: string) {
 					iconURL: msg.member?.displayAvatarURL() ?? msg.author.displayAvatarURL(),
 				})
 				.addFields(
-					{ name: '送信時刻', value: time(msg.createdAt), inline:true },
+					{ name: '送信時刻', value: time(msg.createdAt), inline: true },
 				);
-			const contentEmbeds = (msg.content.match(/.{1,1024}/gs) ?? []).map(content => {
-				return new EmbedBuilder(infoEmbed.toJSON())
-					.setDescription(content);
-			});
-			const attachmentEmbeds = msg.attachments.map(attachment => {
-				return new EmbedBuilder(infoEmbed.toJSON())
-					.setImage(attachment.url);
-			});
+			const contentEmbeds = (msg.content.match(/.{1,1024}/gs) ?? []).map(content => new EmbedBuilder(infoEmbed.toJSON())
+				.setDescription(content));
+			const attachmentEmbeds = msg.attachments.map(attachment => new EmbedBuilder(infoEmbed.toJSON())
+				.setImage(attachment.url));
 			if (!contentEmbeds.concat(attachmentEmbeds).length) pagination.addPage(infoEmbed);
 			pagination.addPages(...contentEmbeds, ...attachmentEmbeds, ...msg.embeds.map(v => EmbedBuilder.from(v)))
 				.replyMessage(message, { allowedMentions: { parse: [] } });

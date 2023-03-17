@@ -23,9 +23,11 @@ const client = new Client({
     Partials.Channel, Partials.GuildMember,
     Partials.Message, Partials.User,
   ],
-  allowedMentions: { parse: [
+  allowedMentions: {
+ parse: [
     AllowedMentionsTypes.Role, AllowedMentionsTypes.User,
-  ] },
+  ],
+},
 });
 
 const events = new DiscordEvents(client);
@@ -61,16 +63,16 @@ client.on(Events.GuildDelete, async (guild) => {
 client.on(Events.InteractionCreate, interaction => {
   if (!interaction.isRepliable()) return;
 
-  if (isBlocked(interaction.guild)) {
+  if (isBlocked(interaction.guild))
     interaction.reply({
       content: `\`🚫\` このサーバーでの${interaction.client.user.username}の使用は禁止されています。異議申し立ては[こちら](https://discord.gg/fVcjCNn733)`,
       ephemeral: true,
     });
-  }
+
 
   interactions.run(interaction)
     .catch((err) => {
-      if (err instanceof InteractionsError && err.code == DiscordInteractionsErrorCodes.CommandHasCoolTime)
+      if (err instanceof InteractionsError && err.code === DiscordInteractionsErrorCodes.CommandHasCoolTime)
         return interaction.reply({ content: '`⌛` コマンドはクールダウン中です', ephemeral: true });
       console.log(err);
     });
@@ -81,13 +83,15 @@ process.on('uncaughtException', (err) => {
 
   client.channels.fetch(admin.error).then(channel => {
     if (!channel?.isTextBased()) return;
-    channel.send({ embeds: [
+    channel.send({
+ embeds: [
       new EmbedBuilder()
         .setTitle('`❌` 例外が発生しました')
         .setDescription(codeBlock(`${err.stack}`))
         .setColor(Colors.Red)
         .setTimestamp(),
-    ] });
+    ],
+});
   });
 });
 

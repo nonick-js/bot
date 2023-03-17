@@ -21,10 +21,13 @@ const generalSetting = [
       const values = interaction.values;
       const res = await ServerSettings.findOneAndUpdate(
         { serverId: interaction.guildId },
-        { $set: {
-          'autoMod.filter.inviteUrl': values.includes('inviteUrl'),
-          'autoMod.filter.token': values.includes('token'),
-        } },
+        {
+          $set: {
+            'autoMod.filter.inviteUrl': values.includes('inviteUrl'),
+            'autoMod.filter.token': values.includes('token'),
+            'autoMod.filter.shortUrl': values.includes('shortUrl'),
+          },
+        },
         { upsert: true, new: true },
       );
 
@@ -89,10 +92,12 @@ const ignoreSetting = [
     async (interaction) => {
       const res = await ServerSettings.findOneAndUpdate(
         { serverId: interaction.guildId },
-        { $set: {
-          'autoMod.ignore.channels': [],
-          'autoMod.ignore.roles': [],
-        } },
+        {
+          $set: {
+            'autoMod.ignore.channels': [],
+            'autoMod.ignore.roles': [],
+          },
+        },
         { upsert: true, new: true },
       );
 

@@ -17,9 +17,9 @@ export const roleModal = new ModalBuilder()
   .setComponents(
     new ActionRowBuilder<TextInputBuilder>().setComponents(
       new TextInputBuilder()
-      .setCustomId('nameOrId')
-      .setLabel('チャンネル名 またはID')
-      .setMaxLength(100)
-      .setStyle(TextInputStyle.Short),
+        .setCustomId('nameOrId')
+        .setLabel('ロール名 またはID')
+        .setMaxLength(100)
+        .setStyle(TextInputStyle.Short),
     ),
   );

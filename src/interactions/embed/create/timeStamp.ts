@@ -32,7 +32,7 @@ const setTimeStampModal = new Modal(
     if (!interaction.isFromMessage()) return;
 
     let timeStamp = interaction.fields.getTextInputValue('timeStamp');
-    if (timeStamp.toLowerCase() == 'now') timeStamp = new Date().toISOString();
+    if (timeStamp.toLowerCase() === 'now') timeStamp = new Date().toISOString();
 
     if (timeStamp !== '' && !/^\d{4}-?\d\d-?\d\d(?:T\d\d(?::?\d\d(?::?\d\d(?:\.\d+)?)?)?(?:Z|[+-]\d\d:?\d\d)?)?$/.test(timeStamp))
       return interaction.reply({ content: '`❌` 有効なタイムスタンプではありません！[ISO8601](https://ja.wikipedia.org/wiki/ISO_8601)に準拠した値を入力してください。', ephemeral: true });
