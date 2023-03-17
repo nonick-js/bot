@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentEmojiResolvable, ComponentType, DMChannel, EmbedBuilder, Interaction, InteractionReplyOptions, Message, MessageCreateOptions, NewsChannel, PartialDMChannel, TextChannel, ThreadChannel, VoiceChannel } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentEmojiResolvable, ComponentType, EmbedBuilder, Interaction, InteractionReplyOptions, Message, MessageCreateOptions, TextBasedChannel } from 'discord.js';
 
 export class EmbedPagination {
   #pages: EmbedBuilder[];
@@ -88,7 +88,7 @@ export class EmbedPagination {
   }
 
   /** 送信する */
-  async sendMessage(channel: DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel, options: MessageCreateOptions = {}, message?: Message) {
+  async sendMessage(channel: TextBasedChannel, options: MessageCreateOptions = {}, message?: Message) {
     if (!this.#pages.length) throw new Error('pages length 0');
 
     const currentEmbed = this.#pages[this.#current];

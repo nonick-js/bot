@@ -49,20 +49,20 @@ const baseButton2 = new ActionRowBuilder<ButtonBuilder>()
 
 export const embedCreateButtons: ActionRowBuilder<ButtonBuilder>[] = [
   baseButton1,
-  ActionRowBuilder.from(baseButton2).addComponents(
+  ActionRowBuilder.from<ButtonBuilder>(baseButton2).addComponents(
     new ButtonBuilder()
       .setCustomId('nonick-js:embedMaker-send')
       .setLabel('送信')
       .setStyle(ButtonStyle.Primary),
-  ) as ActionRowBuilder<ButtonBuilder>,
+  ),
 ];
 
 export const embedEditButtons: ActionRowBuilder<ButtonBuilder>[] = [
   baseButton1,
-  ActionRowBuilder.from(baseButton2).addComponents(
+  ActionRowBuilder.from<ButtonBuilder>(baseButton2).addComponents(
     new ButtonBuilder()
       .setCustomId('nonick-js:embedMaker-edit')
       .setLabel('編集')
       .setStyle(ButtonStyle.Primary),
-  ) as ActionRowBuilder<ButtonBuilder>,
+  ),
 ];

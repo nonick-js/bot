@@ -1,5 +1,5 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import { ActionRowBuilder, ButtonBuilder, ComponentType, ModalBuilder, PermissionFlagsBits, Role, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonComponent, ComponentType, ModalBuilder, PermissionFlagsBits, Role, TextInputBuilder, TextInputStyle } from 'discord.js';
 
 const sendRoleButton = new Button(
   { customId: 'nonick-js:embedMaker-roleButton-send' },
@@ -86,13 +86,15 @@ const sendRoleButtonModal = new Modal(
     if (targetMessage.components.some(v => v.components.map(i => i.customId).includes(`nonick-js:roleButton-${role.id}`)))
       return interaction.reply({ content: '`❌` そのロールのボタンは既に追加されています。', ephemeral: true });
 
-    const updatedComponents = targetMessage.components.map(v => ActionRowBuilder.from(v) as ActionRowBuilder<ButtonBuilder>);
+    // APIActionRowComponent<APIButtonComponent> | JSONEncodable<APIActionRowComponent<APIButtonComponent>>
+
+    const updatedComponents = targetMessage.components.map(v => ActionRowBuilder.from<ButtonBuilder>(v as ActionRow<ButtonComponent>));
     const lastActionRow = updatedComponents.slice(-1)[0];
 
     if (!lastActionRow || lastActionRow.components.length === 5)
       updatedComponents.push(new ActionRowBuilder<ButtonBuilder>().setComponents(button));
     else
-      updatedComponents.splice(updatedComponents.length - 1, 1, ActionRowBuilder.from(lastActionRow).addComponents(button) as ActionRowBuilder<ButtonBuilder>);
+      updatedComponents.splice(updatedComponents.length - 1, 1, ActionRowBuilder.from<ButtonBuilder>(lastActionRow).addComponents(button));
 
     const embeds = interaction.message.embeds;
     const components = interaction.message.components;

@@ -1,5 +1,5 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, ModalBuilder, PermissionFlagsBits, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonStyle, ComponentType, ModalBuilder, PermissionFlagsBits, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { isURL } from '../../../../module/functions';
 
 const sendLinkButton = new Button(
@@ -82,13 +82,13 @@ const sendLinkButtonModal = new Modal(
     if (targetMessage.components[0]?.components[0]?.type === ComponentType.StringSelect)
       return interaction.reply({ content: '`❌` セレクトメニューとボタンは同じメッセージに追加できません。', ephemeral: true });
 
-    const updatedComponents = targetMessage.components.map(v => ActionRowBuilder.from(v) as ActionRowBuilder<ButtonBuilder>);
+    const updatedComponents = targetMessage.components.map(v => ActionRowBuilder.from<ButtonBuilder>(v as ActionRow<ButtonComponent>));
     const lastActionRow = updatedComponents.slice(-1)[0];
 
     if (!lastActionRow || lastActionRow.components.length === 5)
       updatedComponents.push(new ActionRowBuilder<ButtonBuilder>().setComponents(button));
     else
-      updatedComponents.splice(updatedComponents.length - 1, 1, ActionRowBuilder.from(lastActionRow).addComponents(button) as ActionRowBuilder<ButtonBuilder>);
+      updatedComponents.splice(updatedComponents.length - 1, 1, ActionRowBuilder.from<ButtonBuilder>(lastActionRow).addComponents(button));
 
     const embeds = interaction.message.embeds;
     const components = interaction.message.components;
