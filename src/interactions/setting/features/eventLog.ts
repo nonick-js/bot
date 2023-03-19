@@ -88,4 +88,25 @@ const voiceLogSetting = [
   ),
 ];
 
-module.exports = [...timeoutLogSetting, ...kickLogSetting, ...banLogSetting, ...voiceLogSetting];
+const deleteLogSetting = [
+  // 有効・無効化
+  new Button(
+    { customId: 'nonick-js:setting-log-delete-enable' },
+    async (interaction) => {
+      const Setting = await ServerSettings.findOne({ serverId: interaction.guildId });
+      changeToggleSetting(interaction, { $set: { 'log.delete.enable': !Setting?.log.delete.enable } }, FeatureType.EventLog);
+    },
+  ),
+
+  // 送信先
+  new Button(
+    { customId: 'nonick-js:setting-log-delete-channel' },
+    (interaction) => interaction.showModal(channelModal.setCustomId('nonick-js:setting-log-delete-channel-modal')),
+  ),
+  new Modal(
+    { customId: 'nonick-js:setting-log-delete-channel-modal' },
+    (interaction) => changeChannelSetting(interaction, 'log.delete.channel', FeatureType.EventLog),
+  ),
+];
+
+module.exports = [...timeoutLogSetting, ...kickLogSetting, ...banLogSetting, ...voiceLogSetting, ...deleteLogSetting];

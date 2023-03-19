@@ -265,6 +265,11 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
             value: `${booleanStatus(setting?.log.voice.enable)}\n${channelStatus(setting?.log.voice.channel)}`,
             inline: true,
           },
+          {
+            name: '削除',
+            value: `${booleanStatus(setting?.log.delete.enable)}\n${channelStatus(setting?.log.delete.channel)}`,
+            inline: true,
+          },
         ),
     ],
   }))
@@ -323,7 +328,21 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
         .setEmoji(WhiteEmojies.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: 'VCログ', emoji: WhiteEmojies.setting }),
+  ], { name: 'VCログ', emoji: WhiteEmojies.setting })
+  .addActionRows((setting) => [
+    new ActionRowBuilder<ButtonBuilder>().setComponents(
+      new ButtonBuilder()
+        .setCustomId('nonick-js:setting-log-delete-enable')
+        .setLabel(buttonLabelStatus(setting?.log.delete.enable))
+        .setStyle(buttonStyleStatus(setting?.log.delete.enable))
+        .setDisabled(!setting?.log.delete.channel),
+      new ButtonBuilder()
+        .setCustomId('nonick-js:setting-log-delete-channel')
+        .setLabel('送信先')
+        .setEmoji(WhiteEmojies.channel)
+        .setStyle(ButtonStyle.Secondary),
+    ),
+  ], { name: '削除ログ', emoji: WhiteEmojies.setting }),
 );
 
 // 自動認証レベル変更

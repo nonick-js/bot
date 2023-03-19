@@ -26,6 +26,7 @@ export interface IServerSettings {
     kick: LogCategoryOptions;
     ban: LogCategoryOptions;
     voice: LogCategoryOptions;
+    delete: LogCategoryOptions;
   },
   changeVerificationLevel: {
     enable: boolean,
@@ -103,6 +104,10 @@ const ServerSettings = new Schema<IServerSettings>({
       channel: { type: String, default: null },
     },
     voice: {
+      enable: { type: Boolean, default: false },
+      channel: { type: String, default: null },
+    },
+    delete: {
       enable: { type: Boolean, default: false },
       channel: { type: String, default: null },
     },
