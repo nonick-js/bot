@@ -1,49 +1,156 @@
-import { ChatInput } from '@akki256/discord-interaction';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, inlineCode } from 'discord.js';
+import { ApplicationCommandOptionType, bold, Colors, EmbedBuilder, formatEmoji, GuildFeature, GuildMember, inlineCode, Interaction, PermissionFlagsBits, time, User } from 'discord.js';
+import { ChatInput, UserContext } from '@akki256/discord-interaction';
+import { WhiteEmojies } from '../module/emojies';
 
-const feature = [
-  '入退室メッセージ', 'サーバー内通報',
-  'モデレートログ', '認証レベル自動変更',
-  'ロールパネル作成コマンド', '埋め込み作成コマンド',
-];
+const flagEmojies = new Map([
+  ['Staff', '966753508739121222'],
+  ['Partner', '966753508860768357'],
+  ['CertifiedModerator', '959536411894243378'],
+  ['Hypesquad', '966753508961439745'],
+  ['HypeSquadOnlineHouse1', '966753508843978872'],
+  ['HypeSquadOnlineHouse2', '966753508927889479'],
+  ['HypeSquadOnlineHouse3', '966753508776890459'],
+  ['BugHunterLevel1', '966753508848205925'],
+  ['BugHunterLevel2', '966753508755898410'],
+  ['ActiveDeveloper', '1040345950318768218'],
+  ['VerifiedDeveloper', '966753508705583174'],
+  ['PremiumEarlySupporter', '966753508751736892'],
+]);
 
-const infoCommand = new ChatInput(
+const featureTexts = new Map<string, string>([
+  [GuildFeature.Partnered, `${formatEmoji('982512900432351262')}Discordパートナー`],
+  [GuildFeature.Verified, `${formatEmoji('982512902042955806')}認証済み`],
+  [GuildFeature.Discoverable, `${formatEmoji('1087358252691496960')}公開サーバー`],
+]);
+
+const Command = new ChatInput(
   {
     name: 'info',
-    description: 'このBOTについて',
-    dmPermission: true,
+    description: 'ユーザー/サーバー の情報を表示',
+    options: [
+      {
+        name: 'user',
+        description: 'ユーザーの情報を表示',
+        options: [
+          {
+            name: 'user',
+            description: 'ユーザー',
+            type: ApplicationCommandOptionType.User,
+            required: true,
+          },
+        ],
+        type: ApplicationCommandOptionType.Subcommand,
+      },
+      {
+        name: 'server',
+        description: 'サーバーの情報を表示',
+        type: ApplicationCommandOptionType.Subcommand,
+      },
+    ],
+    dmPermission: false,
   },
-  (interaction) => {
+  async (interaction) => {
+    if (!interaction.inCachedGuild()) return;
+    const subCommand = interaction.options.getSubcommand();
 
-    interaction.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setTitle(interaction.client.user.username)
-          .setDescription([
-            'サーバーの運営・成長に役立つ機能を搭載！',
-            '「完全無料で使いやすい多機能BOT」を目指して日々開発しています',
-          ].join('\n'))
-          .setColor(Colors.Blurple)
-          .setImage('https://media.discordapp.net/attachments/958791423161954445/989779285852168242/3e9aba98d28eaa52.png?width=1178&height=662')
-          .setFooter({ text: '開発者・nonick-mc#1017', iconURL: 'https://media.discordapp.net/attachments/958791423161954445/975266759529623652/-3.png?width=663&height=663' })
-          .setFields({ name: '搭載している機能の一部', value: feature.map(v => inlineCode(v)).join(' ') }),
-      ],
-      components: [
-        new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setLabel('サポートサーバー')
-            .setStyle(ButtonStyle.Link)
-            .setURL('https://discord.gg/fVcjCNn733'),
-          new ButtonBuilder()
-            .setLabel('使い方ガイド')
-            .setStyle(ButtonStyle.Link)
-            .setURL('https://docs.nonick-js.com'),
-        ),
-      ],
-      ephemeral: true,
-    });
+    if (subCommand === 'user')
+      return interaction.reply({ embeds: [await createUserInfoEmbed(interaction, interaction.options.getUser('user', true))], ephemeral: true });
 
+    if (subCommand === 'server')
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(interaction.guild.name)
+            .setDescription([
+              `${formatEmoji(WhiteEmojies.id)} サーバーID: \`${interaction.guildId}\``,
+              `${formatEmoji(WhiteEmojies.nickName)} オーナー: ${await interaction.guild.fetchOwner()}`,
+              `${formatEmoji(WhiteEmojies.nickName)} メンバー数: \`${interaction.guild.memberCount}\`人`,
+              `${formatEmoji(WhiteEmojies.channel)} チャンネル数: \`${interaction.guild.channels.channelCountWithoutThreads}\``,
+              `${formatEmoji(WhiteEmojies.schedule)} 作成日: ${time(interaction.guild.createdAt, 'D')}`,
+              `${formatEmoji(WhiteEmojies.boost)} ブースト数: \`${interaction.guild.premiumSubscriptionCount}\``,
+            ].join('\n'))
+            .setColor(Colors.White)
+            .setThumbnail(interaction.guild.iconURL())
+            .setFields(
+              { name: 'ステータス', value: interaction.guild.features.map(v => featureTexts.get(v)).filter(Boolean).join('\n') || 'なし' },
+              { name: `ロール (${interaction.guild.roles.cache.size})`, value: interaction.member.permissions.has(PermissionFlagsBits.ManageRoles) ? interaction.guild.roles.cache.map(v => v.toString()).join(' ') : '🔒`ロールを管理`権限を持っている必要があります' },
+            ),
+        ],
+        ephemeral: true,
+      });
   },
 );
 
-module.exports = [infoCommand];
+const Context = new UserContext(
+  {
+    name: 'ユーザーの情報',
+    dmPermission: false,
+  },
+  async (interaction) => {
+    if (!interaction.inCachedGuild()) return;
+
+    return interaction.reply({ embeds: [await createUserInfoEmbed(interaction, interaction.targetUser)], ephemeral: true });
+  },
+);
+
+async function createUserInfoEmbed(interaction: Interaction, user: User) {
+  const member = await interaction.guild?.members.fetch(user.id).catch(() => undefined);
+
+  const userFlags = user.flags?.toArray();
+  const userFlagsEmojies = userFlags?.map(v => flagEmojies.get(v)).filter(Boolean);
+
+  if (!(member instanceof GuildMember))
+    return new EmbedBuilder()
+      .setAuthor({ name: user.tag })
+      .setTitle('このユーザーはこのサーバーにいません')
+      .setDescription(`${formatEmoji(WhiteEmojies.id)} ユーザーID: ${inlineCode(user.id)}`)
+      .setColor(Colors.DarkerGrey)
+      .setThumbnail(user.displayAvatarURL())
+      .setFields(
+        { name: 'アカウント作成日', value: time(user.createdAt, 'D'), inline: true },
+        { name: 'バッジ', value: userFlagsEmojies ? userFlagsEmojies.map(v => formatEmoji(v || '0')).join('') : 'なし', inline: true },
+      );
+
+  const nickName = member.nickname ?? 'なし';
+  const joinTime = member.joinedAt ? time(member.joinedAt, 'D') : 'エラー';
+  const roles = member.roles.cache
+    .filter(role => role.name !== '@everyone')
+    .sort((before, after) => before.position > after.position ? -1 : 1)
+    ?.map(role => role?.toString())?.join(' ') || 'なし';
+
+  const embed = new EmbedBuilder()
+    .setAuthor({ name: user.tag })
+    .setDescription([
+      `${formatEmoji(WhiteEmojies.nickName)} ニックネーム ${bold(nickName)}`,
+      `${formatEmoji(WhiteEmojies.id)} ユーザーID ${inlineCode(user.id)}`,
+    ].join('\n'))
+    .setColor(member.roles.highest.color || Colors.White)
+    .setThumbnail(user.displayAvatarURL())
+    .setFields(
+      { name: 'アカウント作成日', value: time(user.createdAt, 'D'), inline: true },
+      { name: 'サーバー参加日', value: joinTime, inline: true },
+      { name: 'バッジ', value: userFlagsEmojies?.length ? userFlagsEmojies.map(v => formatEmoji(v || '0')).join('') : 'なし', inline: true },
+      { name: 'ロール', value: roles },
+    );
+
+  if (member.premiumSince)
+    embed.addFields({
+      name: `${formatEmoji(WhiteEmojies.boost)} SERVER BOOST`,
+      value: `ブーストを開始した日: ${time(member.premiumSince, 'D')} (${time(member.premiumSince, 'R')})`,
+    });
+
+  if (member.isCommunicationDisabled() && interaction.inCachedGuild() && interaction.member.permissions.has(PermissionFlagsBits.ModerateMembers))
+    embed.addFields({
+      name: `${formatEmoji(WhiteEmojies.timeOut)} タイムアウトが解除される時間`,
+      value: `${time(member.communicationDisabledUntil, 'D')} (${time(member.communicationDisabledUntil, 'R')})`,
+    });
+
+  if (user.displayAvatarURL() !== user.displayAvatarURL()) {
+    embed.setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() });
+    embed.setThumbnail(member.displayAvatarURL());
+  }
+
+  return embed;
+}
+
+module.exports = [Command, Context];
