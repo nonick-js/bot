@@ -26,7 +26,7 @@ const bulkDeleteMessagesCommand = new ChatInput(
     if (!interaction.appPermissions?.has(PermissionFlagsBits.ManageMessages))
       return interaction.reply({ content: '`❌` BOTの権限が不足しているため、メッセージを削除できませんでした。', ephemeral: true });
 
-    const bulkCount = interaction.options.getNumber('messages', true);
+    const bulkCount = interaction.options.getInteger('messages', true);
 
     interaction.channel.bulkDelete(bulkCount, true)
       .then((msgs) => interaction.reply({
