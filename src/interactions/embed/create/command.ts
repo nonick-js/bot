@@ -94,9 +94,9 @@ const embedCommand = new ChatInput(
       const attachment = interaction.options.getAttachment('json', true);
 
       if (!attachment.contentType?.includes('application/json'))
-        return interaction.reply({ content: '`❌` 添付されたファイルはjsonファイルではありません。', ephemeral: true });
+        return interaction.followUp({ content: '`❌` 添付されたファイルはjsonファイルではありません。', ephemeral: true });
       if (attachment.size > 3000000)
-        return interaction.reply({ content: '`❌` 3MB以上のjsonファイルはインポートできません。', ephemeral: true });
+        return interaction.followUp({ content: '`❌` 3MB以上のjsonファイルはインポートできません。', ephemeral: true });
 
       let json: Array<object> = (await axios.get(attachment.url)).data;
       if (!Array.isArray(json)) json = [json];
