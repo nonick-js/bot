@@ -1,5 +1,5 @@
 import { Button, SelectMenu, SelectMenuType } from '@akki256/discord-interaction';
-import { PermissionFlagsBits } from 'discord.js';
+import { PermissionFlagsBits, User } from 'discord.js';
 
 const deleteComponents = new SelectMenu(
   { customId: 'nonick-js:manageComponents-delete', type: SelectMenuType.String },
@@ -10,13 +10,14 @@ const deleteComponents = new SelectMenu(
     if (!interaction.guild.members.me?.permissions.has(PermissionFlagsBits.ManageWebhooks))
       return interaction.reply({ content: '`❌` この機能を使用するにはBOTに`ウェブフックの管理`権限を付与する必要があります。', ephemeral: true });
 
-    const webhook = (await interaction.guild.fetchWebhooks()).find(v => v.owner?.id === interaction.client.user.id);
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId!).catch(() => undefined);
 
     if (!targetMessage)
       return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
-    if (!webhook || webhook?.id !== targetMessage?.webhookId)
+
+    const webhook = await targetMessage.fetchWebhook().catch(() => null);
+    if (!webhook || interaction.client.user.equals(webhook.owner as User))
       return interaction.reply({ content: '`❌` このメッセージは更新できません。', ephemeral: true });
 
     await interaction.update({ content: '`⌛` コンポーネントを削除中...', embeds: [], components: [] });
@@ -41,13 +42,14 @@ const deleteAllComponents = new Button(
     if (!interaction.guild.members.me?.permissions.has(PermissionFlagsBits.ManageWebhooks))
       return interaction.reply({ content: '`❌` この機能を使用するにはBOTに`ウェブフックの管理`権限を付与する必要があります。', ephemeral: true });
 
-    const webhook = (await interaction.guild.fetchWebhooks()).find(v => v.owner?.id === interaction.client.user.id);
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId!).catch(() => undefined);
 
     if (!targetMessage)
       return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
-    if (!webhook || webhook?.id !== targetMessage?.webhookId)
+
+    const webhook = await targetMessage.fetchWebhook().catch(() => null);
+    if (!webhook || interaction.client.user.equals(webhook.owner as User))
       return interaction.reply({ content: '`❌` このメッセージは更新できません。', ephemeral: true });
 
     await interaction.update({ content: '`⌛` コンポーネントを削除中...', embeds: [], components: [] });

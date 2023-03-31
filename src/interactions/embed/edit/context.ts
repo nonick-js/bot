@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, formatEmoji, PermissionFlagsBits, StringSelectMenuBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, formatEmoji, PermissionFlagsBits, StringSelectMenuBuilder, User } from 'discord.js';
 import { MessageContext, Button } from '@akki256/discord-interaction';
 import { embedEditButtons } from '../../embed/create/_components';
 import { WhiteEmojies } from '../../../module/emojies';
@@ -15,8 +15,8 @@ const context = new MessageContext(
     if (!interaction.appPermissions?.has(PermissionFlagsBits.ManageWebhooks))
       return interaction.reply({ content: '`❌` この機能を使用するにはBOTに`ウェブフックの管理`権限を付与する必要があります。', ephemeral: true });
 
-    const myWebhookId = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id === interaction.client.user.id)?.id;
-    if (!myWebhookId || !interaction.targetMessage.webhookId || myWebhookId !== interaction.targetMessage.webhookId)
+    const webhook = await interaction.targetMessage.fetchWebhook().catch(() => null);
+    if (!webhook || !interaction.client.user.equals(webhook.owner as User))
       return interaction.reply({ content: '`❌` NoNICK.jsを使用し、かつ現在も有効なWebhookで投稿した埋め込みのみ編集できます。', ephemeral: true });
 
     interaction.reply({

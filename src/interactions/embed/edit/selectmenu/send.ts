@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ComponentType, PermissionFlagsBits, StringSelectMenuBuilder } from 'discord.js';
+import { ActionRowBuilder, ComponentType, PermissionFlagsBits, StringSelectMenuBuilder, User } from 'discord.js';
 import { Button } from '@akki256/discord-interaction';
 
 const addRoleSelectButton = new Button(
@@ -14,13 +14,14 @@ const addRoleSelectButton = new Button(
 
     const roleSelect = interaction.message.components[0].components[0];
     const selectStatusButton = interaction.message.components[1].components[3];
-    const webhook = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id === interaction.client.user.id);
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId!).catch(() => undefined);
 
     if (!targetMessage)
       return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
-    if (!webhook || webhook?.id !== targetMessage.webhookId)
+
+    const webhook = await targetMessage.fetchWebhook().catch(() => null);
+    if (!webhook || interaction.client.user.equals(webhook.owner as User))
       return interaction.reply({ content: '`❌` このメッセージは更新できません。', ephemeral: true });
     if (targetMessage.components.length === 5)
       return interaction.reply({ content: '`❌` これ以上コンポーネントを追加できません！', ephemeral: true });
