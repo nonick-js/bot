@@ -25,7 +25,7 @@ const editEmbedButton = new Button(
     await webhook.edit({ channel: interaction.channelId });
 
     webhook
-      .editMessage(targetMessage, { embeds: interaction.message.embeds })
+      .editMessage(targetMessage, { embeds })
       .then(() => interaction.editReply('`✅` 埋め込みを編集しました！'))
       .catch(() => {
         interaction.editReply({ content: null, embeds, components });
