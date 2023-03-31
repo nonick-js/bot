@@ -35,7 +35,7 @@
     "mongoose": "^6.9.1",
     "node-cron": "^3.0.2"
   },
-  "override": {
+  "overrides": {
     "discord-api-types": "0.37.35"
   },
   "pnpm": {
