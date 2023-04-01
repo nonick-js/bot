@@ -32,7 +32,7 @@ const reportContext = new UserContext(
     interaction.showModal(
       new ModalBuilder()
         .setCustomId('nonick-js:userReportModal')
-        .setTitle('メッセージを報告')
+        .setTitle('ユーザーを報告')
         .setComponents(
           new ActionRowBuilder<TextInputBuilder>().setComponents(
             new TextInputBuilder()

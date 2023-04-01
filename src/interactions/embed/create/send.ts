@@ -1,4 +1,4 @@
-import { PermissionFlagsBits } from 'discord.js';
+import { PermissionFlagsBits, User } from 'discord.js';
 import { Button } from '@akki256/discord-interaction';
 
 const sendEmbedButton = new Button(
@@ -13,7 +13,7 @@ const sendEmbedButton = new Button(
     const components = interaction.message.components;
     await interaction.update({ content: '`⌛` 埋め込みを送信中...', embeds: [], components: [] });
 
-    const webhook = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id === interaction.client.user.id)
+    const webhook = (await interaction.guild.fetchWebhooks().catch(() => null))?.find(v => interaction.client.user.equals(v.owner as User))
       || await interaction.guild.channels.createWebhook({ name: 'NoNICK.js', channel: interaction.channelId });
 
     await webhook.edit({

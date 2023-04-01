@@ -1,5 +1,5 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonStyle, ComponentType, ModalBuilder, PermissionFlagsBits, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonStyle, ComponentType, ModalBuilder, PermissionFlagsBits, TextInputBuilder, TextInputStyle, User } from 'discord.js';
 import { isURL } from '../../../../module/functions';
 
 const sendLinkButton = new Button(
@@ -69,13 +69,14 @@ const sendLinkButtonModal = new Modal(
     if (!interaction.guild.members.me?.permissions.has(PermissionFlagsBits.ManageWebhooks))
       return interaction.reply({ content: '`❌` この機能を使用するにはBOTに`ウェブフックの管理`権限を付与する必要があります。', ephemeral: true });
 
-    const webhook = (await interaction.guild.fetchWebhooks().catch(() => undefined))?.find(v => v.owner?.id === interaction.client.user.id);
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId!).catch(() => undefined);
 
     if (!targetMessage)
       return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
-    if (!webhook || webhook?.id !== targetMessage.webhookId)
+
+    const webhook = await targetMessage.fetchWebhook().catch(() => null);
+    if (!webhook || interaction.client.user.equals(webhook.owner as User))
       return interaction.reply({ content: '`❌` このメッセージは更新できません。', ephemeral: true });
     if (targetMessage.components[4]?.components?.length === 5)
       return interaction.reply({ content: '`❌` これ以上コンポーネントを追加できません！', ephemeral: true });
