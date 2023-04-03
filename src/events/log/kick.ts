@@ -7,7 +7,7 @@ import { getServerSetting } from '../../module/mongo/middleware';
 const kickLog = new DiscordEventBuilder({
   type: Events.GuildAuditLogEntryCreate,
   execute: async (auditLog, guild) => {
-    if (isBlocked(guild)) return;
+    if (isBlocked(guild) || auditLog.targetId === guild.client.user.id) return;
     if (auditLog.action !== AuditLogEvent.MemberKick || !(auditLog.target instanceof User)) return;
 
     const setting = await getServerSetting(guild.id, 'log');

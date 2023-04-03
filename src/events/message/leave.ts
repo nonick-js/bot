@@ -7,7 +7,7 @@ import { getServerSetting } from '../../module/mongo/middleware';
 const leaveMessage = new DiscordEventBuilder({
   type: Events.GuildMemberRemove,
   execute: async (member) => {
-    if (isBlocked(member.guild)) return;
+    if (isBlocked(member.guild) || member.id === member.client.user.id) return;
 
     const setting = await getServerSetting(member.guild.id, 'message');
     if (!setting?.leave.enable || !setting.leave.channel) return;
