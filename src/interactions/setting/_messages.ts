@@ -13,6 +13,7 @@ export enum FeatureType {
   ChangeVerificationLevel = 'changeVerificationLevel',
   AutoPublic = 'autoPublic',
   AutoModPlus = 'autoModPlus',
+  AutoCreateThread = 'autoCreateThread',
 }
 
 const ChannelTypeMap = new Map([
@@ -548,4 +549,44 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
         .setDisabled(!(setting?.autoMod.ignore.channels.length || setting?.autoMod.ignore.roles.length)),
     ),
   ], { name: '例外設定', description: 'フィルタに影響しないチャンネル/ロールを設定', emoji: WhiteEmojies.setting }),
+);
+
+// 自動スレッド作成
+ControlPanelMessages.set(FeatureType.AutoCreateThread, new ControlPanelComponentPagination()
+  .setMessageOptions((setting) => ({
+    embeds: [
+      new EmbedBuilder()
+        .setTitle('`🔧` 設定: 自動スレッド作成')
+        .setDescription('```設定したチャンネルにメッセージが送信された際、スレッドを自動で作成します。(BOTが投稿したメッセージや返信時は作成されません)```')
+        .setColor(Colors.Blurple)
+        .setFields(
+          {
+            name: '一般設定',
+            value: booleanStatus(setting?.autoCreateThread.enable),
+            inline: true,
+          },
+          {
+            name: 'チャンネル',
+            value: setting?.autoCreateThread.channels.map(v => channelMention(v)).join(' ') || 'なし',
+            inline: true,
+          },
+        ),
+    ],
+  }))
+  .addActionRows((setting) => [
+    new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(
+      new ChannelSelectMenuBuilder()
+        .setCustomId('nonick-js:setting-autoCreateThread-channels')
+        .setPlaceholder('チャンネルを選択')
+        .setChannelTypes(ChannelType.GuildText)
+        .setMinValues(0)
+        .setMaxValues(5),
+    ),
+    new ActionRowBuilder<ButtonBuilder>().setComponents(
+      new ButtonBuilder()
+        .setCustomId('nonick-js:setting-autoCreateThread-enable')
+        .setLabel(buttonLabelStatus(setting?.autoCreateThread.enable))
+        .setStyle(buttonStyleStatus(setting?.autoCreateThread.enable)),
+    ),
+  ], { name: '一般設定', emoji: WhiteEmojies.setting }),
 );

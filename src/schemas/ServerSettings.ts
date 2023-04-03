@@ -48,6 +48,7 @@ export interface IServerSettings {
       roles: string[],
     },
   },
+  autoCreateThread: { enable: boolean, channels: string[] },
 }
 
 const ServerSettings = new Schema<IServerSettings>({
@@ -146,6 +147,10 @@ const ServerSettings = new Schema<IServerSettings>({
       channels: { type: [String], default: [] },
       roles: { type: [String], default: [] },
     },
+  },
+  autoCreateThread: {
+    enable: { type: Boolean, default: false },
+    channels: { type: [String], default: [] },
   },
 });
 
