@@ -58,6 +58,8 @@ const sendRoleButtonModal = new Modal(
       return interaction.reply({ content: '`❌` 入力された値に一致するロールが見つかりませんでした。', ephemeral: true });
     if (role?.managed)
       return interaction.reply({ content: '`❌` そのロールは外部サービスによって管理されているため、セレクトメニューに追加できません。', ephemeral: true });
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && interaction.member.roles.highest.position < role.position)
+      return interaction.reply({ content: '`❌` 自分の持つロールより上のロールを追加することはできません。' });
 
     const button = new ButtonBuilder()
       .setCustomId(`nonick-js:roleButton-${role.id}`)

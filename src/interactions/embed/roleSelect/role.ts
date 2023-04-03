@@ -1,5 +1,5 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import { ComponentType, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, Role, APISelectMenuOption, GuildEmoji, StringSelectMenuBuilder, EmbedBuilder, Colors, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ComponentType, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, Role, APISelectMenuOption, GuildEmoji, StringSelectMenuBuilder, EmbedBuilder, Colors, ButtonBuilder, ButtonStyle, PermissionFlagsBits } from 'discord.js';
 import { getRoleSelectMakerButtons } from './_function';
 import { checkAndFormatDangerPermission } from '../../../module/functions';
 import { WhiteEmojies } from '../../../module/emojies';
@@ -58,7 +58,7 @@ const addRole = [
   new Modal(
     { customId: 'nonick-js:embedMaker-selectRole-addRoleModal' },
     async (interaction) => {
-      if (!interaction.isFromMessage() || interaction.message.components[0].components[0].customId === 'nonick-js:embedMaker-selectRole-removeRoleSelect') return;
+      if (!interaction.inCachedGuild() || !interaction.isFromMessage() || interaction.message.components[0].components[0].customId === 'nonick-js:embedMaker-selectRole-removeRoleSelect') return;
 
       const emojiRegex = new RegExp(/\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu);
       const roleNameOrId = interaction.fields.getTextInputValue('roleNameOrId');
@@ -71,6 +71,8 @@ const addRole = [
         return interaction.reply({ content: '`❌` 入力された値に一致するロールが見つかりませんでした。', ephemeral: true });
       if (role?.managed)
         return interaction.reply({ content: '`❌` そのロールは外部サービスによって管理されているため、セレクトメニューに追加できません。', ephemeral: true });
+      if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && interaction.member.roles.highest.position < role.position)
+        return interaction.reply({ content: '`❌` 自分の持つロールより上のロールを追加することはできません。' });
 
       const newOption: APISelectMenuOption = {
         label: interaction.fields.getTextInputValue('displayName') || role.name,

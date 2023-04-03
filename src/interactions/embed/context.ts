@@ -47,6 +47,7 @@ const context = new MessageContext(
 const select = new SelectMenu(
   { customId: 'nonick-js:embedMaker-editEmbedPanel', type: SelectMenuType.String },
   async (interaction) => {
+    if (!interaction.inCachedGuild()) return;
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await interaction.channel?.messages.fetch(targetId || '')?.catch(() => undefined);
 
@@ -60,7 +61,10 @@ const select = new SelectMenu(
         components: getEmbedMakerButtons(targetMessage.embeds[0], embedMakerType.edit),
       });
 
-    else if (interaction.values[0] === 'addRoleSelect')
+    else if (interaction.values[0] === 'addRoleSelect') {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles))
+        return interaction.reply({ content: '`❌` あなたの権限ではこの機能は使用できません。', ephemeral: true });
+
       interaction.update({
         embeds: [
           EmbedBuilder
@@ -70,8 +74,12 @@ const select = new SelectMenu(
         ],
         components: [getRoleSelectMakerButtons()],
       });
+    }
 
-    else if (interaction.values[0] === 'addRoleButton')
+    else if (interaction.values[0] === 'addRoleButton') {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles))
+        return interaction.reply({ content: '`❌` あなたの権限ではこの機能は使用できません。', ephemeral: true });
+
       interaction.update({
         embeds: [
           EmbedBuilder
@@ -94,6 +102,7 @@ const select = new SelectMenu(
           ),
         ],
       });
+    }
 
     else if (interaction.values[0] === 'addUrlButton')
       interaction.update({
