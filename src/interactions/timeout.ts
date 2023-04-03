@@ -59,7 +59,7 @@ const timeoutCommand = new ChatInput(
       return interaction.reply({ content: '`❌` 自分自身にコマンドを使用しています', ephemeral: true });
     if (!member.moderatable)
       return interaction.reply({ content: '`❌` 権限不足によりタイムアウトに失敗しました', ephemeral: true });
-    if (interaction.user.id !== interaction.guild.ownerId && interaction.member.roles.highest.position < member.roles.highest.position)
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && interaction.member.roles.highest.position < member.roles.highest.position)
       return interaction.reply({ content: '`❌` あなたの権限ではこのユーザーをタイムアウトできません', ephemeral: true });
 
     member.timeout(duration, `${interaction.options.getString('reason') ?? '理由が入力されていません'} - ${interaction.user.tag}`)
