@@ -1,10 +1,11 @@
 import { ActionRowBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { Button, Modal } from '@akki256/discord-interaction';
 import { isURL } from '../../../module/functions';
+import { reloadEmbedMaker } from './_function';
 
-const setImageButton = new Button(
+const button = new Button(
   { customId: 'nonick-js:embedMaker-image' },
-  (interaction): void => {
+  (interaction) => {
     const embed = interaction.message.embeds[0];
 
     interaction.showModal(
@@ -37,7 +38,7 @@ const setImageButton = new Button(
   },
 );
 
-const setImageModal = new Modal(
+const modal = new Modal(
   { customId: 'nonick-js:embedMaker-imageModal' },
   (interaction) => {
     if (!interaction.isFromMessage()) return;
@@ -48,19 +49,13 @@ const setImageModal = new Modal(
     if ((thumbnailUrl && !isURL(thumbnailUrl)) || (imageUrl && !isURL(imageUrl)))
       return interaction.reply({ content: '`❌` `http://`または`https://`から始まるURLを入力してください。', ephemeral: true });
 
-    interaction
-      .update({
-        embeds: [
-          EmbedBuilder
-            .from(interaction.message.embeds[0])
-            .setThumbnail(thumbnailUrl || null)
-            .setImage(imageUrl || null),
-        ],
-      })
-      .catch(() => {
-        interaction.reply({ content: '`❌` 埋め込みの更新に失敗しました。埋め込みの制限を超えた可能性があります。', ephemeral: true });
-      });
+    const embed = EmbedBuilder
+      .from(interaction.message.embeds[0])
+      .setThumbnail(thumbnailUrl || null)
+      .setImage(imageUrl || null);
+
+    reloadEmbedMaker(interaction, embed.toJSON());
   },
 );
 
-module.exports = [setImageButton, setImageModal];
+module.exports = [button, modal];

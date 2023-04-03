@@ -69,7 +69,6 @@ client.on(Events.InteractionCreate, interaction => {
       ephemeral: true,
     });
 
-
   interactions.run(interaction)
     .catch((err) => {
       if (err instanceof InteractionsError && err.code === DiscordInteractionsErrorCodes.CommandHasCoolTime)
@@ -84,14 +83,14 @@ process.on('uncaughtException', (err) => {
   client.channels.fetch(admin.error).then(channel => {
     if (!channel?.isTextBased()) return;
     channel.send({
- embeds: [
-      new EmbedBuilder()
-        .setTitle('`❌` 例外が発生しました')
-        .setDescription(codeBlock(`${err.stack}`))
-        .setColor(Colors.Red)
-        .setTimestamp(),
-    ],
-});
+      embeds: [
+        new EmbedBuilder()
+          .setTitle('`❌` 例外が発生しました')
+          .setDescription(codeBlock(`${err.stack}`))
+          .setColor(Colors.Red)
+          .setTimestamp(),
+      ],
+    });
   });
 });
 

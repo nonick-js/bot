@@ -1,14 +1,12 @@
 import { Button, Modal } from '@akki256/discord-interaction';
 import { ActionRowBuilder, ComponentType, ModalBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { getRoleSelectMakerButtons } from './_function';
 
 const selectEditButton = new Button(
   { customId: 'nonick-js:emberMaker-selectRole-placeholder' },
   (interaction) => {
-
     const select = interaction.message.components[0].components[0];
-
-    if (select.type !== ComponentType.StringSelect)
-      return interaction.reply({ content: '`❌` セレクトメニューを編集するにはロールを追加する必要があります。', ephemeral: true });
+    if (select.type !== ComponentType.StringSelect) return;
 
     interaction.showModal(
       new ModalBuilder()
@@ -19,6 +17,7 @@ const selectEditButton = new Button(
             new TextInputBuilder()
               .setCustomId('placeholder')
               .setLabel('セレクトメニューのプレースホルダー')
+              .setPlaceholder('未選択時に表示される文字列')
               .setValue(select.placeholder ?? '')
               .setMaxLength(20)
               .setStyle(TextInputStyle.Short)
@@ -26,35 +25,29 @@ const selectEditButton = new Button(
           ),
         ),
     );
-
   },
 );
 
 const selectEditModal = new Modal(
   { customId: 'nonick-js:emberMaker-selectRole-placeholderModal' },
   (interaction) => {
+    if (
+      !interaction.isFromMessage() ||
+      interaction.message.components[0].components[0]?.type !== ComponentType.StringSelect ||
+      interaction.message.components[0].components[0].customId === 'nonick-js:embedMaker-selectRole-removeRoleSelect'
+    ) return;
 
-    if (!interaction.isFromMessage()) return;
-
-    const select = interaction.message?.components[0].components[0];
-    const buttons = interaction.message?.components[1];
-    const placeholder = interaction.fields.getTextInputValue('placeholder');
-
-    if (select?.type !== ComponentType.StringSelect)
-      return interaction.reply({ content: '`❌` セレクトメニューを編集するにはロールを追加する必要があります。', ephemeral: true });
+    const select = StringSelectMenuBuilder
+      .from(interaction.message.components[0].components[0])
+      .setPlaceholder(interaction.fields.getTextInputValue('placeholder'));
 
     interaction.update({
       content: null,
       components: [
-        new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
-          StringSelectMenuBuilder
-            .from(select)
-            .setPlaceholder(placeholder),
-        ),
-        buttons,
+        new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(select),
+        getRoleSelectMakerButtons(select.toJSON()),
       ],
     });
-
   },
 );
 

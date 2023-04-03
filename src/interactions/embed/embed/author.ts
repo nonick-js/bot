@@ -1,11 +1,11 @@
 import { ActionRowBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { Button, Modal } from '@akki256/discord-interaction';
 import { isURL } from '../../../module/functions';
+import { reloadEmbedMaker } from './_function';
 
-const setAuthorButton = new Button(
+const button = new Button(
   { customId: 'nonick-js:embedMaker-author' },
   (interaction) => {
-
     const embed = interaction.message.embeds[0];
 
     interaction.showModal(
@@ -42,30 +42,28 @@ const setAuthorButton = new Button(
           ),
         ),
     );
-
   },
 );
 
-const setAuthorModal = new Modal(
+const modal = new Modal(
   { customId: 'nonick-js:embedMaker-authorModal' },
   (interaction) => {
-
     if (!interaction.isFromMessage()) return;
 
     const name = interaction.fields.getTextInputValue('name');
-    const url = interaction.fields.getTextInputValue('url');
-    const iconURL = interaction.fields.getTextInputValue('iconURL');
+    const url = interaction.fields.getTextInputValue('url') || undefined;
+    const iconURL = interaction.fields.getTextInputValue('iconURL') || undefined;
+    const option = name ? { name, url, iconURL } : null;
 
     if (!name && (url || iconURL))
       return interaction.reply({ content: '`❌` アイコンURLや名前につけるURLを追加する場合は、「名前」オプションも入力する必要があります', ephemeral: true });
     if ((url && !isURL(url)) || (iconURL && !isURL(iconURL)))
       return interaction.reply({ content: '`❌` `http://`または`https://`から始まるURLを入力してください。', ephemeral: true });
 
-    interaction
-      .update({ embeds: [EmbedBuilder.from(interaction.message.embeds[0]).setAuthor({ name, url, iconURL })] })
-      .catch(() => interaction.reply({ content: '`❌` 埋め込みの更新に失敗しました。埋め込みの制限を超えた可能性があります。', ephemeral: true }));
+    const embed = EmbedBuilder.from(interaction.message.embeds[0]).setAuthor(option);
 
+    reloadEmbedMaker(interaction, embed.toJSON());
   },
 );
 
-module.exports = [setAuthorButton, setAuthorModal];
+module.exports = [button, modal];

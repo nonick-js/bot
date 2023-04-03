@@ -1,7 +1,7 @@
 import { ActionRowBuilder, AttachmentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { Button, Modal } from '@akki256/discord-interaction';
 
-const embedExportButton = new Button(
+const button = new Button(
   { customId: 'nonick-js:embedMaker-export' },
   (interaction) => {
     interaction.showModal(
@@ -22,7 +22,7 @@ const embedExportButton = new Button(
   },
 );
 
-const embedExportModal = new Modal(
+const modal = new Modal(
   { customId: 'nonick-js:embedMaker-exportModal' },
   async (interaction) => {
     if (!interaction.isFromMessage()) return;
@@ -33,7 +33,7 @@ const embedExportModal = new Modal(
     interaction
       .followUp({
         content: '`✅` 現在の埋め込みをエクスポートしました。`/embed import`を使用して読み込ませることが出来ます。',
-        files: [new AttachmentBuilder(Buffer.from(JSON.stringify([...interaction.message.embeds], null, 2)), { name: `${fileName}.json` })],
+        files: [new AttachmentBuilder(Buffer.from(JSON.stringify(interaction.message.embeds, null, 2)), { name: `${fileName}.json` })],
       })
       .catch(() => {
         interaction.followUp({ content: '`❌` エクスポート中に問題が発生しました。', ephemeral: true });
@@ -41,4 +41,4 @@ const embedExportModal = new Modal(
   },
 );
 
-module.exports = [embedExportButton, embedExportModal];
+module.exports = [button, modal];

@@ -1,10 +1,10 @@
-import { ActionRowBuilder, ComponentType, PermissionFlagsBits, StringSelectMenuBuilder, User } from 'discord.js';
+import { ActionRowBuilder, ComponentType, PermissionFlagsBits, StringSelectMenuBuilder } from 'discord.js';
 import { Button } from '@akki256/discord-interaction';
+import { getRoleSelectMakerButtons } from './_function';
 
 const addRoleSelectButton = new Button(
   { customId: 'nonick-js:embedMaker-selectRole-sendComponent' },
   async (interaction) => {
-
     if (!interaction.inCachedGuild() || !interaction.channel) return;
 
     if (interaction.message.components[0].components[0].type !== ComponentType.StringSelect)
@@ -15,13 +15,15 @@ const addRoleSelectButton = new Button(
     const roleSelect = interaction.message.components[0].components[0];
     const selectStatusButton = interaction.message.components[1].components[3];
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
-    const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId!).catch(() => undefined);
+    const targetMessage = await (await interaction.channel.fetch()).messages.fetch(targetId || '').catch(() => undefined);
 
     if (!targetMessage)
       return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
 
     const webhook = await targetMessage.fetchWebhook().catch(() => null);
-    if (!webhook || interaction.client.user.equals(webhook.owner as User))
+    console.log(webhook);
+
+    if (!webhook || interaction.client.user.id !== webhook.owner?.id)
       return interaction.reply({ content: '`❌` このメッセージは更新できません。', ephemeral: true });
     if (targetMessage.components.length === 5)
       return interaction.reply({ content: '`❌` これ以上コンポーネントを追加できません！', ephemeral: true });
@@ -44,9 +46,8 @@ const addRoleSelectButton = new Button(
           ),
         ],
       })
-      .then(() => interaction.editReply({ content: '`✅` コンポーネントを追加しました！', embeds, components: [components[1]] }))
+      .then(() => interaction.editReply({ content: '`✅` コンポーネントを追加しました！', embeds, components: [getRoleSelectMakerButtons()] }))
       .catch(() => interaction.editReply({ content: '`❌` コンポーネントの更新中に問題が発生しました。', embeds, components }));
-
   },
 );
 

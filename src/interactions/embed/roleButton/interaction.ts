@@ -1,7 +1,7 @@
 import { Button } from '@akki256/discord-interaction';
 import { codeBlock, Colors, EmbedBuilder, roleMention } from 'discord.js';
 
-const roleButton = new Button(
+const button = new Button(
   { customId: /^nonick-js:roleButton-[0-9]{18,19}/ },
   (interaction) => {
     if (!interaction.inCachedGuild()) return;
@@ -40,9 +40,7 @@ const roleButton = new Button(
             ephemeral: true,
           });
         });
-
-
   },
 );
 
-module.exports = [roleButton];
+module.exports = [button];

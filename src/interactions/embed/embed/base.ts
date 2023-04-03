@@ -1,16 +1,16 @@
 import { ActionRowBuilder, ColorResolvable, EmbedBuilder, ModalBuilder, resolveColor, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { Button, Modal } from '@akki256/discord-interaction';
 import { isURL } from '../../../module/functions';
+import { reloadEmbedMaker } from './_function';
 
-const setBasicTextsButton = new Button(
-  { customId: 'nonick-js:embedMaker-basic' },
+const button = new Button(
+  { customId: 'nonick-js:embedMaker-base' },
   (interaction) => {
-
     const embed = interaction.message.embeds[0];
 
     interaction.showModal(
       new ModalBuilder()
-        .setCustomId('nonick-js:embedMaker-basicModal')
+        .setCustomId('nonick-js:embedMaker-baseModal')
         .setTitle('タイトル・説明・色')
         .setComponents(
           new ActionRowBuilder<TextInputBuilder>().setComponents(
@@ -50,23 +50,19 @@ const setBasicTextsButton = new Button(
           ),
         ),
     );
-
   },
 );
 
-const setBasicTextsModal = new Modal(
-  { customId: 'nonick-js:embedMaker-basicModal' },
+const modal = new Modal(
+  { customId: 'nonick-js:embedMaker-baseModal' },
   (interaction) => {
-
     if (!interaction.isFromMessage()) return;
 
-    const title = interaction.fields.getTextInputValue('title');
-    const url = interaction.fields.getTextInputValue('url');
-    const description = interaction.fields.getTextInputValue('description');
+    const title = interaction.fields.getTextInputValue('title') || null;
+    const url = interaction.fields.getTextInputValue('url') || null;
+    const description = interaction.fields.getTextInputValue('description') || null;
     let color: (string | number) = interaction.fields.getTextInputValue('color');
 
-    if (!title && !description)
-      return interaction.reply({ content: '`❌` タイトルと説明はどちらかは必ず入力する必要があります。', ephemeral: true });
     if (url && !isURL(url))
       return interaction.reply({ content: '`❌` `http://`または`https://`から始まるURLを入力してください。', ephemeral: true });
 
@@ -76,22 +72,15 @@ const setBasicTextsModal = new Modal(
       return interaction.reply({ content: '`❌` 無効なカラーコード、または色の名前が入力されました。[このページ](https://docs.nonick-js.com/nonick.js/features/embed/)を参考に正しい値を入力してください。', ephemeral: true });
     }
 
-    interaction
-      .update({
-        embeds: [
-          EmbedBuilder
-            .from(interaction.message.embeds[0])
-            .setTitle(title || null)
-            .setURL(url || null)
-            .setDescription(description || null)
-            .setColor(color),
-        ],
-      })
-      .catch(() => {
-        interaction.reply({ content: '`❌` 埋め込みの更新に失敗しました。埋め込みの制限を超えた可能性があります。', ephemeral: true });
-      });
+    const embed = EmbedBuilder
+      .from(interaction.message.embeds[0])
+      .setTitle(title)
+      .setURL(url)
+      .setDescription(description)
+      .setColor(color);
 
+    reloadEmbedMaker(interaction, embed.toJSON());
   },
 );
 
-module.exports = [setBasicTextsButton, setBasicTextsModal];
+module.exports = [button, modal];

@@ -1,27 +1,25 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonComponent, ComponentType, ModalBuilder, PermissionFlagsBits, Role, TextInputBuilder, TextInputStyle, User } from 'discord.js';
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonStyle, ComponentType, ModalBuilder, PermissionFlagsBits, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { isURL } from '../../../module/functions';
 
-const sendRoleButton = new Button(
-  { customId: 'nonick-js:embedMaker-roleButton-send' },
+const sendLinkButton = new Button(
+  { customId: 'nonick-js:embedMaker-linkButton-send' },
   (interaction) => {
-
     interaction.showModal(
       new ModalBuilder()
-        .setCustomId('nonick-js:embedMaker-roleButton-sendModal')
+        .setCustomId('nonick-js:embedMaker-linkButton-sendModal')
         .setTitle('ボタンを作成')
         .setComponents(
           new ActionRowBuilder<TextInputBuilder>().setComponents(
             new TextInputBuilder()
-              .setCustomId('roleNameOrId')
-              .setLabel('ロールの名前またはID')
-              .setMaxLength(100)
+              .setCustomId('url')
+              .setLabel('URL')
               .setStyle(TextInputStyle.Short),
           ),
           new ActionRowBuilder<TextInputBuilder>().setComponents(
             new TextInputBuilder()
-              .setCustomId('displayName')
-              .setLabel('ボタン上での表示名')
-              .setPlaceholder('例: マイクラ勢')
+              .setCustomId('label')
+              .setLabel('ボタンのテキスト')
               .setMaxLength(80)
               .setStyle(TextInputStyle.Short)
               .setRequired(false),
@@ -37,35 +35,32 @@ const sendRoleButton = new Button(
           ),
         ),
     );
-
   },
 );
 
-const sendRoleButtonModal = new Modal(
-  { customId: 'nonick-js:embedMaker-roleButton-sendModal' },
+const sendLinkButtonModal = new Modal(
+  { customId: 'nonick-js:embedMaker-linkButton-sendModal' },
   async (interaction) => {
-
     // Create Button
     if (!interaction.isFromMessage() || !interaction.inCachedGuild() || interaction.message.components[0].components[0].type !== ComponentType.Button || !interaction.channel) return;
 
     const emojiRegex = new RegExp(/\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu);
-    const roleNameOrId = interaction.fields.getTextInputValue('roleNameOrId');
+    const label = interaction.fields.getTextInputValue('label');
+    const url = interaction.fields.getTextInputValue('url');
     const emojiNameOrId = interaction.fields.getTextInputValue('emojiNameOrId');
-
-    const role = interaction.guild?.roles.cache.find(v => v.name === roleNameOrId || v.id === roleNameOrId);
     const emoji = interaction.guild.emojis.cache.find(v => v.name === emojiNameOrId)?.id || emojiNameOrId.match(emojiRegex)?.[0];
 
-    if (!(role instanceof Role))
-      return interaction.reply({ content: '`❌` 入力された値に一致するロールが見つかりませんでした。', ephemeral: true });
-    if (role?.managed)
-      return interaction.reply({ content: '`❌` そのロールは外部サービスによって管理されているため、セレクトメニューに追加できません。', ephemeral: true });
+    if (!label && !emoji)
+      return interaction.reply({ content: '`❌` ボタンのテキストと絵文字はどちらは必ず入力する必要があります', ephemeral: true });
+    if (!isURL(url))
+      return interaction.reply({ content: '`❌` `http://`または`https://`から始まるURLを入力してください。', ephemeral: true });
 
     const button = new ButtonBuilder()
-      .setCustomId(`nonick-js:roleButton-${role.id}`)
-      .setLabel(interaction.fields.getTextInputValue('displayName') || (role.name.length > 80 ? `${role.name.substring(0, 77)}...` : role.name))
-      .setStyle(interaction.message.components[0].components[0].style);
+      .setStyle(ButtonStyle.Link)
+      .setURL(url);
 
     if (emoji) button.setEmoji(emoji);
+    if (label) button.setLabel(label);
 
     // Edit Message
     if (!interaction.guild.members.me?.permissions.has(PermissionFlagsBits.ManageWebhooks))
@@ -78,16 +73,12 @@ const sendRoleButtonModal = new Modal(
       return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
 
     const webhook = await targetMessage.fetchWebhook().catch(() => null);
-    if (!webhook || interaction.client.user.equals(webhook.owner as User))
+    if (!webhook || interaction.client.user.id !== webhook.owner?.id)
       return interaction.reply({ content: '`❌` このメッセージは更新できません。', ephemeral: true });
     if (targetMessage.components[4]?.components?.length === 5)
       return interaction.reply({ content: '`❌` これ以上コンポーネントを追加できません！', ephemeral: true });
     if (targetMessage.components[0]?.components[0]?.type === ComponentType.StringSelect)
       return interaction.reply({ content: '`❌` セレクトメニューとボタンは同じメッセージに追加できません。', ephemeral: true });
-    if (targetMessage.components.some(v => v.components.map(i => i.customId).includes(`nonick-js:roleButton-${role.id}`)))
-      return interaction.reply({ content: '`❌` そのロールのボタンは既に追加されています。', ephemeral: true });
-
-    // APIActionRowComponent<APIButtonComponent> | JSONEncodable<APIActionRowComponent<APIButtonComponent>>
 
     const updatedComponents = targetMessage.components.map(v => ActionRowBuilder.from<ButtonBuilder>(v as ActionRow<ButtonComponent>));
     const lastActionRow = updatedComponents.slice(-1)[0];
@@ -105,8 +96,7 @@ const sendRoleButtonModal = new Modal(
     webhook.editMessage(targetMessage, { components: updatedComponents })
       .then(() => interaction.editReply({ content: '`✅` コンポーネントを追加しました！', embeds, components }))
       .catch(() => interaction.editReply({ content: '`❌` コンポーネントの更新中に問題が発生しました。', embeds, components }));
-
   },
 );
 
-module.exports = [sendRoleButton, sendRoleButtonModal];
+module.exports = [sendLinkButton, sendLinkButtonModal];
