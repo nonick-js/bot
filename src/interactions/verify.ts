@@ -69,6 +69,8 @@ const verifyCommand = new ChatInput(
       return interaction.reply({ content: `\`❌\` **${interaction.user.username}**に\`ロールを管理\`権限を付与してください！`, ephemeral: true });
     if (role.managed || role.id === interaction.guild.roles.everyone.id)
       return interaction.reply({ content: '`❌` そのロールは認証に使用することはできません', ephemeral: true });
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator) && interaction.member.roles.highest.position < role.position)
+      return interaction.reply({ content: '`❌` 自分の持つロールより上のロールを認証に使用することはできません', ephemeral: true });
     if (!role.editable)
       return interaction.reply({ content: '`❌` そのロールはBOTより高い位置にあるため、認証に使用することはできません', ephemeral: true });
 
