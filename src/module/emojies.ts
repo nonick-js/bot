@@ -21,6 +21,7 @@ export const WhiteEmojies = {
   addButtonRole: '1066923387563290784',
   setting: '966588719635263539',
   home: '971389898076598322',
+  switch: '1093605500513431603',
 };
 
 export const GrayEmojies = {
