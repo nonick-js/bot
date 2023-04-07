@@ -92,17 +92,14 @@ const command = new ChatInput(
     if (subCommand === 'create') {
       const title = interaction.options.getString('title');
       const description = interaction.options.getString('description');
-      const color = interaction.options.getNumber('color');
+      const color = interaction.options.getNumber('color') ?? Colors.White;
       const attachment = interaction.options.getAttachment('image');
 
-      if (!title && !description)
-        return interaction.reply({ content: '`❌` `title`と`description`はどちらかは必ず入力する必要があります。', ephemeral: true });
-
       const embed = new EmbedBuilder()
-        .setTitle(title)
+        .setTitle(!title && !description ? '埋め込み' : title)
         .setDescription(description?.replace('  ', '\n') || null)
         .setImage(attachment?.url || null)
-        .setColor(color ?? Colors.White);
+        .setColor(color);
 
       interaction.reply({
         content: '`/embed profile`を使用すると、送信者のプロフィールを変更できます。',
@@ -114,8 +111,6 @@ const command = new ChatInput(
 
     else if (subCommand === 'import') {
       const attachment = interaction.options.getAttachment('json', true);
-
-      console.log(attachment.contentType);
 
       if (!attachment.contentType?.startsWith('application/json'))
         return interaction.reply({ content: '`❌` 添付されたファイルはjsonファイルではありません。', ephemeral: true });
