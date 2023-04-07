@@ -1,5 +1,5 @@
 import { MessageContext, SelectMenu, SelectMenuType } from '@akki256/discord-interaction';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, PermissionFlagsBits, StringSelectMenuBuilder, User } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, ModalBuilder, PermissionFlagsBits, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle, User } from 'discord.js';
 import { WhiteEmojies } from '../../module/emojies';
 import { embedMakerType, getEmbedMakerButtons } from './embed/_function';
 import { getRoleSelectMakerButtons } from './roleSelect/_function';
@@ -32,6 +32,7 @@ const context = new MessageContext(
             .setCustomId('nonick-js:embedMaker-editEmbedPanel')
             .setOptions(
               { label: '埋め込みを編集', value: 'editEmbed', emoji: WhiteEmojies.pencil },
+              { label: '埋め込みをダウンロード', value: 'downloadEmbed', emoji: WhiteEmojies.download },
               { label: 'ロール付与(セレクトメニュー)を追加', value: 'addRoleSelect', emoji: WhiteEmojies.role2 },
               { label: 'ロール付与(ボタン)を追加', value: 'addRoleButton', emoji: WhiteEmojies.role2 },
               { label: 'URLボタンを追加', value: 'addUrlButton', emoji: WhiteEmojies.link },
@@ -60,6 +61,23 @@ const select = new SelectMenu(
         embeds: targetMessage.embeds,
         components: getEmbedMakerButtons(targetMessage.embeds[0], embedMakerType.edit),
       });
+
+    else if (interaction.values[0] === 'downloadEmbed')
+      interaction.showModal(
+        new ModalBuilder()
+          .setCustomId('nonick-js:embedMaker-exportModal')
+          .setTitle('エクスポート')
+          .setComponents(
+            new ActionRowBuilder<TextInputBuilder>().setComponents(
+              new TextInputBuilder()
+                .setCustomId('fileName')
+                .setLabel('ファイルの名前 (日本語は使用できません)')
+                .setMaxLength(100)
+                .setStyle(TextInputStyle.Short)
+                .setRequired(false),
+            ),
+          ),
+      );
 
     else if (interaction.values[0] === 'addRoleSelect') {
       if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles))

@@ -14,7 +14,7 @@ export function getBaseEmbedMakerButtons(embed: APIEmbed | Embed) {
           .setCustomId('nonick-js:embedMaker-base')
           .setLabel('基本')
           .setEmoji(WhiteEmojies.message)
-          .setStyle(ButtonStyle.Success),
+          .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-image')
           .setLabel('画像')
@@ -30,10 +30,6 @@ export function getBaseEmbedMakerButtons(embed: APIEmbed | Embed) {
           .setLabel('フッター')
           .setEmoji(WhiteEmojies.nickName)
           .setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder()
-          .setCustomId('nonick-js:embedMaker-timeStamp')
-          .setEmoji(WhiteEmojies.schedule)
-          .setStyle(ButtonStyle.Secondary),
       ),
 
     new ActionRowBuilder<ButtonBuilder>()
@@ -42,18 +38,18 @@ export function getBaseEmbedMakerButtons(embed: APIEmbed | Embed) {
           .setCustomId('nonick-js:embedMaker-addField')
           .setLabel('フィールド')
           .setEmoji(WhiteEmojies.addMark)
-          .setStyle(ButtonStyle.Secondary)
+          .setStyle(ButtonStyle.Success)
           .setDisabled(embed.fields?.length === 25),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-removeField')
           .setLabel('フィールド')
           .setEmoji(WhiteEmojies.removeMark)
-          .setStyle(ButtonStyle.Secondary)
+          .setStyle(ButtonStyle.Danger)
           .setDisabled(!embed.fields?.length),
         new ButtonBuilder()
-          .setCustomId('nonick-js:embedMaker-export')
-          .setEmoji(WhiteEmojies.download)
-          .setStyle(ButtonStyle.Danger),
+          .setCustomId('nonick-js:embedMaker-timeStamp')
+          .setEmoji(WhiteEmojies.schedule)
+          .setStyle(ButtonStyle.Secondary),
       ),
   ];
 }

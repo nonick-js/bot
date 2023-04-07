@@ -1,44 +1,32 @@
-import { ActionRowBuilder, AttachmentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
-import { Button, Modal } from '@akki256/discord-interaction';
-
-const button = new Button(
-  { customId: 'nonick-js:embedMaker-export' },
-  (interaction) => {
-    interaction.showModal(
-      new ModalBuilder()
-        .setCustomId('nonick-js:embedMaker-exportModal')
-        .setTitle('エクスポート')
-        .setComponents(
-          new ActionRowBuilder<TextInputBuilder>().setComponents(
-            new TextInputBuilder()
-              .setCustomId('fileName')
-              .setLabel('ファイルの名前 (日本語は使用できません)')
-              .setMaxLength(100)
-              .setStyle(TextInputStyle.Short)
-              .setRequired(false),
-          ),
-        ),
-    );
-  },
-);
+import { AttachmentBuilder } from 'discord.js';
+import { Modal } from '@akki256/discord-interaction';
 
 const modal = new Modal(
   { customId: 'nonick-js:embedMaker-exportModal' },
   async (interaction) => {
     if (!interaction.isFromMessage()) return;
 
-    await interaction.deferReply({ ephemeral: true });
+    const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
+    const targetMessage = await (await interaction.channel?.fetch())?.messages.fetch(targetId || '').catch(() => undefined);
+    if (!targetMessage) return interaction.reply({ content: '`❌` メッセージの取得中に問題が発生しました。', ephemeral: true });
+
     const fileName = interaction.fields.getTextInputValue('fileName') || `nonick-js_embed_${interaction.message.id}`;
 
     interaction
-      .followUp({
+      .update({
         content: '`✅` 現在の埋め込みをエクスポートしました。`/embed import`を使用して読み込ませることが出来ます。',
-        files: [new AttachmentBuilder(Buffer.from(JSON.stringify(interaction.message.embeds, null, 2)), { name: `${fileName}.json` })],
+        files: [new AttachmentBuilder(Buffer.from(JSON.stringify(targetMessage.embeds, null, 2)), { name: `${fileName}.json` })],
+        embeds: [],
+        components: [],
       })
       .catch(() => {
-        interaction.followUp({ content: '`❌` エクスポート中に問題が発生しました。', ephemeral: true });
+        interaction.update({
+          content: '`❌` エクスポート中に問題が発生しました。',
+          embeds: [],
+          components: [],
+        });
       });
   },
 );
 
-module.exports = [button, modal];
+module.exports = [modal];
