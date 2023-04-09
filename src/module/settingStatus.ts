@@ -12,11 +12,11 @@ export function booleanStatus(boolean?: boolean): string {
 }
 
 export function channelStatus(channel?: (string | null)): string {
-  return `${formatEmoji(Emoji.Gray.channel)} **チャンネル:** ${channel ? channelMention(channel) : '未設定'}`;
+  return `${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${channel ? channelMention(channel) : '未設定'}`;
 }
 
 export function roleStatus(role?: (string | null)): string {
-  return `${formatEmoji(Emoji.Gray.member)} **ロール:** ${role ? roleMention(role) : '未設定'}`;
+  return `${formatEmoji(Emojis.Gray.member)} **ロール:** ${role ? roleMention(role) : '未設定'}`;
 }
 
 export function buttonLabelStatus(enable?: boolean): string {

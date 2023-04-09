@@ -82,13 +82,13 @@ const removeField = [
             new StringSelectMenuBuilder()
               .setCustomId(indexSelectCustomId)
               .setPlaceholder('削除する項目を選択')
-              .setOptions(...embed.fields.map((v, index) => ({ label: omitString(v.name, 100), description: omitString(v.value, 100), value: String(index), emoji: Emoji.White.message }))),
+              .setOptions(...embed.fields.map((v, index) => ({ label: omitString(v.name, 100), description: omitString(v.value, 100), value: String(index), emoji: Emojis.White.message }))),
           ),
           new ActionRowBuilder<ButtonBuilder>().setComponents(
             new ButtonBuilder()
               .setCustomId(backButtonCustomId)
               .setLabel('削除せず戻る')
-              .setEmoji(Emoji.White.reply)
+              .setEmoji(Emojis.White.reply)
               .setStyle(ButtonStyle.Danger),
           ),
         ],

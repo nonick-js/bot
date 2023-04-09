@@ -69,19 +69,19 @@ ControlPanelMessages.set(FeatureType.JoinAndLeaveMessage, new ControlPanelCompon
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-message-join-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-message-join-message')
         .setLabel('メッセージ')
-        .setEmoji(Emoji.White.message)
+        .setEmoji(Emojis.White.message)
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-message-join-preview')
         .setLabel('プレビュー')
         .setStyle(ButtonStyle.Primary),
     ),
-  ], { name: '入室メッセージ', description: 'メンバー参加時にメッセージを送信', emoji: Emoji.White.setting })
+  ], { name: '入室メッセージ', description: 'メンバー参加時にメッセージを送信', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
@@ -92,19 +92,19 @@ ControlPanelMessages.set(FeatureType.JoinAndLeaveMessage, new ControlPanelCompon
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-message-leave-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-message-leave-message')
         .setLabel('メッセージ')
-        .setEmoji(Emoji.White.message)
+        .setEmoji(Emojis.White.message)
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-message-leave-preview')
         .setLabel('プレビュー')
         .setStyle(ButtonStyle.Primary),
     ),
-  ], { name: '退室メッセージ', description: 'メンバー退室時にメッセージを送信', emoji: Emoji.White.setting }),
+  ], { name: '退室メッセージ', description: 'メンバー退室時にメッセージを送信', emoji: Emojis.White.setting }),
 );
 
 // サーバー内通報
@@ -134,10 +134,10 @@ ControlPanelMessages.set(FeatureType.ReportToAdmin, new ControlPanelComponentPag
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-report-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: '基本設定', emoji: Emoji.White.setting })
+  ], { name: '基本設定', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
@@ -148,10 +148,10 @@ ControlPanelMessages.set(FeatureType.ReportToAdmin, new ControlPanelComponentPag
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-report-mention-role')
         .setLabel('ロール')
-        .setEmoji(Emoji.White.role)
+        .setEmoji(Emojis.White.role)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: '通知設定', description: '通報受信時にロールをメンション', emoji: Emoji.White.role }),
+  ], { name: '通知設定', description: '通報受信時にロールをメンション', emoji: Emojis.White.role }),
 );
 
 // メッセージURL展開
@@ -187,7 +187,7 @@ ControlPanelMessages.set(FeatureType.MessageExpansion, new ControlPanelComponent
         .setLabel(buttonLabelStatus(setting?.message.expansion.enable))
         .setStyle(buttonStyleStatus(setting?.message.expansion.enable)),
     ),
-  ], { name: '基本設定', emoji: Emoji.White.setting })
+  ], { name: '基本設定', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
       new StringSelectMenuBuilder()
@@ -233,7 +233,7 @@ ControlPanelMessages.set(FeatureType.MessageExpansion, new ControlPanelComponent
         .setMinValues(0)
         .setMaxValues(25),
     ),
-  ], { name: '例外設定', description: 'URL展開を行わないチャンネルを設定', emoji: Emoji.White.setting }),
+  ], { name: '例外設定', description: 'URL展開を行わないチャンネルを設定', emoji: Emojis.White.setting }),
 );
 
 // イベントログ
@@ -283,10 +283,10 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-log-timeout-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: 'Timeoutログ', emoji: Emoji.White.setting })
+  ], { name: 'Timeoutログ', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
@@ -297,10 +297,10 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-log-kick-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: 'Kickログ', emoji: Emoji.White.setting })
+  ], { name: 'Kickログ', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
@@ -311,10 +311,10 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-log-ban-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: 'BANログ', emoji: Emoji.White.setting })
+  ], { name: 'BANログ', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
@@ -325,10 +325,10 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-log-voice-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: 'VCログ', emoji: Emoji.White.setting })
+  ], { name: 'VCログ', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
@@ -339,10 +339,10 @@ ControlPanelMessages.set(FeatureType.EventLog, new ControlPanelComponentPaginati
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-log-delete-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: '削除ログ', emoji: Emoji.White.setting }),
+  ], { name: '削除ログ', emoji: Emojis.White.setting }),
 );
 
 // 自動認証レベル変更
@@ -358,8 +358,8 @@ ControlPanelMessages.set(FeatureType.ChangeVerificationLevel, new ControlPanelCo
             name: '一般設定',
             value: [
               booleanStatus(setting?.changeVerificationLevel.enable),
-              `${formatEmoji(Emoji.Gray.schedule)} **開始時刻: **${setting?.changeVerificationLevel.time.start == null ? '未設定' : `${setting?.changeVerificationLevel.time.start}:00`}`,
-              `${formatEmoji(Emoji.Gray.schedule)} **終了時刻: **${setting?.changeVerificationLevel.time.end == null ? '未設定' : `${setting?.changeVerificationLevel.time.end}:00`}`,
+              `${formatEmoji(Emojis.Gray.schedule)} **開始時刻: **${setting?.changeVerificationLevel.time.start == null ? '未設定' : `${setting?.changeVerificationLevel.time.start}:00`}`,
+              `${formatEmoji(Emojis.Gray.schedule)} **終了時刻: **${setting?.changeVerificationLevel.time.end == null ? '未設定' : `${setting?.changeVerificationLevel.time.end}:00`}`,
             ].join('\n'),
             inline: true,
           },
@@ -396,10 +396,10 @@ ControlPanelMessages.set(FeatureType.ChangeVerificationLevel, new ControlPanelCo
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-changeVerificationLevel-time')
         .setLabel('開始・終了時間')
-        .setEmoji(Emoji.White.schedule)
+        .setEmoji(Emojis.White.schedule)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: '一般設定', emoji: Emoji.White.setting })
+  ], { name: '一般設定', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
@@ -412,7 +412,7 @@ ControlPanelMessages.set(FeatureType.ChangeVerificationLevel, new ControlPanelCo
         .setLabel('送信先')
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: 'ログ設定', description: '認証レベルを変更した際にログを送信する', emoji: Emoji.White.setting }),
+  ], { name: 'ログ設定', description: '認証レベルを変更した際にログを送信する', emoji: Emojis.White.setting }),
 );
 
 // 自動アナウンス公開
@@ -452,7 +452,7 @@ ControlPanelMessages.set(FeatureType.AutoPublic, new ControlPanelComponentPagina
         .setLabel(buttonLabelStatus(setting?.autoPublic.enable))
         .setStyle(buttonStyleStatus(setting?.autoPublic.enable)),
     ),
-  ], { name: '一般設定', emoji: Emoji.White.setting }),
+  ], { name: '一般設定', emoji: Emojis.White.setting }),
 );
 
 // AutoMod Plus
@@ -468,7 +468,7 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
             name: '一般設定',
             value: [
               booleanStatus(setting?.autoMod.enable),
-              `${formatEmoji(Emoji.Gray.text)} **フィルタ:** ${Object.entries(setting?.autoMod.filter || {}).filter(v => v[1]).map(v => inlineCode(autoModFilter.get(v[0])!)).join(' ') || 'なし'}`,
+              `${formatEmoji(Emojis.Gray.text)} **フィルタ:** ${Object.entries(setting?.autoMod.filter || {}).filter(v => v[1]).map(v => inlineCode(autoModFilter.get(v[0])!)).join(' ') || 'なし'}`,
             ].join('\n'),
             inline: true,
           },
@@ -480,8 +480,8 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
           {
             name: '例外設定',
             value: [
-              `${formatEmoji(Emoji.Gray.channel)} **チャンネル:** ${setting?.autoMod.ignore.channels.map(v => channelMention(v)).join(' ') || 'なし'}`,
-              `${formatEmoji(Emoji.Gray.member)} **ロール:** ${setting?.autoMod.ignore.roles.map(v => roleMention(v)).join(' ') || 'なし'}`,
+              `${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${setting?.autoMod.ignore.channels.map(v => channelMention(v)).join(' ') || 'なし'}`,
+              `${formatEmoji(Emojis.Gray.member)} **ロール:** ${setting?.autoMod.ignore.roles.map(v => roleMention(v)).join(' ') || 'なし'}`,
             ].join('\n'),
           },
         )
@@ -497,9 +497,9 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
         .setMaxValues(3)
         .setOptions(
           [
-            { label: 'このサーバー以外の招待リンク', value: 'inviteUrl', emoji: Emoji.White.message },
-            { label: 'Discordトークン', value: 'token', emoji: Emoji.White.message },
-            { label: '短縮URL', value: 'shortUrl', emoji: Emoji.White.message },
+            { label: 'このサーバー以外の招待リンク', value: 'inviteUrl', emoji: Emojis.White.message },
+            { label: 'Discordトークン', value: 'token', emoji: Emojis.White.message },
+            { label: '短縮URL', value: 'shortUrl', emoji: Emojis.White.message },
           ].map(options => ({ ...options, default: Object.entries(setting?.autoMod.filter || {}).filter(v => v[1]).map(v => v[0]).includes(options.value) })),
         ),
     ),
@@ -509,7 +509,7 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
         .setLabel(buttonLabelStatus(setting?.autoMod.enable))
         .setStyle(buttonStyleStatus(setting?.autoMod.enable)),
     ),
-  ], { name: '一般設定', emoji: Emoji.White.setting })
+  ], { name: '一般設定', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ButtonBuilder>().setComponents(
       new ButtonBuilder()
@@ -520,10 +520,10 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
       new ButtonBuilder()
         .setCustomId('nonick-js:setting-automod-log-channel')
         .setLabel('送信先')
-        .setEmoji(Emoji.White.channel)
+        .setEmoji(Emojis.White.channel)
         .setStyle(ButtonStyle.Secondary),
     ),
-  ], { name: 'ログ設定', description: 'メッセージがブロックされた際にログを送信', emoji: Emoji.White.setting })
+  ], { name: 'ログ設定', description: 'メッセージがブロックされた際にログを送信', emoji: Emojis.White.setting })
   .addActionRows((setting) => [
     new ActionRowBuilder<ChannelSelectMenuBuilder>().setComponents(
       new ChannelSelectMenuBuilder()
@@ -547,5 +547,5 @@ ControlPanelMessages.set(FeatureType.AutoModPlus, new ControlPanelComponentPagin
         .setStyle(ButtonStyle.Danger)
         .setDisabled(!(setting?.autoMod.ignore.channels.length || setting?.autoMod.ignore.roles.length)),
     ),
-  ], { name: '例外設定', description: 'フィルタに影響しないチャンネル/ロールを設定', emoji: Emoji.White.setting }),
+  ], { name: '例外設定', description: 'フィルタに影響しないチャンネル/ロールを設定', emoji: Emojis.White.setting }),
 );

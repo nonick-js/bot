@@ -22,10 +22,10 @@ const kickLog = new DiscordEventBuilder({
           new EmbedBuilder()
             .setTitle('`🔨` Kick')
             .setDescription([
-              `${formatEmoji(Emoji.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
+              `${formatEmoji(Emojis.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
               '',
-              `${formatEmoji(Emoji.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
-              `${formatEmoji(Emoji.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
+              `${formatEmoji(Emojis.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
+              `${formatEmoji(Emojis.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
             ].join('\n'))
             .setColor(Colors.Orange)
             .setThumbnail(auditLog.target.displayAvatarURL())

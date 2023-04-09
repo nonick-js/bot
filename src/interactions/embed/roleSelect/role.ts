@@ -151,7 +151,7 @@ const removeRole = [
             new ButtonBuilder()
               .setCustomId(backButtonCustomId)
               .setLabel('削除せず戻る')
-              .setEmoji(Emoji.White.reply)
+              .setEmoji(Emojis.White.reply)
               .setStyle(ButtonStyle.Danger),
           ),
         ],

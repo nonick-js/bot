@@ -5,17 +5,17 @@ export function getRoleSelectMakerButtons(selectMenu?: Partial<APIStringSelectCo
   return new ActionRowBuilder<ButtonBuilder>().setComponents(
     new ButtonBuilder()
       .setCustomId('nonick-js:embedMaker-selectRole-addRole')
-      .setEmoji(Emoji.White.addMark)
+      .setEmoji(Emojis.White.addMark)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(selectMenu?.options?.length === 25),
     new ButtonBuilder()
       .setCustomId('nonick-js:embedMaker-selectRole-removeRole')
-      .setEmoji(Emoji.White.removeMark)
+      .setEmoji(Emojis.White.removeMark)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(!selectMenu?.options?.length),
     new ButtonBuilder()
       .setCustomId('nonick-js:emberMaker-selectRole-placeholder')
-      .setEmoji(Emoji.White.message)
+      .setEmoji(Emojis.White.message)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(!selectMenu),
     new ButtonBuilder()

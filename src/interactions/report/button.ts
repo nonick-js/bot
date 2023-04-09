@@ -40,8 +40,8 @@ const actionModal = new Modal(
           .setTitle(`${embed.title} ` + (category === 'action' ? '[対応済み]' : '[対応なし]'))
           .setDescription([
             `${embed.description}`,
-            `${formatEmoji(Emoji.Blurple.member)} **対処者:** ${interaction.user} [${interaction.user.tag}]`,
-            `${formatEmoji(Emoji.Blurple.admin)} **${category === 'action' ? '行った処罰' : '対応なしの理由'}:** ${categoryValue}`,
+            `${formatEmoji(Emojis.Blurple.member)} **対処者:** ${interaction.user} [${interaction.user.tag}]`,
+            `${formatEmoji(Emojis.Blurple.admin)} **${category === 'action' ? '行った処罰' : '対応なしの理由'}:** ${categoryValue}`,
           ].join('\n'))
           .setColor(category === 'action' ? Colors.Green : Colors.Red),
       ],

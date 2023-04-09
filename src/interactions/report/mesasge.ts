@@ -73,12 +73,12 @@ const reportContextModal = new Modal(
           new EmbedBuilder()
             .setTitle('`📢` メッセージの報告')
             .setDescription([
-              `${formatEmoji(Emoji.Gray.edit)} **送信者:** ${message.author} [${message.author.tag}]`,
-              `${formatEmoji(Emoji.Gray.channel)} **チャンネル:** ${message.channel} [${message.channel.name}]`,
-              `${formatEmoji(Emoji.Gray.link)} **添付ファイル:** ${message.attachments.size}件`,
-              `${formatEmoji(Emoji.Gray.schedule)} **送信時刻:** ${time(Math.floor(message.createdTimestamp / 1000), 'f')}`,
+              `${formatEmoji(Emojis.Gray.edit)} **送信者:** ${message.author} [${message.author.tag}]`,
+              `${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${message.channel} [${message.channel.name}]`,
+              `${formatEmoji(Emojis.Gray.link)} **添付ファイル:** ${message.attachments.size}件`,
+              `${formatEmoji(Emojis.Gray.schedule)} **送信時刻:** ${time(Math.floor(message.createdTimestamp / 1000), 'f')}`,
               '',
-              `${formatEmoji(Emoji.Blurple.member)} **報告者:** ${interaction.user} [${interaction.user.tag}]`,
+              `${formatEmoji(Emojis.Blurple.member)} **報告者:** ${interaction.user} [${interaction.user.tag}]`,
             ].join('\n'))
             .setColor(Colors.DarkButNotBlack)
             .setThumbnail(message.author.displayAvatarURL())

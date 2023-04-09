@@ -26,11 +26,11 @@ const timeoutLog = new DiscordEventBuilder({
           new EmbedBuilder()
             .setTitle('`🛑` タイムアウト')
             .setDescription([
-              `${formatEmoji(Emoji.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
-              `${formatEmoji(Emoji.Gray.schedule)} **解除される時間:** ${time(Math.floor((member.communicationDisabledUntilTimestamp ?? 0) / 1000), 'f')}`,
+              `${formatEmoji(Emojis.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
+              `${formatEmoji(Emojis.Gray.schedule)} **解除される時間:** ${time(Math.floor((member.communicationDisabledUntilTimestamp ?? 0) / 1000), 'f')}`,
               '',
-              `${formatEmoji(Emoji.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
-              `${formatEmoji(Emoji.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
+              `${formatEmoji(Emojis.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
+              `${formatEmoji(Emojis.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
             ].join('\n'))
             .setColor(Colors.Red)
             .setThumbnail(auditLog.target.displayAvatarURL())
@@ -44,10 +44,10 @@ const timeoutLog = new DiscordEventBuilder({
           new EmbedBuilder()
             .setTitle('`🛑` タイムアウト手動解除')
             .setDescription([
-              `${formatEmoji(Emoji.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
+              `${formatEmoji(Emojis.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
               '',
-              `${formatEmoji(Emoji.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
-              `${formatEmoji(Emoji.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
+              `${formatEmoji(Emojis.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
+              `${formatEmoji(Emojis.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
             ].join('\n'))
             .setColor(Colors.Blue)
             .setThumbnail(auditLog.target.displayAvatarURL())

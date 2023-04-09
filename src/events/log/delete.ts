@@ -42,10 +42,10 @@ async function sendDeleteLog(message: Message<true>, channel?: GuildBasedChannel
 		.setTitle('`💬` メッセージ削除')
 		.setURL(beforeMessage?.url ?? null)
 		.setDescription([
-			`${formatEmoji(Emoji.Gray.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
-			`${formatEmoji(Emoji.Gray.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
-			`${formatEmoji(Emoji.Gray.member)} **削除者:** ${executer ? `${executer} [\`${executer.tag}\`]` : '送信者自身'}`,
-			`${formatEmoji(Emoji.Gray.schedule)} **送信時刻:** ${time(message.createdAt)}`,
+			`${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
+			`${formatEmoji(Emojis.Gray.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
+			`${formatEmoji(Emojis.Gray.member)} **削除者:** ${executer ? `${executer} [\`${executer.tag}\`]` : '送信者自身'}`,
+			`${formatEmoji(Emojis.Gray.schedule)} **送信時刻:** ${time(message.createdAt)}`,
 		].join('\n'))
 		.setColor(Colors.White)
 		.setThumbnail(message.author?.avatarURL() ?? null)

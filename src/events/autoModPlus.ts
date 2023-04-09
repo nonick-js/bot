@@ -50,9 +50,9 @@ function deleteMessage(message: Message<true>, channel: GuildBasedChannel | null
 					new EmbedBuilder()
 						.setTitle('`✋` メッセージブロック')
 						.setDescription([
-							`${formatEmoji(Emoji.Gray.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
-							`${formatEmoji(Emoji.Gray.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
-							`${formatEmoji(Emoji.Gray.schedule)} **送信時刻:** ${time(message.createdAt)}`,
+							`${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
+							`${formatEmoji(Emojis.Gray.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
+							`${formatEmoji(Emojis.Gray.schedule)} **送信時刻:** ${time(message.createdAt)}`,
 						].join('\n'))
 						.setColor(resolveColor('#2b2d31'))
 						.setThumbnail(message.author.displayAvatarURL())

@@ -13,26 +13,26 @@ export function getBaseEmbedMakerButtons(embed: APIEmbed | Embed) {
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-base')
           .setLabel('基本')
-          .setEmoji(Emoji.White.message)
+          .setEmoji(Emojis.White.message)
           .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-image')
           .setLabel('画像')
-          .setEmoji(Emoji.White.image)
+          .setEmoji(Emojis.White.image)
           .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-author')
           .setLabel('ヘッダー')
-          .setEmoji(Emoji.White.nickName)
+          .setEmoji(Emojis.White.nickName)
           .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-footer')
           .setLabel('フッター')
-          .setEmoji(Emoji.White.nickName)
+          .setEmoji(Emojis.White.nickName)
           .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-timeStamp')
-          .setEmoji(Emoji.White.schedule)
+          .setEmoji(Emojis.White.schedule)
           .setStyle(ButtonStyle.Secondary),
       ),
 
@@ -41,18 +41,18 @@ export function getBaseEmbedMakerButtons(embed: APIEmbed | Embed) {
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-addField')
           .setLabel('フィールド')
-          .setEmoji(Emoji.White.addMark)
+          .setEmoji(Emojis.White.addMark)
           .setStyle(ButtonStyle.Secondary)
           .setDisabled(embed.fields?.length === 25),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-removeField')
           .setLabel('フィールド')
-          .setEmoji(Emoji.White.removeMark)
+          .setEmoji(Emojis.White.removeMark)
           .setStyle(ButtonStyle.Secondary)
           .setDisabled(!embed.fields?.length),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-export')
-          .setEmoji(Emoji.White.download)
+          .setEmoji(Emojis.White.download)
           .setStyle(ButtonStyle.Danger),
       ),
   ];

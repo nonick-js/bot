@@ -68,10 +68,10 @@ const reportContextModal = new Modal(
           new EmbedBuilder()
             .setTitle('`📢` ユーザーの通報')
             .setDescription([
-              `${formatEmoji(Emoji.Gray.edit)} **送信者:** ${user} [${user.tag}]`,
-              `${formatEmoji(Emoji.Gray.schedule)} **アカウント作成日:** ${time(Math.floor(user.createdTimestamp / 1000), 'D')}`,
+              `${formatEmoji(Emojis.Gray.edit)} **送信者:** ${user} [${user.tag}]`,
+              `${formatEmoji(Emojis.Gray.schedule)} **アカウント作成日:** ${time(Math.floor(user.createdTimestamp / 1000), 'D')}`,
               '',
-              `${formatEmoji(Emoji.Blurple.member)} **報告者:** ${interaction.user} [${interaction.user.tag}]`,
+              `${formatEmoji(Emojis.Blurple.member)} **報告者:** ${interaction.user} [${interaction.user.tag}]`,
             ].join('\n'))
             .setColor(Colors.DarkButNotBlack)
             .setThumbnail(user.displayAvatarURL())
