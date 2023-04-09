@@ -1,8 +1,11 @@
-import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildBasedChannel, Message, time, User } from 'discord.js';
+import { AttachmentBuilder, AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildBasedChannel, Message, time, User } from 'discord.js';
 import { GrayEmojies } from '../../module/emojies';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { getServerSetting } from '../../module/mongo/middleware';
+import axios from 'axios';
+import admZip from 'adm-zip';
+
 
 const selfDeleteLog = new DiscordEventBuilder({
 	type: Events.MessageDelete,
@@ -48,7 +51,19 @@ async function sendDeleteLog(message: Message<true>, channel?: GuildBasedChannel
 		.setThumbnail(message.author?.avatarURL() ?? null)
 		.setFields({ name: 'メッセージ', value: message.content || 'なし' });
 
-	channel.send({ embeds: [embed] });
+	if (message.attachments.size) {
+		const zip = new admZip();
+		for await (const attachment of message.attachments.values()) {
+			const res = await axios.get(attachment.url, { responseType: 'arraybuffer' }).catch(() => null);
+			if (!res) continue;
+			zip.addFile(attachment.name, res.data);
+		}
+		const attachment = new AttachmentBuilder(zip.toBuffer(), { name: 'attachments.zip' });
+		channel.send({ embeds: [embed], files: [attachment] });
+	}
+	else {
+		channel.send({ embeds: [embed] });
+	}
 }
 
 module.exports = [selfDeleteLog, deleteLog];
