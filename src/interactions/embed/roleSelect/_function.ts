@@ -1,21 +1,21 @@
 import { APIStringSelectComponent, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { WhiteEmojies } from '../../../module/emojies';
+import { Emojis } from '../../../module/constant';
 
 export function getRoleSelectMakerButtons(selectMenu?: Partial<APIStringSelectComponent>) {
   return new ActionRowBuilder<ButtonBuilder>().setComponents(
     new ButtonBuilder()
       .setCustomId('nonick-js:embedMaker-selectRole-addRole')
-      .setEmoji(WhiteEmojies.addMark)
+      .setEmoji(Emoji.White.addMark)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(selectMenu?.options?.length === 25),
     new ButtonBuilder()
       .setCustomId('nonick-js:embedMaker-selectRole-removeRole')
-      .setEmoji(WhiteEmojies.removeMark)
+      .setEmoji(Emoji.White.removeMark)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(!selectMenu?.options?.length),
     new ButtonBuilder()
       .setCustomId('nonick-js:emberMaker-selectRole-placeholder')
-      .setEmoji(WhiteEmojies.message)
+      .setEmoji(Emoji.White.message)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(!selectMenu),
     new ButtonBuilder()

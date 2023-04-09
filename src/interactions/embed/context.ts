@@ -1,6 +1,6 @@
 import { MessageContext, SelectMenu, SelectMenuType } from '@akki256/discord-interaction';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, PermissionFlagsBits, StringSelectMenuBuilder, User } from 'discord.js';
-import { WhiteEmojies } from '../../module/emojies';
+import { Emojis } from '../../module/constant';
 import { embedMakerType, getEmbedMakerButtons } from './embed/_function';
 import { getRoleSelectMakerButtons } from './roleSelect/_function';
 
@@ -31,10 +31,10 @@ const context = new MessageContext(
           new StringSelectMenuBuilder()
             .setCustomId('nonick-js:embedMaker-editEmbedPanel')
             .setOptions(
-              { label: '埋め込みを編集', value: 'editEmbed', emoji: WhiteEmojies.pencil },
-              { label: 'ロール付与(セレクトメニュー)を追加', value: 'addRoleSelect', emoji: WhiteEmojies.role2 },
-              { label: 'ロール付与(ボタン)を追加', value: 'addRoleButton', emoji: WhiteEmojies.role2 },
-              { label: 'URLボタンを追加', value: 'addUrlButton', emoji: WhiteEmojies.link },
+              { label: '埋め込みを編集', value: 'editEmbed', emoji: Emoji.White.pencil },
+              { label: 'ロール付与(セレクトメニュー)を追加', value: 'addRoleSelect', emoji: Emoji.White.role2 },
+              { label: 'ロール付与(ボタン)を追加', value: 'addRoleButton', emoji: Emoji.White.role2 },
+              { label: 'URLボタンを追加', value: 'addUrlButton', emoji: Emoji.White.link },
               { label: 'コンポーネントの削除', value: 'delete', emoji: '🗑' },
             ),
         ),
@@ -92,7 +92,7 @@ const select = new SelectMenu(
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-roleButton-send')
               .setLabel('ボタンを作成')
-              .setEmoji(WhiteEmojies.addMark)
+              .setEmoji(Emoji.White.addMark)
               .setStyle(ButtonStyle.Secondary),
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-roleButton-changeStyle')
@@ -117,7 +117,7 @@ const select = new SelectMenu(
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-linkButton-send')
               .setLabel('ボタンを作成')
-              .setEmoji(WhiteEmojies.addMark)
+              .setEmoji(Emoji.White.addMark)
               .setStyle(ButtonStyle.Secondary),
           ),
         ],

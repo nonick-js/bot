@@ -1,7 +1,7 @@
 import { Button, Modal } from '@akki256/discord-interaction';
 import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, APIButtonComponent } from 'discord.js';
 import { getBaseEmbedMakerButtons, reloadEmbedMaker } from './_function';
-import { WhiteEmojies } from '../../../module/emojies';
+import { Emojis } from '../../../module/constant';
 import { omitString } from '../../../module/functions';
 
 const addField = [
@@ -82,13 +82,13 @@ const removeField = [
             new StringSelectMenuBuilder()
               .setCustomId(indexSelectCustomId)
               .setPlaceholder('削除する項目を選択')
-              .setOptions(...embed.fields.map((v, index) => ({ label: omitString(v.name, 100), description: omitString(v.value, 100), value: String(index), emoji: WhiteEmojies.message }))),
+              .setOptions(...embed.fields.map((v, index) => ({ label: omitString(v.name, 100), description: omitString(v.value, 100), value: String(index), emoji: Emoji.White.message }))),
           ),
           new ActionRowBuilder<ButtonBuilder>().setComponents(
             new ButtonBuilder()
               .setCustomId(backButtonCustomId)
               .setLabel('削除せず戻る')
-              .setEmoji(WhiteEmojies.reply)
+              .setEmoji(Emoji.White.reply)
               .setStyle(ButtonStyle.Danger),
           ),
         ],

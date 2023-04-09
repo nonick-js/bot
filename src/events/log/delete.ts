@@ -1,5 +1,5 @@
 import { AttachmentBuilder, AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildBasedChannel, Message, time, User } from 'discord.js';
-import { GrayEmojies } from '../../module/emojies';
+import { Emojis } from '../../module/constant';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { getServerSetting } from '../../module/mongo/middleware';
@@ -42,10 +42,10 @@ async function sendDeleteLog(message: Message<true>, channel?: GuildBasedChannel
 		.setTitle('`💬` メッセージ削除')
 		.setURL(beforeMessage?.url ?? null)
 		.setDescription([
-			`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
-			`${formatEmoji(GrayEmojies.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
-			`${formatEmoji(GrayEmojies.member)} **削除者:** ${executer ? `${executer} [\`${executer.tag}\`]` : '送信者自身'}`,
-			`${formatEmoji(GrayEmojies.schedule)} **送信時刻:** ${time(message.createdAt)}`,
+			`${formatEmoji(Emoji.Gray.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
+			`${formatEmoji(Emoji.Gray.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
+			`${formatEmoji(Emoji.Gray.member)} **削除者:** ${executer ? `${executer} [\`${executer.tag}\`]` : '送信者自身'}`,
+			`${formatEmoji(Emoji.Gray.schedule)} **送信時刻:** ${time(message.createdAt)}`,
 		].join('\n'))
 		.setColor(Colors.White)
 		.setThumbnail(message.author?.avatarURL() ?? null)

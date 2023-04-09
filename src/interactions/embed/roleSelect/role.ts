@@ -2,7 +2,7 @@ import { Button, Modal } from '@akki256/discord-interaction';
 import { ComponentType, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, Role, APISelectMenuOption, GuildEmoji, StringSelectMenuBuilder, EmbedBuilder, Colors, ButtonBuilder, ButtonStyle, PermissionFlagsBits } from 'discord.js';
 import { getRoleSelectMakerButtons } from './_function';
 import { checkAndFormatDangerPermission } from '../../../module/functions';
-import { WhiteEmojies } from '../../../module/emojies';
+import { Emojis } from '../../../module/constant';
 
 const addRole = [
   new Button(
@@ -151,7 +151,7 @@ const removeRole = [
             new ButtonBuilder()
               .setCustomId(backButtonCustomId)
               .setLabel('削除せず戻る')
-              .setEmoji(WhiteEmojies.reply)
+              .setEmoji(Emoji.White.reply)
               .setStyle(ButtonStyle.Danger),
           ),
         ],
