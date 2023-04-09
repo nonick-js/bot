@@ -83,7 +83,7 @@ const reportContextModal = new Modal(
             .setColor(Colors.DarkButNotBlack)
             .setThumbnail(message.author.displayAvatarURL())
             .setFields(
-              { name: 'メッセージ', value: escapeSpoiler(message.content) },
+              { name: 'メッセージ', value: escapeSpoiler(message.content || 'なし') },
               { name: '理由', value: interaction.components[0].components[0].value },
             ),
         ],

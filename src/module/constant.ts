@@ -23,7 +23,7 @@ export namespace Emojis {
 		setting: '966588719635263539',
 		home: '971389898076598322',
 	} as const;
-	
+
 	export const Gray = {
 		member: '1064889710843002991',
 		text: '1064889722796773376',
