@@ -1,5 +1,5 @@
 import { APIButtonComponent, APIEmbed, ActionRowBuilder, ButtonBuilder, ButtonStyle, Embed, MessageComponentInteraction, ModalSubmitInteraction } from 'discord.js';
-import { WhiteEmojies } from '../../../module/emojies';
+import { Emojis } from '../../../module/constant';
 
 export enum embedMakerType {
   send = 'send',
@@ -13,26 +13,26 @@ export function getBaseEmbedMakerButtons(embed: APIEmbed | Embed) {
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-base')
           .setLabel('基本')
-          .setEmoji(WhiteEmojies.message)
+          .setEmoji(Emojis.White.message)
           .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-image')
           .setLabel('画像')
-          .setEmoji(WhiteEmojies.image)
+          .setEmoji(Emojis.White.image)
           .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-author')
           .setLabel('ヘッダー')
-          .setEmoji(WhiteEmojies.nickName)
+          .setEmoji(Emojis.White.nickName)
           .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-footer')
           .setLabel('フッター')
-          .setEmoji(WhiteEmojies.nickName)
+          .setEmoji(Emojis.White.nickName)
           .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-timeStamp')
-          .setEmoji(WhiteEmojies.schedule)
+          .setEmoji(Emojis.White.schedule)
           .setStyle(ButtonStyle.Secondary),
       ),
 
@@ -41,18 +41,18 @@ export function getBaseEmbedMakerButtons(embed: APIEmbed | Embed) {
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-addField')
           .setLabel('フィールド')
-          .setEmoji(WhiteEmojies.addMark)
+          .setEmoji(Emojis.White.addMark)
           .setStyle(ButtonStyle.Secondary)
           .setDisabled(embed.fields?.length === 25),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-removeField')
           .setLabel('フィールド')
-          .setEmoji(WhiteEmojies.removeMark)
+          .setEmoji(Emojis.White.removeMark)
           .setStyle(ButtonStyle.Secondary)
           .setDisabled(!embed.fields?.length),
         new ButtonBuilder()
           .setCustomId('nonick-js:embedMaker-export')
-          .setEmoji(WhiteEmojies.download)
+          .setEmoji(Emojis.White.download)
           .setStyle(ButtonStyle.Danger),
       ),
   ];

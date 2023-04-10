@@ -1,6 +1,6 @@
 import { MessageContext, SelectMenu, SelectMenuType } from '@akki256/discord-interaction';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, PermissionFlagsBits, StringSelectMenuBuilder, User } from 'discord.js';
-import { WhiteEmojies } from '../../module/emojies';
+import { Emojis } from '../../module/constant';
 import { embedMakerType, getEmbedMakerButtons } from './embed/_function';
 import { getRoleSelectMakerButtons } from './roleSelect/_function';
 
@@ -31,10 +31,10 @@ const context = new MessageContext(
           new StringSelectMenuBuilder()
             .setCustomId('nonick-js:embedMaker-editEmbedPanel')
             .setOptions(
-              { label: '埋め込みを編集', value: 'editEmbed', emoji: WhiteEmojies.pencil },
-              { label: 'ロール付与(セレクトメニュー)を追加', value: 'addRoleSelect', emoji: WhiteEmojies.role2 },
-              { label: 'ロール付与(ボタン)を追加', value: 'addRoleButton', emoji: WhiteEmojies.role2 },
-              { label: 'URLボタンを追加', value: 'addUrlButton', emoji: WhiteEmojies.link },
+              { label: '埋め込みを編集', value: 'editEmbed', emoji: Emojis.White.pencil },
+              { label: 'ロール付与(セレクトメニュー)を追加', value: 'addRoleSelect', emoji: Emojis.White.role2 },
+              { label: 'ロール付与(ボタン)を追加', value: 'addRoleButton', emoji: Emojis.White.role2 },
+              { label: 'URLボタンを追加', value: 'addUrlButton', emoji: Emojis.White.link },
               { label: 'コンポーネントの削除', value: 'delete', emoji: '🗑' },
             ),
         ),
@@ -47,6 +47,7 @@ const context = new MessageContext(
 const select = new SelectMenu(
   { customId: 'nonick-js:embedMaker-editEmbedPanel', type: SelectMenuType.String },
   async (interaction) => {
+    if (!interaction.inCachedGuild()) return;
     const targetId = interaction.message.embeds[0].footer?.text.match(/[0-9]{18,19}/)?.[0];
     const targetMessage = await interaction.channel?.messages.fetch(targetId || '')?.catch(() => undefined);
 
@@ -60,7 +61,10 @@ const select = new SelectMenu(
         components: getEmbedMakerButtons(targetMessage.embeds[0], embedMakerType.edit),
       });
 
-    else if (interaction.values[0] === 'addRoleSelect')
+    else if (interaction.values[0] === 'addRoleSelect') {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles))
+        return interaction.reply({ content: '`❌` あなたの権限ではこの機能は使用できません。', ephemeral: true });
+
       interaction.update({
         embeds: [
           EmbedBuilder
@@ -70,8 +74,12 @@ const select = new SelectMenu(
         ],
         components: [getRoleSelectMakerButtons()],
       });
+    }
 
-    else if (interaction.values[0] === 'addRoleButton')
+    else if (interaction.values[0] === 'addRoleButton') {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.ManageRoles))
+        return interaction.reply({ content: '`❌` あなたの権限ではこの機能は使用できません。', ephemeral: true });
+
       interaction.update({
         embeds: [
           EmbedBuilder
@@ -84,7 +92,7 @@ const select = new SelectMenu(
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-roleButton-send')
               .setLabel('ボタンを作成')
-              .setEmoji(WhiteEmojies.addMark)
+              .setEmoji(Emojis.White.addMark)
               .setStyle(ButtonStyle.Secondary),
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-roleButton-changeStyle')
@@ -94,6 +102,7 @@ const select = new SelectMenu(
           ),
         ],
       });
+    }
 
     else if (interaction.values[0] === 'addUrlButton')
       interaction.update({
@@ -108,7 +117,7 @@ const select = new SelectMenu(
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-linkButton-send')
               .setLabel('ボタンを作成')
-              .setEmoji(WhiteEmojies.addMark)
+              .setEmoji(Emojis.White.addMark)
               .setStyle(ButtonStyle.Secondary),
           ),
         ],
