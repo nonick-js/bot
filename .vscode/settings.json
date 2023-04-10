@@ -13,4 +13,12 @@
   ],
   "eslint.packageManager": "pnpm",
   "npm.packageManager": "pnpm",
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/config.json"
+      ],
+      "url": "/config.schema.json"
+    }
+  ]
 }
