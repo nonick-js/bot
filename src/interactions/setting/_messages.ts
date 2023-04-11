@@ -588,5 +588,5 @@ ControlPanelMessages.set(FeatureType.AutoCreateThread, new ControlPanelComponent
         .setLabel(buttonLabelStatus(setting?.autoCreateThread.enable))
         .setStyle(buttonStyleStatus(setting?.autoCreateThread.enable)),
     ),
-  ], { name: '一般設定', emoji: WhiteEmojies.setting }),
+  ], { name: '一般設定', emoji: Emojis.White.setting }),
 );

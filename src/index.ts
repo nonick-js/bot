@@ -3,7 +3,7 @@ import path from 'path';
 dotenv.config();
 
 import { ActivityType, AllowedMentionsTypes, Client, codeBlock, Colors, EmbedBuilder, Events, GatewayIntentBits, Partials, version } from 'discord.js';
-import { DiscordInteractions, DiscordInteractionsErrorCodes, InteractionsError } from '@akki256/discord-interaction';
+import { DiscordInteractions, ErrorCodes, InteractionsError } from '@akki256/discord-interaction';
 import { DiscordEvents } from './module/events';
 import { guildId, admin } from '../config.json';
 import { isBlocked } from './module/functions';
@@ -14,8 +14,8 @@ import ServerSettings from './schemas/ServerSettings';
 
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds,         GatewayIntentBits.GuildModeration,
-    GatewayIntentBits.GuildMessages,  GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.Guilds, GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers,
     GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages,
     GatewayIntentBits.GuildVoiceStates,
   ],
@@ -24,15 +24,15 @@ const client = new Client({
     Partials.Message, Partials.User,
   ],
   allowedMentions: {
- parse: [
-    AllowedMentionsTypes.Role, AllowedMentionsTypes.User,
-  ],
-},
+    parse: [
+      AllowedMentionsTypes.Role, AllowedMentionsTypes.User,
+    ],
+  },
 });
 
 const events = new DiscordEvents(client);
 const interactions = new DiscordInteractions(client);
-interactions.loadInteractions(path.resolve(__dirname, './interactions'));
+interactions.loadRegistries(path.resolve(__dirname, './interactions'));
 
 client.once(Events.ClientReady, () => {
   console.log('[INFO] BOT ready!');
@@ -71,7 +71,7 @@ client.on(Events.InteractionCreate, interaction => {
 
   interactions.run(interaction)
     .catch((err) => {
-      if (err instanceof InteractionsError && err.code === DiscordInteractionsErrorCodes.CommandHasCoolTime)
+      if (err instanceof InteractionsError && err.code === ErrorCodes.CommandHasCoolTime)
         return interaction.reply({ content: '`⌛` コマンドはクールダウン中です', ephemeral: true });
       console.log(err);
     });
