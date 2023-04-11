@@ -4,6 +4,5 @@ build
 
 # File
 .env
-.vscode
 config.json
 changelog.md

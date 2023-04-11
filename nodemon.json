@@ -1,4 +1,5 @@
 {
   "watch": ["src"],
-  "ext": "ts"
+  "ext": "ts",
+  "exec": "node --loader ts-node/esm"
 }

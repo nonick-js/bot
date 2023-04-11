@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ComponentType, EmbedBuilder, formatEmoji, ModalBuilder, PermissionFlagsBits, roleMention, TextInputBuilder, TextInputStyle, time, User } from 'discord.js';
 import { Modal, UserContext } from '@akki256/discord-interaction';
-import { BlurpleEmojies, GrayEmojies } from '../../module/emojies';
+import { Emojis } from '../../module/constant';
 import { getServerSetting } from '../../module/mongo/middleware';
 
 const reportContext = new UserContext(
@@ -68,10 +68,10 @@ const reportContextModal = new Modal(
           new EmbedBuilder()
             .setTitle('`📢` ユーザーの通報')
             .setDescription([
-              `${formatEmoji(GrayEmojies.edit)} **送信者:** ${user} [${user.tag}]`,
-              `${formatEmoji(GrayEmojies.schedule)} **アカウント作成日:** ${time(Math.floor(user.createdTimestamp / 1000), 'D')}`,
+              `${formatEmoji(Emojis.Gray.edit)} **送信者:** ${user} [${user.tag}]`,
+              `${formatEmoji(Emojis.Gray.schedule)} **アカウント作成日:** ${time(Math.floor(user.createdTimestamp / 1000), 'D')}`,
               '',
-              `${formatEmoji(BlurpleEmojies.member)} **報告者:** ${interaction.user} [${interaction.user.tag}]`,
+              `${formatEmoji(Emojis.Blurple.member)} **報告者:** ${interaction.user} [${interaction.user.tag}]`,
             ].join('\n'))
             .setColor(Colors.DarkButNotBlack)
             .setThumbnail(user.displayAvatarURL())

@@ -1,5 +1,5 @@
 import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, User } from 'discord.js';
-import { GrayEmojies, BlurpleEmojies } from '../../module/emojies';
+import { Emojis } from '../../module/constant';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { getServerSetting } from '../../module/mongo/middleware';
@@ -22,10 +22,10 @@ const kickLog = new DiscordEventBuilder({
           new EmbedBuilder()
             .setTitle('`🔨` Kick')
             .setDescription([
-              `${formatEmoji(GrayEmojies.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
+              `${formatEmoji(Emojis.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
               '',
-              `${formatEmoji(BlurpleEmojies.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
-              `${formatEmoji(BlurpleEmojies.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
+              `${formatEmoji(Emojis.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
+              `${formatEmoji(Emojis.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
             ].join('\n'))
             .setColor(Colors.Orange)
             .setThumbnail(auditLog.target.displayAvatarURL())

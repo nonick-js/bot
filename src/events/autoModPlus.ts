@@ -1,5 +1,5 @@
 import { EmbedBuilder, escapeSpoiler, Events, formatEmoji, GuildBasedChannel, Message, PermissionFlagsBits, resolveColor, time } from 'discord.js';
-import { GrayEmojies } from '../module/emojies';
+import { Emojis } from '../module/constant';
 import { DiscordEventBuilder } from '../module/events';
 import { getServerSetting } from '../module/mongo/middleware';
 
@@ -50,9 +50,9 @@ function deleteMessage(message: Message<true>, channel: GuildBasedChannel | null
 					new EmbedBuilder()
 						.setTitle('`✋` メッセージブロック')
 						.setDescription([
-							`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
-							`${formatEmoji(GrayEmojies.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
-							`${formatEmoji(GrayEmojies.schedule)} **送信時刻:** ${time(message.createdAt)}`,
+							`${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
+							`${formatEmoji(Emojis.Gray.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
+							`${formatEmoji(Emojis.Gray.schedule)} **送信時刻:** ${time(message.createdAt)}`,
 						].join('\n'))
 						.setColor(resolveColor('#2b2d31'))
 						.setThumbnail(message.author.displayAvatarURL())

@@ -1,0 +1,71 @@
+{
+	"type": "object",
+	"required": [
+		"blackList",
+		"admin"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"guildId": {
+			"$ref": "#/definitions/snowflake",
+			"description": "コマンドを登録するサーバーのID (nullの場合はグローバルコマンド)"
+		},
+		"admin": {
+			"type": "object",
+			"required": [
+				"guild",
+				"users",
+				"error"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"guild": {
+					"$ref": "#/definitions/snowflake",
+					"description": "管理用コマンドを登録するサーバーのID"
+				},
+				"error": {
+					"$ref": "#/definitions/snowflake",
+					"description": "例外発生時にログを送信するチャンネル"
+				},
+				"users": {
+					"type": "array",
+					"description": "管理用コマンドを使用できるユーザーのID",
+					"items": {
+						"$ref": "#/definitions/snowflake"
+					},
+					"uniqueItems": true
+				}
+			}
+		},
+		"blackList": {
+			"type": "object",
+			"required": [
+				"guilds",
+				"users"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"guilds": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/snowflake"
+					},
+					"uniqueItems": true
+				},
+				"users": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/snowflake"
+					},
+					"uniqueItems": true
+				}
+			}
+		}
+	},
+	"definitions": {
+		"snowflake": {
+			"type": "string",
+			"pattern": "[0-9]{16,}"
+		}
+	}
+}

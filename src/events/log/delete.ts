@@ -1,8 +1,11 @@
-import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildBasedChannel, Message, time, User } from 'discord.js';
-import { GrayEmojies } from '../../module/emojies';
+import { AttachmentBuilder, AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildBasedChannel, Message, time, User } from 'discord.js';
+import { Emojis } from '../../module/constant';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { getServerSetting } from '../../module/mongo/middleware';
+import axios from 'axios';
+import admZip from 'adm-zip';
+
 
 const selfDeleteLog = new DiscordEventBuilder({
 	type: Events.MessageDelete,
@@ -39,16 +42,28 @@ async function sendDeleteLog(message: Message<true>, channel?: GuildBasedChannel
 		.setTitle('`💬` メッセージ削除')
 		.setURL(beforeMessage?.url ?? null)
 		.setDescription([
-			`${formatEmoji(GrayEmojies.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
-			`${formatEmoji(GrayEmojies.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
-			`${formatEmoji(GrayEmojies.member)} **削除者:** ${executer ? `${executer} [\`${executer.tag}\`]` : '送信者自身'}`,
-			`${formatEmoji(GrayEmojies.schedule)} **送信時刻:** ${time(message.createdAt)}`,
+			`${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
+			`${formatEmoji(Emojis.Gray.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
+			`${formatEmoji(Emojis.Gray.member)} **削除者:** ${executer ? `${executer} [\`${executer.tag}\`]` : '送信者自身'}`,
+			`${formatEmoji(Emojis.Gray.schedule)} **送信時刻:** ${time(message.createdAt)}`,
 		].join('\n'))
 		.setColor(Colors.White)
 		.setThumbnail(message.author?.avatarURL() ?? null)
 		.setFields({ name: 'メッセージ', value: message.content || 'なし' });
 
-	channel.send({ embeds: [embed] });
+	if (message.attachments.size) {
+		const zip = new admZip();
+		for await (const attachment of message.attachments.values()) {
+			const res = await axios.get(attachment.url, { responseType: 'arraybuffer' }).catch(() => null);
+			if (!res) continue;
+			zip.addFile(attachment.name, res.data);
+		}
+		const attachment = new AttachmentBuilder(zip.toBuffer(), { name: 'attachments.zip' });
+		channel.send({ embeds: [embed], files: [attachment] });
+	}
+	else {
+		channel.send({ embeds: [embed] });
+	}
 }
 
 module.exports = [selfDeleteLog, deleteLog];
