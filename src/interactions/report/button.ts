@@ -5,17 +5,17 @@ import { Emojis } from '../../module/constant';
 const actionButton = new Button(
   { customId: /^nonick-js:report-(completed|ignore)$/ },
   (interaction): void => {
-    const customId = interaction.customId.replace('nonick-js:report-', '');
+    const isCompleteButton = interaction.customId.replace('nonick-js:report-', '') === 'completed';
 
     interaction.showModal(
       new ModalBuilder()
         .setCustomId('nonick-js:report-actionModal')
-        .setTitle(`${customId === 'completed' ? '対処済み' : '対処無し'}としてマーク`)
+        .setTitle(`${isCompleteButton ? '対処済み' : '対処無し'}としてマーク`)
         .setComponents(
           new ActionRowBuilder<TextInputBuilder>().addComponents(
             new TextInputBuilder()
-              .setCustomId(customId === 'completed' ? 'action' : 'reason')
-              .setLabel('行った対処・処罰')
+              .setCustomId(isCompleteButton ? 'action' : 'reason')
+              .setLabel(isCompleteButton ? '行った対処・処罰' : '対処なしの理由')
               .setMaxLength(100)
               .setStyle(TextInputStyle.Short),
           ),
@@ -30,20 +30,20 @@ const actionModal = new Modal(
     if (!interaction.isFromMessage() || interaction.components[0].components[0].type !== ComponentType.TextInput) return;
 
     const embed = interaction.message.embeds[0];
-    const category = interaction.components[0].components[0].customId;
+    const isAction = interaction.components[0].components[0].customId === 'action';
     const categoryValue = interaction.components[0].components[0].value;
 
     await interaction.update({
       embeds: [
         EmbedBuilder
           .from(interaction.message.embeds[0])
-          .setTitle(`${embed.title} ` + (category === 'action' ? '[対応済み]' : '[対応なし]'))
+          .setTitle(`${embed.title} ` + (isAction ? '[対応済み]' : '[対応なし]'))
           .setDescription([
             `${embed.description}`,
             `${formatEmoji(Emojis.Blurple.member)} **対処者:** ${interaction.user} [${interaction.user.tag}]`,
-            `${formatEmoji(Emojis.Blurple.admin)} **${category === 'action' ? '行った処罰' : '対応なしの理由'}:** ${categoryValue}`,
+            `${formatEmoji(Emojis.Blurple.admin)} **${isAction ? '行った処罰' : '対応なしの理由'}:** ${categoryValue}`,
           ].join('\n'))
-          .setColor(category === 'action' ? Colors.Green : Colors.Red),
+          .setColor(isAction ? Colors.Green : Colors.Red),
       ],
       components: [],
     });
