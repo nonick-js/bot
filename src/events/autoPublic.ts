@@ -15,4 +15,4 @@ const autoPublic = new DiscordEventBuilder({
   },
 });
 
-module.exports = [autoPublic];
+export default [autoPublic];

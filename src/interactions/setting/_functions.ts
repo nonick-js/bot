@@ -19,10 +19,8 @@ export async function changeChannelSetting(interaction: ModalSubmitInteraction, 
   const nameOrId = interaction.fields.getTextInputValue('nameOrId');
   const channel = interaction.guild.channels.cache.find(v => v.name === nameOrId || v.id === nameOrId);
 
-  if (!channel)
-    return interaction.reply({ content: '`❌` 条件に一致するチャンネルが見つかりませんでした。', ephemeral: true });
-  if (!(channel instanceof TextChannel))
-    return interaction.reply({ content: '`❌` 設定するチャンネルはテキストチャンネルである必要があります。', ephemeral: true });
+  if (!channel) return interaction.reply({ content: '`❌` 条件に一致するチャンネルが見つかりませんでした。', ephemeral: true });
+  if (!(channel instanceof TextChannel)) return interaction.reply({ content: '`❌` 設定するチャンネルはテキストチャンネルである必要があります。', ephemeral: true });
 
   const res = await ServerSettings.findOneAndUpdate(
     { serverId: interaction.guildId },

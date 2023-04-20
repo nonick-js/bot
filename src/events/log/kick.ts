@@ -16,7 +16,7 @@ const kickLog = new DiscordEventBuilder({
     const channel = await guild.channels.fetch(setting.kick.channel).catch(() => null);
     const executor = await auditLog.executor?.fetch();
 
-    if (channel?.isTextBased())
+    if (channel?.isTextBased()) {
       channel.send({
         embeds: [
           new EmbedBuilder()
@@ -32,7 +32,8 @@ const kickLog = new DiscordEventBuilder({
             .setTimestamp(),
         ],
       }).catch(() => { });
+    }
   },
 });
 
-module.exports = [kickLog];
+export default [kickLog];

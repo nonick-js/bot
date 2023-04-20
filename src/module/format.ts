@@ -102,8 +102,7 @@ export namespace Duration {
   export function format(ms: number, compact: boolean, pass: List[]): string;
   export function format(ms: number, template: string): string;
   export function format(ms = 0, template: string | boolean = '', pass: List[] = []): string {
-    if (typeof template === 'string' && template)
-      return holder.parse(template, parse(ms, Object.keys(durations).filter(v => !template.includes(`%{${v}}`)) as List[]));
+    if (typeof template === 'string' && template) return holder.parse(template, parse(ms, Object.keys(durations).filter(v => !template.includes(`%{${v}}`)) as List[]));
 
     return Object.entries(parse(ms, pass)).map(([short, duration]) => {
       const { long } = durations[short as List];

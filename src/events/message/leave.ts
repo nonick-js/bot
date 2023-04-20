@@ -15,7 +15,7 @@ const leaveMessage = new DiscordEventBuilder({
     const channel = await member.guild.channels.fetch(setting.leave.channel).catch(() => null);
     if (!channel?.isTextBased()) return;
 
-    if (member.user.bot)
+    if (member.user.bot) {
       channel.send({
         embeds: [
           new EmbedBuilder()
@@ -23,6 +23,7 @@ const leaveMessage = new DiscordEventBuilder({
             .setColor(Colors.Red),
         ],
       }).catch(() => { });
+    }
 
     else {
       const option = setting.leave.messageOptions;
@@ -45,4 +46,4 @@ const leaveMessage = new DiscordEventBuilder({
   },
 });
 
-module.exports = [leaveMessage];
+export default [leaveMessage];

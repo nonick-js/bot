@@ -15,15 +15,15 @@ const joinMessage = new DiscordEventBuilder({
     const channel = await member.guild.channels.fetch(setting.join.channel).catch(() => null);
     if (!channel?.isTextBased()) return;
 
-    if (member.user.bot)
+    if (member.user.bot) {
       channel.send({
         embeds: [
           new EmbedBuilder()
             .setAuthor({ name: `${member.user.username} が連携されました`, iconURL: member.user.displayAvatarURL() })
             .setColor(Colors.Green),
         ],
-      })
-        .catch(() => { });
+      }).catch(() => { });
+    }
 
     else {
       const option = setting.join.messageOptions;
@@ -45,4 +45,4 @@ const joinMessage = new DiscordEventBuilder({
   },
 });
 
-module.exports = [joinMessage];
+export default [joinMessage];

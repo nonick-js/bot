@@ -21,4 +21,4 @@ const autoCreateThread = new DiscordEventBuilder({
   },
 });
 
-module.exports = [autoCreateThread];
+export default [autoCreateThread];

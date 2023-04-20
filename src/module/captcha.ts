@@ -17,7 +17,7 @@ export class Captcha {
 			GlobalFonts.register(option.font, 'Captcha');
 			this._option.font = 'Captcha';
 		}
-		else this._option.font = option.font ?? 'Sans';
+		else { this._option.font = option.font ?? 'Sans'; }
 		this._option.color = option.color ?? '#32cf7e';
 		this._option.chars = option.chars ?? 6;
 
@@ -45,8 +45,7 @@ export class Captcha {
 		this._ctx.font = `${opt.size}px ${opt.font}`;
 		this._ctx.globalAlpha = opt.opacity;
 		this._ctx.fillStyle = opt.color;
-		for (const char of decoyText)
-			this._ctx.fillText(char, getRandom(30, this._width - 30), getRandom(30, this._height - 30));
+		for (const char of decoyText) { this._ctx.fillText(char, getRandom(30, this._width - 30), getRandom(30, this._height - 30)); }
 	}
 
 	drawLine(option: drawLineOption = {}) {
@@ -61,8 +60,7 @@ export class Captcha {
 		this._ctx.globalAlpha = opt.opacity;
 		this._ctx.beginPath();
 		this._ctx.moveTo(this._coord[0][0], this._coord[0][1] + getRandom(-opt.blur, opt.blur));
-		for (let i = 1; i < this._coord.length; i++)
-			this._ctx.lineTo(this._coord[i][0], this._coord[i][1] + getRandom(-opt.blur, opt.blur));
+		for (let i = 1; i < this._coord.length; i++) { this._ctx.lineTo(this._coord[i][0], this._coord[i][1] + getRandom(-opt.blur, opt.blur)); }
 		this._ctx.stroke();
 		this._ctx.closePath();
 	}
@@ -102,8 +100,7 @@ export class Captcha {
 	private getRandomCoord(chars: number) {
 		const coords: number[][] = [];
 		const gap = Math.floor(this._width / chars);
-		for (let i = 0; i < chars; i++)
-			coords.push([15 + gap * (i + 0.2), getRandom(30, this._height - 30)]);
+		for (let i = 0; i < chars; i++) { coords.push([15 + gap * (i + 0.2), getRandom(30, this._height - 30)]); }
 		return coords.sort(([a], [b]) => a - b) as [[number, number]];
 	}
 

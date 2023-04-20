@@ -18,7 +18,7 @@ const banLog = new DiscordEventBuilder({
 
     if (!channel?.isTextBased()) return;
 
-    if (auditLog.action === AuditLogEvent.MemberBanAdd)
+    if (auditLog.action === AuditLogEvent.MemberBanAdd) {
       channel.send({
         embeds: [
           new EmbedBuilder()
@@ -34,8 +34,9 @@ const banLog = new DiscordEventBuilder({
             .setTimestamp(),
         ],
       }).catch(() => { });
+    }
 
-    else if (auditLog.action === AuditLogEvent.MemberBanRemove)
+    else if (auditLog.action === AuditLogEvent.MemberBanRemove) {
       channel.send({
         embeds: [
           new EmbedBuilder()
@@ -51,7 +52,8 @@ const banLog = new DiscordEventBuilder({
             .setTimestamp(),
         ],
       }).catch(() => { });
+    }
   },
 });
 
-module.exports = [banLog];
+export default [banLog];

@@ -15,7 +15,7 @@ const voiceLog = new DiscordEventBuilder({
 		const channel = await newState.guild.channels.fetch(setting.voice.channel).catch(() => null);
 		if (!channel?.isTextBased()) return;
 
-		if (oldState.channel && newState.channel && !oldState.channel.equals(newState.channel))
+		if (oldState.channel && newState.channel && !oldState.channel.equals(newState.channel)) {
 			channel
 				.send({
 					embeds: [
@@ -31,8 +31,9 @@ const voiceLog = new DiscordEventBuilder({
 							.setTimestamp(),
 					],
 				});
+		}
 
-		else if (!oldState.channel && newState.channel)
+		else if (!oldState.channel && newState.channel) {
 			channel
 				.send({
 					embeds: [
@@ -47,8 +48,9 @@ const voiceLog = new DiscordEventBuilder({
 							.setTimestamp(),
 					],
 				});
+		}
 
-		else if (oldState.channel && !newState.channel)
+		else if (oldState.channel && !newState.channel) {
 			channel
 				.send({
 					embeds: [
@@ -63,7 +65,8 @@ const voiceLog = new DiscordEventBuilder({
 							.setTimestamp(),
 					],
 				});
+		}
 	},
 });
 
-module.exports = [voiceLog];
+export default [voiceLog];

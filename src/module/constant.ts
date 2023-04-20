@@ -41,3 +41,7 @@ export namespace Emojis {
 
 	export const space = '1064892783804043344';
 }
+
+export namespace RegEx {
+	export const Emoji = /\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu;
+}

@@ -20,4 +20,4 @@ const messageExpansion = new DiscordEventBuilder({
   },
 });
 
-module.exports = [messageExpansion];
+export default [messageExpansion];

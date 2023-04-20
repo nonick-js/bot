@@ -44,7 +44,7 @@ const autoModPlus = new DiscordEventBuilder({
 
 function deleteMessage(message: Message<true>, channel: GuildBasedChannel | null, rule?: string) {
 	message.delete().then(() => {
-		if (channel?.isTextBased())
+		if (channel?.isTextBased()) {
 			channel.send({
 				embeds: [
 					new EmbedBuilder()
@@ -60,7 +60,8 @@ function deleteMessage(message: Message<true>, channel: GuildBasedChannel | null
 						.setFooter({ text: `ルール: ${rule}` }),
 				],
 			});
+		}
 	});
 }
 
-module.exports = [autoModPlus];
+export default [autoModPlus];

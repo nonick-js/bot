@@ -63,16 +63,18 @@ client.on(Events.GuildDelete, async (guild) => {
 client.on(Events.InteractionCreate, interaction => {
   if (!interaction.isRepliable()) return;
 
-  if (isBlocked(interaction.guild))
+  if (isBlocked(interaction.guild)) {
     interaction.reply({
       content: `\`🚫\` このサーバーでの${interaction.client.user.username}の使用は禁止されています。異議申し立ては[こちら](https://discord.gg/fVcjCNn733)`,
       ephemeral: true,
     });
+  }
 
   interactions.run(interaction)
     .catch((err) => {
-      if (err instanceof InteractionsError && err.code === ErrorCodes.CommandHasCoolTime)
+      if (err instanceof InteractionsError && err.code === ErrorCodes.CommandHasCoolTime) {
         return interaction.reply({ content: '`⌛` コマンドはクールダウン中です', ephemeral: true });
+      }
       console.log(err);
     });
 });

@@ -66,4 +66,4 @@ async function sendDeleteLog(message: Message<true>, channel?: GuildBasedChannel
 	}
 }
 
-module.exports = [selfDeleteLog, deleteLog];
+export default [selfDeleteLog, deleteLog];
