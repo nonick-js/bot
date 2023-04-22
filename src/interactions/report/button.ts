@@ -1,6 +1,6 @@
 import { Button, Modal } from '@akki256/discord-interaction';
 import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, ComponentType, EmbedBuilder, formatEmoji, Colors } from 'discord.js';
-import { Emojis } from '../../module/constant';
+import { Emojis, Fields } from '../../module/constant';
 
 const actionButton = new Button({
   customId: /^nonick-js:report-(completed|ignore)$/,
@@ -37,11 +37,11 @@ const actionModal = new Modal({
       EmbedBuilder
         .from(interaction.message.embeds[0])
         .setTitle(`${embed.title} ` + (category === 'action' ? '[対応済み]' : '[対応なし]'))
-        .setDescription([
-          `${embed.description}`,
-          `${formatEmoji(Emojis.Blurple.member)} **対処者:** ${interaction.user} [${interaction.user.tag}]`,
+        .setDescription(Fields.multiLine(
+          embed.description,
+          Fields.memberTag(interaction.user, { text: '対処者', color: 'Blurple' }),
           `${formatEmoji(Emojis.Blurple.admin)} **${category === 'action' ? '行った処罰' : '対応なしの理由'}:** ${categoryValue}`,
-        ].join('\n'))
+        ))
         .setColor(category === 'action' ? Colors.Green : Colors.Red),
     ],
     components: [],

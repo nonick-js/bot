@@ -1,5 +1,5 @@
 import { Colors, EmbedBuilder, Events, formatEmoji } from 'discord.js';
-import { Emojis } from '../../module/constant';
+import { Emojis, Fields } from '../../module/constant';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { getServerSetting } from '../../module/mongo/middleware';
@@ -21,11 +21,11 @@ const voiceLog = new DiscordEventBuilder({
 					embeds: [
 						new EmbedBuilder()
 							.setTitle('`🔊` チャンネル移動')
-							.setDescription([
-								`${formatEmoji(Emojis.Gray.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-								`${formatEmoji(Emojis.Gray.channel)} **チャンネル移動元:** ${oldState.channel} [${oldState.channel.name}]`,
-								`${formatEmoji(Emojis.Gray.channel)} **チャンネル移動先:** ${newState.channel} [${newState.channel.name}]`,
-							].join('\n'))
+							.setDescription(Fields.multiLine(
+								Fields.memberTag(newState.member),
+								Fields.channelName(oldState.channel, { text: 'チャンネル移動元' }),
+								Fields.channelName(newState.channel, { text: 'チャンネル移動先' }),
+							))
 							.setColor(Colors.Yellow)
 							.setThumbnail(newState.member.displayAvatarURL())
 							.setTimestamp(),
@@ -39,10 +39,10 @@ const voiceLog = new DiscordEventBuilder({
 					embeds: [
 						new EmbedBuilder()
 							.setTitle('`🔊` チャンネル参加')
-							.setDescription([
-								`${formatEmoji(Emojis.Gray.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-								`${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${newState.channel} [${newState.channel.name}]`,
-							].join('\n'))
+							.setDescription(Fields.multiLine(
+								Fields.memberTag(newState.member),
+								Fields.channelName(newState.channel),
+							))
 							.setColor(Colors.Green)
 							.setThumbnail(newState.member.displayAvatarURL())
 							.setTimestamp(),
@@ -56,10 +56,10 @@ const voiceLog = new DiscordEventBuilder({
 					embeds: [
 						new EmbedBuilder()
 							.setTitle('`🔊` チャンネル退出')
-							.setDescription([
-								`${formatEmoji(Emojis.Gray.member)} **メンバー:** ${newState.member} [${newState.member.user.tag}]`,
-								`${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${oldState.channel} [${oldState.channel.name}]`,
-							].join('\n'))
+							.setDescription(Fields.multiLine(
+								Fields.memberTag(newState.member),
+								Fields.channelName(oldState.channel),
+							))
 							.setColor(Colors.Red)
 							.setThumbnail(newState.member.displayAvatarURL())
 							.setTimestamp(),

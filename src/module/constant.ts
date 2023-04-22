@@ -1,3 +1,5 @@
+import { GuildMember, User, UserFlagsString, bold, formatEmoji, inlineCode, Channel, GuildBasedChannel, time, TimestampStylesString } from "discord.js";
+
 export namespace Emojis {
 	export const White = {
 		addMark: '988439798324817930',
@@ -40,6 +42,87 @@ export namespace Emojis {
 	} as const;
 
 	export const space = '1064892783804043344';
+
+	export const Flags: {
+		User: Partial<Record<UserFlagsString, string>>
+	} = {
+		User: {
+			Staff: '966753508739121222',
+			Partner: '966753508860768357',
+			CertifiedModerator: '959536411894243378',
+			Hypesquad: '966753508961439745',
+			HypeSquadOnlineHouse1: '966753508843978872',
+			HypeSquadOnlineHouse2: '966753508927889479',
+			HypeSquadOnlineHouse3: '966753508776890459',
+			BugHunterLevel1: '966753508848205925',
+			BugHunterLevel2: '966753508755898410',
+			ActiveDeveloper: '1040345950318768218',
+			VerifiedDeveloper: '966753508705583174',
+			PremiumEarlySupporter: '966753508751736892',
+		}
+	};
+}
+
+export namespace Fields {
+	type FieldOption = { text: string };
+	type FieldsColorOption<
+		T extends
+		| keyof typeof Emojis.White
+		| keyof typeof Emojis.Gray
+		| keyof typeof Emojis.Blurple,
+		C extends 'White' | 'Gray' | 'Blurple' =
+		| (T extends keyof typeof Emojis.White ? 'White' : never)
+		| (T extends keyof typeof Emojis.Gray ? 'Gray' : never)
+		| (T extends keyof typeof Emojis.Blurple ? 'Blurple' : never)
+	> = { color: C } & FieldOption;
+
+	export function id(idResolve: { id: string }, options: FieldOption = { text: 'ID' }) {
+		return `${formatEmoji(Emojis.White.id)} ${options.text}: ${inlineCode(idResolve.id)}`;
+	}
+
+	export function nickName(member: GuildMember, options: FieldOption = { text: 'ニックネーム' }) {
+		return `${formatEmoji(Emojis.White.nickName)} ${options.text} ${bold(member.nickname ?? 'なし')}`;
+	}
+
+	export function memberId(member: User | GuildMember | null | undefined | string, options?: Partial<FieldsColorOption<'member'>>) {
+		const option: FieldsColorOption<'member'> = { text: 'メンバー', color: 'Gray', ...options };
+		return [
+			`${formatEmoji(Emojis[option.color].member)} **${option.text}:**`,
+			member && typeof member !== 'string' ? `${member} [${inlineCode(member?.id)}]` : member ?? '不明',
+		].join(' ');
+	}
+	export function memberTag(member: User | GuildMember | null | undefined | string, options?: Partial<FieldsColorOption<'member'>>) {
+		const option: FieldsColorOption<'member'> = { text: 'メンバー', color: 'Gray', ...options };
+		const user = member instanceof User ? member : member instanceof GuildMember ? member?.user : null;
+		return [
+			`${formatEmoji(Emojis[option.color].member)} **${option.text}:**`,
+			user && typeof member !== 'string' ? `${member} [${inlineCode(user?.tag)}]` : member ?? '不明',
+		].join(' ');
+	}
+
+	export function channelName(channel: GuildBasedChannel | null | undefined | string, options?: Partial<FieldsColorOption<'channel'>>) {
+		const option: FieldsColorOption<'channel'> = { text: 'チャンネル', color: 'Gray', ...options };
+		return [
+			`${formatEmoji(Emojis[option.color].channel)} **${option.text}:**`,
+			channel && typeof channel !== 'string' ? `${channel} [${inlineCode(channel.name)}]` : channel ?? '不明',
+		].join(' ');
+	}
+	export function channelId(channel: Channel | null | undefined | string, options?: Partial<FieldsColorOption<'channel'>>) {
+		const option: FieldsColorOption<'channel'> = { text: 'チャンネル', color: 'Gray', ...options };
+		return [
+			`${formatEmoji(Emojis[option.color].channel)} **${option.text}:**`,
+			channel && typeof channel !== 'string' ? `${channel} [${inlineCode(channel.id)}]` : channel ?? '不明',
+		].join(' ');
+	}
+
+	export function schedule(date: Date | number | null, options?: Partial<{ flag: TimestampStylesString } & FieldsColorOption<'schedule'>>) {
+		const option: { flag: TimestampStylesString } & FieldsColorOption<'schedule'> = { text: '時間', color: 'Gray', flag: 'f', ...options };
+		return `${formatEmoji(Emojis[option.color].schedule)} **${option.text}:** ${time(new Date(date ?? 0), option.flag)}`
+	}
+
+	export function multiLine(...lines: unknown[]) {
+		return lines.filter(v => v != null).join('\n');
+	}
 }
 
 export namespace RegEx {

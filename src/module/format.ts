@@ -10,13 +10,13 @@ export class PlaceHolder<T extends Readonly<Record<string, unknown>>> {
   private _parse(str: string, params: Partial<T>): string {
     return str.replace(new RegExp(`(?<!\\\\)\\${this._prefix}(?<!\\\\)\\${this.startBracket}(\\w+)(?<!\\\\)\\${this.endBracket}`, 'g'), (input, key) => {
       const placeholder = this.holder.get(key);
-      return String(placeholder?.callback?.(params) || input);
+      return String(placeholder?.callback?.(params) ?? input);
     });
   }
 
   parse(str: string, params: Partial<T>): string;
-  parse(obj: Readonly<Record<string | number | symbol, unknown>>, params: Partial<T>): string;
-  parse(str: string | Readonly<Record<string | number | symbol, unknown>>, params: Partial<T>) {
+  parse<U extends object>(obj: U, params: Partial<T>): U;
+  parse<U extends object>(str: string | U, params: Partial<T>) {
     if (typeof str === 'string') return this._parse(str, params);
     return JSON.parse(JSON.stringify(str), (_, value) => {
       if (typeof value === 'string') return this._parse(value, params);

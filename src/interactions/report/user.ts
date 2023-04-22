@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ComponentType, EmbedBuilder, formatEmoji, ModalBuilder, PermissionFlagsBits, roleMention, TextInputBuilder, TextInputStyle, time, User } from 'discord.js';
 import { Modal, UserContext } from '@akki256/discord-interaction';
-import { Emojis } from '../../module/constant';
+import { Emojis, Fields } from '../../module/constant';
 import { getServerSetting } from '../../module/mongo/middleware';
 
 const reportContext = new UserContext({
@@ -59,12 +59,12 @@ const reportContextModal = new Modal({
       embeds: [
         new EmbedBuilder()
           .setTitle('`📢` ユーザーの通報')
-          .setDescription([
-            `${formatEmoji(Emojis.Gray.edit)} **送信者:** ${user} [${user.tag}]`,
-            `${formatEmoji(Emojis.Gray.schedule)} **アカウント作成日:** ${time(Math.floor(user.createdTimestamp / 1000), 'D')}`,
+          .setDescription(Fields.multiLine(
+            Fields.memberTag(user, { text: '送信者' }),
+            Fields.schedule(user.createdAt, { text: 'アカウント作成日', flag: 'D' }),
             '',
-            `${formatEmoji(Emojis.Blurple.member)} **報告者:** ${interaction.user} [${interaction.user.tag}]`,
-          ].join('\n'))
+            Fields.memberTag(interaction.user, { text: '報告者', color: 'Blurple' })
+          ))
           .setColor(Colors.DarkButNotBlack)
           .setThumbnail(user.displayAvatarURL())
           .setFields(

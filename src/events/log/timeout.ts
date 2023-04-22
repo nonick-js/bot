@@ -1,5 +1,5 @@
 import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildMember, time, User } from 'discord.js';
-import { Emojis } from '../../module/constant';
+import { Emojis, Fields } from '../../module/constant';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { getServerSetting } from '../../module/mongo/middleware';
@@ -25,13 +25,13 @@ const timeoutLog = new DiscordEventBuilder({
         embeds: [
           new EmbedBuilder()
             .setTitle('`🛑` タイムアウト')
-            .setDescription([
-              `${formatEmoji(Emojis.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
-              `${formatEmoji(Emojis.Gray.schedule)} **解除される時間:** ${time(Math.floor((member.communicationDisabledUntilTimestamp ?? 0) / 1000), 'f')}`,
+            .setDescription(Fields.multiLine(
+              Fields.memberTag(auditLog.target, { text: '対象者' }),
+              Fields.schedule(member.communicationDisabledUntil, { text: '解除される時間' }),
               '',
-              `${formatEmoji(Emojis.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
+              Fields.memberTag(executor, { text: '実行者', color: 'Blurple' }),
               `${formatEmoji(Emojis.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
-            ].join('\n'))
+            ))
             .setColor(Colors.Red)
             .setThumbnail(auditLog.target.displayAvatarURL())
             .setTimestamp(),
@@ -44,12 +44,12 @@ const timeoutLog = new DiscordEventBuilder({
         embeds: [
           new EmbedBuilder()
             .setTitle('`🛑` タイムアウト手動解除')
-            .setDescription([
-              `${formatEmoji(Emojis.Gray.member)} **対象者:** ${auditLog.target} [\`${auditLog.target.tag}\`]`,
+            .setDescription(Fields.multiLine(
+              Fields.memberTag(auditLog.target, { text: '対象者' }),
               '',
-              `${formatEmoji(Emojis.Blurple.member)} **実行者:** ${executor} [\`${executor?.tag}\`]`,
+              Fields.memberTag(executor, { text: '実行者', color: 'Blurple' }),
               `${formatEmoji(Emojis.Blurple.text)} **理由:** ${auditLog.reason ?? '理由が入力されていません'}`,
-            ].join('\n'))
+            ))
             .setColor(Colors.Blue)
             .setThumbnail(auditLog.target.displayAvatarURL())
             .setTimestamp(),

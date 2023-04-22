@@ -1,5 +1,5 @@
 import { EmbedBuilder, escapeSpoiler, Events, formatEmoji, GuildBasedChannel, Message, PermissionFlagsBits, resolveColor, time } from 'discord.js';
-import { Emojis } from '../module/constant';
+import { Emojis, Fields } from '../module/constant';
 import { DiscordEventBuilder } from '../module/events';
 import { getServerSetting } from '../module/mongo/middleware';
 
@@ -31,8 +31,11 @@ const autoModPlus = new DiscordEventBuilder({
 		const logCh = setting.log.enable && setting.log.channel ? await message.guild.channels.fetch(setting.log.channel) : null;
 
 		if (setting.filter.inviteUrl) {
-			const invites = await message.guild.invites.fetch();
-			if (new RegExp(`(https?:\\/\\/)?(.*\\.)?discord(app)?\\.(com\\/invite|gg)\\/(?!${invites.map(invite => invite.code).join('|')})`).test(message.content)) deleteMessage(message, logCh, 'サーバー招待リンク');
+			const { groups } = message.content.match(/(https?:\/\/)?(.*\.)?discord(app)?\.(com\/invite|gg)\/(?<code>\w+)/) ?? {}
+			if (groups?.code) {
+				const invites = await message.guild.invites.fetch();
+				if (invites.has(groups.code)) deleteMessage(message, logCh, 'サーバー招待リンク');
+			}
 		}
 		if (setting.filter.token && (
 			/mfa\.[a-z0-9_-]{20,}/i.test(message.content) ||
@@ -49,11 +52,11 @@ function deleteMessage(message: Message<true>, channel: GuildBasedChannel | null
 				embeds: [
 					new EmbedBuilder()
 						.setTitle('`✋` メッセージブロック')
-						.setDescription([
-							`${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${message.channel} [\`${message.channel.name}\`]`,
-							`${formatEmoji(Emojis.Gray.member)} **送信者:** ${message.author} [\`${message.author.tag}\`]`,
-							`${formatEmoji(Emojis.Gray.schedule)} **送信時刻:** ${time(message.createdAt)}`,
-						].join('\n'))
+						.setDescription(Fields.multiLine(
+							Fields.channelName(message.channel),
+							Fields.memberTag(message.member, { text: '送信者' }),
+							Fields.schedule(message.createdAt, { text: '送信時刻' })
+						))
 						.setColor(resolveColor('#2b2d31'))
 						.setThumbnail(message.author.displayAvatarURL())
 						.setFields({ name: 'メッセージ', value: escapeSpoiler(message.content) })

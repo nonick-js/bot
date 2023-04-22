@@ -1,4 +1,4 @@
-import { Colors, EmbedBuilder, Events } from 'discord.js';
+import { APIEmbed, Colors, EmbedBuilder, Events } from 'discord.js';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { joinAndLeaveMessagePlaceHolder } from '../../module/placeholders';
@@ -29,17 +29,15 @@ const leaveMessage = new DiscordEventBuilder({
       const option = setting.leave.messageOptions;
       if (!option) return;
 
-      const guild = member.guild;
-      const user = member.user;
-
       channel.send({
-        content: joinAndLeaveMessagePlaceHolder.parse(option.content || '', ({ guild, user })) || undefined,
-        embeds: option.embeds?.map(v => EmbedBuilder.from(v)).map(v => EmbedBuilder.from(v)
-          .setTitle(joinAndLeaveMessagePlaceHolder.parse(v.data.title || '', ({ guild, user })) || null)
-          .setDescription(joinAndLeaveMessagePlaceHolder.parse(v.data.description || '', ({ guild, user })) || null)
-          .setURL(v.data.url || null)
-          .setColor(Colors.Green)
-          .setThumbnail(member.user.displayAvatarURL())),
+        content: joinAndLeaveMessagePlaceHolder.parse(option.content || '', ({ guild: member.guild, user: member.user })) || undefined,
+        embeds: option.embeds?.map(embed => {
+          const data = 'toJSON' in embed ? embed.toJSON() : embed;
+          return EmbedBuilder.from(joinAndLeaveMessagePlaceHolder.parse(data, { guild: member.guild, user: member.user }))
+            .setURL(data?.url || null)
+            .setColor(Colors.Green)
+            .setThumbnail(member.user.displayAvatarURL())
+        }),
       });
     }
 
