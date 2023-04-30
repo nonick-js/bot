@@ -6,11 +6,10 @@ import { getServerSetting } from '../../module/mongo/middleware';
 import axios from 'axios';
 import admZip from 'adm-zip';
 
-
 const selfDeleteLog = new DiscordEventBuilder({
 	type: Events.MessageDelete,
 	execute: async (message) => {
-		if (!message.inGuild()) return;
+		if (!message.inGuild() || message.author.bot) return;
 		if (isBlocked(message.guild)) return;
 		const setting = await getServerSetting(message.guildId, 'log');
 		if (!setting?.delete.enable || !setting.delete.channel) return;
@@ -24,7 +23,7 @@ const deleteLog = new DiscordEventBuilder({
 	execute: async (auditLog, guild) => {
 		if (isBlocked(guild)) return;
 		if (auditLog.action !== AuditLogEvent.MessageDelete || !(auditLog.target instanceof Message)) return;
-		if (!auditLog.target.inGuild()) return;
+		if (!auditLog.target.inGuild() || auditLog.target.author.bot) return;
 
 		const setting = await getServerSetting(guild.id, 'log');
 		if (!setting?.delete.enable || !setting.delete.channel) return;
