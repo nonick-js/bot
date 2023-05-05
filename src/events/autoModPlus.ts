@@ -1,4 +1,4 @@
-import { EmbedBuilder, escapeSpoiler, Events, formatEmoji, GuildBasedChannel, Message, PermissionFlagsBits, resolveColor, time } from 'discord.js';
+import { EmbedBuilder, escapeSpoiler, Events, formatEmoji, GuildBasedChannel, Message, PartialMessage, PermissionFlagsBits, resolveColor, time } from 'discord.js';
 import { Emojis } from '../module/constant';
 import { DiscordEventBuilder } from '../module/events';
 import { getServerSetting } from '../module/mongo/middleware';
@@ -23,7 +23,10 @@ const autoModPlusOnMessageCreate = new DiscordEventBuilder({
 
 const autoModPlusOnMessageEdit = new DiscordEventBuilder({
 	type: Events.MessageUpdate,
-	execute: async (beforeMsg, afterMsg) => checkMessage(afterMsg.partial ? await afterMsg.fetch() : afterMsg),
+	execute: async (beforeMsg, afterMsg) => {
+		afterMsg as Message<boolean> | PartialMessage;
+		checkMessage(afterMsg.partial ? await afterMsg.fetch() : afterMsg);
+	},
 });
 
 async function checkMessage(message: Message<boolean>) {
