@@ -1,11 +1,12 @@
-import { AttachmentBuilder, AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildBasedChannel, Message, time, User } from 'discord.js';
-import { Emojis, Fields } from '../../module/constant';
+import { AttachmentBuilder, AuditLogEvent, Collection, Colors, EmbedBuilder, Events, GuildAuditLogsEntry, GuildBasedChannel, Message, User } from 'discord.js';
+import { Fields } from '../../module/constant';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { getServerSetting } from '../../module/mongo/middleware';
 import axios from 'axios';
 import admZip from 'adm-zip';
 
+const auditLogs = new Collection<string, GuildAuditLogsEntry<AuditLogEvent.MessageDelete> | undefined>();
 
 const selfDeleteLog = new DiscordEventBuilder({
 	type: Events.MessageDelete,
@@ -15,21 +16,8 @@ const selfDeleteLog = new DiscordEventBuilder({
 		const setting = await getServerSetting(message.guildId, 'log');
 		if (!setting?.delete.enable || !setting.delete.channel) return;
 		const logCh = await message.guild.channels.fetch(setting.delete.channel).catch(() => undefined);
-		sendDeleteLog(message, logCh);
-	},
-});
-
-const deleteLog = new DiscordEventBuilder({
-	type: Events.GuildAuditLogEntryCreate,
-	execute: async (auditLog, guild) => {
-		if (isBlocked(guild)) return;
-		if (auditLog.action !== AuditLogEvent.MessageDelete || !(auditLog.target instanceof Message)) return;
-		if (!auditLog.target.inGuild()) return;
-
-		const setting = await getServerSetting(guild.id, 'log');
-		if (!setting?.delete.enable || !setting.delete.channel) return;
-		const logCh = await guild.channels.fetch(setting.delete.channel).catch(() => undefined);
-		sendDeleteLog(auditLog.target, logCh, auditLog.executor);
+		const log = await getAuditLog(message);
+		sendDeleteLog(message, logCh, log?.executor);
 	},
 });
 
@@ -66,4 +54,22 @@ async function sendDeleteLog(message: Message<true>, channel?: GuildBasedChannel
 	}
 }
 
-export default [selfDeleteLog, deleteLog];
+async function getAuditLog(message: Message<true>) {
+	const { guild, author, channel } = message;
+	const logs = await guild.fetchAuditLogs({
+		limit: 3,
+		type: AuditLogEvent.MessageDelete,
+	});
+
+	const log = logs.entries
+		.sort(({ createdTimestamp: a }, { createdTimestamp: b }) => b - a)
+		.find(entry => entry.target.equals(author) && entry.extra.channel.id === channel.id);
+
+	const old = auditLogs.get(guild.id);
+	auditLogs.set(guild.id, log);
+
+	if (!log || (old?.id === log.id && old.extra.count >= log.extra.count)) return null;
+	return log;
+}
+
+export default [selfDeleteLog];
