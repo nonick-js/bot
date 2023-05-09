@@ -1,4 +1,4 @@
-import { APIEmbed, Colors, EmbedBuilder, Events } from 'discord.js';
+import { Colors, EmbedBuilder, Events } from 'discord.js';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { joinAndLeaveMessagePlaceHolder } from '../../module/placeholders';
@@ -36,7 +36,7 @@ const leaveMessage = new DiscordEventBuilder({
           return EmbedBuilder.from(joinAndLeaveMessagePlaceHolder.parse(data, { guild: member.guild, user: member.user }))
             .setURL(data?.url || null)
             .setColor(Colors.Green)
-            .setThumbnail(member.user.displayAvatarURL())
+            .setThumbnail(member.user.displayAvatarURL());
         }),
       });
     }

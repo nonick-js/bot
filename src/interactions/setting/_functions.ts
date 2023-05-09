@@ -3,6 +3,7 @@ import { AnyObject, Document, UpdateQuery } from 'mongoose';
 import { ControlPanelMessages, FeatureType } from './_messages';
 import ServerSettings, { IServerSettings } from '../../schemas/ServerSettings';
 import { ControlPanelComponentPagination } from './_pagination';
+import { Duration } from '../../module/format';
 
 export async function changeToggleSetting(interaction: ButtonInteraction, updateQuery: UpdateQuery<AnyObject>, key: FeatureType) {
   const res = await ServerSettings.findOneAndUpdate(
@@ -65,5 +66,5 @@ export async function reloadMessage(interaction: (MessageComponentInteraction | 
       ...getComponents(setting),
     ],
   });
-  setting.save({ wtimeout: 1_500 });
+  setting.save({ wtimeout: Duration.toMS('1.5s') });
 }

@@ -1,5 +1,5 @@
-import { Colors, EmbedBuilder, Events, formatEmoji } from 'discord.js';
-import { Emojis, Fields } from '../../module/constant';
+import { Colors, EmbedBuilder, Events } from 'discord.js';
+import { Fields } from '../../module/constant';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
 import { getServerSetting } from '../../module/mongo/middleware';

@@ -1,6 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ComponentType, EmbedBuilder, formatEmoji, ModalBuilder, PermissionFlagsBits, roleMention, TextInputBuilder, TextInputStyle, time, User } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ComponentType, EmbedBuilder, ModalBuilder, PermissionFlagsBits, roleMention, TextInputBuilder, TextInputStyle, User } from 'discord.js';
 import { Modal, UserContext } from '@akki256/discord-interaction';
-import { Emojis, Fields } from '../../module/constant';
+import { Fields } from '../../module/constant';
 import { getServerSetting } from '../../module/mongo/middleware';
 
 const reportContext = new UserContext({
@@ -63,7 +63,7 @@ const reportContextModal = new Modal({
             Fields.memberTag(user, { text: '送信者' }),
             Fields.schedule(user.createdAt, { text: 'アカウント作成日', flag: 'D' }),
             '',
-            Fields.memberTag(interaction.user, { text: '報告者', color: 'Blurple' })
+            Fields.memberTag(interaction.user, { text: '報告者', color: 'Blurple' }),
           ))
           .setColor(Colors.DarkButNotBlack)
           .setThumbnail(user.displayAvatarURL())

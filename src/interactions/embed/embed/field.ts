@@ -3,6 +3,7 @@ import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, Embed
 import { getBaseEmbedMakerButtons, reloadEmbedMaker } from './_function';
 import { Emojis } from '../../../module/constant';
 import { omitString } from '../../../module/functions';
+import { Duration } from '../../../module/format';
 
 const addField = [
   new Button({
@@ -95,7 +96,7 @@ const removeField = [
     message
       .awaitMessageComponent({
         filter: v => [indexSelectCustomId, backButtonCustomId].includes(v.customId),
-        time: 180_000,
+        time: Duration.toMS('3m'),
       })
       .then((i) => {
         if (i.customId === indexSelectCustomId && i.isStringSelectMenu()) {

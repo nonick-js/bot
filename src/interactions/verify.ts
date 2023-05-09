@@ -2,7 +2,11 @@ import { ActionRowBuilder, ApplicationCommandOptionType, AttachmentBuilder, Butt
 import { ChatInput, Button } from '@akki256/discord-interaction';
 import { Captcha } from '../module/captcha';
 import { Duration } from '../module/format';
-// import Captcha from '@haileybot/captcha-generator';
+
+const verifyTypes = {
+  button: 'ボタン',
+  image: '画像',
+} as const;
 
 const duringAuthentication = new Set();
 
@@ -13,10 +17,7 @@ const verifyCommand = new ChatInput({
     {
       name: 'type',
       description: '認証タイプ',
-      choices: [
-        { name: 'ボタン', value: 'button' },
-        { name: '画像', value: 'image' },
-      ],
+      choices: Object.entries(verifyTypes).map(([value, name]) => ({ name, value })),
       type: ApplicationCommandOptionType.String,
       required: true,
     },
@@ -59,8 +60,7 @@ const verifyCommand = new ChatInput({
 
   if (!interaction.inCachedGuild()) return;
 
-  const verifyTypeName = new Map([['button', 'ボタン'], ['image', '画像']]);
-  const verifyType = interaction.options.getString('type', true);
+  const verifyType = interaction.options.getString('type', true) as keyof typeof verifyTypes;
   const role = interaction.options.getRole('role', true);
 
   if (!interaction.guild.members.me?.permissions.has(PermissionFlagsBits.ManageRoles)) return interaction.reply({ content: `\`❌\` **${interaction.user.username}**に\`ロールを管理\`権限を付与してください！`, ephemeral: true });
@@ -71,7 +71,7 @@ const verifyCommand = new ChatInput({
   interaction.reply({
     embeds: [
       new EmbedBuilder()
-        .setTitle(`\`✅\` 認証: ${verifyTypeName.get(verifyType)!}`)
+        .setTitle(`\`✅\` 認証: ${verifyTypes[verifyType]}`)
         .setDescription(interaction.options.getString('description')?.replace('  ', '\n') || null)
         .setColor(interaction.options.getNumber('color') ?? Colors.Green)
         .setImage(interaction.options.getAttachment('image')?.url || null)
@@ -132,7 +132,7 @@ const verifyButton = new Button({
         duringAuthentication.add(interaction.user.id);
         interaction.followUp({ content: '`📨` DMで認証を続けてください。' });
 
-        const collector = interaction.user.dmChannel!.createMessageCollector({ filter: v => v.author.id === interaction.user.id, time: 60_000, max: 3 });
+        const collector = interaction.user.dmChannel!.createMessageCollector({ filter: v => v.author.id === interaction.user.id, time: Duration.toMS('1m'), max: 3 });
 
         collector.on('collect', tryMessage => {
           if (tryMessage.content !== text) return;
@@ -146,7 +146,7 @@ const verifyButton = new Button({
         collector.on('end', (collection) => {
           if (collection.size === 3) {
             interaction.user.send({ content: '`❌` 試行回数を超えて認証に失敗しました。次回の認証は`5分後`から可能になります。' });
-            setTimeout(() => duringAuthentication.delete(interaction.user.id), 300_000);
+            setTimeout(() => duringAuthentication.delete(interaction.user.id), Duration.toMS('5m'));
           } else { duringAuthentication.delete(interaction.user.id); }
 
         });

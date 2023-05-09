@@ -2,6 +2,7 @@ import { Button, Modal } from '@akki256/discord-interaction';
 import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonStyle, Colors, ComponentType, EmbedBuilder, ModalBuilder, PermissionFlagsBits, Role, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { checkAndFormatDangerPermission } from '../../../module/functions';
 import { RegEx } from '../../../module/constant';
+import { Duration } from '../../../module/format';
 
 const sendRoleButton = new Button({
   customId: 'nonick-js:embedMaker-roleButton-send',
@@ -128,7 +129,7 @@ const sendRoleButtonModal = new Modal({
       .awaitMessageComponent({
         filter: v => /^nonick-js:embedMaker-roleButton-send-(agree|disagree)$/.test(v.customId),
         componentType: ComponentType.Button,
-        time: 180_000,
+        time: Duration.toMS('3m'),
       })
       .then(async (i) => {
         if (i.customId === 'nonick-js:embedMaker-roleButton-send-disagree') return i.update({ embeds, components });

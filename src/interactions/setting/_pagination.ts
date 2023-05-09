@@ -1,5 +1,6 @@
 import { ActionRowBuilder, BaseMessageOptions, ButtonBuilder, ChannelSelectMenuBuilder, ComponentType, Interaction, RoleSelectMenuBuilder, StringSelectMenuBuilder } from 'discord.js';
 import ServerSettings, { IServerSettings } from '../../schemas/ServerSettings';
+import { Duration } from '../../module/format';
 
 interface indexPageSelectOptions {
   name?: string,
@@ -70,7 +71,7 @@ export class ControlPanelComponentPagination {
     const collector = message.createMessageComponentCollector({
       filter: v => v.customId === 'pagination:componentSelect',
       componentType: ComponentType.StringSelect,
-      time: 600_000,
+      time: Duration.toMS('10m'),
     });
 
     collector.on('collect', async i => {

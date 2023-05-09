@@ -6,6 +6,7 @@ import { joinAndLeaveMessagePlaceHolder } from '../../../module/placeholders';
 import { FeatureType } from '../_messages';
 import { channelModal } from '../_modals';
 import ServerSettings from '../../../schemas/ServerSettings';
+import { Duration } from '../../../module/format';
 
 const joinMessageSetting = [
   // 有効・無効化
@@ -96,7 +97,7 @@ const joinMessageSetting = [
     );
 
     interaction.update({});
-    res.save({ wtimeout: 1_500 });
+    res.save({ wtimeout: Duration.toMS('1.5s') });
   }),
 
   // プレビュー
@@ -181,7 +182,7 @@ const leaveMessageSetting = [
     );
 
     interaction.update({});
-    res.save({ wtimeout: 1_500 });
+    res.save({ wtimeout: Duration.toMS('1.5s') });
   }),
 
   // プレビュー

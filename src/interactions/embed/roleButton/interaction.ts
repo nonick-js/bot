@@ -1,5 +1,6 @@
 import { Button } from '@akki256/discord-interaction';
 import { codeBlock, Colors, EmbedBuilder, roleMention } from 'discord.js';
+import { Duration } from '../../../module/format';
 
 const button = new Button({
   customId: /^nonick-js:roleButton-[0-9]{18,19}/,
@@ -16,7 +17,7 @@ const button = new Button({
           embeds: [new EmbedBuilder().setDescription(`\`✅\` ${roleMention(roleId)}の付与を解除しました。`).setColor(Colors.Green)],
           ephemeral: true,
         });
-        setTimeout(() => interaction.deleteReply(), 3_000);
+        setTimeout(() => interaction.deleteReply(), Duration.toMS('3s'));
       })
       .catch((e) => {
         interaction.reply({
@@ -33,7 +34,7 @@ const button = new Button({
           embeds: [new EmbedBuilder().setDescription(`\`✅\` ${roleMention(roleId)}を付与しました。`).setColor(Colors.Green)],
           ephemeral: true,
         });
-        setTimeout(() => interaction.deleteReply(), 3_000);
+        setTimeout(() => interaction.deleteReply(), Duration.toMS('3s'));
       })
       .catch((e) => {
         interaction.reply({

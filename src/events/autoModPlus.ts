@@ -1,5 +1,5 @@
-import { EmbedBuilder, escapeSpoiler, Events, formatEmoji, GuildBasedChannel, Message, PermissionFlagsBits, resolveColor, time } from 'discord.js';
-import { Emojis, Fields } from '../module/constant';
+import { EmbedBuilder, escapeSpoiler, Events, GuildBasedChannel, Message, PermissionFlagsBits, resolveColor } from 'discord.js';
+import { Fields } from '../module/constant';
 import { DiscordEventBuilder } from '../module/events';
 import { getServerSetting } from '../module/mongo/middleware';
 
@@ -31,7 +31,7 @@ const autoModPlus = new DiscordEventBuilder({
 		const logCh = setting.log.enable && setting.log.channel ? await message.guild.channels.fetch(setting.log.channel) : null;
 
 		if (setting.filter.inviteUrl) {
-			const { groups } = message.content.match(/(https?:\/\/)?(.*\.)?discord(app)?\.(com\/invite|gg)\/(?<code>\w+)/) ?? {}
+			const { groups } = message.content.match(/(https?:\/\/)?(.*\.)?discord(app)?\.(com\/invite|gg)\/(?<code>\w+)/) ?? {};
 			if (groups?.code) {
 				const invites = await message.guild.invites.fetch();
 				if (invites.has(groups.code)) deleteMessage(message, logCh, 'サーバー招待リンク');
@@ -55,7 +55,7 @@ function deleteMessage(message: Message<true>, channel: GuildBasedChannel | null
 						.setDescription(Fields.multiLine(
 							Fields.channelName(message.channel),
 							Fields.memberTag(message.member, { text: '送信者' }),
-							Fields.schedule(message.createdAt, { text: '送信時刻' })
+							Fields.schedule(message.createdAt, { text: '送信時刻' }),
 						))
 						.setColor(resolveColor('#2b2d31'))
 						.setThumbnail(message.author.displayAvatarURL())

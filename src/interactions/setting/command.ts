@@ -65,7 +65,8 @@ const command = new ChatInput({
 });
 
 const featuresSelect = new SelectMenu({
-  customId: 'nonick-js:setting-features', type: SelectMenuType.String
+  customId: 'nonick-js:setting-features',
+  type: SelectMenuType.String,
 }, (interaction) => {
   if (!interaction.values.length) return interaction.update({});
 

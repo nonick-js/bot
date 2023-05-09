@@ -7,7 +7,14 @@
 	"additionalProperties": false,
 	"properties": {
 		"guildId": {
-			"$ref": "#/definitions/snowflake",
+			"oneOf": [
+				{
+					"type": "null"
+				},
+				{
+					"$ref": "#/definitions/snowflake"
+				}
+			],
 			"description": "コマンドを登録するサーバーのID (nullの場合はグローバルコマンド)"
 		},
 		"admin": {

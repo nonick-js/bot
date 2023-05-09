@@ -1,4 +1,4 @@
-import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildMember, time, User } from 'discord.js';
+import { AuditLogEvent, Colors, EmbedBuilder, Events, formatEmoji, GuildMember, User } from 'discord.js';
 import { Emojis, Fields } from '../../module/constant';
 import { DiscordEventBuilder } from '../../module/events';
 import { isBlocked } from '../../module/functions';
@@ -6,7 +6,7 @@ import { getServerSetting } from '../../module/mongo/middleware';
 
 const timeoutLog = new DiscordEventBuilder({
   type: Events.GuildAuditLogEntryCreate,
-  async execute(auditLog, guild) {
+  execute: async (auditLog, guild) => {
     if (isBlocked(guild)) return;
     if (auditLog.action !== AuditLogEvent.MemberUpdate || !(auditLog.target instanceof User)) return;
 

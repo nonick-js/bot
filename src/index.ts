@@ -5,7 +5,7 @@ dotenv.config();
 import { ActivityType, AllowedMentionsTypes, Client, codeBlock, Colors, EmbedBuilder, Events, GatewayIntentBits, Partials, version } from 'discord.js';
 import { DiscordInteractions, ErrorCodes, InteractionsError } from '@akki256/discord-interaction';
 import { DiscordEvents } from './module/events';
-import { guildId, admin } from '../config.json';
+import { guildId, admin } from './config.json';
 import { isBlocked } from './module/functions';
 import mongoose from 'mongoose';
 import cron from 'node-cron';

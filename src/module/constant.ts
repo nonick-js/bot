@@ -1,4 +1,4 @@
-import { GuildMember, User, UserFlagsString, bold, formatEmoji, inlineCode, Channel, GuildBasedChannel, time, TimestampStylesString } from "discord.js";
+import { GuildMember, User, UserFlagsString, bold, formatEmoji, inlineCode, Channel, GuildBasedChannel, time, TimestampStylesString } from 'discord.js';
 
 export namespace Emojis {
 	export const White = {
@@ -59,7 +59,7 @@ export namespace Emojis {
 			ActiveDeveloper: '1040345950318768218',
 			VerifiedDeveloper: '966753508705583174',
 			PremiumEarlySupporter: '966753508751736892',
-		}
+		},
 	};
 }
 
@@ -117,7 +117,7 @@ export namespace Fields {
 
 	export function schedule(date: Date | number | null, options?: Partial<{ flag: TimestampStylesString } & FieldsColorOption<'schedule'>>) {
 		const option: { flag: TimestampStylesString } & FieldsColorOption<'schedule'> = { text: '時間', color: 'Gray', flag: 'f', ...options };
-		return `${formatEmoji(Emojis[option.color].schedule)} **${option.text}:** ${time(new Date(date ?? 0), option.flag)}`
+		return `${formatEmoji(Emojis[option.color].schedule)} **${option.text}:** ${time(new Date(date ?? 0), option.flag)}`;
 	}
 
 	export function multiLine(...lines: unknown[]) {

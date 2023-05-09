@@ -1,6 +1,7 @@
 import { Client, Colors, EmbedBuilder, Guild, inlineCode } from 'discord.js';
 import { Document } from 'mongoose';
 import ServerSettings, { IServerSettings } from '../schemas/ServerSettings';
+import { Duration } from '../module/format';
 
 const verificationLevelData = [
   { name: '設定しない', description: '無制限' },
@@ -19,7 +20,7 @@ const start = async (client: Client, hour: number) => {
     if (!guild || level == null) return;
 
     Setting.changeVerificationLevel.level.old = guild.verificationLevel;
-    await Setting.save({ wtimeout: 1_500 });
+    await Setting.save({ wtimeout: Duration.toMS('1.5s') });
 
     guild.setVerificationLevel(level)
       .then(() => sendLog(guild, Setting, level, '開始'))

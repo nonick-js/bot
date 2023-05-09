@@ -1,5 +1,6 @@
 import { SelectMenu, SelectMenuType } from '@akki256/discord-interaction';
 import { Colors, EmbedBuilder, MessageFlags } from 'discord.js';
+import { Duration } from '../../../module/format';
 
 const roleSelect = new SelectMenu({
   customId: /^nonick-js:roleSelectMenu(-[1-5])?$|^reactionRole$/, type: SelectMenuType.String,
@@ -27,7 +28,7 @@ const roleSelect = new SelectMenu({
     ephemeral: true,
   });
 
-  setTimeout(() => interaction.deleteReply(), 3_000);
+  setTimeout(() => interaction.deleteReply(), Duration.toMS('3s'));
 });
 
 export default [roleSelect];

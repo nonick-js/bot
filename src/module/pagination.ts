@@ -1,4 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentEmojiResolvable, ComponentType, EmbedBuilder, Interaction, InteractionReplyOptions, Message, MessageCreateOptions, TextBasedChannel } from 'discord.js';
+import { Duration } from './format';
 
 export class EmbedPagination {
   #pages: EmbedBuilder[];
@@ -102,7 +103,7 @@ export class EmbedPagination {
     const collector = msg.createMessageComponentCollector({
       filter: v => v.customId === 'pagination:previousButton' || v.customId === 'pagination:nextButton',
       componentType: ComponentType.Button,
-      time: 300_000,
+      time: Duration.toMS('5m'),
     });
 
     collector.on('collect', async i => {
@@ -152,7 +153,7 @@ export class EmbedPagination {
     const collector = msg.createMessageComponentCollector({
       filter: v => v.customId === 'pagination:previousButton' || v.customId === 'pagination:nextButton',
       componentType: ComponentType.Button,
-      time: 300_000,
+      time: Duration.toMS('5m'),
     });
 
     collector.on('collect', async i => {

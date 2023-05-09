@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, bold, Colors, discordSort, EmbedBuilder, formatEmoji, GuildFeature, GuildMember, Interaction, PermissionFlagsBits, time, User } from 'discord.js';
+import { ApplicationCommandOptionType, Colors, discordSort, EmbedBuilder, formatEmoji, GuildFeature, GuildMember, Interaction, PermissionFlagsBits, time, User } from 'discord.js';
 import { ChatInput, UserContext } from '@akki256/discord-interaction';
 import { Emojis, Fields } from '../module/constant';
 
@@ -99,7 +99,7 @@ async function createUserInfoEmbed(interaction: Interaction, user: User) {
         })?.join('') ?? 'なし',
         inline: true,
       },
-    )
+    );
 
   if (!(member instanceof GuildMember)) {
     return embed
@@ -110,7 +110,7 @@ async function createUserInfoEmbed(interaction: Interaction, user: User) {
   embed
     .setDescription(Fields.multiLine(
       Fields.nickName(member),
-      embed.data.description
+      embed.data.description,
     ))
     .setColor(member.displayColor || Colors.White)
     .spliceFields(1, 0, {
@@ -123,7 +123,7 @@ async function createUserInfoEmbed(interaction: Interaction, user: User) {
       value: discordSort(member.roles.cache.filter(({ id }) => id !== member.guild.id))
         .map(role => role.toString())
         .join(' ') || 'なし',
-      inline: true
+      inline: true,
     });
 
   if (member.premiumSince) {

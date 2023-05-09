@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Guild, PermissionsBitField } from 'discord.js';
-import Config from '../../config.json';
+import Config from '../config.json';
 
 const dangerPermissions = new Map([
   [ 'Administrator', '管理者' ],

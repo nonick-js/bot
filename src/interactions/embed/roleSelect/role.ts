@@ -3,6 +3,7 @@ import { ComponentType, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextIn
 import { getRoleSelectMakerButtons } from './_function';
 import { checkAndFormatDangerPermission } from '../../../module/functions';
 import { Emojis, RegEx } from '../../../module/constant';
+import { Duration } from '../../../module/format';
 
 const addRole = [
   new Button({
@@ -156,7 +157,7 @@ const removeRole = [
     message
       .awaitMessageComponent({
         filter: v => [indexSelectCustomId, backButtonCustomId].includes(v.customId),
-        time: 180_000,
+        time: Duration.toMS('3m'),
       })
       .then((i) => {
         if (i.customId === indexSelectCustomId && i.isStringSelectMenu()) {
