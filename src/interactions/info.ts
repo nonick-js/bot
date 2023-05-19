@@ -127,7 +127,7 @@ async function createUserInfoEmbed(interaction: Interaction, user: User) {
     ?.map(role => role?.toString())?.join(' ') || 'なし';
 
   const embed = new EmbedBuilder()
-    .setAuthor({ name: user.tag })
+    .setAuthor({ name: (!user.bot && user.discriminator === '0') ? `@${user.username}` : `${user.tag}` })
     .setDescription([
       `${formatEmoji(Emojis.White.nickName)} ニックネーム ${bold(nickName)}`,
       `${formatEmoji(Emojis.White.id)} ユーザーID ${inlineCode(user.id)}`,
