@@ -109,7 +109,7 @@ async function createUserInfoEmbed(interaction: Interaction, user: User) {
 
   if (!(member instanceof GuildMember))
     return new EmbedBuilder()
-      .setAuthor({ name: user.tag })
+      .setAuthor({ name: (!user.bot && user.discriminator === '0') ? `@${user.username}` : `${user.tag}` })
       .setTitle('このユーザーはこのサーバーにいません')
       .setDescription(`${formatEmoji(Emojis.White.id)} ユーザーID: ${inlineCode(user.id)}`)
       .setColor(Colors.DarkerGrey)
