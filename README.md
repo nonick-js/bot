@@ -3,6 +3,8 @@
 [![GitHub License](https://img.shields.io/github/license/nonick-mc/DiscordBot-NoNick.js)](LICENSE)  
 サーバー運営をサポートする機能を搭載した多機能BOTです。
 
+## 🚫このバージョンは再設計を行っているため、正しく動作しません！
+
 # 機能
 * 🚪入退室ログ
 * 📢サーバー内通報
