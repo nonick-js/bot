@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   discord-api-types: 0.37.35
 
@@ -32,8 +36,8 @@ dependencies:
     specifier: ^16.0.3
     version: 16.0.3
   mongoose:
-    specifier: ^6.11.0
-    version: 6.11.0
+    specifier: ^6.11.3
+    version: 6.11.3
   node-cron:
     specifier: ^3.0.2
     version: 3.0.2
@@ -2229,8 +2233,8 @@ packages:
       - aws-crt
     dev: false
 
-  /mongoose@6.11.0:
-    resolution: {integrity: sha512-MM4yE8oZOY0x7eeimD6/2IxtPTQu5cc2c7wZAkvybW8dtZmjC9s+0Obre5rxW4XVNOfLfJSiRbPojl38278PjQ==}
+  /mongoose@6.11.3:
+    resolution: {integrity: sha512-M1Y5PjttgV51YDa30u7GVMVypQSlNZF/jUhlzTBAmaz5C9FvOr8eih/VLhhO7xtTSlcVTFQS1dqlQNMbtfUowQ==}
     engines: {node: '>=12.0.0'}
     dependencies:
       bson: 4.7.2
