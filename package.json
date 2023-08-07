@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon --inspect src/index.ts",
     "start": "node build/src/index.js",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "lint": "eslint . --ext .ts"
   },
   "keywords": [],
   "author": "",
