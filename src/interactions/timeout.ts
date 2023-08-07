@@ -51,7 +51,7 @@ const timeoutCommand = new ChatInput(
 
     if (duration === 0)
       return interaction.reply({ content: '`❌` 合計時間は1分以上から設定できます。', ephemeral: true });
-    if (Duration.toMS('28d') <= duration)
+    if (Duration.toMS('28d') < duration)
       return interaction.reply({ content: '`❌` 28日以上のタイムアウトはできません。', ephemeral: true });
     if (!(member instanceof GuildMember))
       return interaction.reply({ content: '`❌` このユーザーはサーバーにいません。', ephemeral: true });
