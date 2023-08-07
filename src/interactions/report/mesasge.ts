@@ -21,7 +21,6 @@ const reportContext = new MessageContext(
 
     const message = interaction.targetMessage;
     const user = message.author;
-    const member = await interaction.guild.members.fetch(user.id).catch(() => undefined);
 
     if (user.system || message.webhookId)
       return interaction.reply({ content: '`❌` システムメッセージやWebhookは報告できません。', ephemeral: true });
@@ -29,8 +28,6 @@ const reportContext = new MessageContext(
       return interaction.reply({ content: '`❌` 自分自身を報告しようとしています。', ephemeral: true });
     if (user.id === interaction.client.user.id)
       return interaction.reply({ content: `\`❌\` ${interaction.client.user.username}を報告することは出来ません。`, ephemeral: true });
-    if (member && member?.permissions?.has(PermissionFlagsBits.ManageMessages))
-      return interaction.reply({ content: '`❌` サーバー運営のメッセージを報告することはできません。', ephemeral: true });
 
     interaction.showModal(
       new ModalBuilder()
