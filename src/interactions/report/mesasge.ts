@@ -88,7 +88,7 @@ const reportContextModal = new Modal(
             new ButtonBuilder()
               .setCustomId('nonick-js:report-consider')
               .setLabel('対処する')
-              .setStyle(ButtonStyle.Primary)
+              .setStyle(ButtonStyle.Primary),
           ),
         ],
       })

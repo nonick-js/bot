@@ -60,9 +60,8 @@ async function sendDeleteLog(message: Message<true>, channel?: GuildBasedChannel
 		const attachment = new AttachmentBuilder(zip.toBuffer(), { name: 'attachments.zip' });
 		channel.send({ embeds: [embed], files: [attachment] });
 	}
-	else {
-		channel.send({ embeds: [embed] });
-	}
+	else channel.send({ embeds: [embed] });
+
 }
 
 module.exports = [selfDeleteLog, deleteLog];

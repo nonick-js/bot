@@ -2,9 +2,7 @@ import { Button, Modal } from '@akki256/discord-interaction';
 import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, ComponentType, EmbedBuilder, formatEmoji, Colors, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Emojis } from '../../module/constant';
 
-const considerButton = new Button({
-  customId: 'nonick-js:report-consider',
-}, interaction => {
+const considerButton = new Button({ customId: 'nonick-js:report-consider' }, interaction => {
   const embed = interaction.message.embeds[0];
   interaction.update({
     embeds: [
@@ -13,7 +11,7 @@ const considerButton = new Button({
           `${embed.description}`,
           `${formatEmoji(Emojis.Blurple.member)} **対処者:** ${interaction.user} [${interaction.user.tag}]`,
         ].join('\n'))
-        .setColor('Yellow')
+        .setColor('Yellow'),
     ],
     components: [
       new ActionRowBuilder<ButtonBuilder>().setComponents(
@@ -24,11 +22,11 @@ const considerButton = new Button({
         new ButtonBuilder()
           .setCustomId('nonick-js:report-ignore')
           .setLabel('無視')
-          .setStyle(ButtonStyle.Danger)
-      )
-    ]
-  })
-})
+          .setStyle(ButtonStyle.Danger),
+      ),
+    ],
+  });
+});
 
 const actionButton = new Button(
   { customId: /^nonick-js:report-(completed|ignore)$/ },
