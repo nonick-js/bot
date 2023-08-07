@@ -79,14 +79,10 @@ const reportContextModal = new Modal(
         components: [
           new ActionRowBuilder<ButtonBuilder>().setComponents(
             new ButtonBuilder()
-              .setCustomId('nonick-js:report-completed')
-              .setLabel('対処済み')
-              .setStyle(ButtonStyle.Success),
-            new ButtonBuilder()
-              .setCustomId('nonick-js:report-ignore')
-              .setLabel('無視')
-              .setStyle(ButtonStyle.Danger),
-          ),
+              .setCustomId('nonick-js:report-consider')
+              .setLabel('対処する')
+              .setStyle(ButtonStyle.Primary)
+          )
         ],
       })
       .then(message => {

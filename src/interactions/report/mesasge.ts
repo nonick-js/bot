@@ -51,7 +51,6 @@ const reportContextModal = new Modal(
   { customId: 'nonick-js:messageReportModal' },
   async (interaction) => {
     if (!interaction.inCachedGuild() || !interaction.channel || interaction.components[0].components[0].type !== ComponentType.TextInput) return;
-
     const setting = await getServerSetting(interaction.guildId, 'report');
     if (!setting?.channel) return interaction.reply({ content: '`❌` 報告の送信中にエラーが発生しました', ephemeral: true });
 
@@ -71,7 +70,7 @@ const reportContextModal = new Modal(
             .setTitle('`📢` メッセージの報告')
             .setDescription([
               `${formatEmoji(Emojis.Gray.edit)} **送信者:** ${message.author} [${message.author.tag}]`,
-              `${formatEmoji(Emojis.Gray.channel)} **チャンネル:** ${message.channel} [${message.channel.name}]`,
+              `${formatEmoji(Emojis.Gray.channel)} **メッセージ:** ${message.url}`,
               `${formatEmoji(Emojis.Gray.link)} **添付ファイル:** ${message.attachments.size}件`,
               `${formatEmoji(Emojis.Gray.schedule)} **送信時刻:** ${time(Math.floor(message.createdTimestamp / 1000), 'f')}`,
               '',
@@ -87,17 +86,9 @@ const reportContextModal = new Modal(
         components: [
           new ActionRowBuilder<ButtonBuilder>().setComponents(
             new ButtonBuilder()
-              .setCustomId('nonick-js:report-completed')
-              .setLabel('対処済み')
-              .setStyle(ButtonStyle.Success),
-            new ButtonBuilder()
-              .setCustomId('nonick-js:report-ignore')
-              .setLabel('無視')
-              .setStyle(ButtonStyle.Danger),
-            new ButtonBuilder()
-              .setLabel('メッセージ')
-              .setURL(message.url)
-              .setStyle(ButtonStyle.Link),
+              .setCustomId('nonick-js:report-consider')
+              .setLabel('対処する')
+              .setStyle(ButtonStyle.Primary)
           ),
         ],
       })
