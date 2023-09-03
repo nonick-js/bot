@@ -16,7 +16,7 @@
   "json.schemas": [
     {
       "fileMatch": [
-        "/config.json"
+        "src/config.json"
       ],
       "url": "/config.schema.json"
     }
