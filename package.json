@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --inspect src/index.ts",
+    "dev": "nodemon --inspect -r tsconfig-paths/register src/index.ts",
     "start": "node build/src/index.js",
     "build": "tsc -p .",
     "lint": "eslint . --ext .ts"
@@ -24,7 +24,8 @@
     "eslint": "^8.48.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
     "@akki256/discord-interaction": "^3.1.1",
