@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --inspect -r tsconfig-paths/register src/index.ts",
+    "prepare": "ts-patch install -s",
+    "dev": "nodemon --inspect src/index.ts",
     "start": "node dist/index.js",
     "build": "tsc -p .",
     "lint": "eslint . --ext .ts"
@@ -24,8 +25,10 @@
     "eslint": "^8.48.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
+    "ts-patch": "^3.0.2",
     "typescript": "^5.2.2",
-    "tsconfig-paths": "^4.2.0"
+    "tsconfig-paths": "^4.2.0",
+    "typescript-transform-paths": "^3.4.6"
   },
   "dependencies": {
     "@akki256/discord-interaction": "^3.1.1",
