@@ -1,31 +1,33 @@
+import { AllowedMentionsTypes, Client, Colors, EmbedBuilder, Events, GatewayIntentBits, Partials, codeBlock, version } from 'discord.js';
 import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config();
-
-import { ActivityType, AllowedMentionsTypes, Client, codeBlock, Colors, EmbedBuilder, Events, GatewayIntentBits, Partials, version } from 'discord.js';
+import { DiscordEvents } from '@modules/events';
 import { DiscordInteractions, ErrorCodes, InteractionsError } from '@akki256/discord-interaction';
-import { DiscordEvents } from './module/events';
-import { guildId, admin } from '../config.json';
-import { isBlocked } from './module/functions';
 import mongoose from 'mongoose';
-import cron from 'node-cron';
-import changeVerificationLevel from './cron/changeVerificationLevel';
-import ServerSettings from './schemas/ServerSettings';
+import path from 'path';
+import { guildId, admin } from 'config.json';
+
+dotenv.config();
 
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds, GatewayIntentBits.GuildModeration,
-    GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.DirectMessages,
     GatewayIntentBits.GuildVoiceStates,
   ],
   partials: [
-    Partials.Channel, Partials.GuildMember,
-    Partials.Message, Partials.User,
+    Partials.Channel,
+    Partials.GuildMember,
+    Partials.Message,
+    Partials.User,
   ],
   allowedMentions: {
     parse: [
-      AllowedMentionsTypes.Role, AllowedMentionsTypes.User,
+      AllowedMentionsTypes.Role,
+      AllowedMentionsTypes.User,
     ],
   },
 });
@@ -46,34 +48,20 @@ client.once(Events.ClientReady, () => {
     'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
   });
 
-  interactions.registerCommands({ guildId: guildId ?? undefined, deleteNoLoad: true });
-  events.register(path.resolve(__dirname, './events'));
-  reloadActivity();
-
-  cron.schedule('0 * * * *', () => changeVerificationLevel(client));
-});
-
-client.on(Events.GuildCreate, () => reloadActivity());
-client.on(Events.GuildDelete, async (guild) => {
-  const res = await ServerSettings.findOneAndDelete({ serverId: guild.id });
-  await res?.save({ wtimeout: 1500 });
-  reloadActivity();
+  interactions.registerCommands({ guildId: guildId ?? undefined, syncWithCommand: true });
+  events.register(path.resolve(__dirname, 'events'));
 });
 
 client.on(Events.InteractionCreate, interaction => {
   if (!interaction.isRepliable()) return;
 
-  if (isBlocked(interaction.guild))
-    interaction.reply({
-      content: `\`🚫\` このサーバーでの${interaction.client.user.username}の使用は禁止されています。異議申し立ては[こちら](https://discord.gg/fVcjCNn733)`,
-      ephemeral: true,
-    });
-
   interactions.run(interaction)
-    .catch((err) => {
-      if (err instanceof InteractionsError && err.code === ErrorCodes.CommandHasCoolTime)
-        return interaction.reply({ content: '`⌛` コマンドはクールダウン中です', ephemeral: true });
-      console.log(err);
+    .catch(err => {
+      if (
+        err instanceof InteractionsError &&
+        err.code === ErrorCodes.CommandHasCoolTime
+      ) return interaction.reply({ content: '`⌛` コマンドはクールダウン中です', ephemeral: true });
+      console.error(err);
     });
 });
 
@@ -94,10 +82,5 @@ process.on('uncaughtException', (err) => {
   });
 });
 
-function reloadActivity() {
-  client.user?.setActivity({ name: `${client.guilds.cache.size} サーバー`, type: ActivityType.Competing });
-}
-
-client.login(process.env.BOT_TOKEN);
-mongoose.set('strictQuery', false);
-mongoose.connect(process.env.MONGODB_URI, { dbName: process.env.MONGODB_DBNAME });
+client.login();
+mongoose.connect(process.env.DB_URI, { dbName: process.env.DB_DBNAME });

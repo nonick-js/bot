@@ -2,9 +2,9 @@ declare module 'process' {
   global {
     namespace NodeJS {
       interface ProcessEnv {
-        BOT_TOKEN: string;
-        MONGODB_URI: string;
-        MONGODB_DBNAME: string;
+        readonly DISCORD_TOKEN: string;
+        readonly DB_URI: string;
+        readonly DB_DBNAME: string;
       }
     }
   }
