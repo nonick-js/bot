@@ -5,10 +5,11 @@ import { DiscordInteractions, ErrorCodes, InteractionsError } from '@akki256/dis
 import mongoose from 'mongoose';
 import path from 'path';
 import { guildId, admin } from 'config.json';
+import { Cron } from '@modules/cron';
 
 dotenv.config();
 
-const client = new Client({
+export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildModeration,
@@ -49,7 +50,8 @@ client.once(Events.ClientReady, () => {
   });
 
   interactions.registerCommands({ guildId: guildId ?? undefined, syncWithCommand: true });
-  events.register(path.resolve(__dirname, 'events'));
+  events.register(path.resolve(__dirname, './events'));
+  Cron.registerFiles(path.resolve(__dirname, './cron'));
 });
 
 client.on(Events.InteractionCreate, interaction => {
