@@ -25,7 +25,6 @@
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
 		"comma-style": "error",
-		"curly": ["error", "multi"],
 		"default-case": "error",
 		"dot-location": ["error", "property"],
 		"eqeqeq": ["error", "always", {"null": "ignore"}],

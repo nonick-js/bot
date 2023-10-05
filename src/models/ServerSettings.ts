@@ -2,7 +2,7 @@ import { BaseMessageOptions, ChannelType, Colors } from 'discord.js';
 import { model, Schema } from 'mongoose';
 
 type CustomMessageOptions = Pick<BaseMessageOptions, 'content' | 'files' | 'embeds'>;
-type LogCategoryOptions = { enable: boolean, channel: string };
+type LogCategoryOptions = { enable: boolean, channel: string, tag?: string };
 
 export interface IServerSettings {
   serverId: string,

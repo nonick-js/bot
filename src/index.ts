@@ -85,4 +85,4 @@ process.on('uncaughtException', (err) => {
 });
 
 client.login();
-mongoose.connect(process.env.DB_URI, { dbName: process.env.DB_DBNAME });
+mongoose.connect(process.env.DB_URI, { dbName: process.env.DB_NAME });
