@@ -55,8 +55,7 @@ client.once(Events.ClientReady, () => {
 
 client.on(Events.GuildCreate, () => reloadActivity());
 client.on(Events.GuildDelete, async (guild) => {
-  const res = await ServerSettings.findOneAndDelete({ serverId: guild.id });
-  await res?.save({ wtimeout: 1500 });
+  ServerSettings.deleteOne({ serverId: guild.id }).exec();
   reloadActivity();
 });
 
