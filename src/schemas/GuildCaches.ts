@@ -7,4 +7,4 @@ export interface IGuildCache {
 
 const GuildCache = new Schema<IGuildCache>({ serverId: { type: String, required: true, unique: true } });
 
-export default model<IServerSettings>('guild-cache', GuildCache);
+export default model<IServerSettings>('GuildCaches', GuildCache);
