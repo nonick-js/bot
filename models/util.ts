@@ -1,10 +1,10 @@
 import { GuildVerificationLevel } from "discord-api-types/v10";
-import { Schema, SchemaDefinitionProperty } from "mongoose";
+import { Schema } from "mongoose";
 import { CustomMessageOptions } from "./types";
 
 export const LangKey = ['ja-JP'] as const;
-export const snowflake: SchemaDefinitionProperty<string> = { type: Schema.Types.String, match: /\d{17,}/ };
-export const serverId: SchemaDefinitionProperty<string> = { required: true, unique: true, ...snowflake };
+export const snowflake = { type: Schema.Types.String, match: /\d{17,}/ };
+export const serverId = { required: true, unique: true, ...snowflake };
 export const guildVerifyLevel: GuildVerificationLevel[] = [
   GuildVerificationLevel.None,
   GuildVerificationLevel.Low,

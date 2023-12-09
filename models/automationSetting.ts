@@ -6,7 +6,7 @@ const schema = new Schema<AutomationSetting>({
   serverId,
   publishAnnounce: {
     enable: Schema.Types.Boolean,
-    channels: [Schema.Types.String],
+    channels: [snowflake],
   },
   memberVerify: {
     enable: Schema.Types.Boolean,

@@ -34,7 +34,7 @@ export interface ModerateSetting extends BaseSchema {
 
 export interface Notification {
   title: string;
-  desc: string;
+  description: string;
   tags: string[];
   category: string[];
   createAt: Date;
@@ -52,6 +52,7 @@ export interface ServerData extends BaseSchema {
 interface ServerAnalytics {
   date: Date;
   memberCount: number;
+  /** { チャンネルID: メッセージ数 } */
   messageCount: Record<string, number>;
 }
 

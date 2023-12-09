@@ -21,7 +21,7 @@ const schema = new Schema<MessageSetting>({
     allowExternal: Schema.Types.Boolean,
     ignore: {
       types: [Schema.Types.Number],
-      channel: [snowflake],
+      channels: [snowflake],
       prefixes: [Schema.Types.String],
     },
   },
