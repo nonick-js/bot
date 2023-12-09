@@ -7,7 +7,7 @@
     "baseUrl": "./src",
     "paths": {
       "@modules/*": ["./modules/*"],
-      "@models/*": ["./models/*"],
+      "@models": ["./database/models/index.ts"],
       "@config": ["./config.json"],
       "@const/*": ["./constants/*"]
     },
