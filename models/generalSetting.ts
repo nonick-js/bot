@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { GeneralSetting } from "../@types/Schema";
+import { GeneralSetting } from "./types";
 
 const schema = new Schema<GeneralSetting>({
   serverId: { required: true, unique: true, type: Schema.Types.String },

@@ -1,6 +1,5 @@
 import { model, Schema } from 'mongoose';
-import type { MessageSetting } from '../@types/Schema.d.ts';
-import type { APIEmbed } from 'discord-api-types/v10';
+import type { MessageSetting } from './types.d.ts';
 
 const schema = new Schema<MessageSetting>({
   serverId: Schema.Types.String,
