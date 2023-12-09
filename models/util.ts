@@ -3,7 +3,8 @@ import { Schema, SchemaDefinitionProperty } from "mongoose";
 import { CustomMessageOptions } from "./types";
 
 export const LangKey = ['ja-JP'] as const;
-export const serverId: SchemaDefinitionProperty<string> = { required: true, unique: true, type: Schema.Types.String };
+export const snowflake: SchemaDefinitionProperty<string> = { type: Schema.Types.String, match: /\d{17,}/ };
+export const serverId: SchemaDefinitionProperty<string> = { required: true, unique: true, ...snowflake };
 export const guildVerifyLevel: GuildVerificationLevel[] = [
   GuildVerificationLevel.None,
   GuildVerificationLevel.Low,

@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 import type { AutomationSetting } from './types';
-import { guildVerifyLevel, serverId } from "./util";
+import { guildVerifyLevel, serverId, snowflake } from "./util";
 
 const schema = new Schema<AutomationSetting>({
   serverId,
@@ -12,7 +12,7 @@ const schema = new Schema<AutomationSetting>({
     enable: Schema.Types.Boolean,
     log: {
       enable: Schema.Types.Boolean,
-      channel: Schema.Types.String,
+      channel: snowflake,
     },
     level: {
       before: { type: Schema.Types.Number, enum: guildVerifyLevel },
@@ -25,7 +25,7 @@ const schema = new Schema<AutomationSetting>({
   },
   createThread: {
     enable: Schema.Types.Boolean,
-    channels: [Schema.Types.String],
+    channels: [snowflake],
   },
 });
 

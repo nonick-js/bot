@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 import type { ModerateSetting } from './types.d.ts';
-import { serverId } from "./util";
+import { serverId, snowflake } from "./util";
 
 const schema = new Schema<ModerateSetting>({
   serverId,
@@ -8,7 +8,7 @@ const schema = new Schema<ModerateSetting>({
     enable: Schema.Types.Boolean,
     log: {
       enable: Schema.Types.Boolean,
-      channel: Schema.Types.String,
+      channel: snowflake,
     },
     filter: {
       domain: {
@@ -19,8 +19,8 @@ const schema = new Schema<ModerateSetting>({
       inviteUrl: Schema.Types.Boolean,
     },
     ignore: {
-      channels: [Schema.Types.String],
-      roles: [Schema.Types.String],
+      channels: [snowflake],
+      roles: [snowflake],
     }
   }
 });

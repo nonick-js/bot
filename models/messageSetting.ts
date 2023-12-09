@@ -1,18 +1,18 @@
 import { model, Schema } from 'mongoose';
 import type { MessageSetting } from './types.d.ts';
-import { messageOptionSchema, serverId } from "./util";
+import { messageOptionSchema, serverId, snowflake } from "./util";
 
 const schema = new Schema<MessageSetting>({
   serverId,
   join: {
     enable: Schema.Types.Boolean,
-    channel: Schema.Types.String,
+    channel: snowflake,
     includeBot: Schema.Types.Boolean,
     messageOption: messageOptionSchema,
   },
   leave: {
     enable: Schema.Types.Boolean,
-    channel: Schema.Types.String,
+    channel: snowflake,
     includeBot: Schema.Types.Boolean,
     messageOption: messageOptionSchema,
   },
@@ -21,7 +21,7 @@ const schema = new Schema<MessageSetting>({
     allowExternal: Schema.Types.Boolean,
     ignore: {
       types: [Schema.Types.Number],
-      channel: [Schema.Types.String],
+      channel: [snowflake],
       prefixes: [Schema.Types.String],
     },
   },
