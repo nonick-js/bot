@@ -1,0 +1,16 @@
+{
+  "name": "nonickjs_memo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord-api-types": "0.37.35",
+    "mongoose": "^8.0.3"
+  }
+}
