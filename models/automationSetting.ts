@@ -1,8 +1,9 @@
 import { model, Schema } from 'mongoose';
 import type { AutomationSetting } from './types';
+import { guildVerifyLevel, serverId } from "./util";
 
 const schema = new Schema<AutomationSetting>({
-  serverId: { required: true, unique: true, type: Schema.Types.String },
+  serverId,
   publishAnnounce: {
     enable: Schema.Types.Boolean,
     channels: [Schema.Types.String],
@@ -14,8 +15,8 @@ const schema = new Schema<AutomationSetting>({
       channel: Schema.Types.String,
     },
     level: {
-      before: Schema.Types.Number,
-      after: Schema.Types.Number,
+      before: { type: Schema.Types.Number, enum: guildVerifyLevel },
+      after: { type: Schema.Types.Number, enum: guildVerifyLevel },
     },
     time: {
       start: Schema.Types.Number,

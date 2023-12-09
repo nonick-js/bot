@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { EventLogData, EventLogSetting } from "./types";
+import { serverId } from "./util";
 
 const logSchema = new Schema<EventLogData>({
   enable: Schema.Types.Boolean,
@@ -8,7 +9,7 @@ const logSchema = new Schema<EventLogData>({
 });
 
 const schema = new Schema<EventLogSetting>({
-  serverId: { required: true, unique: true, type: Schema.Types.String },
+  serverId,
   general: {
     enable: Schema.Types.Boolean,
     channel: Schema.Types.String,

@@ -1,19 +1,20 @@
 import { model, Schema } from 'mongoose';
 import type { MessageSetting } from './types.d.ts';
+import { messageOptionSchema, serverId } from "./util";
 
 const schema = new Schema<MessageSetting>({
-  serverId: Schema.Types.String,
+  serverId,
   join: {
     enable: Schema.Types.Boolean,
     channel: Schema.Types.String,
     includeBot: Schema.Types.Boolean,
-    messageOption: Schema.Types.Mixed,
+    messageOption: messageOptionSchema,
   },
   leave: {
     enable: Schema.Types.Boolean,
     channel: Schema.Types.String,
     includeBot: Schema.Types.Boolean,
-    messageOption: Schema.Types.Mixed,
+    messageOption: messageOptionSchema,
   },
   expansion: {
     enable: Schema.Types.Boolean,

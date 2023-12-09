@@ -1,8 +1,9 @@
 import { model, Schema } from 'mongoose';
 import type { ServerData } from './types';
+import { serverId } from "./util";
 
 const schema = new Schema<ServerData>({
-  serverId: { required: true, unique: true, type: Schema.Types.String },
+  serverId,
   analytics: [Schema.Types.Mixed],
   auditLog: [Schema.Types.Mixed],
   receiveNotification: [Schema.Types.String]

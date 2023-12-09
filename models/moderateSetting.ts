@@ -1,8 +1,9 @@
 import { model, Schema } from 'mongoose';
 import type { ModerateSetting } from './types.d.ts';
+import { serverId } from "./util";
 
 const schema = new Schema<ModerateSetting>({
-  serverId: { required: true, unique: true, type: Schema.Types.String },
+  serverId,
   autoMod: {
     enable: Schema.Types.Boolean,
     log: {
