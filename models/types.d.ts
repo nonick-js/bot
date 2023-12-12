@@ -1,4 +1,8 @@
-import { APIEmbed, ChannelType, GuildVerificationLevel } from 'discord-api-types/v10';
+import {
+  APIEmbed,
+  ChannelType,
+  GuildVerificationLevel,
+} from 'discord-api-types/v10';
 
 // #region Collections
 export interface AutomationSetting extends BaseSchema {
@@ -76,7 +80,7 @@ interface ReportSchema {
   mention: {
     enable: boolean;
     role: string;
-  }
+  };
 }
 
 interface AutoModSchema {
@@ -89,14 +93,14 @@ interface AutoModSchema {
     domain: {
       enable: boolean;
       list: string[];
-    }
+    };
     token: boolean;
     inviteUrl: boolean;
-  }
+  };
   ignore: {
     channels: string[];
     roles: string[];
-  }
+  };
 }
 
 interface JoinAndLeaveSchema {
@@ -113,7 +117,7 @@ interface ExpansionSchema {
     types: ChannelType[];
     channels: string[];
     prefixes: string[];
-  }
+  };
 }
 
 interface publishAnnounceSchema {
@@ -131,20 +135,20 @@ interface memberVerifySchema {
   log: {
     enable: boolean;
     channel: string;
-  }
+  };
   level: {
     before: GuildVerificationLevel;
     after: GuildVerificationLevel;
-  }
+  };
   time: {
     start: number;
     end: number;
-  }
+  };
 }
 // #endregion
 
 // #region BaseTypes
-type EventLogData = BaseEventLog | ForumEventLog; 
+type EventLogData = BaseEventLog | ForumEventLog;
 
 interface BaseSchema {
   serverId: string;

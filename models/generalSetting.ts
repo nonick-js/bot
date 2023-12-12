@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
-import { GeneralSetting } from "./types";
-import { LangKey, serverId } from "./util";
+import { Schema, model } from 'mongoose';
+import { GeneralSetting } from './types';
+import { LangKey, serverId } from './util';
 
 const schema = new Schema<GeneralSetting>({
   serverId,

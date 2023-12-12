@@ -1,11 +1,10 @@
-import { Schema, model } from "mongoose";
-import { EventLogData, EventLogSetting } from "./types";
-import { serverId, snowflake } from "./util";
+import { Schema, model } from 'mongoose';
+import { EventLogData, EventLogSetting } from './types';
+import { serverId, snowflake } from './util';
 
 const logSchema = new Schema<EventLogData>({
   enable: Schema.Types.Boolean,
   channel: snowflake,
-  tag: snowflake,
 });
 
 const schema = new Schema<EventLogSetting>({

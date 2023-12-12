@@ -1,6 +1,6 @@
-import { model, Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import type { AutomationSetting } from './types';
-import { guildVerifyLevel, serverId, snowflake } from "./util";
+import { guildVerifyLevel, serverId, snowflake } from './util';
 
 const schema = new Schema<AutomationSetting>({
   serverId,
@@ -21,7 +21,7 @@ const schema = new Schema<AutomationSetting>({
     time: {
       start: Schema.Types.Number,
       end: Schema.Types.Number,
-    }
+    },
   },
   createThread: {
     enable: Schema.Types.Boolean,

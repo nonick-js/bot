@@ -1,10 +1,11 @@
-import AutomationSetting from "./automationSetting";
-import EventLogSetting from "./eventLogSetting";
-import GeneralSetting from "./generalSetting";
-import MessageSetting from "./messageSetting";
-import ModerateSetting from "./moderateSetting";
-import Notification from "./notification";
-import ServerData from "./serverData";
+import AutomationSetting from './automationSetting';
+import EventLogSetting from './eventLogSetting';
+import GeneralSetting from './generalSetting';
+import MessageSetting from './messageSetting';
+import ModerateSetting from './moderateSetting';
+import Notification from './notification';
+import ServerData from './serverData';
+export * as Utils from './util';
 
 export {
   AutomationSetting,
@@ -14,4 +15,4 @@ export {
   ModerateSetting,
   Notification,
   ServerData,
-}
+};

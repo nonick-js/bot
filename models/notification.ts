@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import type { Notification } from './types';
 
 const schema = new Schema<Notification>({

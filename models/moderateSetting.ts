@@ -1,6 +1,6 @@
-import { model, Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import type { ModerateSetting } from './types.d.ts';
-import { serverId, snowflake } from "./util";
+import { serverId, snowflake } from './util';
 
 const schema = new Schema<ModerateSetting>({
   serverId,
@@ -21,8 +21,8 @@ const schema = new Schema<ModerateSetting>({
     ignore: {
       channels: [snowflake],
       roles: [snowflake],
-    }
-  }
+    },
+  },
 });
 
 export default model<ModerateSetting>('ModerateSetting', schema);

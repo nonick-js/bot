@@ -1,6 +1,6 @@
-import { model, Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import type { MessageSetting } from './types.d.ts';
-import { messageOptionSchema, serverId, snowflake } from "./util";
+import { messageOptionSchema, serverId, snowflake } from './util';
 
 const schema = new Schema<MessageSetting>({
   serverId,
