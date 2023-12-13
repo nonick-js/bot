@@ -1,4 +1,4 @@
-import { LangData } from '@modules/translate';
+import type { LangData } from '@modules/translate';
 import { inlineCode } from 'discord.js';
 import type { LangTemplate } from './template';
 

@@ -1,5 +1,5 @@
 import { blurple, gray } from '@const/emojis';
-import { LangData } from '@modules/translate';
+import type { LangData } from '@modules/translate';
 import { escapeMarkdown, formatEmoji, inlineCode, time } from 'discord.js';
 import { langs } from 'lang';
 import type { LangTemplate } from './template';
