@@ -5,38 +5,38 @@ import {
 } from 'discord-api-types/v10';
 
 // #region Collections
-export interface AutomationSetting extends BaseSchema {
+export interface AutomationSettingSchema extends BaseSchema {
   publishAnnounce: publishAnnounceSchema;
   memberVerify: memberVerifySchema;
   createThread: createThreadSchema;
 }
 
-export interface EventLogSetting extends BaseSchema {
+export interface EventLogSettingSchema extends BaseSchema {
   general: BaseEventLog;
   kick: EventLogData;
   ban: EventLogData;
   timeout: EventLogData;
-  messageCreate: EventLogData;
+  messageDelete: EventLogData;
   messageEdit: EventLogData;
   voice: EventLogData;
 }
 
-export interface GeneralSetting extends BaseSchema {
+export interface GeneralSettingSchema extends BaseSchema {
   lang: string;
 }
 
-export interface MessageSetting extends BaseSchema {
+export interface MessageSettingSchema extends BaseSchema {
   join: JoinAndLeaveSchema;
   leave: JoinAndLeaveSchema;
   expansion: ExpansionSchema;
 }
 
-export interface ModerateSetting extends BaseSchema {
+export interface ModerateSettingSchema extends BaseSchema {
   report: ReportSchema;
   autoMod: AutoModSchema;
 }
 
-export interface Notification {
+export interface NotificationSchema {
   title: string;
   description: string;
   tags: string[];
@@ -45,7 +45,7 @@ export interface Notification {
   updateAt: Date;
 }
 
-export interface ServerData extends BaseSchema {
+export interface ServerDataSchema extends BaseSchema {
   analytics: ServerAnalytics[];
   auditLog: AuditLogData[];
   receiveNotification: string[];
@@ -148,7 +148,7 @@ interface memberVerifySchema {
 // #endregion
 
 // #region BaseTypes
-type EventLogData = BaseEventLog | ForumEventLog;
+type EventLogData = BaseEventLog;
 
 interface BaseSchema {
   serverId: string;
@@ -157,10 +157,6 @@ interface BaseSchema {
 interface BaseEventLog {
   enable: boolean;
   channel: string;
-}
-
-interface ForumEventLog extends BaseEventLog {
-  tag: string;
 }
 
 interface CustomMessageOptions {

@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
-import type { ServerData } from './types';
+import type { ServerDataSchema } from './types';
 import { serverId, snowflake } from './util';
 
-const schema = new Schema<ServerData>({
+const schema = new Schema<ServerDataSchema>({
   serverId,
   analytics: [
     {
@@ -23,4 +23,4 @@ const schema = new Schema<ServerData>({
   receiveNotification: [Schema.Types.String],
 });
 
-export default model<ServerData>('ServerData', schema);
+export default model<ServerDataSchema>('ServerData', schema);

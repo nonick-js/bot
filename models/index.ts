@@ -6,6 +6,7 @@ import ModerateSetting from './moderateSetting';
 import Notification from './notification';
 import ServerData from './serverData';
 export * as Utils from './util';
+export type * from './types';
 
 export {
   AutomationSetting,

@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
-import type { Notification } from './types';
+import type { NotificationSchema } from './types';
 
-const schema = new Schema<Notification>({
+const schema = new Schema<NotificationSchema>({
   title: { required: true, type: Schema.Types.String },
   description: { required: true, type: Schema.Types.String },
   tags: [Schema.Types.String],
@@ -10,4 +10,4 @@ const schema = new Schema<Notification>({
   updateAt: { required: true, type: Schema.Types.Date },
 });
 
-export default model<Notification>('Notification', schema);
+export default model<NotificationSchema>('Notification', schema);

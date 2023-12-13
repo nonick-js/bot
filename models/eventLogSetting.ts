@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { EventLogData, EventLogSetting } from './types';
+import { EventLogData, EventLogSettingSchema } from './types';
 import { serverId, snowflake } from './util';
 
 const logSchema = new Schema<EventLogData>({
@@ -7,7 +7,7 @@ const logSchema = new Schema<EventLogData>({
   channel: snowflake,
 });
 
-const schema = new Schema<EventLogSetting>({
+const schema = new Schema<EventLogSettingSchema>({
   serverId,
   general: {
     enable: Schema.Types.Boolean,
@@ -17,8 +17,8 @@ const schema = new Schema<EventLogSetting>({
   kick: logSchema,
   ban: logSchema,
   voice: logSchema,
-  messageCreate: logSchema,
+  messageDelete: logSchema,
   messageEdit: logSchema,
 });
 
-export default model<EventLogSetting>('EventLogSetting', schema);
+export default model<EventLogSettingSchema>('EventLogSetting', schema);

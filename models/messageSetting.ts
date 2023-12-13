@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
-import type { MessageSetting } from './types.d.ts';
+import type { MessageSettingSchema } from './types.d.ts';
 import { messageOptionSchema, serverId, snowflake } from './util';
 
-const schema = new Schema<MessageSetting>({
+const schema = new Schema<MessageSettingSchema>({
   serverId,
   join: {
     enable: Schema.Types.Boolean,
@@ -27,4 +27,4 @@ const schema = new Schema<MessageSetting>({
   },
 });
 
-export default model<MessageSetting>('MessageSetting', schema);
+export default model<MessageSettingSchema>('MessageSetting', schema);

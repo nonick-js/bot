@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
-import type { AutomationSetting } from './types';
+import type { AutomationSettingSchema } from './types';
 import { guildVerifyLevel, serverId, snowflake } from './util';
 
-const schema = new Schema<AutomationSetting>({
+const schema = new Schema<AutomationSettingSchema>({
   serverId,
   publishAnnounce: {
     enable: Schema.Types.Boolean,
@@ -29,4 +29,4 @@ const schema = new Schema<AutomationSetting>({
   },
 });
 
-export default model<AutomationSetting>('AutomationSetting', schema);
+export default model<AutomationSettingSchema>('AutomationSetting', schema);

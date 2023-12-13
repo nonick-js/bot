@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
-import type { ModerateSetting } from './types.d.ts';
+import type { ModerateSettingSchema } from './types.d.ts';
 import { serverId, snowflake } from './util';
 
-const schema = new Schema<ModerateSetting>({
+const schema = new Schema<ModerateSettingSchema>({
   serverId,
   autoMod: {
     enable: Schema.Types.Boolean,
@@ -25,4 +25,4 @@ const schema = new Schema<ModerateSetting>({
   },
 });
 
-export default model<ModerateSetting>('ModerateSetting', schema);
+export default model<ModerateSettingSchema>('ModerateSetting', schema);
