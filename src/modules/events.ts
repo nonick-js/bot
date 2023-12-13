@@ -11,9 +11,9 @@ export interface DiscordEvent<T extends keyof ClientEvents> {
 export class DiscordEventBuilder<T extends keyof ClientEvents>
   implements DiscordEvent<T>
 {
-  readonly type: T;
-  private readonly _once?: DiscordEvent<T>['once'];
-  private readonly _execute: DiscordEvent<T>['execute'];
+  public readonly type: T;
+  public readonly once?: DiscordEvent<T>['once'];
+  public readonly execute: DiscordEvent<T>['execute'];
 
   constructor(data: DiscordEvent<T>);
   constructor(
@@ -30,16 +30,8 @@ export class DiscordEventBuilder<T extends keyof ClientEvents>
     const data = typeof type === 'string' ? { type, execute, once } : type;
     if (!data.execute) throw new TypeError('execute is not specified');
     this.type = data.type;
-    this._once = data.once;
-    this._execute = data.execute;
-  }
-
-  get once() {
-    return this._once;
-  }
-
-  get execute() {
-    return this._execute;
+    this.once = data.once;
+    this.execute = data.execute;
   }
 }
 
@@ -78,8 +70,10 @@ export class DiscordEvents {
         : (value: fs.Dirent) => !/^(-|_|\.)/.test(value.name);
     if (!fs.existsSync(basePath)) return [];
     for (const data of fs.readdirSync(basePath, { withFileTypes: true })) {
-      if (data.isFile() && predicateFunc(data))
-        return pre.add(path.resolve(basePath, data.name));
+      if (data.isFile() && predicateFunc(data)) {
+        pre.add(path.resolve(basePath, data.name));
+        continue;
+      }
       if (data.isDirectory() && predicateFunc(data))
         this.getAllPath(path.resolve(basePath, data.name), predicateFunc, pre);
     }

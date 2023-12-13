@@ -67,8 +67,10 @@ export class Cron {
         : (value: fs.Dirent) => !/^(-|_|\.)/.test(value.name);
     if (!fs.existsSync(basePath)) return [];
     for (const data of fs.readdirSync(basePath, { withFileTypes: true })) {
-      if (data.isFile() && predicateFunc(data))
-        return pre.add(path.resolve(basePath, data.name));
+      if (data.isFile() && predicateFunc(data)) {
+        pre.add(path.resolve(basePath, data.name));
+        continue;
+      }
       if (data.isDirectory() && predicateFunc(data))
         Cron.getAllPath(path.resolve(basePath, data.name), predicateFunc, pre);
     }
