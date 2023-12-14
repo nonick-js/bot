@@ -1,12 +1,11 @@
-import { GeneralSetting, Utils } from '@models';
+import { GeneralSetting } from '@models';
 import type { Message } from 'discord.js';
 import { client } from 'index';
 import { langs } from 'lang';
 
 export async function setLang(serverId: string) {
   const setting = await GeneralSetting.findOne({ serverId });
-  if (setting?.lang)
-    langs.setLang(setting.lang as (typeof Utils.LangKey)[number]);
+  if (setting?.lang) langs.setLang(setting.lang);
 }
 
 export async function getMessage(

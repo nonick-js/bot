@@ -35,4 +35,29 @@ export class Languages<
   }
 
   tl = this.translate;
+
+  translateLang<K extends keyof T>(
+    lang: Lang[number],
+    key: K,
+    ...args: T[K]
+  ): string;
+  translateLang<S extends string>(
+    lang: Lang[number],
+    key: Exclude<S, keyof T>,
+    ...args: unknown[]
+  ): string;
+  translateLang<K extends keyof T>(
+    lang: Lang[number],
+    key: K | string,
+    ...args: T[K] | unknown[]
+  ) {
+    this.setLang(lang);
+    return this.translate(key, ...(args as T[K] & T[string]));
+  }
+
+  tlLang = this.translateLang;
+
+  get languages() {
+    return this.langData.keys();
+  }
 }

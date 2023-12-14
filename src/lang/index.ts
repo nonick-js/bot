@@ -1,10 +1,26 @@
-import { Utils } from '@models';
 import { Languages } from '@modules/translate';
+import { type ChatInputApplicationCommandData, Locale } from 'discord.js';
 import { en_US } from './en-US';
 import { ja_JP } from './ja-JP';
 import { LangTemplate } from './template';
 
-export const langs = new Languages<typeof Utils.LangKey, LangTemplate>('en-US');
+export const langs = new Languages<Locale[], LangTemplate>(Locale.EnglishUS);
 
-langs.register('ja-JP', ja_JP);
-langs.register('en-US', en_US);
+langs.register(Locale.Japanese, ja_JP);
+langs.register(Locale.EnglishUS, en_US);
+
+export function createCommandDescription(
+  key: keyof LangTemplate,
+): Pick<
+  ChatInputApplicationCommandData,
+  'description' | 'descriptionLocalizations'
+> {
+  const descriptionLocalizations: ChatInputApplicationCommandData['descriptionLocalizations'] =
+    {};
+  for (const lang of langs.languages)
+    descriptionLocalizations[lang] = langs.tlLang(lang, key);
+  return {
+    description: langs.tlLang(Locale.EnglishUS, key),
+    descriptionLocalizations,
+  };
+}
