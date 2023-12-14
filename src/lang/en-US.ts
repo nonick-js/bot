@@ -38,6 +38,8 @@ export const en_US: Required<LangData<LangTemplate>> = {
     `${inlineCode('✅')} Auto change verify level - ${bold(langs.tl(level))}`,
 
   'commands.help.description': () => 'About this BOT',
+  'commands.reload.description': () => 'Reboot this BOT',
+  'commands.status.description': () => 'Display BOT status',
 
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
@@ -69,6 +71,9 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.developer': (developer) => `Developer: ${developer}`,
   'label.commandHasCoolTime': () =>
     `${inlineCode('⌛')} Command is on cooldown`,
+  'label.notPermitted': () => 'Not Permitted',
+  'label.notCommandPermission': () =>
+    'You do not have permission to execute commands',
 
   'label.verifyLevel.0.name': () => 'None',
   'label.verifyLevel.0.description': () => 'Unlimited',
@@ -112,4 +117,9 @@ export const en_US: Required<LangData<LangTemplate>> = {
     `${formatEmoji(blurple.text)} ${bold(
       `${langs.tl(label ?? 'label.reason')}:`,
     )} ${langs.tl(reason ?? 'label.noReason')}`,
+
+  'field.notPermitted': (label, ...permissions) =>
+    `${inlineCode('❌')} ${langs.tl(label ?? 'label.notPermitted')}${
+      permissions?.length ? `: ${permissions.join(', ')}` : ''
+    }`,
 };

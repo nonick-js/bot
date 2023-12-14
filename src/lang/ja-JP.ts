@@ -29,6 +29,8 @@ export const ja_JP: LangData<LangTemplate> = {
     `${inlineCode('✅')} 認証レベル自動変更 - ${langs.tl(label)}`,
 
   'commands.help.description': () => 'このBOTについて',
+  'commands.reload.description': () => 'BOTを再起動する',
+  'commands.status.description': () => 'BOTのステータスを表示する',
 
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
@@ -60,6 +62,8 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.developer': (developer) => `開発者: ${developer}`,
   'label.commandHasCoolTime': () =>
     `${inlineCode('⌛')} コマンドはクールタイム中です`,
+  'label.notPermitted': () => '権限がありません',
+  'label.notCommandPermission': () => 'コマンドの実行権限がありません',
 
   'label.verifyLevel.0.name': () => '設定無し',
   'label.verifyLevel.0.description': () => '無制限',

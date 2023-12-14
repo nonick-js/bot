@@ -25,6 +25,8 @@ export type LangTemplate = {
   'automation.memberVerify.title': [label: keyof LangTemplate];
 
   'commands.help.description': [];
+  'commands.reload.description': [];
+  'commands.status.description': [];
 
   'label.target': [];
   'label.member': [];
@@ -53,6 +55,8 @@ export type LangTemplate = {
   'label.aboutBot.1': [];
   'label.developer': [developer: string];
   'label.commandHasCoolTime': [];
+  'label.notPermitted': [];
+  'label.notCommandPermission': [];
 
   'label.verifyLevel.0.name': [];
   'label.verifyLevel.0.description': [];
@@ -80,4 +84,5 @@ export type LangTemplate = {
     reason: keyof LangTemplate | string,
     label?: keyof LangTemplate,
   ];
+  'field.notPermitted': [label?: keyof LangTemplate, ...permissions: string[]];
 };
