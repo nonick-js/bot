@@ -31,6 +31,11 @@ export const ja_JP: LangData<LangTemplate> = {
   'commands.help.description': () => 'このBOTについて',
   'commands.reload.description': () => 'BOTを再起動する',
   'commands.status.description': () => 'BOTのステータスを表示する',
+  'commands.bulkdelete.description': () =>
+    'このチャンネルに送信されたメッセージを最新順に一括削除 (2週間前まで)',
+
+  'commands.bulkdelete.options.messages.description': () =>
+    '削除するメッセージの数',
 
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
@@ -64,6 +69,14 @@ export const ja_JP: LangData<LangTemplate> = {
     `${inlineCode('⌛')} コマンドはクールタイム中です`,
   'label.notPermitted': () => '権限がありません',
   'label.notCommandPermission': () => 'コマンドの実行権限がありません',
+  'label.notEnoughBotPermission': () => 'BOTに権限が不足しています',
+
+  'label.bulkdelete.failed': () =>
+    `${inlineCode('❌')} メッセージの削除に失敗しました`,
+  'label.bulkdelete.success': (count) =>
+    `${inlineCode('✅')} メッセージを${inlineCode(`${count}件`)}削除しました`,
+
+  'label.permission.manageMessage': () => 'メッセージの管理',
 
   'label.verifyLevel.0.name': () => '設定無し',
   'label.verifyLevel.0.description': () => '無制限',

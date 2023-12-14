@@ -27,6 +27,9 @@ export type LangTemplate = {
   'commands.help.description': [];
   'commands.reload.description': [];
   'commands.status.description': [];
+  'commands.bulkdelete.description': [];
+
+  'commands.bulkdelete.options.messages.description': [];
 
   'label.target': [];
   'label.member': [];
@@ -57,6 +60,12 @@ export type LangTemplate = {
   'label.commandHasCoolTime': [];
   'label.notPermitted': [];
   'label.notCommandPermission': [];
+  'label.notEnoughBotPermission': [];
+
+  'label.bulkdelete.failed': [];
+  'label.bulkdelete.success': [count: number];
+
+  'label.permission.manageMessage': [];
 
   'label.verifyLevel.0.name': [];
   'label.verifyLevel.0.description': [];
@@ -84,5 +93,8 @@ export type LangTemplate = {
     reason: keyof LangTemplate | string,
     label?: keyof LangTemplate,
   ];
-  'field.notPermitted': [label?: keyof LangTemplate, ...permissions: string[]];
+  'field.notPermitted': [
+    label?: keyof LangTemplate,
+    ...permissions: (keyof LangTemplate)[],
+  ];
 };

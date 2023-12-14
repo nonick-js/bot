@@ -40,6 +40,11 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'commands.help.description': () => 'About this BOT',
   'commands.reload.description': () => 'Reboot this BOT',
   'commands.status.description': () => 'Display BOT status',
+  'commands.bulkdelete.description': () =>
+    'Batch delete messages sent to this channel in the latest order (up to 2 weeks ago)',
+
+  'commands.bulkdelete.options.messages.description': () =>
+    'Number of messages to delete',
 
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
@@ -74,6 +79,14 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.notPermitted': () => 'Not Permitted',
   'label.notCommandPermission': () =>
     'You do not have permission to execute commands',
+  'label.notEnoughBotPermission': () => 'not enough BOT permissions',
+
+  'label.bulkdelete.failed': () =>
+    `${inlineCode('❌')} Failed to delete message`,
+  'label.bulkdelete.success': (count) =>
+    `${inlineCode('✅')} ${inlineCode(count.toString())} messages deleted`,
+
+  'label.permission.manageMessage': () => 'Manage Messages',
 
   'label.verifyLevel.0.name': () => 'None',
   'label.verifyLevel.0.description': () => 'Unlimited',
