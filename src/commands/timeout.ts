@@ -47,7 +47,7 @@ export default new ChatInput(
   },
   { coolTime: Duration.toMS('5s') },
   (interaction) => {
-    langs.tl(interaction.locale);
+    langs.setLang(interaction.locale);
     if (!interaction.inCachedGuild()) return;
 
     const member = interaction.options.getMember('user');

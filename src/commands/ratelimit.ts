@@ -27,7 +27,7 @@ export default new ChatInput(
   },
   { coolTime: Duration.toMS('5s') },
   (interaction) => {
-    langs.tl(interaction.locale);
+    langs.setLang(interaction.locale);
     if (!interaction.inCachedGuild() || !interaction.channel) return;
 
     if (!interaction.appPermissions?.has(PermissionFlagsBits.ManageChannels))

@@ -33,7 +33,7 @@ export default new ChatInput(
   },
   { coolTime: Duration.toMS('50s') },
   (interaction) => {
-    langs.tl(interaction.locale);
+    langs.setLang(interaction.locale);
     if (!(interaction.inGuild() && interaction.channel)) return;
 
     interaction.channel.messages
