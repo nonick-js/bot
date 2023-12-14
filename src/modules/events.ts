@@ -93,5 +93,6 @@ export class DiscordEvents {
       });
     }
     events.push(event.execute);
+    eventManager.set(event.type, events as []);
   }
 }
