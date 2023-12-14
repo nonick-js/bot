@@ -44,6 +44,7 @@ export type LangTemplate = {
   'label.start': [];
   'label.end': [];
   'label.changeVerify': [level: keyof LangTemplate];
+  'label.rule': [];
 
   'label.verifyLevel.0.name': [];
   'label.verifyLevel.0.description': [];
@@ -55,6 +56,10 @@ export type LangTemplate = {
   'label.verifyLevel.3.description': [];
   'label.verifyLevel.4.name': [];
   'label.verifyLevel.4.description': [];
+
+  'label.autoMod.rule.inviteUrl': [];
+  'label.autoMod.rule.token': [];
+  'label.autoMod.rule.domain': [];
 
   'fields.member': [user: User, label?: keyof LangTemplate];
   'fields.channel': [

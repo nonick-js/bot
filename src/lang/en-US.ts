@@ -48,6 +48,7 @@ export const en_US: LangData<LangTemplate> = {
   'label.end': () => 'End',
   'label.changeVerify': (level) =>
     `Server verification level has been changed to **${langs.tl(level)}**`,
+  'label.rule': () => 'Rule',
 
   'label.verifyLevel.0.name': () => 'None',
   'label.verifyLevel.0.description': () => 'Unlimited',
@@ -63,4 +64,8 @@ export const en_US: LangData<LangTemplate> = {
   'label.verifyLevel.4.name': () => 'Highest',
   'label.verifyLevel.4.description': () =>
     'Must have a verified phone aon their Discord account',
+
+  'label.autoMod.rule.inviteUrl': () => 'Invite URL',
+  'label.autoMod.rule.token': () => 'Token',
+  'label.autoMod.rule.domain': () => 'Banned Domains',
 };

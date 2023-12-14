@@ -53,6 +53,7 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.end': () => '終了',
   'label.changeVerify': (level) =>
     `サーバーの認証レベルを**${langs.tl(level)}**に変更しました`,
+  'label.rule': () => 'ルール',
 
   'label.verifyLevel.0.name': () => '設定無し',
   'label.verifyLevel.0.description': () => '無制限',
@@ -67,6 +68,10 @@ export const ja_JP: LangData<LangTemplate> = {
     'このサーバーのメンバーとなってから10分以上経過したメンバーのみ',
   'label.verifyLevel.4.name': () => '最高',
   'label.verifyLevel.4.description': () => '電話認証がされているアカウントのみ',
+
+  'label.autoMod.rule.inviteUrl': () => '招待URL',
+  'label.autoMod.rule.token': () => 'トークン',
+  'label.autoMod.rule.domain': () => '禁止されたドメイン',
 
   'fields.member': (user, label) =>
     `${formatEmoji(gray.member)} **${langs.tl(
