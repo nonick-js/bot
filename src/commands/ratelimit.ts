@@ -27,6 +27,7 @@ export default new ChatInput(
   },
   { coolTime: Duration.toMS('5s') },
   (interaction) => {
+    langs.tl(interaction.locale);
     if (!interaction.inCachedGuild() || !interaction.channel) return;
 
     if (!interaction.appPermissions?.has(PermissionFlagsBits.ManageChannels))
@@ -34,7 +35,7 @@ export default new ChatInput(
         content: langs.tl(
           'field.notPermitted',
           'label.notEnoughBotPermission',
-          'label.permission.manageChannel',
+          'label.permission.manageChannels',
         ),
         ephemeral: true,
       });

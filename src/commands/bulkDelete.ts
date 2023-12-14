@@ -35,7 +35,7 @@ export default new ChatInput(
         content: langs.tl(
           'field.notPermitted',
           'label.notEnoughBotPermission',
-          'label.permission.manageMessage',
+          'label.permission.manageMessages',
         ),
         ephemeral: true,
       });
