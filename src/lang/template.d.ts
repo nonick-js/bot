@@ -52,6 +52,7 @@ export type LangTemplate = {
   'label.aboutBot.0': [];
   'label.aboutBot.1': [];
   'label.developer': [developer: string];
+  'label.commandHasCoolTime': [];
 
   'label.verifyLevel.0.name': [];
   'label.verifyLevel.0.description': [];

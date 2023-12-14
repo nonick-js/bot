@@ -21,6 +21,7 @@ import {
   codeBlock,
   version,
 } from 'discord.js';
+import { langs } from 'lang';
 import mongoose from 'mongoose';
 
 export const client = new Client({
@@ -85,7 +86,7 @@ client.on(Events.InteractionCreate, (interaction) => {
       err.code === ErrorCodes.CommandHasCoolTime
     )
       return interaction.reply({
-        content: '`⌛` コマンドはクールダウン中です',
+        content: langs.tlLang(interaction.locale, 'label.commandHasCoolTime'),
         ephemeral: true,
       });
     console.error(err);

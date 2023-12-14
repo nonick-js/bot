@@ -58,6 +58,8 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.aboutBot.1': () =>
     '「完全無料で使いやすい多機能BOT」を目指して日々開発しています',
   'label.developer': (developer) => `開発者: ${developer}`,
+  'label.commandHasCoolTime': () =>
+    `${inlineCode('⌛')} コマンドはクールタイム中です`,
 
   'label.verifyLevel.0.name': () => '設定無し',
   'label.verifyLevel.0.description': () => '無制限',

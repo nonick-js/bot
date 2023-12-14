@@ -67,6 +67,8 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.aboutBot.1': () =>
     'Daily developing to be "completely free and useful multifunctional BOT"',
   'label.developer': (developer) => `Developer: ${developer}`,
+  'label.commandHasCoolTime': () =>
+    `${inlineCode('⌛')} Command is on cooldown`,
 
   'label.verifyLevel.0.name': () => 'None',
   'label.verifyLevel.0.description': () => 'Unlimited',
