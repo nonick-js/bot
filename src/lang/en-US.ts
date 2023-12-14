@@ -47,6 +47,7 @@ export const en_US: Required<LangData<LangTemplate>> = {
     'Send the URL button of the first message posted on the channel',
   'commands.ratelimit.description': () => 'Set Slowmode for this channel',
   'commands.timeout.description': () => 'Timeout users (more flexible)',
+  'commands.pauseinvite.description': () => 'Toggle server invite pause state',
 
   'commands.bulkdelete.messages.description': () =>
     'Number of messages to delete',
@@ -58,6 +59,7 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'commands.timeout.hour.description': () => 'Hours',
   'commands.timeout.minute.description': () => 'Minutes',
   'commands.timeout.reason.description': () => 'Reason',
+  'commands.pauseinvite.pause.description': () => 'Whether to pause',
 
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
@@ -121,6 +123,12 @@ export const en_US: Required<LangData<LangTemplate>> = {
       duration,
       `${bold('%{d}')} days, ${bold('%{h}')} hours, ${bold('%{m}')} minutes`,
     )}`,
+  'label.pauseinvite.failed.alreadyDone': () =>
+    `${inlineCode('❌')} Already in that state`,
+  'label.pauseinvite.failed': () =>
+    `${inlineCode('❌')} Failed to change invite pause state`,
+  'label.pauseinvite.success': (state) =>
+    `${inlineCode('✅')} Server invite ${langs.tl(state)}`,
 
   'label.permission.manageMessages': () => 'Manage Messages',
   'label.permission.manageChannels': () => 'Manage Channels',
@@ -145,6 +153,10 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.autoMod.rule.domain': () => 'Banned Domains',
 
   'label.firstmessage.default': () => 'Go to top',
+  'label.pauseinvite.enable': () => 'enabled',
+  'label.pauseinvite.pause': () => 'paused',
+  'label.pauseinvite.reason.pause': (user) => `Pause invites - ${user.tag}`,
+  'label.pauseinvite.reason.enable': (user) => `Enable invites - ${user.tag}`,
 
   'fields.member': (user, label) =>
     `${formatEmoji(gray.member)} ${bold(

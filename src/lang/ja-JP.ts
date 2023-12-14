@@ -39,6 +39,8 @@ export const ja_JP: LangData<LangTemplate> = {
   'commands.ratelimit.description': () => 'このチャンネルの低速モードを設定',
   'commands.timeout.description': () =>
     'ユーザーをタイムアウト (公式の機能より柔軟な設定が可能)',
+  'commands.pauseinvite.description': () =>
+    'サーバー招待の一時停止状態を切り替えます',
 
   'commands.bulkdelete.messages.description': () => '削除するメッセージの数',
   'commands.firstmessage.context.description': () => 'メッセージ',
@@ -49,6 +51,7 @@ export const ja_JP: LangData<LangTemplate> = {
   'commands.timeout.hour.description': () => '時',
   'commands.timeout.minute.description': () => '分',
   'commands.timeout.reason.description': () => '理由',
+  'commands.pauseinvite.pause.description': () => '一時停止状態にするか',
 
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
@@ -113,6 +116,12 @@ export const ja_JP: LangData<LangTemplate> = {
       duration,
       `${bold('%{d}')}日${bold('%{h}')}時間${bold('%{m}')}分`,
     )}タイムアウトしました`,
+  'label.pauseinvite.failed.alreadyDone': () =>
+    `${inlineCode('❌')} 既にその状態です`,
+  'label.pauseinvite.failed': () =>
+    `${inlineCode('❌')} 招待一時停止状態の変更に失敗しました`,
+  'label.pauseinvite.success': (state) =>
+    `${inlineCode('✅')} サーバー招待を${langs.tl(state)}しました`,
 
   'label.permission.manageMessages': () => 'メッセージの管理',
   'label.permission.manageChannels': () => 'チャンネルの管理',
@@ -136,4 +145,8 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.autoMod.rule.domain': () => '禁止されたドメイン',
 
   'label.firstmessage.default': () => '最上部へ移動',
+  'label.pauseinvite.enable': () => '有効に',
+  'label.pauseinvite.pause': () => '一時停止',
+  'label.pauseinvite.reason.pause': (user) => `招待の一時停止 - ${user.tag}`,
+  'label.pauseinvite.reason.enable': (user) => `招待の有効化 - ${user.tag}`,
 };

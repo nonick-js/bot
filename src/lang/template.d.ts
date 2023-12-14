@@ -37,6 +37,7 @@ export type LangTemplate = {
   'commands.firstmessage.description': [];
   'commands.ratelimit.description': [];
   'commands.timeout.description': [];
+  'commands.pauseinvite.description': [];
 
   'commands.bulkdelete.messages.description': [];
   'commands.firstmessage.context.description': [];
@@ -47,6 +48,7 @@ export type LangTemplate = {
   'commands.timeout.hour.description': [];
   'commands.timeout.minute.description': [];
   'commands.timeout.reason.description': [];
+  'commands.pauseinvite.pause.description': [];
 
   'label.target': [];
   'label.member': [];
@@ -91,6 +93,9 @@ export type LangTemplate = {
   'label.timeout.failed.notPermittedTimeout': [];
   'label.timeout.failed': [];
   'label.timeout.success': [member: GuildMember, duration: number];
+  'label.pauseinvite.failed.alreadyDone': [];
+  'label.pauseinvite.failed': [];
+  'label.pauseinvite.success': [state: keyof LangTemplate];
 
   'label.permission.manageMessages': [];
   'label.permission.manageChannels': [];
@@ -111,6 +116,10 @@ export type LangTemplate = {
   'label.autoMod.rule.domain': [];
 
   'label.firstmessage.default': [];
+  'label.pauseinvite.pause': [];
+  'label.pauseinvite.enable': [];
+  'label.pauseinvite.reason.pause': [user: User];
+  'label.pauseinvite.reason.enable': [user: User];
 
   'fields.member': [user: User, label?: keyof LangTemplate];
   'fields.channel': [
