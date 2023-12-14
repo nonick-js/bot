@@ -24,6 +24,8 @@ export const ja_JP: LangData<LangTemplate> = {
 
   'eventLog.messageEdit.title': () => `${inlineCode('💬')} メッセージ編集`,
 
+  'message.expansion.title': () => 'メッセージ展開',
+
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
   'label.executor': () => '実行者',

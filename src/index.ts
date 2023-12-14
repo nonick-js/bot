@@ -23,7 +23,7 @@ import {
 } from 'discord.js';
 import mongoose from 'mongoose';
 
-const client = new Client({
+export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildModeration,

@@ -27,14 +27,8 @@ export class PlaceHolder<T extends Readonly<Record<string, unknown>>> {
   }
 
   parse(str: string, params: Partial<T>): string;
-  parse(
-    obj: Readonly<Record<string | number | symbol, unknown>>,
-    params: Partial<T>,
-  ): string;
-  parse(
-    str: string | Readonly<Record<string | number | symbol, unknown>>,
-    params: Partial<T>,
-  ) {
+  parse<O extends Readonly<object>>(obj: O, params: Partial<T>): O;
+  parse(str: string | Readonly<object>, params: Partial<T>) {
     if (typeof str === 'string') return this._parse(str, params);
     return JSON.parse(JSON.stringify(str), (_, value) => {
       if (typeof value === 'string') return this._parse(value, params);

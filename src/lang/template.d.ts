@@ -19,6 +19,8 @@ export type LangTemplate = {
   'eventLog.timeout.add.title': [];
   'eventLog.timeout.remove.title': [];
 
+  'message.expansion.title': [];
+
   'label.target': [];
   'label.member': [];
   'label.channel': [];

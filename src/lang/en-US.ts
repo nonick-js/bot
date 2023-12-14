@@ -18,6 +18,8 @@ export const en_US: LangData<LangTemplate> = {
 
   'eventLog.messageEdit.title': () => `${inlineCode('💬')} Edit Message`,
 
+  'message.expansion.title': () => 'Message Expansion',
+
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
   'label.executor': () => 'Executor',
