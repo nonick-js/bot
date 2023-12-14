@@ -1,5 +1,6 @@
 import { AutomationSetting } from '@models';
 import { DiscordEventBuilder } from '@modules/events';
+import { setLang } from '@modules/utils';
 import { ChannelType, Events } from 'discord.js';
 import { langs } from 'lang';
 
@@ -21,6 +22,7 @@ export default new DiscordEventBuilder({
       return;
 
     if (!message.crosspostable) return;
+    await setLang(message.guild.id);
     message
       .crosspost()
       .catch(() =>

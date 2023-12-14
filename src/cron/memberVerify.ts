@@ -1,5 +1,6 @@
 import { AutomationSetting, AutomationSettingSchema } from '@models';
 import { CronBuilder } from '@modules/cron';
+import { setLang } from '@modules/utils';
 import { guildVerifyLevel } from 'database/models/util';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
@@ -68,6 +69,7 @@ async function sendLog(
     .catch(() => null);
   if (!channel?.isTextBased()) return;
 
+  await setLang(guild.id);
   channel
     .send({
       embeds: [

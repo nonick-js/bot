@@ -1,6 +1,8 @@
 import { AutomationSetting } from '@models';
 import { DiscordEventBuilder } from '@modules/events';
+import { setLang } from '@modules/utils';
 import { Events, MessageType } from 'discord.js';
+import { langs } from 'lang';
 
 export default new DiscordEventBuilder({
   type: Events.MessageCreate,
@@ -13,6 +15,7 @@ export default new DiscordEventBuilder({
     if (!(setting?.enable && setting.channels.includes(message.channel.id)))
       return;
 
-    message.startThread({ name: '新しいスレッド' }).catch(() => {});
+    await setLang(message.guild.id);
+    message.startThread({ name: langs.tl('label.newThread') }).catch(() => {});
   },
 });
