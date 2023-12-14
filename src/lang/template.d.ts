@@ -1,4 +1,10 @@
-import type { Channel, ChannelType, DMChannel, User } from 'discord.js';
+import type {
+  Channel,
+  ChannelType,
+  DMChannel,
+  GuildMember,
+  User,
+} from 'discord.js';
 
 export type LangTemplate = {
   'eventLog.voice.join.title': [];
@@ -30,11 +36,17 @@ export type LangTemplate = {
   'commands.bulkdelete.description': [];
   'commands.firstmessage.description': [];
   'commands.ratelimit.description': [];
+  'commands.timeout.description': [];
 
   'commands.bulkdelete.messages.description': [];
   'commands.firstmessage.context.description': [];
   'commands.firstmessage.label.description': [];
   'commands.ratelimit.duration.description': [];
+  'commands.timeout.user.description': [];
+  'commands.timeout.date.description': [];
+  'commands.timeout.hour.description': [];
+  'commands.timeout.minute.description': [];
+  'commands.timeout.reason.description': [];
 
   'label.target': [];
   'label.member': [];
@@ -72,6 +84,13 @@ export type LangTemplate = {
   'label.firstmessage.failed': [];
   'label.ratelimit.failed': [];
   'label.ratelimit.success': [duration: number];
+  'label.timeout.failed.notExistsMember': [];
+  'label.timeout.failed.notEnoughTime': [];
+  'label.timeout.failed.timeTooMany': [];
+  'label.timeout.failed.yourself': [];
+  'label.timeout.failed.notPermittedTimeout': [];
+  'label.timeout.failed': [];
+  'label.timeout.success': [member: GuildMember, duration: number];
 
   'label.permission.manageMessages': [];
   'label.permission.manageChannels': [];

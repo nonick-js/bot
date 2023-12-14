@@ -1,3 +1,4 @@
+import { Duration } from '@modules/format';
 import type { LangData } from '@modules/translate';
 import { bold, inlineCode } from 'discord.js';
 import { langs } from 'lang';
@@ -36,11 +37,18 @@ export const ja_JP: LangData<LangTemplate> = {
   'commands.firstmessage.description': () =>
     'チャンネルの最初に投稿されたメッセージのURLボタンを送信',
   'commands.ratelimit.description': () => 'このチャンネルの低速モードを設定',
+  'commands.timeout.description': () =>
+    'ユーザーをタイムアウト (公式の機能より柔軟な設定が可能)',
 
   'commands.bulkdelete.messages.description': () => '削除するメッセージの数',
   'commands.firstmessage.context.description': () => 'メッセージ',
   'commands.firstmessage.label.description': () => 'ボタンのテキスト',
   'commands.ratelimit.duration.description': () => '秒数',
+  'commands.timeout.user.description': () => 'ユーザー',
+  'commands.timeout.date.description': () => '日',
+  'commands.timeout.hour.description': () => '時',
+  'commands.timeout.minute.description': () => '分',
+  'commands.timeout.reason.description': () => '理由',
 
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
@@ -74,7 +82,7 @@ export const ja_JP: LangData<LangTemplate> = {
     `${inlineCode('⌛')} コマンドはクールタイム中です`,
   'label.notPermitted': () => '権限がありません',
   'label.notCommandPermission': () => 'コマンドの実行権限がありません',
-  'label.notEnoughBotPermission': () => 'BOTに権限が不足しています',
+  'label.notEnoughBotPermission': () => 'BOTの権限が不足しています',
 
   'label.bulkdelete.failed': () =>
     `${inlineCode('❌')} メッセージの削除に失敗しました`,
@@ -88,6 +96,23 @@ export const ja_JP: LangData<LangTemplate> = {
     `${inlineCode('✅')} チャンネルの低速モードを${inlineCode(
       `${duration}秒`,
     )}に設定しました`,
+  'label.timeout.failed.notExistsMember': () =>
+    `${inlineCode('❌')} このユーザーはサーバーにいません`,
+  'label.timeout.failed.notEnoughTime': () =>
+    `${inlineCode('❌')} 合計時間は1分以上から設定できます`,
+  'label.timeout.failed.timeTooMany': () =>
+    `${inlineCode('❌')} 28日以上のタイムアウトはできません`,
+  'label.timeout.failed.yourself': () =>
+    `${inlineCode('❌')} 自分自身を対象にすることはできません`,
+  'label.timeout.failed.notPermittedTimeout': () =>
+    `${inlineCode('❌')} このユーザーをタイムアウトする権限がありません`,
+  'label.timeout.failed': () =>
+    `${inlineCode('❌')} タイムアウトに失敗しました`,
+  'label.timeout.success': (member, duration) =>
+    `${inlineCode('✅')} ${member}を${Duration.format(
+      duration,
+      `${bold('%{d}')}日${bold('%{h}')}時間${bold('%{m}')}分`,
+    )}タイムアウトしました`,
 
   'label.permission.manageMessages': () => 'メッセージの管理',
   'label.permission.manageChannels': () => 'チャンネルの管理',

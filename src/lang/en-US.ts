@@ -1,4 +1,5 @@
 import { blurple, gray } from '@const/emojis';
+import { Duration } from '@modules/format';
 import type { LangData } from '@modules/translate';
 import {
   bold,
@@ -45,12 +46,18 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'commands.firstmessage.description': () =>
     'Send the URL button of the first message posted on the channel',
   'commands.ratelimit.description': () => 'Set Slowmode for this channel',
+  'commands.timeout.description': () => 'Timeout users (more flexible)',
 
   'commands.bulkdelete.messages.description': () =>
     'Number of messages to delete',
   'commands.firstmessage.context.description': () => 'Message',
   'commands.firstmessage.label.description': () => 'Button Label',
   'commands.ratelimit.duration.description': () => 'seconds',
+  'commands.timeout.user.description': () => 'User',
+  'commands.timeout.date.description': () => 'Date',
+  'commands.timeout.hour.description': () => 'Hours',
+  'commands.timeout.minute.description': () => 'Minutes',
+  'commands.timeout.reason.description': () => 'Reason',
 
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
@@ -97,6 +104,22 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.ratelimit.success': (duration) =>
     `${inlineCode('✅')} Set Channel Slowmode to ${inlineCode(
       `${duration} seconds`,
+    )}`,
+  'label.timeout.failed.notExistsMember': () =>
+    `${inlineCode('❌')} This user is not on the server`,
+  'label.timeout.failed.notEnoughTime': () =>
+    `${inlineCode('❌')} Total time can be set from 1 minute and up`,
+  'label.timeout.failed.timeTooMany': () =>
+    `${inlineCode('❌')} Cannot time out for more than 28 days`,
+  'label.timeout.failed.yourself': () =>
+    `${inlineCode('❌')} Can't target yourself`,
+  'label.timeout.failed.notPermittedTimeout': () =>
+    `${inlineCode('❌')} You do not have permission to time out this user`,
+  'label.timeout.failed': () => `${inlineCode('❌')} Timeout failed`,
+  'label.timeout.success': (member, duration) =>
+    `${inlineCode('✅')} Timeout ${member} ${Duration.format(
+      duration,
+      `${bold('%{d}')} days, ${bold('%{h}')} hours, ${bold('%{m}')} minutes`,
     )}`,
 
   'label.permission.manageMessages': () => 'Manage Messages',
