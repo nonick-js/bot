@@ -29,10 +29,12 @@ export type LangTemplate = {
   'commands.status.description': [];
   'commands.bulkdelete.description': [];
   'commands.firstmessage.description': [];
+  'commands.ratelimit.description': [];
 
   'commands.bulkdelete.messages.description': [];
   'commands.firstmessage.context.description': [];
   'commands.firstmessage.label.description': [];
+  'commands.ratelimit.duration.description': [];
 
   'label.target': [];
   'label.member': [];
@@ -68,8 +70,11 @@ export type LangTemplate = {
   'label.bulkdelete.failed': [];
   'label.bulkdelete.success': [count: number];
   'label.firstmessage.failed': [];
+  'label.ratelimit.failed': [];
+  'label.ratelimit.success': [duration: number];
 
   'label.permission.manageMessage': [];
+  'label.permission.manageChannel': [];
 
   'label.verifyLevel.0.name': [];
   'label.verifyLevel.0.description': [];

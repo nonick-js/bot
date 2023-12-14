@@ -44,11 +44,13 @@ export const en_US: Required<LangData<LangTemplate>> = {
     'Batch delete messages sent to this channel in the latest order (up to 2 weeks ago)',
   'commands.firstmessage.description': () =>
     'Send the URL button of the first message posted on the channel',
+  'commands.ratelimit.description': () => 'Set Slowmode for this channel',
 
   'commands.bulkdelete.messages.description': () =>
     'Number of messages to delete',
   'commands.firstmessage.context.description': () => 'Message',
   'commands.firstmessage.label.description': () => 'Button Label',
+  'commands.ratelimit.duration.description': () => 'seconds',
 
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
@@ -91,8 +93,14 @@ export const en_US: Required<LangData<LangTemplate>> = {
     `${inlineCode('✅')} ${inlineCode(count.toString())} messages deleted`,
   'label.firstmessage.failed': () =>
     `${inlineCode('❌')} Could not retrieve message`,
+  'label.ratelimit.failed': () => `${inlineCode('❌')} Failed to set Slowmode`,
+  'label.ratelimit.success': (duration) =>
+    `${inlineCode('✅')} Set Channel Slowmode to ${inlineCode(
+      `${duration} seconds`,
+    )}`,
 
   'label.permission.manageMessage': () => 'Manage Messages',
+  'label.permission.manageChannel': () => 'Manage Channels',
 
   'label.verifyLevel.0.name': () => 'None',
   'label.verifyLevel.0.description': () => 'Unlimited',

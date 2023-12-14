@@ -35,10 +35,12 @@ export const ja_JP: LangData<LangTemplate> = {
     'このチャンネルに送信されたメッセージを最新順に一括削除 (2週間前まで)',
   'commands.firstmessage.description': () =>
     'チャンネルの最初に投稿されたメッセージのURLボタンを送信',
+  'commands.ratelimit.description': () => 'このチャンネルの低速モードを設定',
 
   'commands.bulkdelete.messages.description': () => '削除するメッセージの数',
   'commands.firstmessage.context.description': () => 'メッセージ',
   'commands.firstmessage.label.description': () => 'ボタンのテキスト',
+  'commands.ratelimit.duration.description': () => '秒数',
 
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
@@ -80,8 +82,15 @@ export const ja_JP: LangData<LangTemplate> = {
     `${inlineCode('✅')} メッセージを${inlineCode(`${count}件`)}削除しました`,
   'label.firstmessage.failed': () =>
     `${inlineCode('❌')} メッセージを取得できませんでした`,
+  'label.ratelimit.failed': () =>
+    `${inlineCode('❌')} 低速モードの設定に失敗しました`,
+  'label.ratelimit.success': (duration) =>
+    `${inlineCode('✅')} チャンネルの低速モードを${inlineCode(
+      `${duration}秒`,
+    )}に設定しました`,
 
   'label.permission.manageMessage': () => 'メッセージの管理',
+  'label.permission.manageChannel': () => 'チャンネルの管理',
 
   'label.verifyLevel.0.name': () => '設定無し',
   'label.verifyLevel.0.description': () => '無制限',
