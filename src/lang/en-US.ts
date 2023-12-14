@@ -1,5 +1,6 @@
 import type { LangData } from '@modules/translate';
 import { inlineCode } from 'discord.js';
+import { langs } from 'lang';
 import type { LangTemplate } from './template';
 
 export const en_US: LangData<LangTemplate> = {
@@ -23,6 +24,9 @@ export const en_US: LangData<LangTemplate> = {
   'automation.publishAnnounce.failed': () =>
     `${inlineCode('❌')} Failed to publish message`,
 
+  'automation.memberVerify.title': (label) =>
+    `${inlineCode('✅')} Auto change verify level - ${langs.tl(label)}`,
+
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
   'label.executor': () => 'Executor',
@@ -40,4 +44,23 @@ export const en_US: LangData<LangTemplate> = {
   'label.reason': () => 'Reason',
   'label.noReason': () => 'No reason entered',
   'label.newThread': () => 'New Thread',
+  'label.start': () => 'Start',
+  'label.end': () => 'End',
+  'label.changeVerify': (level) =>
+    `Server verification level has been changed to **${langs.tl(level)}**`,
+
+  'label.verifyLevel.0.name': () => 'None',
+  'label.verifyLevel.0.description': () => 'Unlimited',
+  'label.verifyLevel.1.name': () => 'Low',
+  'label.verifyLevel.1.description': () =>
+    'Must have a verified email on their Discord Account',
+  'label.verifyLevel.2.name': () => 'Medium',
+  'label.verifyLevel.2.description': () =>
+    'Must also be registered on Discord for longer than 5 minutes',
+  'label.verifyLevel.3.name': () => 'High',
+  'label.verifyLevel.3.description': () =>
+    'Must also be a member of this server for longer than 10 minutes',
+  'label.verifyLevel.4.name': () => 'Highest',
+  'label.verifyLevel.4.description': () =>
+    'Must have a verified phone aon their Discord account',
 };

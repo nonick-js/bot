@@ -29,6 +29,9 @@ export const ja_JP: LangData<LangTemplate> = {
   'automation.publishAnnounce.failed': () =>
     `${inlineCode('❌')} メッセージの公開に失敗しました`,
 
+  'automation.memberVerify.title': (label) =>
+    `${inlineCode('✅')} 認証レベル自動変更 - ${langs.tl(label)}`,
+
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
   'label.executor': () => '実行者',
@@ -46,6 +49,24 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.reason': () => '理由',
   'label.noReason': () => '理由が入力されていません',
   'label.newThread': () => '新しいスレッド',
+  'label.start': () => '開始',
+  'label.end': () => '終了',
+  'label.changeVerify': (level) =>
+    `サーバーの認証レベルを**${langs.tl(level)}**に変更しました`,
+
+  'label.verifyLevel.0.name': () => '設定無し',
+  'label.verifyLevel.0.description': () => '無制限',
+  'label.verifyLevel.1.name': () => '低',
+  'label.verifyLevel.1.description': () =>
+    'メール認証がされているアカウントのみ',
+  'label.verifyLevel.2.name': () => '中',
+  'label.verifyLevel.2.description': () =>
+    'Discordに登録してから5分以上経過したアカウントのみ',
+  'label.verifyLevel.3.name': () => '高',
+  'label.verifyLevel.3.description': () =>
+    'このサーバーのメンバーとなってから10分以上経過したメンバーのみ',
+  'label.verifyLevel.4.name': () => '最高',
+  'label.verifyLevel.4.description': () => '電話認証がされているアカウントのみ',
 
   'fields.member': (user, label) =>
     `${formatEmoji(gray.member)} **${langs.tl(

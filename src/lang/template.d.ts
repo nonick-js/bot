@@ -22,6 +22,7 @@ export type LangTemplate = {
   'message.expansion.title': [];
 
   'automation.publishAnnounce.failed': [];
+  'automation.memberVerify.title': [label: keyof LangTemplate];
 
   'label.target': [];
   'label.member': [];
@@ -40,6 +41,20 @@ export type LangTemplate = {
   'label.reason': [];
   'label.noReason': [];
   'label.newThread': [];
+  'label.start': [];
+  'label.end': [];
+  'label.changeVerify': [level: keyof LangTemplate];
+
+  'label.verifyLevel.0.name': [];
+  'label.verifyLevel.0.description': [];
+  'label.verifyLevel.1.name': [];
+  'label.verifyLevel.1.description': [];
+  'label.verifyLevel.2.name': [];
+  'label.verifyLevel.2.description': [];
+  'label.verifyLevel.3.name': [];
+  'label.verifyLevel.3.description': [];
+  'label.verifyLevel.4.name': [];
+  'label.verifyLevel.4.description': [];
 
   'fields.member': [user: User, label?: keyof LangTemplate];
   'fields.channel': [
