@@ -28,6 +28,8 @@ export const ja_JP: LangData<LangTemplate> = {
   'automation.memberVerify.title': (label) =>
     `${inlineCode('✅')} 認証レベル自動変更 - ${langs.tl(label)}`,
 
+  'commands.help.description': () => 'このBOTについて',
+
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
   'label.executor': () => '実行者',
@@ -50,6 +52,12 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.changeVerify': (level) =>
     `サーバーの認証レベルを${bold(langs.tl(level))}に変更しました`,
   'label.rule': () => 'ルール',
+  'label.supportServer': () => 'サポートサーバー',
+  'label.documents': () => '使い方ガイド',
+  'label.aboutBot.0': () => 'サーバーの運営・成長に役立つ機能を搭載！',
+  'label.aboutBot.1': () =>
+    '「完全無料で使いやすい多機能BOT」を目指して日々開発しています',
+  'label.developer': (developer) => `開発者: ${developer}`,
 
   'label.verifyLevel.0.name': () => '設定無し',
   'label.verifyLevel.0.description': () => '無制限',

@@ -37,6 +37,8 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'automation.memberVerify.title': (level) =>
     `${inlineCode('✅')} Auto change verify level - ${bold(langs.tl(level))}`,
 
+  'commands.help.description': () => 'About this BOT',
+
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
   'label.executor': () => 'Executor',
@@ -59,6 +61,12 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.changeVerify': (level) =>
     `Server verification level has been changed to **${langs.tl(level)}**`,
   'label.rule': () => 'Rule',
+  'label.supportServer': () => 'Support server',
+  'label.documents': () => 'Documents (ja)',
+  'label.aboutBot.0': () => 'Features to help manage and grow the server!',
+  'label.aboutBot.1': () =>
+    'Daily developing to be "completely free and useful multifunctional BOT"',
+  'label.developer': (developer) => `Developer: ${developer}`,
 
   'label.verifyLevel.0.name': () => 'None',
   'label.verifyLevel.0.description': () => 'Unlimited',

@@ -24,6 +24,8 @@ export type LangTemplate = {
   'automation.publishAnnounce.failed': [];
   'automation.memberVerify.title': [label: keyof LangTemplate];
 
+  'commands.help.description': [];
+
   'label.target': [];
   'label.member': [];
   'label.channel': [];
@@ -45,6 +47,11 @@ export type LangTemplate = {
   'label.end': [];
   'label.changeVerify': [level: keyof LangTemplate];
   'label.rule': [];
+  'label.supportServer': [];
+  'label.documents': [];
+  'label.aboutBot.0': [];
+  'label.aboutBot.1': [];
+  'label.developer': [developer: string];
 
   'label.verifyLevel.0.name': [];
   'label.verifyLevel.0.description': [];

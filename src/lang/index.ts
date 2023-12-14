@@ -9,7 +9,7 @@ export const langs = new Languages<Locale[], LangTemplate>(Locale.EnglishUS);
 langs.register(Locale.Japanese, ja_JP);
 langs.register(Locale.EnglishUS, en_US);
 
-export function createCommandDescription(
+export function createDescription(
   key: keyof LangTemplate,
 ): Pick<
   ChatInputApplicationCommandData,
