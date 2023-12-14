@@ -39,6 +39,7 @@ export type LangTemplate = {
   'label.executor': [];
   'label.reason': [];
   'label.noReason': [];
+  'label.newThread': [];
 
   'fields.member': [user: User, label?: keyof LangTemplate];
   'fields.channel': [

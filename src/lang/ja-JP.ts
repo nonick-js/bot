@@ -45,6 +45,7 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.none': () => 'なし',
   'label.reason': () => '理由',
   'label.noReason': () => '理由が入力されていません',
+  'label.newThread': () => '新しいスレッド',
 
   'fields.member': (user, label) =>
     `${formatEmoji(gray.member)} **${langs.tl(

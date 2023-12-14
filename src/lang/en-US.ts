@@ -39,4 +39,5 @@ export const en_US: LangData<LangTemplate> = {
   'label.none': () => 'None',
   'label.reason': () => 'Reason',
   'label.noReason': () => 'No reason entered',
+  'label.newThread': () => 'New Thread',
 };
