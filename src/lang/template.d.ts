@@ -21,6 +21,8 @@ export type LangTemplate = {
 
   'message.expansion.title': [];
 
+  'automation.publishAnnounce.failed': [];
+
   'label.target': [];
   'label.member': [];
   'label.channel': [];

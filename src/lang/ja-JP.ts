@@ -26,6 +26,9 @@ export const ja_JP: LangData<LangTemplate> = {
 
   'message.expansion.title': () => 'メッセージ展開',
 
+  'automation.publishAnnounce.failed': () =>
+    `${inlineCode('❌')} メッセージの公開に失敗しました`,
+
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
   'label.executor': () => '実行者',

@@ -20,6 +20,9 @@ export const en_US: LangData<LangTemplate> = {
 
   'message.expansion.title': () => 'Message Expansion',
 
+  'automation.publishAnnounce.failed': () =>
+    `${inlineCode('❌')} Failed to publish message`,
+
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
   'label.executor': () => 'Executor',
