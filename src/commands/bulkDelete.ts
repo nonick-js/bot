@@ -16,9 +16,7 @@ export default new ChatInput(
     options: [
       {
         name: 'messages',
-        ...createDescription(
-          'commands.bulkdelete.options.messages.description',
-        ),
+        ...createDescription('commands.bulkdelete.messages.description'),
         type: ApplicationCommandOptionType.Integer,
         minValue: 2,
         maxValue: 100,

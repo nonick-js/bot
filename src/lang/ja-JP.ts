@@ -34,8 +34,7 @@ export const ja_JP: LangData<LangTemplate> = {
   'commands.bulkdelete.description': () =>
     'このチャンネルに送信されたメッセージを最新順に一括削除 (2週間前まで)',
 
-  'commands.bulkdelete.options.messages.description': () =>
-    '削除するメッセージの数',
+  'commands.bulkdelete.messages.description': () => '削除するメッセージの数',
 
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',

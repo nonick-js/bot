@@ -29,7 +29,7 @@ export type LangTemplate = {
   'commands.status.description': [];
   'commands.bulkdelete.description': [];
 
-  'commands.bulkdelete.options.messages.description': [];
+  'commands.bulkdelete.messages.description': [];
 
   'label.target': [];
   'label.member': [];

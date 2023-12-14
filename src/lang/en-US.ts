@@ -43,7 +43,7 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'commands.bulkdelete.description': () =>
     'Batch delete messages sent to this channel in the latest order (up to 2 weeks ago)',
 
-  'commands.bulkdelete.options.messages.description': () =>
+  'commands.bulkdelete.messages.description': () =>
     'Number of messages to delete',
 
   'label.target': () => 'Target',
