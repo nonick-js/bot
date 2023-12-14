@@ -3,6 +3,7 @@ import {
   ChannelType,
   GuildVerificationLevel,
 } from 'discord-api-types/v10';
+import { LangKey } from './util';
 
 // #region Collections
 export interface AutomationSettingSchema extends BaseSchema {
@@ -22,7 +23,7 @@ export interface EventLogSettingSchema extends BaseSchema {
 }
 
 export interface GeneralSettingSchema extends BaseSchema {
-  lang: string;
+  lang: (typeof LangKey)[number];
 }
 
 export interface MessageSettingSchema extends BaseSchema {
