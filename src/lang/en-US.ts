@@ -42,9 +42,13 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'commands.status.description': () => 'Display BOT status',
   'commands.bulkdelete.description': () =>
     'Batch delete messages sent to this channel in the latest order (up to 2 weeks ago)',
+  'commands.firstmessage.description': () =>
+    'Send the URL button of the first message posted on the channel',
 
   'commands.bulkdelete.messages.description': () =>
     'Number of messages to delete',
+  'commands.firstmessage.context.description': () => 'Message',
+  'commands.firstmessage.label.description': () => 'Button Label',
 
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
@@ -85,6 +89,8 @@ export const en_US: Required<LangData<LangTemplate>> = {
     `${inlineCode('❌')} Failed to delete message`,
   'label.bulkdelete.success': (count) =>
     `${inlineCode('✅')} ${inlineCode(count.toString())} messages deleted`,
+  'label.firstmessage.failed': () =>
+    `${inlineCode('❌')} Could not retrieve message`,
 
   'label.permission.manageMessage': () => 'Manage Messages',
 
@@ -106,6 +112,8 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.autoMod.rule.inviteUrl': () => 'Invite URL',
   'label.autoMod.rule.token': () => 'Token',
   'label.autoMod.rule.domain': () => 'Banned Domains',
+
+  'label.firstmessage.default': () => 'Go to top',
 
   'fields.member': (user, label) =>
     `${formatEmoji(gray.member)} ${bold(

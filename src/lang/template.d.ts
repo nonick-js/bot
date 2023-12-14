@@ -28,8 +28,11 @@ export type LangTemplate = {
   'commands.reload.description': [];
   'commands.status.description': [];
   'commands.bulkdelete.description': [];
+  'commands.firstmessage.description': [];
 
   'commands.bulkdelete.messages.description': [];
+  'commands.firstmessage.context.description': [];
+  'commands.firstmessage.label.description': [];
 
   'label.target': [];
   'label.member': [];
@@ -64,6 +67,7 @@ export type LangTemplate = {
 
   'label.bulkdelete.failed': [];
   'label.bulkdelete.success': [count: number];
+  'label.firstmessage.failed': [];
 
   'label.permission.manageMessage': [];
 
@@ -81,6 +85,8 @@ export type LangTemplate = {
   'label.autoMod.rule.inviteUrl': [];
   'label.autoMod.rule.token': [];
   'label.autoMod.rule.domain': [];
+
+  'label.firstmessage.default': [];
 
   'fields.member': [user: User, label?: keyof LangTemplate];
   'fields.channel': [

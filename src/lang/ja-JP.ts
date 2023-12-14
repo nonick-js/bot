@@ -33,8 +33,12 @@ export const ja_JP: LangData<LangTemplate> = {
   'commands.status.description': () => 'BOTのステータスを表示する',
   'commands.bulkdelete.description': () =>
     'このチャンネルに送信されたメッセージを最新順に一括削除 (2週間前まで)',
+  'commands.firstmessage.description': () =>
+    'チャンネルの最初に投稿されたメッセージのURLボタンを送信',
 
   'commands.bulkdelete.messages.description': () => '削除するメッセージの数',
+  'commands.firstmessage.context.description': () => 'メッセージ',
+  'commands.firstmessage.label.description': () => 'ボタンのテキスト',
 
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
@@ -74,6 +78,8 @@ export const ja_JP: LangData<LangTemplate> = {
     `${inlineCode('❌')} メッセージの削除に失敗しました`,
   'label.bulkdelete.success': (count) =>
     `${inlineCode('✅')} メッセージを${inlineCode(`${count}件`)}削除しました`,
+  'label.firstmessage.failed': () =>
+    `${inlineCode('❌')} メッセージを取得できませんでした`,
 
   'label.permission.manageMessage': () => 'メッセージの管理',
 
@@ -94,4 +100,6 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.autoMod.rule.inviteUrl': () => '招待URL',
   'label.autoMod.rule.token': () => 'トークン',
   'label.autoMod.rule.domain': () => '禁止されたドメイン',
+
+  'label.firstmessage.default': () => '最上部へ移動',
 };
