@@ -1,6 +1,5 @@
-import { blurple, gray } from '@const/emojis';
 import type { LangData } from '@modules/translate';
-import { escapeMarkdown, formatEmoji, inlineCode, time } from 'discord.js';
+import { bold, inlineCode } from 'discord.js';
 import { langs } from 'lang';
 import type { LangTemplate } from './template';
 
@@ -11,10 +10,7 @@ export const ja_JP: LangData<LangTemplate> = {
   'eventLog.voice.move.old': () => 'チャンネル移動元',
   'eventLog.voice.move.new': () => 'チャンネル移動先',
 
-  'eventLog.ban.add.title': () => `${inlineCode('🔨')} BAN`,
   'eventLog.ban.remove.title': () => `${inlineCode('🔨')} BAN解除`,
-
-  'eventLog.kick.title': () => `${inlineCode('🔨')} Kick`,
 
   'eventLog.timeout.add.title': () => `${inlineCode('🛑')} タイムアウト`,
   'eventLog.timeout.remove.title': () =>
@@ -52,7 +48,7 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.start': () => '開始',
   'label.end': () => '終了',
   'label.changeVerify': (level) =>
-    `サーバーの認証レベルを**${langs.tl(level)}**に変更しました`,
+    `サーバーの認証レベルを${bold(langs.tl(level))}に変更しました`,
   'label.rule': () => 'ルール',
 
   'label.verifyLevel.0.name': () => '設定無し',
@@ -72,28 +68,4 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.autoMod.rule.inviteUrl': () => '招待URL',
   'label.autoMod.rule.token': () => 'トークン',
   'label.autoMod.rule.domain': () => '禁止されたドメイン',
-
-  'fields.member': (user, label) =>
-    `${formatEmoji(gray.member)} **${langs.tl(
-      label ?? 'label.member',
-    )}:** ${user.toString()} [${escapeMarkdown(user.tag)}]`,
-  'fields.channel': (channel, label) =>
-    `${formatEmoji(gray.channel)} **${langs.tl(
-      label ?? 'label.channel',
-    )}:** ${channel.toString()} [${escapeMarkdown(channel.name)}]`,
-
-  'fields.schedule': (date, label) =>
-    `${formatEmoji(gray.schedule)} **${langs.tl(
-      label ?? 'label.schedule',
-    )}:** ${time(date, 'f')} (${time(date, 'R')})`,
-
-  'fields.executor': (user, label) =>
-    `${formatEmoji(blurple.member)} **${langs.tl(
-      label ?? 'label.executor',
-    )}:** ${user.toString()} [${escapeMarkdown(user.tag)}]`,
-
-  'fields.reason': (reason, label) =>
-    `${formatEmoji(blurple.text)} **${langs.tl(
-      label ?? 'label.reason',
-    )}:** ${langs.tl(reason ?? 'label.noReason')}`,
 };
