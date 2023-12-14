@@ -73,8 +73,8 @@ export type LangTemplate = {
   'label.ratelimit.failed': [];
   'label.ratelimit.success': [duration: number];
 
-  'label.permission.manageMessage': [];
-  'label.permission.manageChannel': [];
+  'label.permission.manageMessages': [];
+  'label.permission.manageChannels': [];
 
   'label.verifyLevel.0.name': [];
   'label.verifyLevel.0.description': [];

@@ -99,8 +99,8 @@ export const en_US: Required<LangData<LangTemplate>> = {
       `${duration} seconds`,
     )}`,
 
-  'label.permission.manageMessage': () => 'Manage Messages',
-  'label.permission.manageChannel': () => 'Manage Channels',
+  'label.permission.manageMessages': () => 'Manage Messages',
+  'label.permission.manageChannels': () => 'Manage Channels',
 
   'label.verifyLevel.0.name': () => 'None',
   'label.verifyLevel.0.description': () => 'Unlimited',

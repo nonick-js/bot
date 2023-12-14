@@ -89,8 +89,8 @@ export const ja_JP: LangData<LangTemplate> = {
       `${duration}秒`,
     )}に設定しました`,
 
-  'label.permission.manageMessage': () => 'メッセージの管理',
-  'label.permission.manageChannel': () => 'チャンネルの管理',
+  'label.permission.manageMessages': () => 'メッセージの管理',
+  'label.permission.manageChannels': () => 'チャンネルの管理',
 
   'label.verifyLevel.0.name': () => '設定無し',
   'label.verifyLevel.0.description': () => '無制限',
