@@ -1,4 +1,4 @@
-import { type UserFlagsString } from 'discord.js';
+import { GuildFeature, type UserFlagsString } from 'discord.js';
 
 export const white = {
   addMark: '988439798324817930',
@@ -55,4 +55,10 @@ export const userFlag: Partial<Record<UserFlagsString, string>> = {
   ActiveDeveloper: '1040345950318768218',
   VerifiedDeveloper: '966753508705583174',
   PremiumEarlySupporter: '966753508751736892',
+};
+
+export const guildFeatures: Partial<Record<GuildFeature, string>> = {
+  PARTNERED: '982512900432351262',
+  VERIFIED: '982512902042955806',
+  DISCOVERABLE: '1087358252691496960',
 };

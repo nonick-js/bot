@@ -1,5 +1,5 @@
 import { GeneralSetting } from '@models';
-import type { Message } from 'discord.js';
+import type { Message, Snowflake } from 'discord.js';
 import { client } from 'index';
 import { langs } from 'lang';
 
@@ -29,4 +29,20 @@ export async function getMessage(...id: string[]): Promise<Message> {
       `メッセージID:\`${id[2]}\`が存在しないもしくはアクセスできません`,
     );
   return message;
+}
+
+export function formatEmoji<C extends Snowflake>(
+  emojiId: C,
+  animated?: false,
+): `<:x:${C}>`;
+export function formatEmoji<C extends Snowflake>(
+  emojiId: C,
+  animated?: true,
+): `<a:x:${C}>`;
+export function formatEmoji<C extends Snowflake>(
+  emojiId: C,
+  animated?: boolean,
+): `<:x:${C}>` | `<a:x:${C}>`;
+export function formatEmoji(emojiId: string, animated = false) {
+  return `<${animated ? 'a' : ''}:x:${emojiId}>`;
 }

@@ -1,13 +1,8 @@
-import { blurple, gray } from '@const/emojis';
+import { blurple, gray, guildFeatures, white } from '@const/emojis';
 import { Duration } from '@modules/format';
 import type { LangData } from '@modules/translate';
-import {
-  bold,
-  escapeMarkdown,
-  formatEmoji,
-  inlineCode,
-  time,
-} from 'discord.js';
+import { formatEmoji } from '@modules/utils';
+import { bold, escapeMarkdown, inlineCode, time } from 'discord.js';
 import { langs } from 'lang';
 import type { LangTemplate } from './template';
 
@@ -48,6 +43,7 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'commands.ratelimit.description': () => 'Set Slowmode for this channel',
   'commands.timeout.description': () => 'Timeout users (more flexible)',
   'commands.pauseinvite.description': () => 'Toggle server invite pause state',
+  'commands.info.description': () => 'Display user/server information',
 
   'commands.bulkdelete.messages.description': () =>
     'Number of messages to delete',
@@ -60,13 +56,18 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'commands.timeout.minute.description': () => 'Minutes',
   'commands.timeout.reason.description': () => 'Reason',
   'commands.pauseinvite.pause.description': () => 'Whether to pause',
+  'commands.info.user.description': () => 'Display user information',
+  'commands.info.user.user.description': () => 'User',
+  'commands.info.server.description': () => 'Display server information',
+
+  'contexts.infouser.name': () => 'User information',
 
   'label.target': () => 'Target',
   'label.channel': () => 'Channel',
   'label.executor': () => 'Executor',
   'label.member': () => 'Member',
   'label.schedule': () => 'Schedule',
-  'label.timeoutSchedule': () => 'Release Schedule',
+  'label.timeoutSchedule': () => 'Timeout Remove Date',
   'label.sender': () => 'Sender',
   'label.sendAt': () => 'Sending Time',
   'label.deleteBy': () => 'Delete by',
@@ -95,6 +96,22 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.notCommandPermission': () =>
     'You do not have permission to execute commands',
   'label.notEnoughBotPermission': () => 'not enough BOT permissions',
+  'label.status': () => 'Status',
+  'label.roles': () => 'Roles',
+  'label.serverId': () => 'Server Id',
+  'label.owner': () => 'Owner',
+  'label.memberCount': () => 'Member count',
+  'label.channelCount': () => 'Channel count',
+  'label.serverCreateAt': () => 'Server creation date',
+  'label.boostCount': () => 'Boost count',
+  'label.userId': () => 'User Id',
+  'label.nickname': () => 'Nickname',
+  'label.notMember': () => 'This user is not on this server',
+  'label.accountCreateAt': () => 'Account creation date',
+  'label.badges': () => 'Badges',
+  'label.serverJoinAt': () => 'Server Join Date',
+  'label.error': () => 'Error',
+  'label.boostSince': () => 'Boost Start Date',
 
   'label.bulkdelete.failed': () =>
     `${inlineCode('❌')} Failed to delete message`,
@@ -132,6 +149,11 @@ export const en_US: Required<LangData<LangTemplate>> = {
 
   'label.permission.manageMessages': () => 'Manage Messages',
   'label.permission.manageChannels': () => 'Manage Channels',
+  'label.permission.manageRoles': () => 'Manage Roles',
+
+  'label.guildFeature.PARTNERED': () => 'Discord Partner',
+  'label.guildFeature.VERIFIED': () => 'Verified',
+  'label.guildFeature.DISCOVERABLE': () => 'Discoverable Community Server',
 
   'label.verifyLevel.0.name': () => 'None',
   'label.verifyLevel.0.description': () => 'Unlimited',
@@ -186,4 +208,39 @@ export const en_US: Required<LangData<LangTemplate>> = {
     `${inlineCode('❌')} ${langs.tl(label ?? 'label.notPermitted')}${
       permissions?.length ? `: ${permissions.join(', ')}` : ''
     }`,
+
+  'field.id': (id, label) =>
+    `${formatEmoji(white.id)} ${langs.tl(
+      label ?? 'label.serverId',
+    )}: ${inlineCode(id)}`,
+  'field.owner': (owner, label) =>
+    `${formatEmoji(white.nickName)} ${langs.tl(
+      label ?? 'label.owner',
+    )}: ${owner.toString()}`,
+  'field.memberCount': (count, label) =>
+    `${formatEmoji(white.nickName)} ${langs.tl(
+      label ?? 'label.memberCount',
+    )}: ${inlineCode(count.toString())}`,
+  'field.channelCount': (count, label) =>
+    `${formatEmoji(white.channel)} ${langs.tl(
+      label ?? 'label.channelCount',
+    )}: ${inlineCode(count.toString())}`,
+  'field.createAt': (date, label) =>
+    `${formatEmoji(white.schedule)} ${langs.tl(
+      label ?? 'label.serverCreateAt',
+    )}: ${time(date, 'D')}`,
+  'field.boostCount': (count, label) =>
+    `${formatEmoji(white.boost)} ${langs.tl(
+      label ?? 'label.boostCount',
+    )}: ${inlineCode(count.toString())}`,
+
+  'field.guildFeature': (type, label) =>
+    `${
+      guildFeatures[type] ? formatEmoji(guildFeatures[type] as string) : ''
+    }${langs.tl(label ?? `label.guildFeature.${type}`)}`,
+
+  'field.nickname': (member, label) =>
+    `${formatEmoji(white.nickName)} ${langs.tl(
+      label ?? 'label.nickname',
+    )}: ${bold(escapeMarkdown(member.nickname ?? langs.tl('label.none')))}`,
 };

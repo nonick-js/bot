@@ -2,6 +2,7 @@ import type {
   Channel,
   ChannelType,
   DMChannel,
+  GuildFeature,
   GuildMember,
   User,
 } from 'discord.js';
@@ -38,6 +39,7 @@ export type LangTemplate = {
   'commands.ratelimit.description': [];
   'commands.timeout.description': [];
   'commands.pauseinvite.description': [];
+  'commands.info.description': [];
 
   'commands.bulkdelete.messages.description': [];
   'commands.firstmessage.context.description': [];
@@ -49,6 +51,11 @@ export type LangTemplate = {
   'commands.timeout.minute.description': [];
   'commands.timeout.reason.description': [];
   'commands.pauseinvite.pause.description': [];
+  'commands.info.user.description': [];
+  'commands.info.user.user.description': [];
+  'commands.info.server.description': [];
+
+  'contexts.infouser.name': [];
 
   'label.target': [];
   'label.member': [];
@@ -80,6 +87,22 @@ export type LangTemplate = {
   'label.notPermitted': [];
   'label.notCommandPermission': [];
   'label.notEnoughBotPermission': [];
+  'label.status': [];
+  'label.roles': [];
+  'label.serverId': [];
+  'label.owner': [];
+  'label.memberCount': [];
+  'label.channelCount': [];
+  'label.serverCreateAt': [];
+  'label.boostCount': [];
+  'label.userId': [];
+  'label.nickname': [];
+  'label.notMember': [];
+  'label.accountCreateAt': [];
+  'label.badges': [];
+  'label.serverJoinAt': [];
+  'label.error': [];
+  'label.boostSince': [];
 
   'label.bulkdelete.failed': [];
   'label.bulkdelete.success': [count: number];
@@ -99,6 +122,7 @@ export type LangTemplate = {
 
   'label.permission.manageMessages': [];
   'label.permission.manageChannels': [];
+  'label.permission.manageRoles': [];
 
   'label.verifyLevel.0.name': [];
   'label.verifyLevel.0.description': [];
@@ -121,6 +145,10 @@ export type LangTemplate = {
   'label.pauseinvite.reason.pause': [user: User];
   'label.pauseinvite.reason.enable': [user: User];
 
+  'label.guildFeature.PARTNERED': [];
+  'label.guildFeature.VERIFIED': [];
+  'label.guildFeature.DISCOVERABLE': [];
+
   'fields.member': [user: User, label?: keyof LangTemplate];
   'fields.channel': [
     channel: Exclude<Channel, { type: ChannelType.DM | ChannelType.GroupDM }>,
@@ -136,4 +164,14 @@ export type LangTemplate = {
     label?: keyof LangTemplate,
     ...permissions: (keyof LangTemplate)[],
   ];
+  'field.id': [id: string, label?: keyof LangTemplate];
+  'field.owner': [owner: GuildMember, label?: keyof LangTemplate];
+  'field.memberCount': [count: number, label?: keyof LangTemplate];
+  'field.channelCount': [count: number, label?: keyof LangTemplate];
+  'field.createAt': [date: Date, label?: keyof LangTemplate];
+  'field.boostCount': [count: number, label?: keyof LangTemplate];
+
+  'field.guildFeature': [type: GuildFeature, label: keyof LangTemplate];
+
+  'field.nickname': [name: GuildMember, label?: keyof LangTemplate];
 };

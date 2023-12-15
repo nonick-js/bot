@@ -51,14 +51,16 @@ export const ja_JP: LangData<LangTemplate> = {
   'commands.timeout.hour.description': () => '時',
   'commands.timeout.minute.description': () => '分',
   'commands.timeout.reason.description': () => '理由',
-  'commands.pauseinvite.pause.description': () => '一時停止状態にするか',
+  'commands.pauseinvite.pause.description': () => '一時停止するか',
+
+  'contexts.infouser.name': () => 'ユーザーの情報',
 
   'label.target': () => '対象者',
   'label.channel': () => 'チャンネル',
   'label.executor': () => '実行者',
   'label.member': () => 'メンバー',
   'label.schedule': () => 'スケジュール',
-  'label.timeoutSchedule': () => '解除される時間',
+  'label.timeoutSchedule': () => 'タイムアウトが解除される日時',
   'label.sender': () => '送信者',
   'label.sendAt': () => '送信時刻',
   'label.deleteBy': () => '削除者',
@@ -86,6 +88,22 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.notPermitted': () => '権限がありません',
   'label.notCommandPermission': () => 'コマンドの実行権限がありません',
   'label.notEnoughBotPermission': () => 'BOTの権限が不足しています',
+  'label.status': () => 'ステータス',
+  'label.roles': () => 'ロール',
+  'label.serverId': () => 'サーバーID',
+  'label.owner': () => 'オーナー',
+  'label.memberCount': () => 'メンバー数',
+  'label.channelCount': () => 'チャンネル数',
+  'label.serverCreateAt': () => 'サーバー作成日',
+  'label.boostCount': () => 'ブースト数',
+  'label.userId': () => 'ユーザーID',
+  'label.nickname': () => 'ニックネーム',
+  'label.notMember': () => 'このユーザーはこのサーバーにいません',
+  'label.accountCreateAt': () => 'アカウント作成日',
+  'label.badges': () => 'バッジ',
+  'label.serverJoinAt': () => 'サーバー参加日',
+  'label.error': () => 'エラー',
+  'label.boostSince': () => 'ブースト開始日',
 
   'label.bulkdelete.failed': () =>
     `${inlineCode('❌')} メッセージの削除に失敗しました`,
@@ -125,6 +143,11 @@ export const ja_JP: LangData<LangTemplate> = {
 
   'label.permission.manageMessages': () => 'メッセージの管理',
   'label.permission.manageChannels': () => 'チャンネルの管理',
+  'label.permission.manageRoles': () => 'ロールの管理',
+
+  'label.guildFeature.PARTNERED': () => 'パートナー鯖',
+  'label.guildFeature.VERIFIED': () => '認証済み',
+  'label.guildFeature.DISCOVERABLE': () => '公開サーバー',
 
   'label.verifyLevel.0.name': () => '設定無し',
   'label.verifyLevel.0.description': () => '無制限',
