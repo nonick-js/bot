@@ -23,6 +23,15 @@ const schema = new Schema<ModerateSettingSchema>({
       roles: [snowflake],
     },
   },
+  report: {
+    channel: snowflake,
+    includeModerator: Schema.Types.Boolean,
+    progressButton: Schema.Types.Boolean,
+    mention: {
+      enable: Schema.Types.Boolean,
+      role: snowflake,
+    },
+  },
 });
 
 export default model<ModerateSettingSchema>('ModerateSetting', schema);
