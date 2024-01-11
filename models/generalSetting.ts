@@ -1,4 +1,4 @@
-import { Locale } from 'discord.js';
+import { Locale } from 'discord-api-types/v10';
 import { Schema, model } from 'mongoose';
 import { GeneralSettingSchema } from './types';
 import { LangKey, serverId } from './util';
