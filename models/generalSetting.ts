@@ -1,5 +1,5 @@
 import { Locale } from 'discord-api-types/v10';
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model, models } from 'mongoose';
 import { GeneralSettingSchema } from './types';
 import { LangKey, serverId } from './util';
 
@@ -8,4 +8,9 @@ const schema = new Schema<GeneralSettingSchema>({
   lang: { type: Schema.Types.String, enum: LangKey, default: Locale.Japanese },
 });
 
-export default model<GeneralSettingSchema>('GeneralSetting', schema);
+export default models?.GeneralSetting
+  ? (models.GeneralSetting as Model<GeneralSettingSchema>)
+  : model<GeneralSettingSchema, Model<GeneralSettingSchema>>(
+      'GeneralSetting',
+      schema,
+    );

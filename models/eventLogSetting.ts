@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model, models } from 'mongoose';
 import { EventLogData, EventLogSettingSchema } from './types';
 import { serverId, snowflake } from './util';
 
@@ -21,4 +21,9 @@ const schema = new Schema<EventLogSettingSchema>({
   messageEdit: logSchema,
 });
 
-export default model<EventLogSettingSchema>('EventLogSetting', schema);
+export default models?.EventLogSetting
+  ? (models.EventLogSetting as Model<EventLogSettingSchema>)
+  : model<EventLogSettingSchema, Model<EventLogSettingSchema>>(
+      'EventLogSetting',
+      schema,
+    );

@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model, models } from 'mongoose';
 import type { AutomationSettingSchema } from './types';
 import { guildVerifyLevel, serverId, snowflake } from './util';
 
@@ -29,4 +29,9 @@ const schema = new Schema<AutomationSettingSchema>({
   },
 });
 
-export default model<AutomationSettingSchema>('AutomationSetting', schema);
+export default models?.AutomationSetting
+  ? (models.AutomationSetting as Model<AutomationSettingSchema>)
+  : model<AutomationSettingSchema, Model<AutomationSettingSchema>>(
+      'AutomationSetting',
+      schema,
+    );

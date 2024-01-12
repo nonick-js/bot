@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model, models } from 'mongoose';
 import type { ServerDataSchema } from './types';
 import { serverId, snowflake } from './util';
 
@@ -23,4 +23,6 @@ const schema = new Schema<ServerDataSchema>({
   receiveNotification: [Schema.Types.String],
 });
 
-export default model<ServerDataSchema>('ServerData', schema);
+export default models?.ServerData
+  ? (models.ServerData as Model<ServerDataSchema>)
+  : model<ServerDataSchema, Model<ServerDataSchema>>('ServerData', schema);

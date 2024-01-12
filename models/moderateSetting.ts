@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model, models } from 'mongoose';
 import type { ModerateSettingSchema } from './types.d.ts';
 import { serverId, snowflake } from './util';
 
@@ -34,4 +34,9 @@ const schema = new Schema<ModerateSettingSchema>({
   },
 });
 
-export default model<ModerateSettingSchema>('ModerateSetting', schema);
+export default models?.ModerateSetting
+  ? (models.ModerateSetting as Model<ModerateSettingSchema>)
+  : model<ModerateSettingSchema, Model<ModerateSettingSchema>>(
+      'ModerateSetting',
+      schema,
+    );

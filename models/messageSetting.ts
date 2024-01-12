@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model, models } from 'mongoose';
 import type { MessageSettingSchema } from './types.d.ts';
 import { messageOptionSchema, serverId, snowflake } from './util';
 
@@ -27,4 +27,9 @@ const schema = new Schema<MessageSettingSchema>({
   },
 });
 
-export default model<MessageSettingSchema>('MessageSetting', schema);
+export default models?.MessageSetting
+  ? (models.MessageSetting as Model<MessageSettingSchema>)
+  : model<MessageSettingSchema, Model<MessageSettingSchema>>(
+      'MessageSetting',
+      schema,
+    );
