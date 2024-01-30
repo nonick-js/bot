@@ -10,6 +10,21 @@ const schema = new Schema<NotificationSchema>({
   updateAt: { required: true, type: Schema.Types.Date },
 });
 
+schema.pre('updateOne', async function (next) {
+  this.setOptions({
+    runValidators: true,
+  });
+  return next();
+});
+
+schema.pre('findOneAndUpdate', async function (next) {
+  this.setOptions({
+    runValidators: true,
+    new: true,
+  });
+  return next();
+});
+
 export default models?.Notification
   ? (models?.Notification as Model<NotificationSchema>)
   : model<NotificationSchema, Model<NotificationSchema>>(

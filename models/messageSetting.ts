@@ -27,6 +27,21 @@ const schema = new Schema<MessageSettingSchema>({
   },
 });
 
+schema.pre('updateOne', async function (next) {
+  this.setOptions({
+    runValidators: true,
+  });
+  return next();
+});
+
+schema.pre('findOneAndUpdate', async function (next) {
+  this.setOptions({
+    runValidators: true,
+    new: true,
+  });
+  return next();
+});
+
 export default models?.MessageSetting
   ? (models.MessageSetting as Model<MessageSettingSchema>)
   : model<MessageSettingSchema, Model<MessageSettingSchema>>(

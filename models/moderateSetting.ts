@@ -34,6 +34,21 @@ const schema = new Schema<ModerateSettingSchema>({
   },
 });
 
+schema.pre('updateOne', async function (next) {
+  this.setOptions({
+    runValidators: true,
+  });
+  return next();
+});
+
+schema.pre('findOneAndUpdate', async function (next) {
+  this.setOptions({
+    runValidators: true,
+    new: true,
+  });
+  return next();
+});
+
 export default models?.ModerateSetting
   ? (models.ModerateSetting as Model<ModerateSettingSchema>)
   : model<ModerateSettingSchema, Model<ModerateSettingSchema>>(

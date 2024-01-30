@@ -23,6 +23,21 @@ const schema = new Schema<ServerDataSchema>({
   receiveNotification: [Schema.Types.String],
 });
 
+schema.pre('updateOne', async function (next) {
+  this.setOptions({
+    runValidators: true,
+  });
+  return next();
+});
+
+schema.pre('findOneAndUpdate', async function (next) {
+  this.setOptions({
+    runValidators: true,
+    new: true,
+  });
+  return next();
+});
+
 export default models?.ServerData
   ? (models.ServerData as Model<ServerDataSchema>)
   : model<ServerDataSchema, Model<ServerDataSchema>>('ServerData', schema);

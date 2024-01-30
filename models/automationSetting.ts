@@ -29,6 +29,21 @@ const schema = new Schema<AutomationSettingSchema>({
   },
 });
 
+schema.pre('updateOne', async function (next) {
+  this.setOptions({
+    runValidators: true,
+  });
+  return next();
+});
+
+schema.pre('findOneAndUpdate', async function (next) {
+  this.setOptions({
+    runValidators: true,
+    new: true,
+  });
+  return next();
+});
+
 export default models?.AutomationSetting
   ? (models.AutomationSetting as Model<AutomationSettingSchema>)
   : model<AutomationSettingSchema, Model<AutomationSettingSchema>>(

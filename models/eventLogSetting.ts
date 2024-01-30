@@ -21,6 +21,21 @@ const schema = new Schema<EventLogSettingSchema>({
   messageEdit: logSchema,
 });
 
+schema.pre('updateOne', async function (next) {
+  this.setOptions({
+    runValidators: true,
+  });
+  return next();
+});
+
+schema.pre('findOneAndUpdate', async function (next) {
+  this.setOptions({
+    runValidators: true,
+    new: true,
+  });
+  return next();
+});
+
 export default models?.EventLogSetting
   ? (models.EventLogSetting as Model<EventLogSettingSchema>)
   : model<EventLogSettingSchema, Model<EventLogSettingSchema>>(
