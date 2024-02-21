@@ -39,7 +39,6 @@ schema.pre('updateOne', async function (next) {
 schema.pre('findOneAndUpdate', async function (next) {
   this.setOptions({
     runValidators: true,
-    new: true,
   });
   return next();
 });
