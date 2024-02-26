@@ -206,7 +206,9 @@ export const en_US: Required<LangData<LangTemplate>> = {
 
   'field.notPermitted': (label, ...permissions) =>
     `${inlineCode('❌')} ${langs.tl(label ?? 'label.notPermitted')}${
-      permissions?.length ? `: ${permissions.join(', ')}` : ''
+      permissions?.length
+        ? `: ${permissions.map((p) => langs.tl(p)).join(', ')}`
+        : ''
     }`,
 
   'field.id': (id, label) =>
