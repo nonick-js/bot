@@ -28,8 +28,10 @@ export default new ChatInput(
       },
     ],
     dmPermission: false,
-    defaultMemberPermissions:
-      PermissionFlagsBits.ManageChannels | PermissionFlagsBits.ManageMessages,
+    defaultMemberPermissions: [
+      PermissionFlagsBits.ManageChannels,
+      PermissionFlagsBits.ManageMessages,
+    ],
   },
   { coolTime: Duration.toMS('50s') },
   (interaction) => {
