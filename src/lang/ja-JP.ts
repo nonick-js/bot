@@ -52,6 +52,14 @@ export const ja_JP: LangData<LangTemplate> = {
   'commands.timeout.minute.description': () => '分',
   'commands.timeout.reason.description': () => '理由',
   'commands.pauseinvite.pause.description': () => '一時停止するか',
+  'commands.verify.description': () => 'ロールを使用した認証パネルを作成',
+  'commands.verify.type.description': () => '認証タイプ',
+  'commands.verify.type.button': () => 'ボタン',
+  'commands.verify.type.image': () => '画像',
+  'commands.verify.role.description': () => '認証成功時に付与するロール',
+  'commands.verify.description.description': () =>
+    '埋め込みの説明文 (半角スペース2つで改行)',
+  'commands.verify.color.description': () => '埋め込みの色',
 
   'contexts.infouser.name': () => 'ユーザーの情報',
 
@@ -104,6 +112,15 @@ export const ja_JP: LangData<LangTemplate> = {
   'label.serverJoinAt': () => 'サーバー参加日',
   'label.error': () => 'エラー',
   'label.boostSince': () => 'ブースト開始日',
+  'label.color.red': () => '🔴赤色',
+  'label.color.orange': () => '🟠橙色',
+  'label.color.yellow': () => '🟡黄色',
+  'label.color.green': () => '🟢緑色',
+  'label.color.blue': () => '🔵青色',
+  'label.color.purple': () => '🟣紫色',
+  'label.color.white': () => '⚪白色',
+  'label.color.black': () => '⚫黒色',
+  'label.verify': () => '認証',
 
   'label.bulkdelete.failed': () =>
     `${inlineCode('❌')} メッセージの削除に失敗しました`,
@@ -140,6 +157,51 @@ export const ja_JP: LangData<LangTemplate> = {
     `${inlineCode('❌')} 招待一時停止状態の変更に失敗しました`,
   'label.pauseinvite.success': (state) =>
     `${inlineCode('✅')} サーバー招待を${langs.tl(state)}しました`,
+  'label.verify.failed.unusableRole': () =>
+    `${inlineCode('❌')} そのロールは認証に使用することはできません`,
+  'label.verify.failed.higherRole': () =>
+    `${inlineCode(
+      '❌',
+    )} 自分の持つロールより上のロールを認証に使用することはできません`,
+  'label.verify.failed.botHigherRole': () =>
+    `${inlineCode(
+      '❌',
+    )} BOTの持つロールより上のロールを認証に使用することはできません`,
+  'label.verify.failed.inProgress': () =>
+    `${inlineCode(
+      '❌',
+    )} 現在別の認証を行っています。認証が終了するまで新たな認証を行うことはできません。`,
+  'label.verify.failed.alreadyDone': () =>
+    `${inlineCode('✅')} 既に認証されています。`,
+  'label.verify.failed.grantRole': () =>
+    `${inlineCode(
+      '❌',
+    )} ロールを付与できませんでした。サーバーの管理者にご連絡ください`,
+  'label.verify.failed.sendDM': () =>
+    `${inlineCode(
+      '❌',
+    )} この認証を行うにはBOTからDMを受け取れるように設定する必要があります。`,
+  'label.verify.failed.tryCountsExceeded': () =>
+    `${inlineCode(
+      '❌',
+    )} 試行回数を超えて検証に失敗しました。次回の検証は${inlineCode(
+      '5分後',
+    )}から可能になります。`,
+
+  'label.verify.failed': () =>
+    `${inlineCode('❌')} 認証中に問題が発生しました。`,
+  'label.verify.success': () => `${inlineCode('✅')} 認証に成功しました！`,
+  'label.verify.giveRole': () => '付与するロール',
+  'label.verify.image.description': () =>
+    [
+      '下の画像に表示された、緑色の文字列をこのDMに送信してください。',
+      '> ⚠️一定時間経過したり、複数回間違えると新しい認証を発行する必要があります。',
+    ].join('\n'),
+  'label.verify.image.footer': () =>
+    'NoNICK.jsはパスワードの入力やQRコードの読み取りを要求することは決してありません。',
+  'label.verify.image': () => '画像認証',
+  'label.verify.inductionDM': () =>
+    `${inlineCode('📨')} DMで認証を続けてください。`,
 
   'label.permission.manageMessages': () => 'メッセージの管理',
   'label.permission.manageChannels': () => 'チャンネルの管理',

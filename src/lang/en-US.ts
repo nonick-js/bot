@@ -59,6 +59,16 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'commands.info.user.description': () => 'Display user information',
   'commands.info.user.user.description': () => 'User',
   'commands.info.server.description': () => 'Display server information',
+  'commands.verify.description': () =>
+    'Create a verification panel using roles',
+  'commands.verify.type.description': () => 'Verification Type',
+  'commands.verify.type.button': () => 'Button',
+  'commands.verify.type.image': () => 'Image',
+  'commands.verify.role.description': () =>
+    'Roles assigned on successful verification',
+  'commands.verify.description.description': () =>
+    'Embed description (line break with two spaces)',
+  'commands.verify.color.description': () => 'Embed color',
 
   'contexts.infouser.name': () => 'User information',
 
@@ -112,6 +122,15 @@ export const en_US: Required<LangData<LangTemplate>> = {
   'label.serverJoinAt': () => 'Server Join Date',
   'label.error': () => 'Error',
   'label.boostSince': () => 'Boost Start Date',
+  'label.color.red': () => '🔴Red',
+  'label.color.orange': () => '🟠Orange',
+  'label.color.yellow': () => '🟡Yellow',
+  'label.color.green': () => '🟢Green',
+  'label.color.blue': () => '🔵Blue',
+  'label.color.purple': () => '🟣Purple',
+  'label.color.white': () => '⚪White',
+  'label.color.black': () => '⚫Black',
+  'label.verify': () => 'Verify',
 
   'label.bulkdelete.failed': () =>
     `${inlineCode('❌')} Failed to delete message`,
@@ -146,6 +165,50 @@ export const en_US: Required<LangData<LangTemplate>> = {
     `${inlineCode('❌')} Failed to change invite pause state`,
   'label.pauseinvite.success': (state) =>
     `${inlineCode('✅')} Server invite ${langs.tl(state)}`,
+  'label.verify.failed.unusableRole': () =>
+    `${inlineCode('❌')} The role cannot be used for verification`,
+  'label.verify.failed.higherRole': () =>
+    `${inlineCode(
+      '❌',
+    )} The role above the one you have cannot be used for verification`,
+  'label.verify.failed.botHigherRole': () =>
+    `${inlineCode(
+      '❌',
+    )} The role above the one the bot has cannot be used for verification`,
+  'label.verify.failed.inProgress': () =>
+    `${inlineCode(
+      '❌',
+    )} Another verification is currently underway. A new verification cannot be performed until the verification is completed`,
+  'label.verify.failed.alreadyDone': () =>
+    `${inlineCode('✅')} It has already been verified`,
+  'label.verify.failed.grantRole': () =>
+    `${inlineCode(
+      '❌',
+    )} Could not grant role. Please contact your server administrator`,
+  'label.verify.failed.sendDM': () =>
+    `${inlineCode(
+      '❌',
+    )} To perform this verification, you must be set up to receive DMs from the BOT`,
+  'label.verify.failed.tryCountsExceeded': () =>
+    `${inlineCode(
+      '❌',
+    )} Verification failed after exceeding the number of attempts. Next verification will be available in ${inlineCode(
+      '5 minutes',
+    )}.`,
+  'label.verify.failed': () =>
+    `${inlineCode('❌')} A problem occurred during verification`,
+  'label.verify.success': () => `${inlineCode('✅')} Successfully verified!`,
+  'label.verify.giveRole': () => 'Roles to be granted',
+  'label.verify.image.description': () =>
+    [
+      'Please send the green string of text shown in the image below to this DM',
+      '> ⚠️After a certain amount of time or if you make a mistake more than once, you will need to issue a new certification',
+    ].join('\n'),
+  'label.verify.image.footer': () =>
+    'NoNICK.js never requests you to enter a password or read a QR code',
+  'label.verify.image': () => 'Image verification',
+  'label.verify.inductionDM': () =>
+    `${inlineCode('📨')} Please continue to verify with DM`,
 
   'label.permission.manageMessages': () => 'Manage Messages',
   'label.permission.manageChannels': () => 'Manage Channels',
@@ -245,4 +308,8 @@ export const en_US: Required<LangData<LangTemplate>> = {
     `${formatEmoji(white.nickName)} ${langs.tl(
       label ?? 'label.nickname',
     )}: ${bold(escapeMarkdown(member.nickname ?? langs.tl('label.none')))}`,
+  'field.verify': (type, label) =>
+    `${inlineCode('✅')} ${langs.tl(label ?? 'label.verify')}: ${langs.tl(
+      type,
+    )}`,
 };

@@ -2,6 +2,7 @@ import { Languages } from '@modules/translate';
 import { Locale } from 'discord.js';
 import type {
   ApplicationCommandData,
+  ApplicationCommandOptionChoiceData,
   ChatInputApplicationCommandData,
 } from 'discord.js';
 import { en_US } from './en-US';

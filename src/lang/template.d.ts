@@ -54,6 +54,13 @@ export type LangTemplate = {
   'commands.info.user.description': [];
   'commands.info.user.user.description': [];
   'commands.info.server.description': [];
+  'commands.verify.description': [];
+  'commands.verify.type.description': [];
+  'commands.verify.role.description': [];
+  'commands.verify.description.description': [];
+  'commands.verify.color.description': [];
+  'commands.verify.type.button': [];
+  'commands.verify.type.image': [];
 
   'contexts.infouser.name': [];
 
@@ -103,6 +110,15 @@ export type LangTemplate = {
   'label.serverJoinAt': [];
   'label.error': [];
   'label.boostSince': [];
+  'label.color.red': [];
+  'label.color.orange': [];
+  'label.color.yellow': [];
+  'label.color.green': [];
+  'label.color.blue': [];
+  'label.color.purple': [];
+  'label.color.white': [];
+  'label.color.black': [];
+  'label.verify': [];
 
   'label.bulkdelete.failed': [];
   'label.bulkdelete.success': [count: number];
@@ -119,6 +135,21 @@ export type LangTemplate = {
   'label.pauseinvite.failed.alreadyDone': [];
   'label.pauseinvite.failed': [];
   'label.pauseinvite.success': [state: keyof LangTemplate];
+  'label.verify.failed.unusableRole': [];
+  'label.verify.failed.higherRole': [];
+  'label.verify.failed.botHigherRole': [];
+  'label.verify.failed.inProgress': [];
+  'label.verify.failed.alreadyDone': [];
+  'label.verify.failed.grantRole': [];
+  'label.verify.failed.sendDM': [];
+  'label.verify.failed.tryCountsExceeded': [];
+  'label.verify.failed': [];
+  'label.verify.success': [];
+  'label.verify.giveRole': [];
+  'label.verify.image.description': [];
+  'label.verify.image.footer': [];
+  'label.verify.image': [];
+  'label.verify.inductionDM': [];
 
   'label.permission.manageMessages': [];
   'label.permission.manageChannels': [];
@@ -174,4 +205,5 @@ export type LangTemplate = {
   'field.guildFeature': [type: GuildFeature, label: keyof LangTemplate];
 
   'field.nickname': [name: GuildMember, label?: keyof LangTemplate];
+  'field.verify': [type: keyof LangTemplate, label?: keyof LangTemplate];
 };
