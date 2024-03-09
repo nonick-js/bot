@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  guildId   String @unique
+  configs   GuildConfigs?
+  auditLogs AuditLog[]
+}
+
+model GuildConfigs {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  guild   Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId String @unique
+
+  autoPublic AutoPubicConfig?
+  autoCreateThread AutoCreateThreadConfig?
+  autoChangeVerificationLevel AutoChangeVerificationLevelConfig?
+}
+
+model AuditLog {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  guild    Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId  String
+  author   String
+  before   Json?
+  after    Json?
+  createAt DateTime @default(now())
+}
+
+model AutoPubicConfig {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  guildConfigs GuildConfigs @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId      String @unique
+  enabled      Boolean
+  channels     String[]
+}
+
+model AutoCreateThreadConfig {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  guildConfigs GuildConfigs @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId      String @unique
+  enabled      Boolean
+  channels     String[]
+}
+
+model AutoChangeVerificationLevelConfig {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  guildConfigs GuildConfigs @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId      String @unique
+  enabled      Boolean
+  startTime    Int
+  endTime      Int
+  logEnabled   Boolean?
+  logChannel   String?
+}

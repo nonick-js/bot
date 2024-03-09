@@ -10,7 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.10.2",
     "discord-api-types": "0.37.35",
     "mongoose": "^8.0.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.10.2"
   }
 }
