@@ -4,6 +4,9 @@ import {
   SKRSContext2D,
   createCanvas,
 } from '@napi-rs/canvas';
+import { Random } from './random';
+
+const rnd = new Random(Date.now());
 
 export class Captcha {
   private canvas: Canvas;
@@ -52,8 +55,8 @@ export class Captcha {
     for (const char of decoyText)
       this.ctx.fillText(
         char,
-        getRandom(30, this.width - 30),
-        getRandom(30, this.height - 30),
+        rnd.nextInt(30, this.width - 30),
+        rnd.nextInt(30, this.height - 30),
       );
   }
 
@@ -70,12 +73,12 @@ export class Captcha {
     this.ctx.beginPath();
     this.ctx.moveTo(
       this.coord[0][0],
-      this.coord[0][1] + getRandom(-opt.blur, opt.blur),
+      this.coord[0][1] + rnd.nextInt(-opt.blur, opt.blur),
     );
     for (let i = 1; i < this.coord.length; i++)
       this.ctx.lineTo(
         this.coord[i][0],
-        this.coord[i][1] + getRandom(-opt.blur, opt.blur),
+        this.coord[i][1] + rnd.nextInt(-opt.blur, opt.blur),
       );
     this.ctx.stroke();
     this.ctx.closePath();
@@ -98,9 +101,9 @@ export class Captcha {
       this.ctx.save();
       this.ctx.translate(...this.coord[i]);
       if (opt.skew)
-        this.ctx.transform(1, Math.random(), getRandom(20) / 100, 1, 0, 0);
+        this.ctx.transform(1, Math.random(), rnd.nextInt(20) / 100, 1, 0, 0);
       if (opt.rotate)
-        this.ctx.rotate((getRandom(-opt.rotate, opt.rotate) * Math.PI) / 100);
+        this.ctx.rotate((rnd.nextInt(-opt.rotate, opt.rotate) * Math.PI) / 100);
       this.ctx.fillText(this._text[i], 0, 0);
       this.ctx.restore();
     }
@@ -119,7 +122,7 @@ export class Captcha {
     const coords: number[][] = [];
     const gap = Math.floor(this.width / chars);
     for (let i = 0; i < chars; i++)
-      coords.push([15 + gap * (i + 0.2), getRandom(30, this.height - 30)]);
+      coords.push([15 + gap * (i + 0.2), rnd.nextInt(30, this.height - 30)]);
     return coords.sort(([a], [b]) => a - b) as [[number, number]];
   }
 
@@ -168,14 +171,9 @@ interface drawLineOption {
   opacity?: number;
 }
 
-function getRandom(start = 0, end = 0): number {
-  return (
-    Math.round(Math.random() * Math.abs(end - start)) + Math.min(start, end)
-  );
-}
-
 function getRandomText(length: number) {
-  return new Int8Array(length)
-    .map(() => Math.min(Math.floor(Math.random() * 26) + 65, 90))
-    .reduce((p, c) => p + String.fromCharCode(c), '');
+  return new Int8Array(length).reduce(
+    (p) => p + String.fromCharCode(rnd.nextInt(65, 90)),
+    '',
+  );
 }
