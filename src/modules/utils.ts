@@ -1,11 +1,11 @@
 import { GeneralSetting } from '@models';
-import type { Message, Snowflake } from 'discord.js';
+import type { Locale, Message, Snowflake } from 'discord.js';
 import { client } from 'index';
 import { langs } from 'lang';
 
 export async function setLang(serverId: string) {
   const setting = await GeneralSetting.findOne({ serverId });
-  if (setting?.lang) langs.setLang(setting.lang);
+  if (setting?.lang) langs.setLang(setting.lang as Locale);
 }
 
 export async function getMessage(

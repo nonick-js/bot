@@ -20,7 +20,9 @@ const create = new DiscordEventBuilder({
 const update = new DiscordEventBuilder({
   type: Events.MessageUpdate,
   async execute(_, message) {
-    autoMod(await message.fetch());
+    const msg = await message.fetch().catch(() => null);
+    if (!msg) return;
+    autoMod(msg);
   },
 });
 

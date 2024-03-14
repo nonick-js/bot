@@ -122,7 +122,7 @@ export namespace Duration {
         RegExp(
           `${Object.entries(durations).reduce(
             (p, [short, { long }]) =>
-              p + `((?<${short}>-?(\\d*\\.\\d+|\\d+))(${short}|${long}))?`,
+              `${p}((?<${short}>-?(\\d*\\.\\d+|\\d+))(${short}|${long}))?`,
             '',
           )}$`,
           'i',
