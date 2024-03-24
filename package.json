@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --inspect src/index.ts",
-    "start": "node build/src/index.js",
+    "start": "node build/index.js",
     "build": "tsc -p .",
     "lint": "eslint . --ext .ts"
   },
