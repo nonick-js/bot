@@ -22,6 +22,16 @@
   * `/ratelimit` ... チャンネルの低速モードを1秒単位で指定
   * `/firstmessage` ... チャンネルで最初に送信されたメッセージのURLボタンを送信
 
+## 環境変数
+```env
+BOT_TOKEN="DiscordBOTのトークン"
+GUILD_ID="コマンドを登録するサーバーのID (省略した際はグローバルコマンドとして登録)"
+LOG_CHANNEL_ID="エラーログを送信するチャンネルのID"
+
+MONGODB_URI="mongoDBに接続するためのURI"
+MONGODB_DBNAME="データベース名"
+```
+
 ## サポート
 BOTの使い方や設定の仕方は、[公式ドキュメント](https://docs.nonick-js.com)を使用して確認することが出来ます。  
 尚、ドキュメントを読んでもわからない場合は、[サポートサーバー](https://discord.gg/fVcjCNn733)で質問することもできます。
