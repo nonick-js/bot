@@ -1,5 +1,4 @@
-import { ChatInputCommandInteraction, Guild, PermissionsBitField } from 'discord.js';
-import Config from '../../config.json';
+import { Guild, PermissionsBitField } from 'discord.js';
 
 const dangerPermissions = new Map([
   [ 'Administrator', '管理者' ],
@@ -17,11 +16,14 @@ const dangerPermissions = new Map([
 ]);
 
 export function isBlocked(guild: Guild | null): boolean {
-  interface BlackListType { guilds: string[]; users: string[] }
-  const blackList: BlackListType = Config.blackList;
+  // interface BlackListType { guilds: string[]; users: string[] }
+  // const blackList: BlackListType = Config.blackList;
 
-  if (!guild) return false;
-  return (blackList.guilds.includes(guild.id) || blackList.users.includes(guild.ownerId));
+  // if (!guild) return false;
+  // return (blackList.guilds.includes(guild.id) || blackList.users.includes(guild.ownerId));
+
+  // v5にて再実装
+  return false;
 }
 
 export function isURL(text: string): boolean {
@@ -34,8 +36,4 @@ export function omitString(text: string, limit: number): string {
 
 export function checkAndFormatDangerPermission(permissions: Readonly<PermissionsBitField>) {
   return permissions.toArray().map(v => dangerPermissions.get(v)).filter(Boolean);
-}
-
-export async function checkPermission(interaction: ChatInputCommandInteraction): Promise<void> {
-  if (!Config.admin.users.includes(interaction.user.id)) await interaction.reply({ content: '`❌` コマンドの実行権限がありません', ephemeral: true });
 }

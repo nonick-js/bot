@@ -5,7 +5,6 @@ dotenv.config();
 import { ActivityType, AllowedMentionsTypes, Client, codeBlock, Colors, EmbedBuilder, Events, GatewayIntentBits, Partials, version } from 'discord.js';
 import { DiscordInteractions, ErrorCodes, InteractionsError } from '@akki256/discord-interaction';
 import { DiscordEvents } from './module/events';
-import { guildId, admin } from '../config.json';
 import { isBlocked } from './module/functions';
 import mongoose from 'mongoose';
 import cron from 'node-cron';
@@ -46,7 +45,7 @@ client.once(Events.ClientReady, () => {
     'Memory': `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
   });
 
-  interactions.registerCommands({ guildId: guildId ?? undefined, deleteNoLoad: true });
+  interactions.registerCommands({ guildId: process.env.GUILD_ID ?? undefined, deleteNoLoad: true });
   events.register(path.resolve(__dirname, './events'));
   reloadActivity();
 
@@ -79,7 +78,7 @@ client.on(Events.InteractionCreate, interaction => {
 process.on('uncaughtException', (err) => {
   console.error(err);
 
-  client.channels.fetch(admin.error).then(channel => {
+  client.channels.fetch(process.env.LOG_CHANNEL_ID).then(channel => {
     if (!channel?.isTextBased()) return;
     channel.send({
       embeds: [
