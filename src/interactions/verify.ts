@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ApplicationCommandOptionType, AttachmentBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, GuildMemberRoleManager, PermissionFlagsBits } from 'discord.js';
 import { ChatInput, Button } from '@akki256/discord-interaction';
 import { Captcha } from '../module/captcha';
-// import Captcha from '@haileybot/captcha-generator';
+import fs from 'fs';
 
 const duringAuthentication = new Set();
 
@@ -116,11 +116,11 @@ const verifyButton = new Button(
         .then(() => interaction.reply({ content: '`✅` 認証に成功しました！', ephemeral: true }))
         .catch(() => interaction.reply({ content: '`❌` ロールを付与できませんでした。サーバーの管理者にご連絡ください', ephemeral: true }));
 
-
     if (interaction.customId === 'nonick-js:verify-image') {
       await interaction.deferReply({ ephemeral: true });
 
-      const { image, text } = Captcha.create({ color: '#4b9d6e' }, {}, { amount: 5, blur: 25 }, { rotate: 15, skew: true });
+      const fontBuffer = fs.readFileSync('src/fonts/OpenSans-Regular.ttf');
+      const { image, text } = Captcha.create({ color: '#4b9d6e', font: fontBuffer }, {}, { amount: 5, blur: 25 }, { rotate: 15, skew: true });
 
       interaction.user
         .send({
