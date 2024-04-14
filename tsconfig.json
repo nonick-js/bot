@@ -8,6 +8,7 @@
     "paths": {
       "@modules/*": ["./modules/*"],
       "@models/*": ["./database/models/*"],
+      "@models": ["./database/models/index"],
       "@config": ["./config.json"],
       "@const/*": ["./constants/*"]
     },

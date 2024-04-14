@@ -1,4 +1,4 @@
-import { AutomationSetting, type AutomationSettingSchema } from '@models/index';
+import { AutomationSetting, type AutomationSettingSchema } from '@models';
 import { CronBuilder } from '@modules/cron';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
