@@ -11,14 +11,22 @@
     "Wenhook",
     "wtimeout"
   ],
-  "eslint.packageManager": "pnpm",
-  "npm.packageManager": "pnpm",
   "json.schemas": [
     {
-      "fileMatch": [
-        "/config.json"
-      ],
+      "fileMatch": ["src/config.json"],
       "url": "/config.schema.json"
     }
-  ]
+  ],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  }
 }
