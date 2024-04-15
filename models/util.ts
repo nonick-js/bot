@@ -1,47 +1,41 @@
-import { GuildVerificationLevel, Locale } from 'discord-api-types/v10';
 import { Schema } from 'mongoose';
-import { CustomMessageOptions } from './types';
+import type { MessageOption } from '../zod/discord';
 
-export const LangKey = [Locale.EnglishUS, Locale.Japanese] as const;
-export const snowflake = { type: Schema.Types.String, match: /\d{17,}/ };
-export const serverId = { required: true, unique: true, ...snowflake };
-export const guildVerifyLevel: GuildVerificationLevel[] = [
-  GuildVerificationLevel.None,
-  GuildVerificationLevel.Low,
-  GuildVerificationLevel.Medium,
-  GuildVerificationLevel.High,
-  GuildVerificationLevel.VeryHigh,
-];
+export const guildId = {
+  required: true,
+  unique: true,
+  type: Schema.Types.String,
+};
 
-export const messageOptionSchema = new Schema<CustomMessageOptions>({
+export const messageOptionSchema = new Schema<typeof MessageOption._type>({
   content: Schema.Types.String,
   embeds: [
     {
-      title: { type: Schema.Types.String, maxlength: 256 },
-      description: { type: Schema.Types.String, maxlength: 4096 },
-      url: { type: Schema.Types.String, match: /^https?:\/\// },
-      timestamp: { type: Schema.Types.String },
-      color: { type: Schema.Types.Number, min: 0x000000, max: 0xffffff },
+      title: Schema.Types.String,
+      description: Schema.Types.String,
+      url: Schema.Types.String,
+      timestamp: Schema.Types.String,
+      color: Schema.Types.Number,
       footer: {
-        text: { type: Schema.Types.String, maxlength: 2048 },
-        icon_url: { type: Schema.Types.String, match: /^https?:\/\// },
+        text: Schema.Types.String,
+        icon_url: Schema.Types.String,
       },
       image: {
-        url: { type: Schema.Types.String, match: /^https?:\/\// },
+        url: Schema.Types.String,
       },
       thumbnail: {
-        url: { type: Schema.Types.String, match: /^https?:\/\// },
+        url: Schema.Types.String,
       },
       author: {
-        name: { type: Schema.Types.String, maxlength: 256 },
-        url: { type: Schema.Types.String, match: /^https?:\/\// },
-        icon_url: { type: Schema.Types.String, match: /^https?:\/\// },
+        name: Schema.Types.String,
+        url: Schema.Types.String,
+        icon_url: Schema.Types.String,
       },
       fields: [
         {
-          name: { type: Schema.Types.String, maxlength: 256 },
-          value: { type: Schema.Types.String, maxlength: 1024 },
-          inline: { type: Schema.Types.Boolean },
+          name: Schema.Types.String,
+          value: Schema.Types.String,
+          inline: Schema.Types.Boolean,
         },
       ],
     },
