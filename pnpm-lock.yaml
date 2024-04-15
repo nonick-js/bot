@@ -38,6 +38,9 @@ dependencies:
   dayjs:
     specifier: ^1.11.10
     version: 1.11.10
+  discord-api-types:
+    specifier: 0.37.35
+    version: 0.37.35
   discord.js:
     specifier: ^14.14.1
     version: 14.14.1
@@ -50,6 +53,9 @@ dependencies:
   node-cron:
     specifier: ^3.0.3
     version: 3.0.3
+  zod:
+    specifier: ^3.22.4
+    version: 3.22.4
 
 devDependencies:
   '@swc/core':
@@ -1425,3 +1431,7 @@ packages:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
     dev: true
+
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+    dev: false

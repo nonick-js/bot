@@ -1,4 +1,4 @@
-import { MessageSetting } from '@models';
+import { MessageExpandConfig } from '@models';
 import { DiscordEventBuilder } from '@modules/events';
 import { EmbedPagination, PaginationButton } from '@modules/pagination';
 import { getMessage } from '@modules/util';
@@ -16,12 +16,13 @@ export default new DiscordEventBuilder({
   type: Events.MessageCreate,
   async execute(message) {
     if (!message.inGuild()) return;
-    const { expansion: setting } =
-      (await MessageSetting.findOne({ serverId: message.guild.id })) ?? {};
-    if (!setting?.enable) return;
+    const setting = await MessageExpandConfig.findOne({
+      guildId: message.guild.id,
+    });
+    if (!setting?.enabled) return;
     if (
-      setting.ignore.types.includes(message.channel.type) ||
-      setting.ignore.channels.includes(message.channel.id)
+      setting.ignoreTypes.includes(message.channel.type) ||
+      setting.ignoreChannels.includes(message.channel.id)
     )
       return;
     for (const url of message.content.matchAll(
@@ -31,15 +32,15 @@ export default new DiscordEventBuilder({
       if (!(groups?.guildId && groups.channelId && groups.messageId)) continue;
       if (
         groups.startPattern &&
-        setting.ignore.prefixes.includes(groups.startPattern)
+        setting.ignorePrefixes.includes(groups.startPattern)
       )
         continue;
       if (groups.startPattern === '<' && groups.endPattern === '>') continue;
       if (
         groups.guildId !== message.guild.id &&
-        !(await MessageSetting.countDocuments({
-          serverId: groups.guildId,
-          'expansion.allowExternal': true,
+        !(await MessageExpandConfig.countDocuments({
+          guildId: groups.guildId,
+          allowExternalGuild: true,
         }))
       )
         continue;
