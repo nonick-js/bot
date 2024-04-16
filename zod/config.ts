@@ -15,7 +15,7 @@ export const LogConfig = z.discriminatedUnion('enabled', [
   }),
   z.object({
     enabled: z.literal(false),
-    channel: Snowflake.nullable(),
+    channel: Snowflake.optional(),
   }),
 ]);
 
@@ -61,11 +61,13 @@ export const ReportConfig = baseSchema
     channel: Snowflake,
     includeModerator: z.boolean(),
     progressButton: z.boolean(),
-    mentionEnabled: z.boolean(),
-    mentionRole: Snowflake.nullable(),
+    mention: z.object({
+      enabled: z.boolean(),
+      role: Snowflake.optional(),
+    }),
   })
   .superRefine((v, ctx) => {
-    if (v.mentionEnabled && !v.mentionRole) {
+    if (v.mention.enabled && !v.mention.role) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'ロールが設定されていません。',
@@ -88,11 +90,13 @@ export const EventLogConfig = baseSchema.extend({
 export const MessageExpandConfig = baseSchema.extend({
   enabled: z.boolean(),
   allowExternalGuild: z.boolean(),
-  ignoreTypes: z.array(z.nativeEnum(ChannelType)),
-  ignoreChannels: z.array(Snowflake),
-  ignorePrefixes: z
-    .array(z.string().length(1, 'プレフィックスは1文字である必要があります'))
-    .max(5, '5個以上のプレフィックスを登録することはできません。'),
+  ignore: z.object({
+    channels: z.array(Snowflake),
+    types: z.array(z.nativeEnum(ChannelType)),
+    prefixes: z
+      .array(z.string().length(1, 'プレフィックスは1文字である必要があります'))
+      .max(5, '5個以上のプレフィックスを登録することはできません。'),
+  }),
 });
 
 // 自動アナウンス公開
@@ -114,8 +118,7 @@ export const AutoChangeVerifyLevelConfig = baseSchema
     level: z.nativeEnum(GuildVerificationLevel),
     startHour: z.coerce.number().int().min(0, hourError).max(23, hourError),
     endHour: z.coerce.number().int().min(0, hourError).max(23, hourError),
-    logEnabled: z.boolean(),
-    logChannel: Snowflake.nullable(),
+    log: LogConfig,
   })
   .superRefine((v, ctx) => {
     if (v.startHour === v.endHour) {
@@ -125,7 +128,7 @@ export const AutoChangeVerifyLevelConfig = baseSchema
         path: ['starthour', 'endHour'],
       });
     }
-    if (v.enabled && v.logEnabled && !v.logChannel) {
+    if (v.enabled && v.log.enabled && !v.log.channel) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'チャンネルが設定されていません。',
@@ -138,26 +141,31 @@ export const AutoChangeVerifyLevelConfig = baseSchema
 export const AutoModConfig = baseSchema
   .extend({
     enabled: z.boolean(),
-    domainFilter: z.boolean(),
-    domainFilterList: z
-      .array(
-        z
-          .string()
-          .regex(
-            /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/,
-            '無効なドメインです。',
-          ),
-      )
-      .max(20, '20個以上のドメインを登録することはできません。'),
-    tokenFilter: z.boolean(),
-    inviteUrlFilter: z.boolean(),
-    logEnabled: z.boolean(),
-    logChannel: Snowflake.nullable(),
-    ignoreChannels: z.array(Snowflake),
-    ignoreRoles: z.array(Snowflake),
+    filter: z.object({
+      domain: z.object({
+        enabled: z.boolean(),
+        list: z
+          .array(
+            z
+              .string()
+              .regex(
+                /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/,
+                '無効なドメインです。',
+              ),
+          )
+          .max(20, '20個以上のドメインを登録することはできません。'),
+      }),
+      token: z.boolean(),
+      inviteUrl: z.boolean(),
+    }),
+    ignore: z.object({
+      channels: z.array(Snowflake),
+      roles: z.array(Snowflake),
+    }),
+    log: LogConfig,
   })
   .superRefine((v, ctx) => {
-    if (v.enabled && v.logEnabled && !v.logChannel) {
+    if (v.enabled && v.log.enabled && !v.log.channel) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'チャンネルが設定されていません。',

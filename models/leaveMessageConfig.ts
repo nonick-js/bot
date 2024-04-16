@@ -1,10 +1,10 @@
 import { type Model, Schema, model, models } from 'mongoose';
 import type { LeaveMessageConfig } from '../zod/config';
-import { guildId, messageOptionSchema, snowflake } from './util';
+import { guildId, messageOptionSchema } from './util';
 
 const leaveMessageSchema = new Schema<typeof LeaveMessageConfig._type>({
   guildId,
-  channel: snowflake,
+  channel: Schema.Types.String,
   enabled: Schema.Types.Boolean,
   ignoreBot: Schema.Types.Boolean,
   message: messageOptionSchema,
