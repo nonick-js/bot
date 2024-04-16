@@ -5,7 +5,10 @@ import { guildId } from './util';
 
 const guildSchema = new Schema<typeof Guild._type>({
   guildId,
-  beforeVerifyLevel: GuildVerificationLevel,
+  beforeVerifyLevel: {
+    type: Schema.Types.Number,
+    enum: GuildVerificationLevel,
+  },
   createAt: { type: Schema.Types.Date, default: Date.now },
 });
 

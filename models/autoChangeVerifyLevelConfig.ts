@@ -7,10 +7,10 @@ const autoChangeVerifyLevelSchema = new Schema<
   typeof AutoChangeVerifyLevelConfig._type
 >({
   guildId,
-  enabled: Schema.Types.Boolean,
-  startHour: Schema.Types.Number,
-  endHour: Schema.Types.Number,
-  level: GuildVerificationLevel,
+  enabled: { type: Schema.Types.Boolean },
+  startHour: { type: Schema.Types.Number },
+  endHour: { type: Schema.Types.Number },
+  level: { type: Schema.Types.Number, enum: GuildVerificationLevel },
   log: {
     enabled: Schema.Types.Boolean,
     channel: Schema.Types.String,
