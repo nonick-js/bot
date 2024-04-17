@@ -15,7 +15,7 @@ export const LogConfig = z.discriminatedUnion('enabled', [
   }),
   z.object({
     enabled: z.literal(false),
-    channel: Snowflake.optional(),
+    channel: Snowflake.nullable(),
   }),
 ]);
 
