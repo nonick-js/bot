@@ -63,15 +63,15 @@ export const ReportConfig = baseSchema
     progressButton: z.boolean(),
     mention: z.object({
       enabled: z.boolean(),
-      role: Snowflake.optional(),
+      roles: z.array(Snowflake),
     }),
   })
   .superRefine((v, ctx) => {
-    if (v.mention.enabled && !v.mention.role) {
+    if (v.mention.enabled && !v.mention.roles.length) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'ロールが設定されていません。',
-        path: ['mentionRole'],
+        path: ['mention.roles'],
       });
     }
   });
@@ -148,10 +148,7 @@ export const AutoModConfig = baseSchema
           .array(
             z
               .string()
-              .regex(
-                /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/,
-                '無効なドメインです。',
-              ),
+              .regex(/^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/, '無効なドメインです。'),
           )
           .max(20, '20個以上のドメインを登録することはできません。'),
       }),
