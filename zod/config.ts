@@ -1,8 +1,9 @@
 import { ChannelType, GuildVerificationLevel } from 'discord-api-types/v10';
 import * as z from 'zod';
 import { MessageOption, Snowflake } from './discord';
+import { getDuplicateIndexes } from './util';
 
-const hourError = { message: '0～23の間で設定する必要があります。' };
+const hourError = { message: '0～23の間で設定する必要があります' };
 
 const baseSchema = z.object({
   guildId: Snowflake,
@@ -31,7 +32,7 @@ export const JoinMessageConfig = baseSchema
     if (v.enabled && !v.channel) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'チャンネルが設定されていません。',
+        message: 'チャンネルが設定されていません',
         path: ['channel'],
       });
     }
@@ -49,7 +50,7 @@ export const LeaveMessageConfig = baseSchema
     if (v.enabled && !v.channel) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'チャンネルが設定されていません。',
+        message: 'チャンネルが設定されていません',
         path: ['channel'],
       });
     }
@@ -70,7 +71,7 @@ export const ReportConfig = baseSchema
     if (v.mention.enabled && !v.mention.roles.length) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'ロールが設定されていません。',
+        message: 'ロールが設定されていません',
         path: ['mention.roles'],
       });
     }
@@ -87,17 +88,30 @@ export const EventLogConfig = baseSchema.extend({
 });
 
 // メッセージURL展開
-export const MessageExpandConfig = baseSchema.extend({
-  enabled: z.boolean(),
-  allowExternalGuild: z.boolean(),
-  ignore: z.object({
-    channels: z.array(Snowflake),
-    types: z.array(z.nativeEnum(ChannelType)),
-    prefixes: z
-      .array(z.string().length(1, 'プレフィックスは1文字である必要があります'))
-      .max(5, '5個以上のプレフィックスを登録することはできません。'),
-  }),
-});
+export const MessageExpandConfig = baseSchema
+  .extend({
+    enabled: z.boolean(),
+    allowExternalGuild: z.boolean(),
+    ignore: z.object({
+      channels: z.array(Snowflake),
+      types: z.array(z.nativeEnum(ChannelType)),
+      prefixes: z
+        .array(
+          z.object({ value: z.string().length(1, 'プレフィックスは1文字である必要があります') }),
+        )
+        .max(5, '5個以上のプレフィックスを登録することはできません'),
+    }),
+  })
+  .superRefine((value, ctx) => {
+    // biome-ignore lint/complexity/noForEach: <explanation>
+    getDuplicateIndexes({ array: value.ignore.prefixes.map((v) => v.value) }).forEach((index) => {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: '重複しています',
+        path: [`ignore.prefixes[${index}].value`],
+      });
+    });
+  });
 
 // 自動アナウンス公開
 export const AutoPublicConfig = baseSchema.extend({
@@ -124,14 +138,14 @@ export const AutoChangeVerifyLevelConfig = baseSchema
     if (v.startHour === v.endHour) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: '開始時刻と終了時刻を同じ値にすることはできません。',
+        message: '開始時刻と終了時刻を同じ値にすることはできません',
         path: ['starthour', 'endHour'],
       });
     }
     if (v.enabled && v.log.enabled && !v.log.channel) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'チャンネルが設定されていません。',
+        message: 'チャンネルが設定されていません',
         path: ['logChannel'],
       });
     }
@@ -148,9 +162,9 @@ export const AutoModConfig = baseSchema
           .array(
             z
               .string()
-              .regex(/^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/, '無効なドメインです。'),
+              .regex(/^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,6}$/, '無効なドメインです'),
           )
-          .max(20, '20個以上のドメインを登録することはできません。'),
+          .max(20, '20個以上のドメインを登録することはできません'),
       }),
       token: z.boolean(),
       inviteUrl: z.boolean(),
@@ -165,7 +179,7 @@ export const AutoModConfig = baseSchema
     if (v.enabled && v.log.enabled && !v.log.channel) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'チャンネルが設定されていません。',
+        message: 'チャンネルが設定されていません',
         path: ['logChannel'],
       });
     }

@@ -10,7 +10,7 @@ const messageExpandSchema = new Schema<typeof MessageExpandConfig._type>({
   ignore: {
     channels: [Schema.Types.String],
     types: [{ type: Schema.Types.Number, enum: ChannelType }],
-    prefixes: [Schema.Types.String],
+    prefixes: [{ value: { type: Schema.Types.String } }],
   },
 });
 
