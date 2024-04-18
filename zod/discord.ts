@@ -2,7 +2,9 @@ import type { APIEmbed } from 'discord-api-types/v10';
 import * as z from 'zod';
 import { schemaForType } from './util';
 
-export const Snowflake = z.string().regex(/^\d{17,19}$/, '無効なIDです。');
+export const Snowflake = z
+  .string({ required_error: '必須です' })
+  .regex(/^\d{17,19}$/, '無効なIDです');
 
 export namespace Embed {
   export const Thumbnail = z.object({
@@ -52,21 +54,12 @@ export namespace Embed {
 
   export const Structure = z
     .object({
-      title: z
-        .string()
-        .max(256, '256文字以下である必要があります。')
-        .optional(),
-      description: z
-        .string()
-        .max(4096, '4096文字以下である必要があります。')
-        .optional(),
+      title: z.string().max(256, '256文字以下である必要があります。').optional(),
+      description: z.string().max(4096, '4096文字以下である必要があります。').optional(),
       url: z.string().url().optional(),
       timestamp: z
         .string()
-        .regex(
-          /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/,
-          '無効な日付です。',
-        )
+        .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/, '無効な日付です。')
         .optional(),
       color: z.number().int().optional(),
       footer: Footer.optional(),
@@ -75,20 +68,14 @@ export namespace Embed {
       video: Video.optional(),
       provider: Provider.optional(),
       author: Author.optional(),
-      fields: z
-        .array(Field)
-        .max(25, 'フィールドは25個以下である必要があります。')
-        .optional(),
+      fields: z.array(Field).max(25, 'フィールドは25個以下である必要があります。').optional(),
     })
     .superRefine((v, ctx) => {
       if (
         [
           v.title?.length,
           v.description?.length,
-          v.fields?.reduce(
-            (sum, str) => sum + str.name.length + str.value.length,
-            0,
-          ),
+          v.fields?.reduce((sum, str) => sum + str.name.length + str.value.length, 0),
           v.author?.name.length,
         ].reduce<number>((sum, num) => sum + (num || 0), 0) > 6000
       ) {
@@ -106,14 +93,8 @@ export const MessageOption = schemaForType<{
   embeds?: APIEmbed[];
 }>()(
   z.object({
-    content: z
-      .string()
-      .max(2000, '2000文字以下である必要があります。')
-      .optional(),
-    embeds: z
-      .array(Embed.Structure)
-      .max(10, '埋め込みは10個以下である必要があります。')
-      .optional(),
+    content: z.string().max(2000, '2000文字以下である必要があります。').optional(),
+    embeds: z.array(Embed.Structure).max(10, '埋め込みは10個以下である必要があります。').optional(),
     // 必要に応じて他のプロパティを追加
   }),
 );
