@@ -103,5 +103,8 @@
   "ts-node": {
     "transpileOnly": true,
     "transpiler": "ts-node/transpilers/swc-experimental"
-  }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }
