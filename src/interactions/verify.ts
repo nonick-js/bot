@@ -2,6 +2,7 @@ import { ActionRowBuilder, ApplicationCommandOptionType, AttachmentBuilder, Butt
 import { ChatInput, Button } from '@akki256/discord-interaction';
 import { Captcha } from '../module/captcha';
 import fs from 'fs';
+import path from 'path';
 
 const duringAuthentication = new Set();
 
@@ -119,7 +120,7 @@ const verifyButton = new Button(
     if (interaction.customId === 'nonick-js:verify-image') {
       await interaction.deferReply({ ephemeral: true });
 
-      const fontBuffer = fs.readFileSync('src/fonts/OpenSans-Regular.ttf');
+      const fontBuffer = fs.readFileSync(path.resolve(__dirname, '../fonts/OpenSans-Regular.ttf'));
       const { image, text } = Captcha.create({ color: '#4b9d6e', font: fontBuffer }, {}, { amount: 5, blur: 25 }, { rotate: 15, skew: true });
 
       interaction.user
