@@ -26,3 +26,8 @@ export function getDuplicateIndexes({ array }: { array: string[] }) {
 
   return filteredDuplicateIndexes;
 }
+
+export function findDuplicates(arr: string[]): string[] {
+  const duplicates = arr.filter((item, index) => arr.indexOf(item) !== index);
+  return duplicates;
+}

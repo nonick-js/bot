@@ -1,7 +1,7 @@
 import { ChannelType, GuildVerificationLevel } from 'discord-api-types/v10';
 import * as z from 'zod';
 import { MessageOption, Snowflake } from './discord';
-import { getDuplicateIndexes } from './util';
+import { findDuplicates, getDuplicateIndexes } from './util';
 
 const hourError = { message: '0～23の間で設定する必要があります' };
 
@@ -96,21 +96,18 @@ export const MessageExpandConfig = baseSchema
       channels: z.array(Snowflake),
       types: z.array(z.nativeEnum(ChannelType)),
       prefixes: z
-        .array(
-          z.object({ value: z.string().length(1, 'プレフィックスは1文字である必要があります') }),
-        )
+        .array(z.string().length(1, 'プレフィックスは1文字である必要があります'))
         .max(5, '5個以上のプレフィックスを登録することはできません'),
     }),
   })
   .superRefine((value, ctx) => {
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    getDuplicateIndexes({ array: value.ignore.prefixes.map((v) => v.value) }).forEach((index) => {
+    if (findDuplicates(value.ignore.prefixes).length) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: '重複しています',
-        path: [`ignore.prefixes[${index}].value`],
+        message: '重複している項目があります',
+        path: ['ignore.prefixes'],
       });
-    });
+    }
   });
 
 // 自動アナウンス公開
