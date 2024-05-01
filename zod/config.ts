@@ -95,12 +95,18 @@ export const MessageExpandConfig = baseSchema
     ignore: z.object({
       channels: z.array(Snowflake),
       types: z.array(z.nativeEnum(ChannelType)),
-      prefixes: z
-        .array(z.string().length(1, 'プレフィックスは1文字である必要があります'))
-        .max(5, '5個以上のプレフィックスを登録することはできません'),
+      prefixes: z.array(z.string()).max(5, '5個以上のプレフィックスを登録することはできません'),
     }),
   })
   .superRefine((value, ctx) => {
+    if (value.ignore.prefixes.some((v) => v.length !== 1)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'プレフィックスは1文字である必要があります',
+        path: ['ignore.prefixes'],
+      });
+    }
+
     if (findDuplicates(value.ignore.prefixes).length) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
