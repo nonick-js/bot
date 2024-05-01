@@ -9,16 +9,20 @@ const baseSchema = z.object({
   guildId: Snowflake,
 });
 
-export const LogConfig = z.discriminatedUnion('enabled', [
-  z.object({
-    enabled: z.literal(true),
-    channel: Snowflake,
-  }),
-  z.object({
-    enabled: z.literal(false),
+export const LogConfig = z
+  .object({
+    enabled: z.boolean(),
     channel: Snowflake.nullable(),
-  }),
-]);
+  })
+  .superRefine((v, ctx) => {
+    if (v.enabled && !v.channel) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'チャンネルが設定されていません',
+        path: ['channel'],
+      });
+    }
+  });
 
 // 入室メッセージ
 export const JoinMessageConfig = baseSchema
