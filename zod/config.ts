@@ -145,8 +145,8 @@ export const AutoChangeVerifyLevelConfig = baseSchema
     if (v.startHour === v.endHour) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: '開始時刻と終了時刻を同じ値にすることはできません',
-        path: ['starthour', 'endHour'],
+        message: '開始時間と終了時間を同じ値にすることはできません',
+        path: ['endHour'],
       });
     }
     if (v.enabled && v.log.enabled && !v.log.channel) {
