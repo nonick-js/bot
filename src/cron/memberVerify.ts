@@ -1,4 +1,4 @@
-import { AutomationSetting, type AutomationSettingSchema } from '@models';
+import { AutoChangeVerifyLevelConfig } from '@models';
 import { CronBuilder } from '@modules/cron';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
@@ -11,6 +11,7 @@ import {
   inlineCode,
 } from 'discord.js';
 import { client } from 'index';
+import type { Model } from 'mongoose';
 dayjs.extend(timezone);
 dayjs.extend(utc);
 
@@ -48,54 +49,54 @@ export default new CronBuilder({ minute: 0 }, () => {
 });
 
 async function start(hour: number) {
-  const settings = await AutomationSetting.find({
-    'memberVerify.enable': true,
-    'memberVerify.time.start': hour,
+  const settings = await AutoChangeVerifyLevelConfig.find({
+    enabled: true,
+    startHour: hour,
   });
 
   for (const setting of settings) {
-    const guild = await client.guilds.fetch(setting.serverId).catch(() => null);
-    const level = setting.memberVerify.level.after;
+    const guild = await client.guilds.fetch(setting.guildId).catch(() => null);
+    const level = setting.level;
     if (!guild || level == null) return;
 
-    setting.memberVerify.level.before = guild.verificationLevel;
+    setting.level = guild.verificationLevel;
     await setting.save({ wtimeout: 1_500 });
     guild
       .setVerificationLevel(level)
-      .then(() => sendLog(guild, setting.memberVerify, level, '開始'))
+      .then(() => sendLog(guild, setting, level, '開始'))
       .catch(console.error);
   }
 }
 
 async function end(hour: number) {
-  const settings = await AutomationSetting.find({
-    'memberVerify.enable': true,
-    'memberVerify.time.end': hour,
+  const settings = await AutoChangeVerifyLevelConfig.find({
+    enabled: true,
+    endHour: hour,
   });
 
   for (const setting of settings) {
-    const guild = await client.guilds.fetch(setting.serverId).catch(() => null);
-    const level = setting.memberVerify.level.before;
+    const guild = await client.guilds.fetch(setting.guildId).catch(() => null);
+    const level = setting.level;
     if (!guild || level == null) return;
 
     guild
       .setVerificationLevel(level)
-      .then(() => sendLog(guild, setting.memberVerify, level, '終了'))
+      .then(() => sendLog(guild, setting, level, '終了'))
       .catch(console.error);
   }
 }
 
 async function sendLog(
   guild: Guild,
-  setting: AutomationSettingSchema['memberVerify'],
+  {
+    log,
+  }: typeof AutoChangeVerifyLevelConfig extends Model<infer T> ? T : never,
   level: GuildVerificationLevel,
   label: string,
 ) {
-  if (!setting.log.enable || !setting.log.channel) return;
+  if (!(log.enabled && log.channel)) return;
 
-  const channel = await guild.channels
-    .fetch(setting.log.channel)
-    .catch(() => null);
+  const channel = await guild.channels.fetch(log.channel).catch(() => null);
   if (!channel?.isTextBased()) return;
 
   channel

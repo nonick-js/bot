@@ -21,8 +21,8 @@ export default new DiscordEventBuilder({
     });
     if (!setting?.enabled) return;
     if (
-      setting.ignoreTypes.includes(message.channel.type) ||
-      setting.ignoreChannels.includes(message.channel.id)
+      setting.ignore.types.includes(message.channel.type) ||
+      setting.ignore.channels.includes(message.channel.id)
     )
       return;
     for (const url of message.content.matchAll(
@@ -32,7 +32,7 @@ export default new DiscordEventBuilder({
       if (!(groups?.guildId && groups.channelId && groups.messageId)) continue;
       if (
         groups.startPattern &&
-        setting.ignorePrefixes.includes(groups.startPattern)
+        setting.ignore.prefixes.includes(groups.startPattern)
       )
         continue;
       if (groups.startPattern === '<' && groups.endPattern === '>') continue;
