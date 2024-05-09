@@ -1,5 +1,12 @@
-import { type EmojiColors, getColorEmoji, gray } from '@const/emojis';
-import { type User, bold, escapeMarkdown, inlineCode, time } from 'discord.js';
+import { type EmojiColors, getColorEmoji } from '@const/emojis';
+import { bold, inlineCode, time } from 'discord.js';
+import type {
+  Channel,
+  DMChannel,
+  PartialDMChannel,
+  PartialGroupDMChannel,
+  User,
+} from 'discord.js';
 import { formatEmoji } from './util';
 
 interface UserFieldOption {
@@ -17,6 +24,11 @@ interface scheduleFieldOption {
   label: string;
 }
 
+interface channelFieldOption {
+  color: EmojiColors<'channel'>;
+  label: string;
+}
+
 export function userField(user: User, options?: Partial<UserFieldOption>) {
   const option: UserFieldOption = {
     label: 'ユーザー',
@@ -25,7 +37,7 @@ export function userField(user: User, options?: Partial<UserFieldOption>) {
   };
   return `${formatEmoji(getColorEmoji('member', option.color))} ${bold(
     `${option.label}:`,
-  )} ${user.toString()} [${inlineCode(escapeMarkdown(user.tag))}]`;
+  )} ${user.toString()} [${inlineCode(user.tag)}]`;
 }
 
 export function textField(text: string, options?: Partial<textFieldOption>) {
@@ -52,4 +64,21 @@ export function scheduleField(
   return `${formatEmoji(getColorEmoji('schedule', option.color))} ${bold(
     `${option.label}:`,
   )} ${time(d)}`;
+}
+
+export function channelField(
+  channel: Exclude<
+    Channel,
+    DMChannel | PartialDMChannel | PartialGroupDMChannel
+  >,
+  options?: Partial<channelFieldOption>,
+) {
+  const option: channelFieldOption = {
+    label: 'チャンネル',
+    color: 'gray',
+    ...options,
+  };
+  return `${formatEmoji(getColorEmoji('channel', option.color))} ${bold(
+    `${option.label}:`,
+  )} ${channel.toString()} [${inlineCode(channel.name)}]`;
 }
