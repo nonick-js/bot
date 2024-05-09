@@ -1,8 +1,10 @@
 import { EventLogConfig } from '@models';
 import { DiscordEventBuilder } from '@modules/events';
 import { channelField, scheduleField, userField } from '@modules/fields';
-import { Duration } from '@modules/format';
+import AdmZip from 'adm-zip';
+import axios from 'axios';
 import {
+  AttachmentBuilder,
   AuditLogEvent,
   Collection,
   Colors,
@@ -32,28 +34,34 @@ export default new DiscordEventBuilder({
     if (!(setting?.enabled && setting.channel)) return;
     const channel = await message.guild.channels.fetch(setting.channel);
     if (channel?.isTextBased()) {
-      channel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle('`💬` メッセージ削除')
-            .setURL(beforeMsg?.url ?? null)
-            .setDescription(
-              [
-                channelField(message.channel),
-                userField(message.author, { label: '送信者' }),
-                userField(executor ?? message.author, { label: '削除者' }),
-                scheduleField(message.createdAt, { label: '送信時刻' }),
-              ].join('\n'),
-            )
-            .setFields({
-              name: 'メッセージ',
-              value: message.content || 'なし',
-            })
-            .setColor(Colors.White)
-            .setThumbnail(message.author.displayAvatarURL())
-            .setTimestamp(),
-        ],
-      });
+      const embed = new EmbedBuilder()
+        .setTitle('`💬` メッセージ削除')
+        .setURL(beforeMsg?.url ?? null)
+        .setDescription(
+          [
+            channelField(message.channel),
+            userField(message.author, { label: '送信者' }),
+            userField(executor ?? message.author, { label: '削除者' }),
+            scheduleField(message.createdAt, { label: '送信時刻' }),
+          ].join('\n'),
+        )
+        .setFields({
+          name: 'メッセージ',
+          value: message.content || 'なし',
+        })
+        .setColor(Colors.White)
+        .setThumbnail(message.author.displayAvatarURL())
+        .setTimestamp();
+
+      if (message.stickers.size) {
+        embed.addFields({
+          name: 'スタンプ',
+          value: message.stickers.map((v) => v.name).join('\n'),
+        });
+      }
+      const attachment = await createAttachment(message);
+      if (attachment) channel.send({ embeds: [embed], files: [attachment] });
+      channel.send({ embeds: [embed] });
     }
   },
 });
@@ -80,4 +88,17 @@ async function getAuditLog(message: Message<true>) {
     lastLogs.set(message.guild.id, entry);
     return entry;
   }
+}
+
+async function createAttachment(message: Message<true>) {
+  if (!message.attachments.size) return;
+  const zip = new AdmZip();
+  for await (const attachment of message.attachments.values()) {
+    const res = await axios
+      .get(attachment.url, { responseType: 'arraybuffer' })
+      .catch(() => null);
+    if (!res) continue;
+    zip.addFile(attachment.name, res.data);
+  }
+  return new AttachmentBuilder(zip.toBuffer(), { name: 'attachments.zip' });
 }
