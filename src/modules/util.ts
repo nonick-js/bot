@@ -1,4 +1,13 @@
-import type { Message, Snowflake } from 'discord.js';
+import AdmZip from 'adm-zip';
+import axios from 'axios';
+import { AttachmentBuilder, PermissionFlagsBits } from 'discord.js';
+import type {
+  Attachment,
+  Collection,
+  Guild,
+  Message,
+  Snowflake,
+} from 'discord.js';
 import { client } from 'index';
 
 export async function getMessage(
@@ -47,4 +56,33 @@ export function range(min: number, max: number): Generator<number>;
 export function* range(_min: number, _max = 0) {
   const [min, max] = _min < _max ? [_min, _max] : [_max, _min];
   for (let i = min; i < max; i++) yield i;
+}
+
+export async function createAttachment(
+  attachments: Collection<string, Attachment>,
+) {
+  if (!attachments.size) return;
+  const zip = new AdmZip();
+  for await (const attachment of attachments.values()) {
+    const res = await axios
+      .get(attachment.url, { responseType: 'arraybuffer' })
+      .catch(() => null);
+    if (!res) continue;
+    zip.addFile(attachment.name, res.data);
+  }
+  return new AttachmentBuilder(zip.toBuffer(), { name: 'attachments.zip' });
+}
+
+export async function getSendableChannel(guild: Guild, channelId: string) {
+  const channel = await guild.channels.fetch(channelId);
+  if (!channel?.isTextBased()) throw new TypeError('channel is not TextBased');
+  const permissions = guild.members.me?.permissionsIn(channel);
+  if (
+    !(
+      permissions?.has(PermissionFlagsBits.ViewChannel) &&
+      permissions.has(PermissionFlagsBits.SendMessages)
+    )
+  )
+    throw new ReferenceError("don't have permission");
+  return channel;
 }
