@@ -1,16 +1,29 @@
-import { type EmojiColors, getColorEmoji } from '@const/emojis';
-import { PermissionsBitField, bold, inlineCode, time } from 'discord.js';
+import { type EmojiColors, type Emojis, getColorEmoji } from '@const/emojis';
+import {
+  PermissionsBitField,
+  bold,
+  escapeMarkdown,
+  inlineCode,
+  time,
+} from 'discord.js';
 import type {
   Channel,
   DMChannel,
+  GuildMember,
   PartialDMChannel,
   PartialGroupDMChannel,
   PermissionResolvable,
+  SetRolePositionOptions,
   User,
 } from 'discord.js';
 import { formatEmoji } from './util';
 
 interface UserFieldOption {
+  color: EmojiColors<'member'>;
+  label: string;
+}
+
+interface NicknameOption {
   color: EmojiColors<'member'>;
   label: string;
 }
@@ -30,7 +43,18 @@ interface ChannelFieldOption {
   label: string;
 }
 
+interface IdFieldOption {
+  color: EmojiColors<'id'>;
+  label: string;
+}
+
 interface PermissionFieldOption {
+  label: string;
+}
+
+interface CountFieldOption<T extends Emojis> {
+  emoji: T;
+  color: EmojiColors<T>;
   label: string;
 }
 
@@ -43,6 +67,20 @@ export function userField(user: User, options?: Partial<UserFieldOption>) {
   return `${formatEmoji(getColorEmoji('member', option.color))} ${bold(
     `${option.label}:`,
   )} ${user.toString()} [${inlineCode(user.tag)}]`;
+}
+
+export function nicknameField(
+  member: GuildMember,
+  options?: Partial<NicknameOption>,
+) {
+  const option: NicknameOption = {
+    label: 'ユーザー',
+    color: 'white',
+    ...options,
+  };
+  return `${formatEmoji(getColorEmoji('member', option.color))} ${bold(
+    `${option.label}:`,
+  )} ${bold(escapeMarkdown(member.nickname ?? 'なし'))}`;
 }
 
 export function textField(text: string, options?: Partial<TextFieldOption>) {
@@ -88,6 +126,17 @@ export function channelField(
   )} ${channel.toString()} [${inlineCode(channel.name)}]`;
 }
 
+export function idField(id: string, options?: Partial<IdFieldOption>) {
+  const option: IdFieldOption = {
+    label: 'ID',
+    color: 'white',
+    ...options,
+  };
+  return `${formatEmoji(getColorEmoji('id', option.color))} ${bold(
+    `${option.label}:`,
+  )} ${inlineCode(id)}`;
+}
+
 export function permissionField(
   permissions: string[],
   options?: PermissionFieldOption,
@@ -99,4 +148,13 @@ export function permissionField(
   return `${inlineCode('❌')} ${bold(`${option.label}`)}${
     permissions.length ? `${bold(':')} ${permissions.join('\n')}` : ''
   }`;
+}
+
+export function countField<T extends Emojis>(
+  count: number,
+  options: CountFieldOption<T>,
+) {
+  return `${formatEmoji(
+    getColorEmoji(options.emoji, options.color) as string,
+  )} ${options.label}: ${inlineCode(count.toString())}`;
 }
