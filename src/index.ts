@@ -44,8 +44,7 @@ export const client = new Client({
 });
 
 const interactions = new DiscordInteractions(client);
-interactions.loadRegistries(path.resolve(__dirname, './commands'));
-interactions.loadRegistries(path.resolve(__dirname, './contexts'));
+interactions.loadRegistries(path.resolve(__dirname, './interactions'));
 
 const events = new DiscordEvents(client);
 events.register(path.resolve(__dirname, './events'));
