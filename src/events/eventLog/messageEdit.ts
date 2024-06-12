@@ -34,7 +34,8 @@ export default new DiscordEventBuilder({
       .setColor(Colors.Yellow)
       .setThumbnail(oldMessage.author.displayAvatarURL())
       .setTimestamp();
-    if (oldMessage.content !== content) {
+    const contentChanged = oldMessage.content !== content;
+    if (contentChanged) {
       embed.addFields(
         { name: '変更前', value: oldMessage.content ?? 'なし' },
         { name: '変更後', value: content ?? 'なし' },
@@ -45,6 +46,6 @@ export default new DiscordEventBuilder({
       oldMessage.attachments.difference(attachments),
     );
     if (attachment) channel.send({ embeds: [embed], files: [attachment] });
-    channel.send({ embeds: [embed] });
+    if (contentChanged) channel.send({ embeds: [embed] });
   },
 });
