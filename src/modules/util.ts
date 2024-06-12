@@ -94,6 +94,8 @@ const permissionTexts: Record<keyof PermissionFlags, string> = {
   ViewChannel: 'チャンネルを見る',
   ManageChannels: 'チャンネルの管理',
   ManageRoles: 'ロールの管理',
+  CreateGuildExpressions: 'エクスプレッションを作成',
+  ManageGuildExpressions: '絵文字の管理',
   ManageEmojisAndStickers: '絵文字の管理',
   ViewAuditLog: '監査ログの表示',
   ViewGuildInsights: 'サーバーインサイトを見る',
@@ -115,16 +117,20 @@ const permissionTexts: Record<keyof PermissionFlags, string> = {
   AttachFiles: 'ファイルを添付',
   AddReactions: 'リアクションの追加',
   UseExternalEmojis: '外部の絵文字を使用する',
-  UseExternalStickers: '外部の絵文字を使用する',
+  UseExternalStickers: '外部のスタンプを使用する',
   MentionEveryone: '@everyone、@here、全てのロールにメンション',
   ManageMessages: 'メッセージの管理',
   ManageThreads: 'スレッドの管理',
   ReadMessageHistory: 'メッセージ履歴を読む',
   SendTTSMessages: 'テキスト読み上げメッセージを送信する',
+  SendVoiceMessages: 'ボイスメッセージを送信',
+  SendPolls: '投票を作成',
 
   Connect: '接続',
   Speak: '発言',
   Stream: 'WEBカカメラ',
+  UseSoundboard: 'サウンドボードを使用',
+  UseExternalSounds: '外部のサウンドの使用',
   UseVAD: '音声検出を使用',
   PrioritySpeaker: '優先スピーカー',
   MuteMembers: 'メンバーをミュート',
@@ -136,11 +142,18 @@ const permissionTexts: Record<keyof PermissionFlags, string> = {
 
   RequestToSpeak: 'スピーカー参加をリクエスト',
 
+  CreateEvents: 'イベントを作成',
   ManageEvents: 'イベントの管理',
 
   Administrator: '管理者',
+
+  ViewCreatorMonetizationAnalytics: '収益情報を表示',
 };
 
 export function permToText(...perms: (keyof PermissionFlags)[]) {
   return perms.map((v) => permissionTexts[v]);
+}
+
+export function isURL(url: string) {
+  return /^https?:\/\//.test(url);
 }
