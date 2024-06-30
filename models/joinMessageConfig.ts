@@ -1,6 +1,8 @@
-import { type Model, Schema, model, models } from 'mongoose';
+import mongoose, { type Model } from 'mongoose';
 import type { JoinMessageConfig } from '../zod/config';
 import { guildId, messageOptionSchema } from './util';
+
+const { Schema, model, models } = mongoose;
 
 const joinMessageSchema = new Schema<typeof JoinMessageConfig._type>({
   guildId,

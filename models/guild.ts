@@ -1,7 +1,9 @@
 import { GuildVerificationLevel } from 'discord-api-types/v10';
-import { type Model, Schema, model, models } from 'mongoose';
+import mongoose, { type Model } from 'mongoose';
 import type { Guild } from '../zod/guild';
 import { guildId } from './util';
+
+const { Schema, model, models } = mongoose;
 
 const guildSchema = new Schema<typeof Guild._type>({
   guildId,

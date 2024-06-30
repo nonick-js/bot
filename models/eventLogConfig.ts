@@ -1,6 +1,8 @@
-import { type Model, Schema, model, models } from 'mongoose';
+import mongoose, { type Model } from 'mongoose';
 import type { EventLogConfig, LogConfig } from '../zod/config';
 import { guildId } from './util';
+
+const { Schema, model, models } = mongoose;
 
 const LogSchema = new Schema<typeof LogConfig._type>({
   channel: Schema.Types.String,

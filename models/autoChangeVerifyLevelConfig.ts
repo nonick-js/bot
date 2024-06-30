@@ -1,11 +1,11 @@
 import { GuildVerificationLevel } from 'discord-api-types/v10';
-import { type Model, Schema, model, models } from 'mongoose';
+import mongoose, { type Model } from 'mongoose';
 import type { AutoChangeVerifyLevelConfig } from '../zod/config';
 import { guildId } from './util';
 
-const autoChangeVerifyLevelSchema = new Schema<
-  typeof AutoChangeVerifyLevelConfig._type
->({
+const { Schema, model, models } = mongoose;
+
+const autoChangeVerifyLevelSchema = new Schema<typeof AutoChangeVerifyLevelConfig._type>({
   guildId,
   enabled: { type: Schema.Types.Boolean },
   startHour: { type: Schema.Types.Number },
@@ -18,7 +18,5 @@ const autoChangeVerifyLevelSchema = new Schema<
 });
 
 export default models?.autoChangeVerifyLevelConfig
-  ? (models.autoChangeVerifyLevelConfig as Model<
-      typeof AutoChangeVerifyLevelConfig._type
-    >)
+  ? (models.autoChangeVerifyLevelConfig as Model<typeof AutoChangeVerifyLevelConfig._type>)
   : model('autoChangeVerifyLevelConfig', autoChangeVerifyLevelSchema);

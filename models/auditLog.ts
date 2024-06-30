@@ -1,5 +1,7 @@
-import { type Model, Schema, model, models } from 'mongoose';
+import mongoose, { type Model } from 'mongoose';
 import type { AuditLog } from '../zod/auditLog';
+
+const { Schema, model, models } = mongoose;
 
 const AuditLogSchema = new Schema<typeof AuditLog._type>({
   guildId: {

@@ -1,6 +1,8 @@
-import { type Model, Schema, model, models } from 'mongoose';
+import mongoose, { type Model } from 'mongoose';
 import type { ReportConfig } from '../zod/config';
 import { guildId } from './util';
+
+const { Schema, model, models } = mongoose;
 
 const reportSchema = new Schema<typeof ReportConfig._type>({
   guildId,
