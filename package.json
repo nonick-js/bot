@@ -1,11 +1,7 @@
 {
-  "name": "nonickjs_memo",
+  "name": "nonickjs_database",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "gen": "prisma db push && prisma generate"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
