@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  id                    String @id @default(auto()) @map("_id") @db.ObjectId
+  guildId               String @unique
+  joinMessage           JoinMessageConfig?
+  leaveMessage          LeaveMessageConfig?
+  report                ReportConfig?
+  eventLog              EventLogConfig?
+  messageExpand         MessageExpandConfig?
+  autoPublic            AutoPubicConfig?
+  autoCreateThread      AutoCreateThreadConfig?
+  autoChangeVerifyLevel AutoChangeVerifyLevelConfig?
+  autoMod               AutoModConfig?
+  auditLogs             AuditLog[]
+  beforeVerifyLevel     Int?
+}
+
+// 監査ログ
+model AuditLog {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  guild    Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId  String
+  authorId String
+  before   Json?
+  after    Json?
+  createAt DateTime @default(now())
+}
+
+// 入室メッセージ
+model JoinMessageConfig {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  guild            Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId          String @unique
+  enabled          Boolean
+  channel          String
+  message          Json
+  ignoreBot        Boolean
+}
+
+// 退室メッセージ
+model LeaveMessageConfig {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  guild            Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId          String @unique
+  enabled          Boolean
+  channel          String
+  message          Json
+  ignoreBot        Boolean
+}
+
+// サーバー内通報
+model ReportConfig {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  guild            Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId          String @unique
+  channel          String
+  includeModerator Boolean
+  progressButton   Boolean
+  mentionEnabled   Boolean
+  mentionRole      String
+}
+
+// メッセージURL展開
+model MessageExpandConfig {
+  id                 String @id @default(auto()) @map("_id") @db.ObjectId
+  guild              Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId            String @unique
+  enabled            Boolean
+  allowExternalGuild Boolean
+  ignoreTypes        String[]
+  ignoreChannels     String[]
+  ignorePrefixes     String[]
+}
+
+// イベントログ
+type LogConfig {
+  enabled   Boolean
+  channel   String
+}
+
+model EventLogConfig {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  guild         Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId       String @unique
+  timeout       LogConfig
+  kick          LogConfig
+  ban           LogConfig
+  voice         LogConfig
+  messageDelete LogConfig
+  messageEdit   LogConfig
+}
+
+// 自動アナウンス公開
+model AutoPubicConfig {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  guild        Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId      String @unique
+  enabled      Boolean
+  channels     String[]
+}
+
+// 自動スレッド作成
+model AutoCreateThreadConfig {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  guild        Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId      String @unique
+  enabled      Boolean
+  channels     String[]
+}
+
+// 自動認証レベル変更
+model AutoChangeVerifyLevelConfig {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  guild        Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId      String @unique
+  enabled      Boolean
+  level        Int
+  startHour    Int
+  endHour      Int
+  logEnabled   Boolean
+  logChannel   String
+}
+
+// AutoMod Plus
+model AutoModConfig {
+  id                  String @id @default(auto()) @map("_id") @db.ObjectId
+  guild               Guild @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guildId             String @unique
+  enabled             Boolean
+  domainFilter        Boolean
+  domainFilterList    String[]
+  tokenFilter         Boolean
+  inviteUrlFilter     Boolean
+  logEnabled          Boolean
+  logChannel          String
+  ignoreChannels      String[]
+  ignoreRoles         String[]
+}
