@@ -63,7 +63,7 @@ client.on(Events.InteractionCreate, interaction => {
 
   if (isBlocked(interaction.guild))
     interaction.reply({
-      content: `\`🚫\` このサーバーでの${interaction.client.user.username}の使用は禁止されています。異議申し立ては[こちら](https://discord.gg/fVcjCNn733)`,
+      content: `\`🚫\` このサーバーでの${interaction.client.user.username}の使用は禁止されています。異議申し立ては[こちら](https://discord.gg/q4FcBm2P42)`,
       ephemeral: true,
     });
 

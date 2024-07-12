@@ -1,5 +1,5 @@
 # NoNICK.js
-[![Discord Support](https://img.shields.io/discord/949877204601405482?label=discord&logo=discord&logoColor=white)](https://discord.gg/fVcjCNn733)
+[![Discord Support](https://img.shields.io/discord/949877204601405482?label=discord&logo=discord&logoColor=white)](https://discord.gg/q4FcBm2P42)
 [![GitHub License](https://img.shields.io/github/license/nonick-mc/DiscordBot-NoNick.js)](LICENSE)  
 サーバー運営をサポートする機能を搭載した多機能BOTです。
 
@@ -34,8 +34,8 @@ MONGODB_DBNAME="データベース名"
 
 ## サポート
 BOTの使い方や設定の仕方は、[公式ドキュメント](https://docs.nonick-js.com)を使用して確認することが出来ます。  
-尚、ドキュメントを読んでもわからない場合は、[サポートサーバー](https://discord.gg/fVcjCNn733)で質問することもできます。
+尚、ドキュメントを読んでもわからない場合は、[サポートサーバー](https://discord.gg/q4FcBm2P42)で質問することもできます。
 
 ## 貢献
-バグや脆弱性を発見したり、搭載してほしい機能がある場合は、このリポジトリからIssueを新規作成するか、[サポートサーバー](https://discord.gg/fVcjCNn733)から開発者に連絡してください！  
+バグや脆弱性を発見したり、搭載してほしい機能がある場合は、このリポジトリからIssueを新規作成するか、[サポートサーバー](https://discord.gg/q4FcBm2P42)から開発者に連絡してください！  
 いずれの場合も、既に同じ内容が投稿されていないか確認してください。

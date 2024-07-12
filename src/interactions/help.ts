@@ -33,7 +33,7 @@ const helpCommand = new ChatInput(
           new ButtonBuilder()
             .setLabel('サポートサーバー')
             .setStyle(ButtonStyle.Link)
-            .setURL('https://discord.gg/fVcjCNn733'),
+            .setURL('https://discord.gg/q4FcBm2P42'),
           new ButtonBuilder()
             .setLabel('使い方ガイド')
             .setStyle(ButtonStyle.Link)
