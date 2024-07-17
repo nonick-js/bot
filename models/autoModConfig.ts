@@ -1,10 +1,13 @@
 import mongoose, { type Model } from 'mongoose';
-import type { AutoModConfig } from '../zod/config';
+import type { z } from 'zod';
+import { AutoModConfig } from '../zod';
+import { BaseConfigSchema } from '../zod/util';
 import { guildId } from './util';
 
 const { Schema, model, models } = mongoose;
+const zodSchema = BaseConfigSchema.and(AutoModConfig);
 
-const autoModSchema = new Schema<typeof AutoModConfig._type>({
+const autoModSchema = new Schema<z.infer<typeof zodSchema>>({
   guildId,
   enabled: Schema.Types.Boolean,
   filter: {
@@ -26,5 +29,5 @@ const autoModSchema = new Schema<typeof AutoModConfig._type>({
 });
 
 export default models?.autoModConfig
-  ? (models.autoModConfig as Model<typeof AutoModConfig._type>)
+  ? (models.autoModConfig as Model<z.infer<typeof zodSchema>>)
   : model('autoModConfig', autoModSchema);

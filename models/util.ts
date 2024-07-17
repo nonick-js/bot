@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
-import type { MessageOption } from '../zod/discord';
+import type { z } from 'zod';
+import type { MessageOptions } from '../zod/util';
 
 export const guildId = {
   required: true,
@@ -7,7 +8,7 @@ export const guildId = {
   type: Schema.Types.String,
 };
 
-export const messageOptionSchema = new Schema<typeof MessageOption._type>({
+export const messageOptionSchema = new Schema<z.infer<typeof MessageOptions>>({
   content: Schema.Types.String,
   embeds: [
     {

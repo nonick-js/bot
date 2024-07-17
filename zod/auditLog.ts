@@ -1,7 +1,7 @@
 import * as z from 'zod';
-import { Snowflake } from './discord';
+import { Snowflake } from './util';
 
-export const AuditLog = z.object({
+const AuditLog = z.object({
   guildId: Snowflake,
   authorId: Snowflake,
   before: z.any(),
@@ -9,3 +9,5 @@ export const AuditLog = z.object({
   createAt: z.date().optional(),
   reason: z.string().optional(),
 });
+
+export default AuditLog;

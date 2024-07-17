@@ -1,11 +1,12 @@
 import { GuildVerificationLevel } from 'discord-api-types/v10';
 import mongoose, { type Model } from 'mongoose';
-import type { Guild } from '../zod/guild';
+import type { z } from 'zod';
+import type { Guild } from '../zod';
 import { guildId } from './util';
 
 const { Schema, model, models } = mongoose;
 
-const guildSchema = new Schema<typeof Guild._type>({
+const guildSchema = new Schema<z.infer<typeof Guild>>({
   guildId,
   beforeVerifyLevel: {
     type: Schema.Types.Number,
@@ -15,5 +16,5 @@ const guildSchema = new Schema<typeof Guild._type>({
 });
 
 export default models?.guild
-  ? (models.guild as Model<typeof Guild._type>)
+  ? (models.guild as Model<z.infer<typeof Guild>>)
   : model('guild', guildSchema);

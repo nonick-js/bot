@@ -1,15 +1,19 @@
 import mongoose, { type Model } from 'mongoose';
-import type { EventLogConfig, LogConfig } from '../zod/config';
+import type { z } from 'zod';
+import { EventLogConfig } from '../zod';
+import type { LogConfig } from '../zod/eventLogConfig';
+import { BaseConfigSchema } from '../zod/util';
 import { guildId } from './util';
 
 const { Schema, model, models } = mongoose;
+const zodSchema = BaseConfigSchema.and(EventLogConfig);
 
-const LogSchema = new Schema<typeof LogConfig._type>({
+const LogSchema = new Schema<z.infer<typeof LogConfig>>({
   channel: Schema.Types.String,
   enabled: Schema.Types.Boolean,
 });
 
-const eventLogSchema = new Schema<typeof EventLogConfig._type>({
+const eventLogSchema = new Schema<z.infer<typeof zodSchema>>({
   guildId,
   ban: LogSchema,
   kick: LogSchema,
@@ -20,5 +24,5 @@ const eventLogSchema = new Schema<typeof EventLogConfig._type>({
 });
 
 export default models?.eventLogConfig
-  ? (models.eventLogConfig as Model<typeof EventLogConfig._type>)
+  ? (models.eventLogConfig as Model<z.infer<typeof zodSchema>>)
   : model('eventLogConfig', eventLogSchema);

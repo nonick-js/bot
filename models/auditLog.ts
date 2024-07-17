@@ -1,9 +1,10 @@
 import mongoose, { type Model } from 'mongoose';
-import type { AuditLog } from '../zod/auditLog';
+import type { z } from 'zod';
+import type { AuditLog } from '../zod';
 
 const { Schema, model, models } = mongoose;
 
-const AuditLogSchema = new Schema<typeof AuditLog._type>({
+const AuditLogSchema = new Schema<z.infer<typeof AuditLog>>({
   guildId: {
     required: true,
     type: Schema.Types.String,
@@ -16,5 +17,5 @@ const AuditLogSchema = new Schema<typeof AuditLog._type>({
 });
 
 export default models?.auditLog
-  ? (models.auditLog as Model<typeof AuditLog._type>)
+  ? (models.auditLog as Model<typeof AuditLog>)
   : model('auditLog', AuditLogSchema);
