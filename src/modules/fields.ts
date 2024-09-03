@@ -12,8 +12,6 @@ import type {
   GuildMember,
   PartialDMChannel,
   PartialGroupDMChannel,
-  PermissionResolvable,
-  SetRolePositionOptions,
   User,
 } from 'discord.js';
 import { formatEmoji } from './util';
@@ -21,6 +19,11 @@ import { formatEmoji } from './util';
 interface UserFieldOption {
   color: EmojiColors<'member'>;
   label: string;
+}
+
+interface UserFieldWithEmojiOption<T extends Emojis> extends UserFieldOption {
+  emoji: T;
+  color: EmojiColors<T>;
 }
 
 interface NicknameOption {
@@ -58,7 +61,24 @@ interface CountFieldOption<T extends Emojis> {
   label: string;
 }
 
-export function userField(user: User, options?: Partial<UserFieldOption>) {
+export function userField(
+  user: User,
+  options?: Partial<UserFieldOption>,
+): string;
+export function userField<T extends Emojis>(
+  user: User,
+  options: UserFieldWithEmojiOption<T>,
+): string;
+export function userField<T extends Emojis>(
+  user: User,
+  options?: Partial<UserFieldOption> | UserFieldWithEmojiOption<T>,
+) {
+  if (options && 'emoji' in options) {
+    return `${formatEmoji(getColorEmoji<T>(options.emoji, options.color) as string)} ${bold(
+      `${options.label}:`,
+    )} ${user.toString()} [${inlineCode(user.tag)}]`;
+  }
+
   const option: UserFieldOption = {
     label: 'ユーザー',
     color: 'gray',
