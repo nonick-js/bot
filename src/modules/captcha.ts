@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import {
   type Canvas,
   GlobalFonts,
@@ -5,6 +6,10 @@ import {
   createCanvas,
 } from '@napi-rs/canvas';
 import { Random } from './random';
+GlobalFonts.registerFromPath(
+  resolve(__dirname, '../fonts/OpenSans-Regular.ttf'),
+  'Captcha',
+);
 
 const rnd = new Random(Date.now());
 
@@ -20,11 +25,6 @@ export class Captcha {
     this.width = w;
     this.height = h;
     this.option = option;
-
-    if (option.font instanceof Buffer) {
-      GlobalFonts.register(option.font, 'Captcha');
-      this.option.font = 'Captcha';
-    } else this.option.font = option.font ?? 'Sans';
     this.option.color = option.color ?? '#32cf7e';
     this.option.chars = option.chars ?? 6;
 
@@ -49,7 +49,7 @@ export class Captcha {
       ...option,
     };
     const decoyText = getRandomText(opt.amount);
-    this.ctx.font = `${opt.size}px ${opt.font}`;
+    this.ctx.font = `${opt.size}px Captcha`;
     this.ctx.globalAlpha = opt.opacity;
     this.ctx.fillStyle = opt.color;
     for (const char of decoyText)
@@ -96,7 +96,7 @@ export class Captcha {
     };
     this.ctx.fillStyle = opt.color;
     this.ctx.globalAlpha = opt.opacity;
-    this.ctx.font = `${opt.size}px ${opt.font}`;
+    this.ctx.font = `${opt.size}px Captcha`;
     for (let i = 0; i < this.coord.length; i++) {
       this.ctx.save();
       this.ctx.translate(...this.coord[i]);
@@ -142,7 +142,6 @@ export class Captcha {
 }
 
 interface CaptchaOption {
-  font?: Buffer | string;
   chars?: number;
   size?: number;
   color?: string;
@@ -150,7 +149,6 @@ interface CaptchaOption {
 
 interface drawDecoyOption {
   color?: string;
-  font?: string;
   size?: number;
   opacity?: number;
   amount?: number;
@@ -159,7 +157,6 @@ interface drawDecoyOption {
 interface drawTextOption {
   color?: string;
   size?: number;
-  font?: string;
   skew?: boolean;
   rotate?: number;
   opacity?: number;
