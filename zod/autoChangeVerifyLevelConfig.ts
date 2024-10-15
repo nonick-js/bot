@@ -7,7 +7,7 @@ const hourError = { message: '0～23の間で設定する必要があります' 
 const AutoChangeVerifyLevelConfig = z
   .object({
     enabled: z.boolean(),
-    level: z.preprocess((v) => Number(v), z.nativeEnum(GuildVerificationLevel)),
+    level: z.coerce.number().pipe(z.nativeEnum(GuildVerificationLevel)),
     startHour: z.coerce.number().int().min(0, hourError).max(23, hourError),
     endHour: z.coerce.number().int().min(0, hourError).max(23, hourError),
     log: z.object({
