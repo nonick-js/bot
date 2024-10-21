@@ -2,6 +2,8 @@ import { ChannelType } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { Snowflake, findDuplicates } from './util';
 
+export const MessageExpandIgnorePrefixes = ['!', '?', '.', '#', '$', '%', '&', '^', '<'];
+
 const MessageExpandConfig = z
   .object({
     enabled: z.boolean(),
@@ -13,13 +15,25 @@ const MessageExpandConfig = z
     }),
   })
   .superRefine((value, ctx) => {
-    if (value.ignore.prefixes.some((v) => v.length !== 1)) {
+    const invalidPrefixes = value.ignore.prefixes.filter(
+      (v) => !MessageExpandIgnorePrefixes.includes(v),
+    );
+
+    if (invalidPrefixes.length > 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'プレフィックスは1文字である必要があります',
+        message: '無効なプレフィックスが含まれています',
         path: ['ignore.prefixes'],
       });
     }
+
+    // if (value.ignore.prefixes.some((v) => v.length !== 1)) {
+    //   ctx.addIssue({
+    //     code: z.ZodIssueCode.custom,
+    //     message: 'プレフィックスは1文字である必要があります',
+    //     path: ['ignore.prefixes'],
+    //   });
+    // }
 
     if (findDuplicates(value.ignore.prefixes).length) {
       ctx.addIssue({
