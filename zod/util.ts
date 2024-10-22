@@ -80,7 +80,15 @@ export namespace Embed {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: '埋め込みの文字数が合計で6000文字を超えています。',
-          path: ['description'],
+          path: ['title'],
+        });
+      }
+
+      if (!v.title && !v.description && !v.author?.name && !v.image) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'タイトルか説明のいずれかを入力する必要があります。',
+          path: ['title'],
         });
       }
     });
