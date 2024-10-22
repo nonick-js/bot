@@ -12,23 +12,11 @@ export namespace Embed {
     width: z.number().int().optional(),
   });
 
-  export const Video = z.object({
-    url: z.string().url().optional(),
-    proxy_url: z.string().url().optional(),
-    height: z.number().int().optional(),
-    width: z.number().int().optional(),
-  });
-
   export const Image = z.object({
     url: z.string().url(),
     proxy_url: z.string().url().optional(),
     height: z.number().int().optional(),
     width: z.number().int().optional(),
-  });
-
-  export const Provider = z.object({
-    name: z.string().optional(),
-    url: z.string().url().optional(),
   });
 
   export const Author = z.object({
@@ -60,12 +48,10 @@ export namespace Embed {
         .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/, '無効な日付です。')
         .optional(),
       color: z.number().int().optional(),
-      footer: Footer.optional(),
-      image: Image.optional(),
-      thumbnail: Thumbnail.optional(),
-      video: Video.optional(),
-      provider: Provider.optional(),
-      author: Author.optional(),
+      footer: Footer.partial(),
+      image: Image.partial(),
+      thumbnail: Thumbnail.partial(),
+      author: Author.partial(),
       fields: z.array(Field).max(25, 'フィールドは25個以下である必要があります。').optional(),
     })
     .superRefine((v, ctx) => {
@@ -74,7 +60,7 @@ export namespace Embed {
           v.title?.length,
           v.description?.length,
           v.fields?.reduce((sum, str) => sum + str.name.length + str.value.length, 0),
-          v.author?.name.length,
+          v.author?.name?.length,
         ].reduce<number>((sum, num) => sum + (num || 0), 0) > 6000
       ) {
         ctx.addIssue({
@@ -84,7 +70,7 @@ export namespace Embed {
         });
       }
 
-      if (!v.title && !v.description && !v.author?.name && !v.image) {
+      if (Object.values(v).every((value) => !value)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'タイトルか説明のいずれかを入力する必要があります。',
