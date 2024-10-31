@@ -92,19 +92,6 @@ client.on(Events.InteractionCreate, (interaction) => {
 
 process.on('uncaughtException', (err) => {
   console.error(err);
-
-  client.channels.fetch(process.env.LOG_CHANNEL_ID).then((channel) => {
-    if (!channel?.isTextBased()) return;
-    channel.send({
-      embeds: [
-        new EmbedBuilder()
-          .setTitle('`❌` 例外が発生しました')
-          .setDescription(codeBlock(`${err.stack}`))
-          .setColor(Colors.Red)
-          .setTimestamp(),
-      ],
-    });
-  });
 });
 
 client.login();
