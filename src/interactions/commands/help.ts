@@ -12,25 +12,27 @@ export default new ChatInput(
     name: 'help',
     description: 'このBOTについて',
   },
-  (interaction) => {
+  async (interaction) => {
+    const developer =
+      await interaction.client.users.fetch('735110742222831657');
+
     interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle(interaction.client.user.username)
           .setDescription(
             [
-              'サーバーの運営・成長に役立つ機能を搭載！',
-              '「完全無料で使いやすい多機能BOT」を目指して日々開発しています',
+              '**あなたのDiscordサーバーをもっと便利に！**',
+              '「使いやすい多機能BOT」を目指して日々開発しています。',
             ].join('\n'),
           )
           .setImage(
-            'https://media.discordapp.net/attachments/958791423161954445/989779285852168242/3e9aba98d28eaa52.png',
+            'https://media.discordapp.net/attachments/958791423161954445/1301505081526714480/banner.png',
           )
           .setColor(Colors.Blurple)
           .setFooter({
-            text: '開発者: @nonick-mc',
-            iconURL:
-              'https://media.discordapp.net/attachments/958791423161954445/975266759529623652/-3.png',
+            text: `開発者: @${developer.username}`,
+            iconURL: developer.displayAvatarURL(),
           }),
       ],
       components: [
@@ -43,6 +45,10 @@ export default new ChatInput(
             .setLabel('使い方ガイド')
             .setStyle(ButtonStyle.Link)
             .setURL('https://docs.nonick-js.com'),
+          new ButtonBuilder()
+            .setLabel('ダッシュボード')
+            .setStyle(ButtonStyle.Link)
+            .setURL('https://dashboard.nonick-js.com'),
         ),
       ],
       ephemeral: true,
