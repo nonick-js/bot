@@ -10,6 +10,7 @@ import {
 import { Cron } from '@modules/cron';
 import { DiscordEvents } from '@modules/events';
 import {
+  ActivityType,
   AllowedMentionsTypes,
   Client,
   Events,
@@ -63,6 +64,11 @@ client.once(Events.ClientReady, () => {
     Memory: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(
       2,
     )}MB | ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`,
+  });
+
+  client.user?.setActivity({
+    name: `${client.guilds.cache.size} サーバー`,
+    type: ActivityType.Competing,
   });
 
   interactions.registerCommands({
