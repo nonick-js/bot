@@ -1,6 +1,15 @@
 import { ChatInput } from '@akki256/discord-interaction';
-import { ApplicationCommandOptionType, Attachment, Colors, Embed, EmbedBuilder, PermissionFlagsBits, Webhook, resolveColor } from 'discord.js';
 import axios from 'axios';
+import {
+  ApplicationCommandOptionType,
+  Attachment,
+  Colors,
+  type Embed,
+  EmbedBuilder,
+  PermissionFlagsBits,
+  Webhook,
+  resolveColor,
+} from 'discord.js';
 import { embedMakerType, getEmbedMakerButtons } from './embed/_function';
 
 const command = new ChatInput(
@@ -87,7 +96,10 @@ const command = new ChatInput(
     const subCommand = interaction.options.getSubcommand(true);
 
     if (!interaction.channel?.isTextBased())
-      return interaction.reply({ content: '`❌` このチャンネルでは使用できません', ephemeral: true });
+      return interaction.reply({
+        content: '`❌` このチャンネルでは使用できません',
+        ephemeral: true,
+      });
 
     if (subCommand === 'create') {
       const title = interaction.options.getString('title');
@@ -96,7 +108,11 @@ const command = new ChatInput(
       const attachment = interaction.options.getAttachment('image');
 
       if (!title && !description)
-        return interaction.reply({ content: '`❌` `title`と`description`はどちらかは必ず入力する必要があります。', ephemeral: true });
+        return interaction.reply({
+          content:
+            '`❌` `title`と`description`はどちらかは必ず入力する必要があります。',
+          ephemeral: true,
+        });
 
       const embed = new EmbedBuilder()
         .setTitle(title)
@@ -105,22 +121,27 @@ const command = new ChatInput(
         .setColor(color ?? Colors.White);
 
       interaction.reply({
-        content: '`/embed profile`を使用すると、送信者のプロフィールを変更できます。',
+        content:
+          '`/embed profile`を使用すると、送信者のプロフィールを変更できます。',
         embeds: [embed],
         components: getEmbedMakerButtons(embed.data, embedMakerType.send),
         ephemeral: true,
       });
-    }
-
-    else if (subCommand === 'import') {
+    } else if (subCommand === 'import') {
       const attachment = interaction.options.getAttachment('json', true);
 
       console.log(attachment.contentType);
 
       if (!attachment.contentType?.startsWith('application/json'))
-        return interaction.reply({ content: '`❌` 添付されたファイルはjsonファイルではありません。', ephemeral: true });
+        return interaction.reply({
+          content: '`❌` 添付されたファイルはjsonファイルではありません。',
+          ephemeral: true,
+        });
       if (attachment.size > 3000000)
-        return interaction.reply({ content: '`❌` 3MB以上のjsonファイルはインポートできません。', ephemeral: true });
+        return interaction.reply({
+          content: '`❌` 3MB以上のjsonファイルはインポートできません。',
+          ephemeral: true,
+        });
 
       await interaction.deferReply({ ephemeral: true });
       let embeds = (await axios.get<Embed[] | Embed>(attachment.url)).data;
@@ -128,42 +149,79 @@ const command = new ChatInput(
 
       interaction
         .followUp({
-          content: '`/embed profile`を使用すると、送信者のプロフィールを変更できます。',
+          content:
+            '`/embed profile`を使用すると、送信者のプロフィールを変更できます。',
           embeds: embeds,
           components: getEmbedMakerButtons(embeds[0], embedMakerType.send),
         })
-        .catch(() => interaction.followUp({ content: '`❌` インポートに失敗しました。 有効なファイルであるか確認してください。', ephemeral: true }));
-    }
-
-    else if (subCommand === 'profile') {
+        .catch(() =>
+          interaction.followUp({
+            content:
+              '`❌` インポートに失敗しました。 有効なファイルであるか確認してください。',
+            ephemeral: true,
+          }),
+        );
+    } else if (subCommand === 'profile') {
       const name = interaction.options.getString('name', true);
       const avatar = interaction.options.getAttachment('avatar');
 
       if (!interaction.appPermissions?.has(PermissionFlagsBits.ManageWebhooks))
-        return interaction.reply({ content: '`❌` この機能を使用するには、NoNICK.jsに`ウェブフックの管理`権限を付与する必要があります。', ephemeral: true });
-      if (avatar instanceof Attachment && (!avatar.contentType || !['image/png', 'image/jpeg'].includes(avatar.contentType)))
-        return interaction.reply({ content: '`❌` アバター画像には`jpeg`または`png`のみ使用できます。', ephemeral: true  });
+        return interaction.reply({
+          content:
+            '`❌` この機能を使用するには、NoNICK.jsに`ウェブフックの管理`権限を付与する必要があります。',
+          ephemeral: true,
+        });
+      if (
+        avatar instanceof Attachment &&
+        (!avatar.contentType ||
+          !['image/png', 'image/jpeg'].includes(avatar.contentType))
+      )
+        return interaction.reply({
+          content: '`❌` アバター画像には`jpeg`または`png`のみ使用できます。',
+          ephemeral: true,
+        });
 
       await interaction.deferReply({ ephemeral: true });
 
-      const webhook = await interaction.guild?.fetchWebhooks().then(wh => wh.find(v => v.owner?.id === interaction.client.user.id)).catch(() => null);
-      const res = webhook instanceof Webhook
-        ? await webhook.edit({ name, avatar: avatar?.url || null }).catch(() => null)
-        : await interaction.guild?.channels.createWebhook({ name, avatar: avatar?.url || null, channel: interaction.channelId }).catch(() => null);
+      const webhook = await interaction.guild
+        ?.fetchWebhooks()
+        .then((wh) =>
+          wh.find((v) => v.owner?.id === interaction.client.user.id),
+        )
+        .catch(() => null);
+      const res =
+        webhook instanceof Webhook
+          ? await webhook
+              .edit({ name, avatar: avatar?.url || null })
+              .catch(() => null)
+          : await interaction.guild?.channels
+              .createWebhook({
+                name,
+                avatar: avatar?.url || null,
+                channel: interaction.channelId,
+              })
+              .catch(() => null);
 
       if (res instanceof Webhook)
         interaction.followUp({
           content: '`✅` プロフィールを変更しました！',
           embeds: [
             new EmbedBuilder()
-              .setAuthor({ name: res.name, iconURL: res.avatarURL() ?? interaction.client.rest.cdn.defaultAvatar(0) })
+              .setAuthor({
+                name: res.name,
+                iconURL:
+                  res.avatarURL() ??
+                  interaction.client.rest.cdn.defaultAvatar(0),
+              })
               .setColor(resolveColor('#2b2d31')),
           ],
           ephemeral: true,
         });
-
       else
-        interaction.followUp({ content: '`❌` プロフィールの変更に失敗しました。', ephemeral: true });
+        interaction.followUp({
+          content: '`❌` プロフィールの変更に失敗しました。',
+          ephemeral: true,
+        });
     }
   },
 );

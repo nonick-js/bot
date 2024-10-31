@@ -1,5 +1,11 @@
-import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder } from 'discord.js';
 import { Button, Modal } from '@akki256/discord-interaction';
+import {
+  ActionRowBuilder,
+  EmbedBuilder,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from 'discord.js';
 import { reloadEmbedMaker } from './_function';
 
 const button = new Button(
@@ -32,12 +38,21 @@ const modal = new Modal(
     let timeStamp = interaction.fields.getTextInputValue('timeStamp');
     if (timeStamp.toLowerCase() === 'now') timeStamp = new Date().toISOString();
 
-    if (timeStamp !== '' && !/^\d{4}-?\d\d-?\d\d(?:T\d\d(?::?\d\d(?::?\d\d(?:\.\d+)?)?)?(?:Z|[+-]\d\d:?\d\d)?)?$/.test(timeStamp))
-      return interaction.reply({ content: '`❌` 有効なタイムスタンプではありません！[ISO8601](https://ja.wikipedia.org/wiki/ISO_8601)に準拠した値を入力してください。', ephemeral: true });
+    if (
+      timeStamp !== '' &&
+      !/^\d{4}-?\d\d-?\d\d(?:T\d\d(?::?\d\d(?::?\d\d(?:\.\d+)?)?)?(?:Z|[+-]\d\d:?\d\d)?)?$/.test(
+        timeStamp,
+      )
+    )
+      return interaction.reply({
+        content:
+          '`❌` 有効なタイムスタンプではありません！[ISO8601](https://ja.wikipedia.org/wiki/ISO_8601)に準拠した値を入力してください。',
+        ephemeral: true,
+      });
 
-    const embed = EmbedBuilder
-      .from(interaction.message.embeds[0])
-      .setTimestamp(timeStamp ? new Date(timeStamp).getTime() : null);
+    const embed = EmbedBuilder.from(interaction.message.embeds[0]).setTimestamp(
+      timeStamp ? new Date(timeStamp).getTime() : null,
+    );
 
     reloadEmbedMaker(interaction, embed.toJSON());
   },

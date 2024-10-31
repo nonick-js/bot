@@ -1,6 +1,12 @@
-import { ActionRowBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { Button, Modal } from '@akki256/discord-interaction';
-import { isURL } from '../../../module/functions';
+import { isURL } from '@modules/util';
+import {
+  ActionRowBuilder,
+  EmbedBuilder,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from 'discord.js';
 import { reloadEmbedMaker } from './_function';
 
 const button = new Button(
@@ -52,15 +58,26 @@ const modal = new Modal(
 
     const name = interaction.fields.getTextInputValue('name');
     const url = interaction.fields.getTextInputValue('url') || undefined;
-    const iconURL = interaction.fields.getTextInputValue('iconURL') || undefined;
+    const iconURL =
+      interaction.fields.getTextInputValue('iconURL') || undefined;
     const option = name ? { name, url, iconURL } : null;
 
     if (!name && (url || iconURL))
-      return interaction.reply({ content: '`❌` アイコンURLや名前につけるURLを追加する場合は、「名前」オプションも入力する必要があります', ephemeral: true });
+      return interaction.reply({
+        content:
+          '`❌` アイコンURLや名前につけるURLを追加する場合は、「名前」オプションも入力する必要があります',
+        ephemeral: true,
+      });
     if ((url && !isURL(url)) || (iconURL && !isURL(iconURL)))
-      return interaction.reply({ content: '`❌` `http://`または`https://`から始まるURLを入力してください。', ephemeral: true });
+      return interaction.reply({
+        content:
+          '`❌` `http://`または`https://`から始まるURLを入力してください。',
+        ephemeral: true,
+      });
 
-    const embed = EmbedBuilder.from(interaction.message.embeds[0]).setAuthor(option);
+    const embed = EmbedBuilder.from(interaction.message.embeds[0]).setAuthor(
+      option,
+    );
 
     reloadEmbedMaker(interaction, embed.toJSON());
   },

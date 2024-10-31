@@ -1,5 +1,12 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import { ActionRowBuilder, ComponentType, ModalBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ComponentType,
+  ModalBuilder,
+  StringSelectMenuBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from 'discord.js';
 import { getRoleSelectMakerButtons } from './_function';
 
 const selectEditButton = new Button(
@@ -33,13 +40,16 @@ const selectEditModal = new Modal(
   (interaction) => {
     if (
       !interaction.isFromMessage() ||
-      interaction.message.components[0].components[0]?.type !== ComponentType.StringSelect ||
-      interaction.message.components[0].components[0].customId === 'nonick-js:embedMaker-selectRole-removeRoleSelect'
-    ) return;
+      interaction.message.components[0].components[0]?.type !==
+        ComponentType.StringSelect ||
+      interaction.message.components[0].components[0].customId ===
+        'nonick-js:embedMaker-selectRole-removeRoleSelect'
+    )
+      return;
 
-    const select = StringSelectMenuBuilder
-      .from(interaction.message.components[0].components[0])
-      .setPlaceholder(interaction.fields.getTextInputValue('placeholder'));
+    const select = StringSelectMenuBuilder.from(
+      interaction.message.components[0].components[0],
+    ).setPlaceholder(interaction.fields.getTextInputValue('placeholder'));
 
     interaction.update({
       content: null,

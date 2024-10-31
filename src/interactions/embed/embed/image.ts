@@ -1,6 +1,12 @@
-import { ActionRowBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { Button, Modal } from '@akki256/discord-interaction';
-import { isURL } from '../../../module/functions';
+import { isURL } from '@modules/util';
+import {
+  ActionRowBuilder,
+  EmbedBuilder,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from 'discord.js';
 import { reloadEmbedMaker } from './_function';
 
 const button = new Button(
@@ -46,11 +52,17 @@ const modal = new Modal(
     const thumbnailUrl = interaction.fields.getTextInputValue('thumbnailUrl');
     const imageUrl = interaction.fields.getTextInputValue('imageUrl');
 
-    if ((thumbnailUrl && !isURL(thumbnailUrl)) || (imageUrl && !isURL(imageUrl)))
-      return interaction.reply({ content: '`❌` `http://`または`https://`から始まるURLを入力してください。', ephemeral: true });
+    if (
+      (thumbnailUrl && !isURL(thumbnailUrl)) ||
+      (imageUrl && !isURL(imageUrl))
+    )
+      return interaction.reply({
+        content:
+          '`❌` `http://`または`https://`から始まるURLを入力してください。',
+        ephemeral: true,
+      });
 
-    const embed = EmbedBuilder
-      .from(interaction.message.embeds[0])
+    const embed = EmbedBuilder.from(interaction.message.embeds[0])
       .setThumbnail(thumbnailUrl || null)
       .setImage(imageUrl || null);
 

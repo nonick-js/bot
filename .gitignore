@@ -1,6 +1,6 @@
 # Directory
 node_modules
-build
+dist
 
 # File
 .env

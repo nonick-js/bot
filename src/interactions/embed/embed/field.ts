@@ -1,8 +1,17 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, APIButtonComponent } from 'discord.js';
+import { white } from '@const/emojis';
+import {
+  type APIButtonComponent,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  ModalBuilder,
+  StringSelectMenuBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from 'discord.js';
 import { getBaseEmbedMakerButtons, reloadEmbedMaker } from './_function';
-import { Emojis } from '../../../module/constant';
-import { omitString } from '../../../module/functions';
 
 const addField = [
   new Button(
@@ -52,11 +61,16 @@ const addField = [
       const inline = interaction.fields.getTextInputValue('inline');
 
       if (!['true', 'false'].includes(inline))
-        return interaction.reply({ content: '`❌` `inline`には`true`または`false`のみ入力できます', ephemeral: true });
+        return interaction.reply({
+          content: '`❌` `inline`には`true`または`false`のみ入力できます',
+          ephemeral: true,
+        });
 
-      const embed = EmbedBuilder
-        .from(interaction.message.embeds[0])
-        .addFields({ name, value, inline: JSON.parse(inline.toLowerCase()) });
+      const embed = EmbedBuilder.from(interaction.message.embeds[0]).addFields({
+        name,
+        value,
+        inline: JSON.parse(inline.toLowerCase()),
+      });
 
       reloadEmbedMaker(interaction, embed.toJSON());
     },
@@ -71,10 +85,15 @@ const removeField = [
       const components = interaction.message.components;
 
       if (embed.fields.length === 0) return;
-      if (embed.fields.length === 1) return reloadEmbedMaker(interaction, EmbedBuilder.from(embed).setFields().data);
+      if (embed.fields.length === 1)
+        return reloadEmbedMaker(
+          interaction,
+          EmbedBuilder.from(embed).setFields().data,
+        );
 
       const indexSelectCustomId = 'nonick-js:embedMaker-removeFieldSelect';
-      const backButtonCustomId = 'nonick-js:embedMaker-selectRole-removeRoleSelect-back';
+      const backButtonCustomId =
+        'nonick-js:embedMaker-selectRole-removeRoleSelect-back';
 
       const message = await interaction.update({
         components: [
@@ -82,13 +101,20 @@ const removeField = [
             new StringSelectMenuBuilder()
               .setCustomId(indexSelectCustomId)
               .setPlaceholder('削除する項目を選択')
-              .setOptions(...embed.fields.map((v, index) => ({ label: omitString(v.name, 100), description: omitString(v.value, 100), value: String(index), emoji: Emojis.White.message }))),
+              .setOptions(
+                ...embed.fields.map((v, index) => ({
+                  label: omitString(v.name, 100),
+                  description: omitString(v.value, 100),
+                  value: String(index),
+                  emoji: white.message,
+                })),
+              ),
           ),
           new ActionRowBuilder<ButtonBuilder>().setComponents(
             new ButtonBuilder()
               .setCustomId(backButtonCustomId)
               .setLabel('削除せず戻る')
-              .setEmoji(Emojis.White.reply)
+              .setEmoji(white.reply)
               .setStyle(ButtonStyle.Danger),
           ),
         ],
@@ -97,24 +123,31 @@ const removeField = [
 
       message
         .awaitMessageComponent({
-          filter: v => [indexSelectCustomId, backButtonCustomId].includes(v.customId),
+          filter: (v) =>
+            [indexSelectCustomId, backButtonCustomId].includes(v.customId),
           time: 180_000,
         })
         .then((i) => {
           if (i.customId === indexSelectCustomId && i.isStringSelectMenu()) {
-            const newEmbed = EmbedBuilder
-              .from(embed)
-              .setFields(embed.fields.filter((v, index) => Number(i.values[0]) !== index));
+            const newEmbed = EmbedBuilder.from(embed).setFields(
+              embed.fields.filter((v, index) => Number(i.values[0]) !== index),
+            );
 
             const newComponents = getBaseEmbedMakerButtons(newEmbed.toJSON());
-            newComponents[1].addComponents(ButtonBuilder.from(components[1].components[3] as APIButtonComponent));
+            newComponents[1].addComponents(
+              ButtonBuilder.from(
+                components[1].components[3] as APIButtonComponent,
+              ),
+            );
 
             i.update({ embeds: [newEmbed], components: newComponents });
-          }
-
-          else if (i.customId === backButtonCustomId && i.isButton()) {
+          } else if (i.customId === backButtonCustomId && i.isButton()) {
             const newComponents = getBaseEmbedMakerButtons(embed);
-            newComponents[1].addComponents(ButtonBuilder.from(components[1].components[3] as APIButtonComponent));
+            newComponents[1].addComponents(
+              ButtonBuilder.from(
+                components[1].components[3] as APIButtonComponent,
+              ),
+            );
 
             i.update({ embeds: [embed], components: newComponents });
           }
@@ -123,5 +156,9 @@ const removeField = [
     },
   ),
 ];
+
+function omitString(text: string, limit: number): string {
+  return text.length > limit ? `${text.substring(0, limit - 4)} ...` : text;
+}
 
 module.exports = [...addField, ...removeField];

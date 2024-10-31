@@ -1,6 +1,12 @@
-import { ActionRowBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { Button, Modal } from '@akki256/discord-interaction';
-import { isURL } from '../../../module/functions';
+import { isURL } from '@modules/util';
+import {
+  ActionRowBuilder,
+  EmbedBuilder,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from 'discord.js';
 import { reloadEmbedMaker } from './_function';
 
 const button = new Button(
@@ -42,15 +48,26 @@ const modal = new Modal(
     if (!interaction.isFromMessage()) return;
 
     const text = interaction.fields.getTextInputValue('text');
-    const iconURL = interaction.fields.getTextInputValue('iconURL') || undefined;
+    const iconURL =
+      interaction.fields.getTextInputValue('iconURL') || undefined;
     const option = text ? { text, iconURL } : null;
 
     if (!text && iconURL)
-      return interaction.reply({ content: '`❌` アイコンのURLを設定する場合は、テキストも入力する必要があります。', ephemeral: true });
+      return interaction.reply({
+        content:
+          '`❌` アイコンのURLを設定する場合は、テキストも入力する必要があります。',
+        ephemeral: true,
+      });
     if (iconURL && !isURL(iconURL))
-      return interaction.reply({ content: '`❌` `http://`または`https://`から始まるURLを入力してください。', ephemeral: true });
+      return interaction.reply({
+        content:
+          '`❌` `http://`または`https://`から始まるURLを入力してください。',
+        ephemeral: true,
+      });
 
-    const embed = EmbedBuilder.from(interaction.message.embeds[0]).setFooter(option);
+    const embed = EmbedBuilder.from(interaction.message.embeds[0]).setFooter(
+      option,
+    );
 
     reloadEmbedMaker(interaction, embed.toJSON());
   },

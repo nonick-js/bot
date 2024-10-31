@@ -1,12 +1,11 @@
-declare module 'process' {
+declare module 'node:process' {
   global {
     namespace NodeJS {
       interface ProcessEnv {
-        BOT_TOKEN: string;
-        GUILD_ID?: string;
-        LOG_CHANNEL_ID: string;
-        MONGODB_URI: string;
-        MONGODB_DBNAME: string;
+        readonly DISCORD_TOKEN: string;
+        readonly GUILD_ID?: string;
+        readonly DATABASE_URL: string;
+        readonly DATABASE_NAME: string;
       }
     }
   }
