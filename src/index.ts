@@ -12,12 +12,9 @@ import { DiscordEvents } from '@modules/events';
 import {
   AllowedMentionsTypes,
   Client,
-  Colors,
-  EmbedBuilder,
   Events,
   GatewayIntentBits,
   Partials,
-  codeBlock,
   version,
 } from 'discord.js';
 import mongoose from 'mongoose';
