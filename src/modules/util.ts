@@ -7,11 +7,9 @@ import type {
   Guild,
   Message,
   PermissionFlags,
-  PermissionResolvable,
-  PermissionsBitField,
   Snowflake,
 } from 'discord.js';
-import { client } from 'index';
+import { client } from '../index';
 
 export async function getMessage(
   ...id: [guildId: string, channelId: string, messageId: string]

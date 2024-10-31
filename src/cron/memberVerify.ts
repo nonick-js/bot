@@ -10,8 +10,8 @@ import {
   GuildVerificationLevel,
   inlineCode,
 } from 'discord.js';
-import { client } from 'index';
 import type { Model } from 'mongoose';
+import { client } from '../index';
 dayjs.extend(timezone);
 dayjs.extend(utc);
 
