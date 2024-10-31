@@ -1,12 +1,12 @@
-import { AutoChangeVerifyLevelConfig } from '@models';
+import { AutoChangeVerifyLevelConfig, Guild } from '@models';
 import { CronBuilder } from '@modules/cron';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import {
   Colors,
+  type Guild as DiscordGuild,
   EmbedBuilder,
-  type Guild,
   GuildVerificationLevel,
   inlineCode,
 } from 'discord.js';
@@ -56,11 +56,14 @@ async function start(hour: number) {
 
   for (const setting of settings) {
     const guild = await client.guilds.fetch(setting.guildId).catch(() => null);
-    const level = setting.level;
-    if (!guild || level == null) return;
+    const guildModel = await Guild.findOne({ guildId: setting.guildId });
 
-    setting.level = guild.verificationLevel;
-    await setting.save({ wtimeout: 1_500 });
+    const level = setting.level;
+    if (!guild || !guildModel || level == null) return;
+
+    guildModel.beforeVerifyLevel = guild.verificationLevel;
+    await guildModel.save({ wtimeout: 1_500 });
+
     guild
       .setVerificationLevel(level)
       .then(() => sendLog(guild, setting, level, '開始'))
@@ -76,7 +79,9 @@ async function end(hour: number) {
 
   for (const setting of settings) {
     const guild = await client.guilds.fetch(setting.guildId).catch(() => null);
-    const level = setting.level;
+    const level = (await Guild.findOne({ guildId: guild?.id }))
+      ?.beforeVerifyLevel;
+
     if (!guild || level == null) return;
 
     guild
@@ -87,7 +92,7 @@ async function end(hour: number) {
 }
 
 async function sendLog(
-  guild: Guild,
+  guild: DiscordGuild,
   {
     log,
   }: typeof AutoChangeVerifyLevelConfig extends Model<infer T> ? T : never,
