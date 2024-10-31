@@ -1,7 +1,7 @@
 import { joinAndLeaveHolder } from '@const/holder';
 import { JoinMessageConfig } from '@models';
 import { DiscordEventBuilder } from '@modules/events';
-import { Events } from 'discord.js';
+import { Events, type MessageCreateOptions } from 'discord.js';
 
 export default new DiscordEventBuilder({
   type: Events.GuildMemberAdd,
@@ -16,7 +16,7 @@ export default new DiscordEventBuilder({
       : null;
     if (channel?.isTextBased()) {
       channel.send(
-        joinAndLeaveHolder.parse(setting.message, {
+        joinAndLeaveHolder.parse(setting.message as MessageCreateOptions, {
           guild: member.guild,
           user: member.user,
         }),

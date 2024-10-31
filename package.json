@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --inspect src/index.ts",
-    "start": "node build/index.js",
+    "start": "node dist/index.js",
     "build": "tsc -p . && pnpm run copy-assets",
     "prepare": "ts-patch install",
-    "copy-assets": "shx cp -r src/fonts build/fonts"
+    "copy-assets": "shx cp -r src/fonts dist/fonts"
   },
   "keywords": [],
   "author": "",
