@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --inspect src/index.ts",
+    "dev": "tsnd --loader ts-node/esm -T --rs src/index.ts",
     "start": "node dist/index.js",
     "build": "tsc -p . && pnpm run copy-assets",
     "prepare": "ts-patch install",
@@ -27,6 +27,7 @@
     "nodemon": "^3.1.7",
     "shx": "^0.3.4",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "ts-patch": "^3.2.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.4",
