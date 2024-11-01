@@ -8,7 +8,7 @@ export default new DiscordEventBuilder({
   type: Events.MessageUpdate,
   async execute(oldMessage, { content, attachments }) {
     if (!oldMessage.inGuild()) return;
-    const { messageDelete: setting } =
+    const { messageEdit: setting } =
       (await EventLogConfig.findOne({ guildId: oldMessage.guild.id })) ?? {};
     if (!(setting?.enabled && setting.channel)) return;
     const channel = await getSendableChannel(
@@ -17,7 +17,7 @@ export default new DiscordEventBuilder({
     ).catch(() => {
       EventLogConfig.updateOne(
         { guildId: oldMessage.guild.id },
-        { $set: { messageDelete: { enabled: false, channel: null } } },
+        { $set: { messageEdit: { enabled: false, channel: null } } },
       );
     });
     if (!channel) return;

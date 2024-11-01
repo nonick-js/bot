@@ -1,4 +1,5 @@
 import { Button, Modal } from '@akki256/discord-interaction';
+import { document } from '@const/links';
 import { isURL } from '@modules/util';
 import {
   ActionRowBuilder,
@@ -35,7 +36,7 @@ const button = new Button(
               .setCustomId('url')
               .setLabel('タイトルURL')
               .setValue(embed.url || '')
-              .setPlaceholder('例）https://docs.nonick-js.com')
+              .setPlaceholder(`例）${document}`)
               .setStyle(TextInputStyle.Short)
               .setRequired(false),
           ),

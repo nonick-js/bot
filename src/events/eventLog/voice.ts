@@ -1,7 +1,7 @@
 import { EventLogConfig } from '@models';
 import { DiscordEventBuilder } from '@modules/events';
 import { channelField, userField } from '@modules/fields';
-import { Colors, EmbedBuilder, Events, formatEmoji } from 'discord.js';
+import { Colors, EmbedBuilder, Events } from 'discord.js';
 
 export default new DiscordEventBuilder({
   type: Events.VoiceStateUpdate,

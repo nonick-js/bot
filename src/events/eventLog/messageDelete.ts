@@ -2,10 +2,7 @@ import { EventLogConfig } from '@models';
 import { DiscordEventBuilder } from '@modules/events';
 import { channelField, scheduleField, userField } from '@modules/fields';
 import { createAttachment, getSendableChannel } from '@modules/util';
-import AdmZip from 'adm-zip';
-import axios from 'axios';
 import {
-  AttachmentBuilder,
   AuditLogEvent,
   Collection,
   Colors,

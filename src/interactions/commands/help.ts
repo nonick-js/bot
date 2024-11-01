@@ -1,4 +1,5 @@
 import { ChatInput } from '@akki256/discord-interaction';
+import { dashboard, document, supportServer } from '@const/links';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -40,15 +41,15 @@ export default new ChatInput(
           new ButtonBuilder()
             .setLabel('サポートサーバー')
             .setStyle(ButtonStyle.Link)
-            .setURL('https://discord.gg/q4FcBm2P42'),
+            .setURL(supportServer),
           new ButtonBuilder()
             .setLabel('使い方ガイド')
             .setStyle(ButtonStyle.Link)
-            .setURL('https://docs.nonick-js.com'),
+            .setURL(document),
           new ButtonBuilder()
             .setLabel('ダッシュボード')
             .setStyle(ButtonStyle.Link)
-            .setURL('https://dashboard.nonick-js.com'),
+            .setURL(dashboard),
         ),
       ],
       ephemeral: true,

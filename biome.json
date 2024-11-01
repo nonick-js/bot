@@ -8,14 +8,19 @@
   },
   "linter": {
     "enabled": true,
-    "ignore": [".next", "node_modules"],
+    "ignore": [".github", ".vscode", ".next", "node_modules"],
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "correctness": {
+        "noUnusedImports": {
+          "level": "warn"
+        }
+      }
     }
   },
   "formatter": {
     "enabled": true,
-    "ignore": [".next", "node_modules"],
+    "ignore": [".github", ".vscode", ".next", "node_modules"],
     "formatWithErrors": true,
     "indentStyle": "space"
   },

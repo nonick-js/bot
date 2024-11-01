@@ -1,12 +1,7 @@
 import { MessageContext, Modal } from '@akki256/discord-interaction';
 import { gray } from '@const/emojis';
 import { ReportConfig } from '@models';
-import {
-  countField,
-  scheduleField,
-  textField,
-  userField,
-} from '@modules/fields';
+import { countField, scheduleField, userField } from '@modules/fields';
 import { formatEmoji } from '@modules/util';
 import {
   ActionRowBuilder,
