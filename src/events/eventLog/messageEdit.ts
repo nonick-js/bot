@@ -17,7 +17,7 @@ export default new DiscordEventBuilder({
     ).catch(() => {
       EventLogConfig.updateOne(
         { guildId: oldMessage.guild.id },
-        { $set: { messageDelete: { enabled: false, channel: null } } },
+        { $set: { messageEdit: { enabled: false, channel: null } } },
       );
     });
     if (!channel) return;
