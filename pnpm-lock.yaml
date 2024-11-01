@@ -15,14 +15,14 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1
       '@napi-rs/canvas':
-        specifier: 0.1.53
-        version: 0.1.53
+        specifier: 0.1.59
+        version: 0.1.59
       adm-zip:
         specifier: ^0.5.16
         version: 0.5.16
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.7.7
+        version: 1.7.7
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -50,10 +50,10 @@ importers:
         version: 1.9.4
       '@swc/core':
         specifier: ^1.7.42
-        version: 1.7.42(@swc/helpers@0.4.37)
+        version: 1.7.42(@swc/helpers@0.5.13)
       '@swc/helpers':
-        specifier: ^0.4.37
-        version: 0.4.37
+        specifier: ^0.5.13
+        version: 0.5.13
       '@types/adm-zip':
         specifier: ^0.5.6
         version: 0.5.6
@@ -71,7 +71,7 @@ importers:
         version: 0.3.4
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.7.42(@swc/helpers@0.4.37))(@types/node@22.8.6)(typescript@5.6.3)
+        version: 10.9.2(@swc/core@1.7.42(@swc/helpers@0.5.13))(@types/node@22.8.6)(typescript@5.5.4)
       ts-patch:
         specifier: ^3.2.1
         version: 3.2.1
@@ -79,11 +79,11 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       typescript:
-        specifier: ^5.6.3
-        version: 5.6.3
+        specifier: ^5.5.4
+        version: 5.5.4
       typescript-transform-paths:
         specifier: ^3.5.1
-        version: 3.5.1(typescript@5.6.3)
+        version: 3.5.1(typescript@5.5.4)
 
 packages:
 
@@ -417,62 +417,62 @@ packages:
   '@mongodb-js/saslprep@1.1.9':
     resolution: {integrity: sha512-tVkljjeEaAhCqTzajSdgbQ6gE6f3oneVwa3iXR6csiEwXXOFsiC6Uh9iAjAhXPtqa/XMDHWjjeNH/77m/Yq2dw==}
 
-  '@napi-rs/canvas-android-arm64@0.1.53':
-    resolution: {integrity: sha512-2YhxfVsZguATlRWE0fZdTx35SE9+r5D7HV5GPNDataZOKmHf+zZ5//dspuuBSbOriQdoicaFrgXKCUqI0pK3WQ==}
+  '@napi-rs/canvas-android-arm64@0.1.59':
+    resolution: {integrity: sha512-p4rRL9KIDz57Z+gKLpemX36DB7fVVHmY4DtesMGrnjx4gSBUM2M7LNzbzf4o3oPZGDiHMY0vnvNHR4dKfszNeg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [android]
 
-  '@napi-rs/canvas-darwin-arm64@0.1.53':
-    resolution: {integrity: sha512-ls+CWLMusf4RAGo5BvIIzA6dNcc0elwVp6LKjHfQECHA8KKmvdB58YuE5BQcTlb2rzk0SEKtBC/Th3NI2oNdfg==}
+  '@napi-rs/canvas-darwin-arm64@0.1.59':
+    resolution: {integrity: sha512-+8s06WxcM9ilv9PVOl57hvasbwKWMfrrNAYknqMPCn4jpc4XDcLbrM5LTZGhhptlv9jQ9DmHfZ978/xInsMYXw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@napi-rs/canvas-darwin-x64@0.1.53':
-    resolution: {integrity: sha512-ZAgcoCH5+5OKS2P8Lxx+jbkAPKkyLD2x6OvSrHg1U6ppdxmLA+CkJlRl8w45HCXwuyIiP7OeymECRtiNYTwznQ==}
+  '@napi-rs/canvas-darwin-x64@0.1.59':
+    resolution: {integrity: sha512-6kziJHjXdxduYK2L2uuwjEIYoPJednKq+C81MCm3fPobXE4HBKs0JGXwq3GkWNe340U340vmagwXiFi6muEy+g==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@napi-rs/canvas-linux-arm-gnueabihf@0.1.53':
-    resolution: {integrity: sha512-p9km/3C/loDxu3AvA8/vtpIS1BGMd/Ehkl2Iu/v/Gw8N/KUIt3HUvTS7AKApyVE28bxTfq96wJQjtcT8jzDncw==}
+  '@napi-rs/canvas-linux-arm-gnueabihf@0.1.59':
+    resolution: {integrity: sha512-eCkyS7jojNmaUPaVFdNjAyS0R3isrJtUfRf1vRP6K50GRuHso3vwQRbZBPKM71qHdjPDylfaQc5H6/M7epyD+w==}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [linux]
 
-  '@napi-rs/canvas-linux-arm64-gnu@0.1.53':
-    resolution: {integrity: sha512-QKK+sykEiYwjwd+ogyLcpcnH38DNZ8KViBlnfEpoGA2Wa+21/cWQKfMxnbgb/rbvm5tazJinZcihFvH577WQ5g==}
+  '@napi-rs/canvas-linux-arm64-gnu@0.1.59':
+    resolution: {integrity: sha512-1u4++lbsolP1MAPViuDoZmgmDLKlV0iJnlHN2dfwgbu3t53P0l3jIT1oCIAiWil0OlrWtDF24JbY7LUUGH5aHg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@napi-rs/canvas-linux-arm64-musl@0.1.53':
-    resolution: {integrity: sha512-2N41U0X8RnrTKzpTtPv1ozlYkJtPsUdbfF3uP/KEd/BsULGd8Y8ghkGMS6CM+821au4ex0dPrWOOdT9wC1rSqQ==}
+  '@napi-rs/canvas-linux-arm64-musl@0.1.59':
+    resolution: {integrity: sha512-eqevZ2kWPxeAnvhxl7U5tf6AiMnhlO4w2Hci79WQkfeirqQG6RRM4Jnxbh9iO3jkAnnOXmM4r+S3UrOcfIx1Rg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@napi-rs/canvas-linux-x64-gnu@0.1.53':
-    resolution: {integrity: sha512-7XjuTvDKCODtf/vMwF43VGDrjfgwYKgS91ggdcX3UrJaBYWyWu/+eqNvNj+zdXSe/0x+YOjf5jG4m8xIXdBMQA==}
+  '@napi-rs/canvas-linux-x64-gnu@0.1.59':
+    resolution: {integrity: sha512-F+T63RnLt0qYUXhbOpaome3vIWLW4xoQRmhTnkKDzOtBSnKVP7sCM6E5/5tByOFCR3fTj4ksMeeHy8zJScEExA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@napi-rs/canvas-linux-x64-musl@0.1.53':
-    resolution: {integrity: sha512-970WEvB8vmj+uxvgdBZ+AGFV7uq9GJhXrqG5PGQ5lWciHX0P0d/OhS2F7TITgFR0LsKDQZ7XQgzMxsYOfwZ0FQ==}
+  '@napi-rs/canvas-linux-x64-musl@0.1.59':
+    resolution: {integrity: sha512-HhUgpTGQUR2VRslEC5Idf6s0hhamJiVlEh2k3AG9XXOwX6fg0xXkqm84DPiOCLzsO5bqtJEo+rh03BUSDcf53g==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@napi-rs/canvas-win32-x64-msvc@0.1.53':
-    resolution: {integrity: sha512-rLFQCSJaWg/sv54Aap9nAhaodi4Vyb4un50EgW+PNkk8icMziU6KLRKirGBdQr9ZdxnshAPeQXD1g2ArStujKA==}
+  '@napi-rs/canvas-win32-x64-msvc@0.1.59':
+    resolution: {integrity: sha512-bYMiZJsKPkU7HEoYI5E0alOSV1EkaigY4VEgGHPK9W/qGMmNFsxdbURQqa5h3zbhZTK5QRSdYYqowcTEYVIlug==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
 
-  '@napi-rs/canvas@0.1.53':
-    resolution: {integrity: sha512-XsEZi97+kKykmAiPpY+IpZoHxJY1srqFZp8jDt1/RySzC0kB0iZYt/VMIFqQKpLCARZjD7SOAz2AULtwYlesCA==}
+  '@napi-rs/canvas@0.1.59':
+    resolution: {integrity: sha512-3vUtQ8DzYcz9xy86UUe8OfDiXNuuLB9zFAUs5N/I2GpkY/MWBJ2M7w5FqH380oC44IzYOWaOMLWCPfNZBsbBww==}
     engines: {node: '>= 10'}
 
   '@sapphire/async-queue@1.5.2':
@@ -866,11 +866,8 @@ packages:
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
 
-  '@swc/helpers@0.4.14':
-    resolution: {integrity: sha512-4C7nX/dvpzB7za4Ql9K81xK3HPxCpHMgwTZVyf+9JQ6VUbn9jjZVN7/Nkdz/Ugzs2CSjqnL/UPXroiVBVHUWUw==}
-
-  '@swc/helpers@0.4.37':
-    resolution: {integrity: sha512-O4U8DmGtYvuWDrqmkAqhmA+sV8D3eJzvKSUgg5L5eaCCPdywZBLc97UgJT/fQaCkQ5onJzJWNojgErJk1bThaw==}
+  '@swc/helpers@0.5.13':
+    resolution: {integrity: sha512-UoKGxQ3r5kYI9dALKJapMmuK+1zWM/H17Z1+iwnNmzcJRnfFuevZs375TA5rW31pu4BS4NoSy1fRsexDXfWn5w==}
 
   '@swc/types@0.1.13':
     resolution: {integrity: sha512-JL7eeCk6zWCbiYQg2xQSdLXQJl8Qoc9rXmG2cEKvHe3CKwMHwHGpfOb8frzNLmbycOo6I51qxnLnn9ESf4I20Q==}
@@ -940,8 +937,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.7.4:
-    resolution: {integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==}
+  axios@1.7.7:
+    resolution: {integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -1047,8 +1044,8 @@ packages:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
 
-  follow-redirects@1.15.6:
-    resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
+  follow-redirects@1.15.9:
+    resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -1056,8 +1053,8 @@ packages:
       debug:
         optional: true
 
-  form-data@4.0.0:
-    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+  form-data@4.0.1:
+    resolution: {integrity: sha512-tzN8e4TX8+kkxGPK8D5u0FNmjPUjw3lwC9lSLxxoB/+GtsJG91CO8bSWy73APlgAZzZbXEYZJuxjkHH2w+Ezhw==}
     engines: {node: '>= 6'}
 
   fs.realpath@1.0.0:
@@ -1398,8 +1395,8 @@ packages:
     peerDependencies:
       typescript: '>=3.6.5'
 
-  typescript@5.6.3:
-    resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
+  typescript@5.5.4:
+    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -1478,7 +1475,7 @@ snapshots:
       '@aws-crypto/sha256-js': 3.0.0
       '@aws-crypto/supports-web-crypto': 3.0.0
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.535.0
+      '@aws-sdk/types': 3.679.0
       '@aws-sdk/util-locate-window': 3.679.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
@@ -1498,7 +1495,7 @@ snapshots:
   '@aws-crypto/sha256-js@3.0.0':
     dependencies:
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.535.0
+      '@aws-sdk/types': 3.679.0
       tslib: 1.14.1
     optional: true
 
@@ -1521,7 +1518,7 @@ snapshots:
 
   '@aws-crypto/util@3.0.0':
     dependencies:
-      '@aws-sdk/types': 3.535.0
+      '@aws-sdk/types': 3.679.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
     optional: true
@@ -2287,44 +2284,44 @@ snapshots:
     dependencies:
       sparse-bitfield: 3.0.3
 
-  '@napi-rs/canvas-android-arm64@0.1.53':
+  '@napi-rs/canvas-android-arm64@0.1.59':
     optional: true
 
-  '@napi-rs/canvas-darwin-arm64@0.1.53':
+  '@napi-rs/canvas-darwin-arm64@0.1.59':
     optional: true
 
-  '@napi-rs/canvas-darwin-x64@0.1.53':
+  '@napi-rs/canvas-darwin-x64@0.1.59':
     optional: true
 
-  '@napi-rs/canvas-linux-arm-gnueabihf@0.1.53':
+  '@napi-rs/canvas-linux-arm-gnueabihf@0.1.59':
     optional: true
 
-  '@napi-rs/canvas-linux-arm64-gnu@0.1.53':
+  '@napi-rs/canvas-linux-arm64-gnu@0.1.59':
     optional: true
 
-  '@napi-rs/canvas-linux-arm64-musl@0.1.53':
+  '@napi-rs/canvas-linux-arm64-musl@0.1.59':
     optional: true
 
-  '@napi-rs/canvas-linux-x64-gnu@0.1.53':
+  '@napi-rs/canvas-linux-x64-gnu@0.1.59':
     optional: true
 
-  '@napi-rs/canvas-linux-x64-musl@0.1.53':
+  '@napi-rs/canvas-linux-x64-musl@0.1.59':
     optional: true
 
-  '@napi-rs/canvas-win32-x64-msvc@0.1.53':
+  '@napi-rs/canvas-win32-x64-msvc@0.1.59':
     optional: true
 
-  '@napi-rs/canvas@0.1.53':
+  '@napi-rs/canvas@0.1.59':
     optionalDependencies:
-      '@napi-rs/canvas-android-arm64': 0.1.53
-      '@napi-rs/canvas-darwin-arm64': 0.1.53
-      '@napi-rs/canvas-darwin-x64': 0.1.53
-      '@napi-rs/canvas-linux-arm-gnueabihf': 0.1.53
-      '@napi-rs/canvas-linux-arm64-gnu': 0.1.53
-      '@napi-rs/canvas-linux-arm64-musl': 0.1.53
-      '@napi-rs/canvas-linux-x64-gnu': 0.1.53
-      '@napi-rs/canvas-linux-x64-musl': 0.1.53
-      '@napi-rs/canvas-win32-x64-msvc': 0.1.53
+      '@napi-rs/canvas-android-arm64': 0.1.59
+      '@napi-rs/canvas-darwin-arm64': 0.1.59
+      '@napi-rs/canvas-darwin-x64': 0.1.59
+      '@napi-rs/canvas-linux-arm-gnueabihf': 0.1.59
+      '@napi-rs/canvas-linux-arm64-gnu': 0.1.59
+      '@napi-rs/canvas-linux-arm64-musl': 0.1.59
+      '@napi-rs/canvas-linux-x64-gnu': 0.1.59
+      '@napi-rs/canvas-linux-x64-musl': 0.1.59
+      '@napi-rs/canvas-win32-x64-msvc': 0.1.59
 
   '@sapphire/async-queue@1.5.2': {}
 
@@ -2955,7 +2952,7 @@ snapshots:
   '@swc/core-win32-x64-msvc@1.7.42':
     optional: true
 
-  '@swc/core@1.7.42(@swc/helpers@0.4.37)':
+  '@swc/core@1.7.42(@swc/helpers@0.5.13)':
     dependencies:
       '@swc/counter': 0.1.3
       '@swc/types': 0.1.13
@@ -2970,17 +2967,12 @@ snapshots:
       '@swc/core-win32-arm64-msvc': 1.7.42
       '@swc/core-win32-ia32-msvc': 1.7.42
       '@swc/core-win32-x64-msvc': 1.7.42
-      '@swc/helpers': 0.4.37
+      '@swc/helpers': 0.5.13
 
   '@swc/counter@0.1.3': {}
 
-  '@swc/helpers@0.4.14':
+  '@swc/helpers@0.5.13':
     dependencies:
-      tslib: 2.8.1
-
-  '@swc/helpers@0.4.37':
-    dependencies:
-      '@swc/legacy-helpers': '@swc/helpers@0.4.14'
       tslib: 2.8.1
 
   '@swc/types@0.1.13':
@@ -3040,10 +3032,10 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.7.4:
+  axios@1.7.7:
     dependencies:
-      follow-redirects: 1.15.6
-      form-data: 4.0.0
+      follow-redirects: 1.15.9
+      form-data: 4.0.1
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
@@ -3155,9 +3147,9 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
 
-  follow-redirects@1.15.6: {}
+  follow-redirects@1.15.9: {}
 
-  form-data@4.0.0:
+  form-data@4.0.1:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
@@ -3429,7 +3421,7 @@ snapshots:
 
   ts-mixer@6.0.4: {}
 
-  ts-node@10.9.2(@swc/core@1.7.42(@swc/helpers@0.4.37))(@types/node@22.8.6)(typescript@5.6.3):
+  ts-node@10.9.2(@swc/core@1.7.42(@swc/helpers@0.5.13))(@types/node@22.8.6)(typescript@5.5.4):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -3443,11 +3435,11 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.6.3
+      typescript: 5.5.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     optionalDependencies:
-      '@swc/core': 1.7.42(@swc/helpers@0.4.37)
+      '@swc/core': 1.7.42(@swc/helpers@0.5.13)
 
   ts-patch@3.2.1:
     dependencies:
@@ -3473,12 +3465,12 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  typescript-transform-paths@3.5.1(typescript@5.6.3):
+  typescript-transform-paths@3.5.1(typescript@5.5.4):
     dependencies:
       minimatch: 9.0.5
-      typescript: 5.6.3
+      typescript: 5.5.4
 
-  typescript@5.6.3: {}
+  typescript@5.5.4: {}
 
   undefsafe@2.0.5: {}
 
