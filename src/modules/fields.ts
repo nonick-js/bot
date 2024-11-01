@@ -1,11 +1,5 @@
 import { type EmojiColors, type Emojis, getColorEmoji } from '@const/emojis';
-import {
-  PermissionsBitField,
-  bold,
-  escapeMarkdown,
-  inlineCode,
-  time,
-} from 'discord.js';
+import { bold, escapeMarkdown, inlineCode, time } from 'discord.js';
 import type {
   Channel,
   DMChannel,
