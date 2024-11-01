@@ -1,4 +1,5 @@
 import { ChatInput } from '@akki256/discord-interaction';
+import { dashboard } from '@const/links';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -23,7 +24,7 @@ export default new ChatInput(
         new EmbedBuilder()
           .setTitle('BOTの設定はダッシュボードに移動しました')
           .setDescription(
-            '`v5.0`から、NoNICK.jsの設定は[**Webダッシュボード**](https://dashboard.nonick-js.com)で行えるようになりました！ このコマンドは次回のバージョンで削除され、使用できなくなります。',
+            `\`v5.0\`から、NoNICK.jsの設定は[**Webダッシュボード**](${dashboard})で行えるようになりました！ このコマンドは次回のバージョンで削除され、使用できなくなります。`,
           )
           .setColor(Colors.Blurple),
       ],
@@ -31,7 +32,7 @@ export default new ChatInput(
         new ActionRowBuilder<ButtonBuilder>().setComponents([
           new ButtonBuilder()
             .setLabel('ダッシュボード')
-            .setURL('https://dashboard.nonick-js.com')
+            .setURL(dashboard)
             .setStyle(ButtonStyle.Link),
         ]),
       ],
