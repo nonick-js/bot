@@ -53,6 +53,7 @@ export default new ChatInput(
               )
               .setColor(Colors.Green),
           ],
+          ephemeral: true,
         });
       })
       .catch(() => {
