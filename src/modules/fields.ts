@@ -159,8 +159,8 @@ export function permissionField(
     label: '権限がありません',
     ...options,
   };
-  return `${inlineCode('❌')} ${bold(`${option.label}`)}${
-    permissions.length ? `${bold(':')} ${permissions.join('\n')}` : ''
+  return `${inlineCode('❌')} ${bold(`${option.label}${permissions.length ? ':' : ''}`)}${
+    permissions.length ? ` ${permissions.join('\n')}` : ''
   }`;
 }
 

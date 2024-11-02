@@ -7,8 +7,9 @@
     "dev": "nodemon --inspect src/index.ts",
     "start": "node dist/index.js",
     "build": "tsc -p . && pnpm run copy-assets",
-    "prepare": "ts-patch install",
-    "copy-assets": "shx cp -r src/fonts dist/fonts"
+    "prepare": "ts-patch install && pnpm submodule",
+    "copy-assets": "shx cp -r src/fonts dist/fonts",
+    "submodule": "git submodule update --init --recursive"
   },
   "keywords": [],
   "author": "",

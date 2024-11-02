@@ -32,7 +32,7 @@ export default new ChatInput(
   { coolTime: Duration.toMS('10s') },
   (interaction) => {
     if (!(interaction.inGuild() && interaction.channel)) return;
-    if (interaction.appPermissions.has(PermissionFlagsBits.ManageMessages))
+    if (!interaction.appPermissions.has(PermissionFlagsBits.ManageMessages))
       return interaction.reply({
         content: permissionField(permToText('ManageChannels'), {
           label: 'BOTの権限が不足しています',
