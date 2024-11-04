@@ -120,7 +120,7 @@ const userReportModal = new Modal(
                 userField(target, {
                   emoji: 'edit',
                   color: 'gray',
-                  label: '送信者',
+                  label: '対象者',
                 }),
                 scheduleField(target.createdAt, {
                   label: 'アカウント作成日',
