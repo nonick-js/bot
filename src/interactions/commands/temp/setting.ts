@@ -17,14 +17,14 @@ export default new ChatInput(
     defaultMemberPermissions: PermissionFlagsBits.ManageGuild,
   },
   (interaction) => {
-    if (!interaction.inGuild()) return;
+    if (!interaction.inCachedGuild()) return;
 
     return interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setTitle('BOTの設定はダッシュボードに移動しました')
           .setDescription(
-            `\`v5.0\`から、NoNICK.jsの設定は[**Webダッシュボード**](${dashboard})で行えるようになりました！ このコマンドは次回のバージョンで削除され、使用できなくなります。`,
+            `NoNICK.jsの設定は[**Webダッシュボード**](${dashboard})で行えるようになりました！ このコマンドは次回のバージョンで削除され、使用できなくなります。`,
           )
           .setColor(Colors.Blurple),
       ],
@@ -32,7 +32,7 @@ export default new ChatInput(
         new ActionRowBuilder<ButtonBuilder>().setComponents([
           new ButtonBuilder()
             .setLabel('ダッシュボード')
-            .setURL(dashboard)
+            .setURL(`${dashboard}/guilds/${interaction.guild.id}`)
             .setStyle(ButtonStyle.Link),
         ]),
       ],

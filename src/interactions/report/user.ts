@@ -1,4 +1,5 @@
 import { Modal, UserContext } from '@akki256/discord-interaction';
+import { dashboard } from '@const/links';
 import { ReportConfig } from '@models';
 import { scheduleField, userField } from '@modules/fields';
 import {
@@ -11,6 +12,7 @@ import {
   PermissionFlagsBits,
   TextInputBuilder,
   TextInputStyle,
+  hyperlink,
   roleMention,
 } from 'discord.js';
 
@@ -29,8 +31,7 @@ const userContext = new UserContext(
     if (!setting?.channel) {
       if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
         return interaction.reply({
-          content:
-            '`❌` この機能を使用するには追加で設定が必要です。ダッシュボードで報告を受け取るチャンネルを設定してください。',
+          content: `\`❌\` この機能を使用するには、ダッシュボードで${hyperlink('報告を受け取るチャンネルを設定', `<${dashboard}/guilds/${interaction.guild.id}/report>`)}する必要があります。`,
           ephemeral: true,
         });
       }
