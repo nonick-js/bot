@@ -67,7 +67,7 @@ client.once(Events.ClientReady, () => {
   });
 
   client.user?.setActivity({
-    name: `${client.guilds.cache.size} サーバー`,
+    name: `${client.application?.approximateGuildCount} サーバー`,
     type: ActivityType.Competing,
   });
 

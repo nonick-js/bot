@@ -13,7 +13,7 @@ const onGuildDelete = new DiscordEventBuilder({
 
 function setActivity(client: Client<true>) {
   client.user.setActivity({
-    name: `${client.guilds.cache.size} サーバー`,
+    name: `${client.application.approximateGuildCount} サーバー`,
     type: ActivityType.Competing,
   });
 }
