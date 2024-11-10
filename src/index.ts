@@ -49,7 +49,7 @@ events.register(path.resolve(__dirname, './events'));
 
 Cron.registerFiles(path.resolve(__dirname, './cron'));
 
-client.once(Events.ClientReady, () => {
+client.once(Events.ClientReady, async () => {
   console.log('[INFO] BOT ready!');
   console.table({
     'Bot User': client.user?.tag,
@@ -67,7 +67,7 @@ client.once(Events.ClientReady, () => {
   });
 
   client.user?.setActivity({
-    name: `${client.application?.approximateGuildCount} サーバー`,
+    name: `${(await client.application?.fetch())?.approximateGuildCount} サーバー`,
     type: ActivityType.Competing,
   });
 
