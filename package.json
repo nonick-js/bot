@@ -41,7 +41,7 @@
     "discord-api-types": "0.37.83",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
-    "mongoose": "^8.8.0",
+    "mongoose": "^8.8.3",
     "node-cron": "^3.0.3",
     "zod": "^3.23.8"
   },
