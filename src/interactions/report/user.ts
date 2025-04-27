@@ -1,6 +1,6 @@
 import { Modal, UserContext } from '@akki256/discord-interaction';
 import { dashboard } from '@const/links';
-import { ReportConfig } from '@models';
+import { db } from '@modules/drizzle';
 import { scheduleField, userField } from '@modules/fields';
 import {
   ActionRowBuilder,
@@ -24,8 +24,8 @@ const userContext = new UserContext(
   async (interaction) => {
     if (!interaction.inCachedGuild()) return;
 
-    const setting = await ReportConfig.findOne({
-      guildId: interaction.guild.id,
+    const setting = await db.query.reportSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
     });
 
     if (!setting?.channel) {
@@ -85,8 +85,8 @@ const userReportModal = new Modal(
   async (interaction) => {
     if (!(interaction.inCachedGuild() && interaction.channel)) return;
 
-    const setting = await ReportConfig.findOne({
-      guildId: interaction.guild.id,
+    const setting = await db.query.reportSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
     });
     if (!setting?.channel) {
       return interaction.reply({
@@ -110,8 +110,8 @@ const userReportModal = new Modal(
 
     channel
       .send({
-        content: setting.mention?.enabled
-          ? setting.mention.roles.map(roleMention).join()
+        content: setting.enableMention
+          ? setting.mentionRoles.map(roleMention).join()
           : undefined,
         embeds: [
           new EmbedBuilder()

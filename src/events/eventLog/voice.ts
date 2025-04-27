@@ -1,6 +1,7 @@
-import { EventLogConfig } from '@models';
+import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { channelField, userField } from '@modules/fields';
+import { getSendableChannel } from '@modules/util';
 import { Colors, EmbedBuilder, Events } from 'discord.js';
 
 export default new DiscordEventBuilder({
@@ -8,13 +9,16 @@ export default new DiscordEventBuilder({
   async execute(oldState, newState) {
     if (!newState.member) return;
 
-    const config = await EventLogConfig.findOne({ guildId: oldState.guild.id });
-    if (!config?.voice.enabled || !config?.voice.channel) return;
+    const setting = await db.query.voiceLogSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, oldState.guild.id),
+    });
+    if (!setting?.enabled || !setting?.channel) return;
 
-    const channel = await newState.guild.channels
-      .fetch(config.voice.channel)
-      .catch(() => null);
-    if (!channel?.isTextBased()) return;
+    const channel = await getSendableChannel(
+      oldState.guild,
+      setting.channel,
+    ).catch(() => null);
+    if (!channel) return;
 
     if (
       oldState.channel &&

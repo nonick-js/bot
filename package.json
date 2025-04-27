@@ -1,22 +1,14 @@
 {
-  "name": "nonick.js",
+  "name": "nonick.js-bot",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --inspect src/index.ts",
     "start": "node dist/index.js",
-    "build": "tsc -p . && pnpm run copy-assets",
+    "build": "drizzle-kit migrate && tsc -p . && pnpm run copy-assets",
     "prepare": "ts-patch install",
     "copy-assets": "shx cp -r src/fonts dist/fonts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nonick-mc/DiscordBot-NoNICK.js/issues"
-  },
-  "homepage": "https://github.com/nonick-mc/DiscordBot-NoNICK.js#readme",
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@swc/core": "^1.7.42",
@@ -41,9 +33,15 @@
     "discord-api-types": "0.37.83",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
-    "mongoose": "^8.8.3",
+    "drizzle-kit": "^0.31.0",
+    "drizzle-orm": "^0.43.1",
+    "drizzle-zod": "^0.7.1",
+    "i18next": "^25.0.1",
     "node-cron": "^3.0.3",
-    "zod": "^3.23.8"
+    "pg": "^8.15.6",
+    "ts-node-dev": "^2.0.0",
+    "zod": "^3.24.3",
+    "zod-i18n-map": "^2.27.0"
   },
   "overrides": {
     "discord-api-types": "0.37.83"

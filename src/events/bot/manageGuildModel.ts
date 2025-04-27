@@ -1,6 +1,8 @@
-import { Guild } from '@models';
+import { guild } from '@database/src/schema/guild';
+import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { Events } from 'discord.js';
+import { eq } from 'drizzle-orm';
 
 const GuildCache = new Set<string>();
 
@@ -21,18 +23,25 @@ const onMessageCreate = new DiscordEventBuilder({
 
 const onGuildDelete = new DiscordEventBuilder({
   type: Events.GuildDelete,
-  async execute(guild) {
-    Guild.deleteOne({ guildId: guild.id }).then(() =>
-      GuildCache.delete(guild.id),
-    );
+  async execute(apiGuild) {
+    db.delete(guild)
+      .where(eq(guild.id, apiGuild.id))
+      .then(() => {
+        GuildCache.delete(apiGuild.id);
+      });
   },
 });
 
 async function createGuild(guildId: string) {
-  if (GuildCache.has(guildId) || (await Guild.findOne({ guildId }))) return;
+  const dbGuild = await db.query.guild.findFirst({
+    where: (setting, { eq }) => eq(setting.id, guildId),
+  });
 
-  const res = await Guild.create({ guildId });
-  res.save().then(() => GuildCache.add(guildId));
+  if (GuildCache.has(guildId) || dbGuild) return;
+  await db
+    .insert(guild)
+    .values({ id: guildId })
+    .then(() => GuildCache.add(guildId));
 }
 
 export default [onGuildCreate, onMessageCreate, onGuildDelete];

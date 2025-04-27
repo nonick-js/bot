@@ -1,4 +1,4 @@
-import { EventLogConfig } from '@models';
+import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { textField, userField } from '@modules/fields';
 import { getSendableChannel } from '@modules/util';
@@ -22,27 +22,23 @@ export default new DiscordEventBuilder({
     if (!isBanLog(auditLogEntry)) return;
     const { executor, target, reason, actionType } = auditLogEntry;
     if (!(executor && target)) return;
-
     const isCancel = actionType === 'Create';
-    const { ban: setting } =
-      (await EventLogConfig.findOne({ guildId: guild.id })) ?? {};
+    const setting = await db.query.banLogSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, guild.id),
+    });
     if (!(setting?.enabled && setting.channel)) return;
     const channel = await getSendableChannel(guild, setting.channel).catch(
-      () => {
-        EventLogConfig.updateOne(
-          { guildId: guild.id },
-          { $set: { ban: { enabled: false, channel: null } } },
-        );
-      },
+      () => null,
     );
     if (!channel) return;
+
     channel.send({
       embeds: [
         new EmbedBuilder()
           .setTitle(`${inlineCode('🔨')} BAN${isCancel ? '解除' : ''}`)
           .setDescription(
             [
-              userField(target, { label: '対象者' }),
+              userField(await target.fetch(), { label: '対象者' }),
               '',
               userField(await executor.fetch(), {
                 label: '実行者',

@@ -5,7 +5,6 @@ declare module 'node:process' {
         readonly DISCORD_TOKEN: string;
         readonly GUILD_ID?: string;
         readonly DATABASE_URL: string;
-        readonly DATABASE_NAME: string;
       }
     }
   }

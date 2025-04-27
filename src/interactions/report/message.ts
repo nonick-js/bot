@@ -1,7 +1,7 @@
 import { MessageContext, Modal } from '@akki256/discord-interaction';
 import { gray } from '@const/emojis';
 import { dashboard } from '@const/links';
-import { ReportConfig } from '@models';
+import { db } from '@modules/drizzle';
 import { countField, scheduleField, userField } from '@modules/fields';
 import { formatEmoji } from '@modules/util';
 import {
@@ -28,8 +28,8 @@ const messageContext = new MessageContext(
   async (interaction) => {
     if (!interaction.inCachedGuild()) return;
 
-    const setting = await ReportConfig.findOne({
-      guildId: interaction.guild.id,
+    const setting = await db.query.reportSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
     });
 
     if (!setting?.channel) {
@@ -96,9 +96,10 @@ const messageReportModal = new Modal(
   async (interaction) => {
     if (!(interaction.inCachedGuild() && interaction.channel)) return;
 
-    const setting = await ReportConfig.findOne({
-      guildId: interaction.guild.id,
+    const setting = await db.query.reportSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
     });
+
     if (!setting?.channel) {
       return interaction.reply({
         content: '`❌` 報告の送信中にエラーが発生しました',
@@ -129,8 +130,8 @@ const messageReportModal = new Modal(
 
     channel
       .send({
-        content: setting.mention.enabled
-          ? setting.mention.roles.map(roleMention).join()
+        content: setting.enableMention
+          ? setting.mentionRoles.map(roleMention).join()
           : undefined,
         embeds: [
           new EmbedBuilder()
