@@ -1,4 +1,4 @@
-import { EventLogConfig } from '@models';
+import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { channelField, scheduleField, userField } from '@modules/fields';
 import { createAttachment, getSendableChannel } from '@modules/util';
@@ -27,18 +27,14 @@ export default new DiscordEventBuilder({
       .then((v) => v.first())
       .catch(() => null);
 
-    const { messageDelete: setting } =
-      (await EventLogConfig.findOne({ guildId: message.guild.id })) ?? {};
+    const setting = await db.query.msgDeleteLogSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, message.guild.id),
+    });
     if (!(setting?.enabled && setting.channel)) return;
     const channel = await getSendableChannel(
       message.guild,
       setting.channel,
-    ).catch(() => {
-      EventLogConfig.updateOne(
-        { guildId: message.guild.id },
-        { $set: { messageDelete: { enabled: false, channel: null } } },
-      );
-    });
+    ).catch(() => null);
     if (!channel) return;
     const embed = new EmbedBuilder()
       .setTitle('`💬` メッセージ削除')
@@ -81,7 +77,7 @@ async function getAuditLog(message: Message<true>) {
     .then((v) =>
       v.entries.find(
         (e) =>
-          e.target.equals(message.author) &&
+          e.target?.equals(message.author) &&
           e.extra.channel.id === message.channel.id,
       ),
     );

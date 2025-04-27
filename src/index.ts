@@ -18,7 +18,6 @@ import {
   Partials,
   version,
 } from 'discord.js';
-import mongoose from 'mongoose';
 
 export const client = new Client({
   intents: [
@@ -98,6 +97,3 @@ process.on('uncaughtException', (err) => {
 });
 
 client.login();
-mongoose.connect(process.env.DATABASE_URL, {
-  dbName: process.env.DATABASE_NAME,
-});

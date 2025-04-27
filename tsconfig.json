@@ -7,7 +7,7 @@
     "baseUrl": "./src",
     "paths": {
       "@modules/*": ["./modules/*"],
-      "@models": ["./database/models/index"],
+      "@database/*": ["./database/*"],
       "@config": ["./config.json"],
       "@const/*": ["./constants/*"]
     },
@@ -20,6 +20,7 @@
     "plugins": [{ "transform": "typescript-transform-paths" }]
   },
   "include": ["src/**/*"],
+  "exclude": ["node_modules"],
   "ts-node": {
     "transpileOnly": true,
     "transpiler": "ts-node/transpilers/swc-experimental",

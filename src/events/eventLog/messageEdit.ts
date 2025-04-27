@@ -1,4 +1,4 @@
-import { EventLogConfig } from '@models';
+import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { channelField, scheduleField, userField } from '@modules/fields';
 import { createAttachment, getSendableChannel } from '@modules/util';
@@ -8,18 +8,14 @@ export default new DiscordEventBuilder({
   type: Events.MessageUpdate,
   async execute(oldMessage, { content, attachments }) {
     if (!oldMessage.inGuild()) return;
-    const { messageEdit: setting } =
-      (await EventLogConfig.findOne({ guildId: oldMessage.guild.id })) ?? {};
+    const setting = await db.query.msgEditLogSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, oldMessage.guild.id),
+    });
     if (!(setting?.enabled && setting.channel)) return;
     const channel = await getSendableChannel(
       oldMessage.guild,
       setting.channel,
-    ).catch(() => {
-      EventLogConfig.updateOne(
-        { guildId: oldMessage.guild.id },
-        { $set: { messageEdit: { enabled: false, channel: null } } },
-      );
-    });
+    ).catch(() => null);
     if (!channel) return;
     const embed = new EmbedBuilder()
       .setTitle('`💬` メッセージ編集')
