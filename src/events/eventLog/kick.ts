@@ -1,4 +1,4 @@
-import { EventLogConfig } from '@models';
+import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { textField, userField } from '@modules/fields';
 import { getSendableChannel } from '@modules/util';
@@ -17,16 +17,12 @@ export default new DiscordEventBuilder({
     const { executor, target, reason } =
       auditLogEntry as GuildAuditLogsEntry<AuditLogEvent.MemberKick>;
     if (!(executor && target)) return;
-    const { kick: setting } =
-      (await EventLogConfig.findOne({ guildId: guild.id })) ?? {};
+    const setting = await db.query.kickLogSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, guild.id),
+    });
     if (!(setting?.enabled && setting.channel)) return;
     const channel = await getSendableChannel(guild, setting.channel).catch(
-      () => {
-        EventLogConfig.updateOne(
-          { guildId: guild.id },
-          { $set: { kick: { enabled: false, channel: null } } },
-        );
-      },
+      () => null,
     );
     if (!channel) return;
     channel.send({
@@ -35,7 +31,7 @@ export default new DiscordEventBuilder({
           .setTitle('`🔨` Kick')
           .setDescription(
             [
-              userField(target, { label: '対象者' }),
+              userField(await target.fetch(), { label: '対象者' }),
               '',
               userField(await executor.fetch(), {
                 label: '実行者',

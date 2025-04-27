@@ -1,4 +1,4 @@
-import { EventLogConfig } from '@models';
+import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { scheduleField, textField, userField } from '@modules/fields';
 import { getSendableChannel } from '@modules/util';
@@ -22,25 +22,23 @@ export default new DiscordEventBuilder({
     const { executor, target, reason } =
       auditLogEntry as GuildAuditLogsEntry<AuditLogEvent.MemberUpdate>;
     if (!(executor && target)) return;
-    const member = await guild.members.fetch(target).catch(() => null);
+    const member = await guild.members
+      .fetch(await target.fetch())
+      .catch(() => null);
     if (!member) return;
 
     const isCancel =
       Date.parse((timeoutChange.new ?? 0) as string) <= Date.now();
-    const { timeout: setting } =
-      (await EventLogConfig.findOne({ guildId: guild.id })) ?? {};
+    const setting = await db.query.timeoutLogSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, guild.id),
+    });
     if (!(setting?.enabled && setting.channel)) return;
     const channel = await getSendableChannel(guild, setting.channel).catch(
-      () => {
-        EventLogConfig.updateOne(
-          { guildId: guild.id },
-          { $set: { timeout: { enabled: false, channel: null } } },
-        );
-      },
+      () => null,
     );
     if (!channel) return;
     const field = [
-      userField(target, { label: '対象者' }),
+      userField(await target.fetch(), { label: '対象者' }),
       scheduleField(member.communicationDisabledUntil ?? 0, {
         label: '解除される時間',
       }),

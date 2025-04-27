@@ -1,5 +1,7 @@
-import { AutoChangeVerifyLevelConfig, Guild } from '@models';
+import { guild } from '@database/src/schema/guild';
+import type { autoChangeVerifyLevelSettingSchema } from '@database/src/schema/setting';
 import { CronBuilder } from '@modules/cron';
+import { db } from '@modules/drizzle';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
@@ -10,7 +12,8 @@ import {
   GuildVerificationLevel,
   inlineCode,
 } from 'discord.js';
-import type { Model } from 'mongoose';
+import { eq } from 'drizzle-orm';
+import type { z } from 'zod';
 import { client } from '../index';
 dayjs.extend(timezone);
 dayjs.extend(utc);
@@ -49,44 +52,64 @@ export default new CronBuilder({ minute: 0 }, () => {
 });
 
 async function start(hour: number) {
-  const settings = await AutoChangeVerifyLevelConfig.find({
-    enabled: true,
-    startHour: hour,
+  const settings = await db.query.autoChangeVerifyLevelSetting.findMany({
+    where: (setting, { and, eq }) =>
+      and(eq(setting.enabled, true), eq(setting.startHour, hour)),
   });
 
   for (const setting of settings) {
-    const guild = await client.guilds.fetch(setting.guildId).catch(() => null);
-    const guildModel = await Guild.findOne({ guildId: setting.guildId });
+    const apiGuild = await client.guilds
+      .fetch(setting.guildId)
+      .catch(() => null);
+    if (!apiGuild) return;
+
+    const dbGuild = await db.query.guild.findFirst({
+      where: (setting, { eq }) => eq(setting.id, apiGuild.id),
+    });
 
     const level = setting.level;
-    if (!guild || !guildModel || level == null) return;
+    if (!dbGuild || level == null) return;
 
-    guildModel.beforeVerifyLevel = guild.verificationLevel;
-    await guildModel.save({ wtimeout: 1_500 });
+    await db
+      .update(guild)
+      .set({ beforeVerifyLevel: apiGuild.verificationLevel })
+      .where(eq(guild.id, setting.guildId));
 
-    guild
+    apiGuild
       .setVerificationLevel(level)
-      .then(() => sendLog(guild, setting, level, '開始'))
+      .then(() => sendLog(apiGuild, setting, level, '開始'))
       .catch(console.error);
   }
 }
 
 async function end(hour: number) {
-  const settings = await AutoChangeVerifyLevelConfig.find({
-    enabled: true,
-    endHour: hour,
+  const settings = await db.query.autoChangeVerifyLevelSetting.findMany({
+    where: (setting, { and, eq }) =>
+      and(eq(setting.enabled, true), eq(setting.endHour, hour)),
   });
 
   for (const setting of settings) {
-    const guild = await client.guilds.fetch(setting.guildId).catch(() => null);
-    const level = (await Guild.findOne({ guildId: guild?.id }))
-      ?.beforeVerifyLevel;
+    const apiGuild = await client.guilds
+      .fetch(setting.guildId)
+      .catch(() => null);
+    if (!apiGuild) return;
 
-    if (!guild || level == null) return;
+    const dbGuild = await db.query.guild.findFirst({
+      where: (setting, { eq }) => eq(setting.id, apiGuild.id),
+    });
 
-    guild
-      .setVerificationLevel(level)
-      .then(() => sendLog(guild, setting, level, '終了'))
+    if (dbGuild?.beforeVerifyLevel == null) return;
+
+    apiGuild
+      .setVerificationLevel(dbGuild.beforeVerifyLevel)
+      .then(() =>
+        sendLog(
+          apiGuild,
+          setting,
+          dbGuild.beforeVerifyLevel as GuildVerificationLevel,
+          '終了',
+        ),
+      )
       .catch(console.error);
   }
 }
@@ -94,14 +117,15 @@ async function end(hour: number) {
 async function sendLog(
   guild: DiscordGuild,
   {
-    log,
-  }: typeof AutoChangeVerifyLevelConfig extends Model<infer T> ? T : never,
+    enableLog,
+    logChannel,
+  }: z.infer<typeof autoChangeVerifyLevelSettingSchema.db>,
   level: GuildVerificationLevel,
   label: string,
 ) {
-  if (!(log.enabled && log.channel)) return;
+  if (!(enableLog && logChannel)) return;
 
-  const channel = await guild.channels.fetch(log.channel).catch(() => null);
+  const channel = await guild.channels.fetch(logChannel).catch(() => null);
   if (!channel?.isTextBased()) return;
 
   channel
