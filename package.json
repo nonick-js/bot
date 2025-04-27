@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsnd --loader ts-node/esm -T -r tsconfig-paths/register --rs src/index.ts",
+    "dev": "nodemon --inspect src/index.ts",
     "start": "node dist/index.js",
     "build": "tsc -p . && pnpm run copy-assets",
     "prepare": "ts-patch install",
@@ -31,7 +31,7 @@
     "axios": "^1.9.0",
     "dayjs": "^1.11.13",
     "discord-api-types": "0.37.83",
-    "discord.js": "^14.19.1",
+    "discord.js": "^14.15.3",
     "dotenv": "^16.5.0",
     "drizzle-kit": "^0.31.0",
     "drizzle-orm": "^0.43.1",

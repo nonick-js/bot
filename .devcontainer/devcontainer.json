@@ -14,7 +14,7 @@
   // "forwardPorts": [3000, 5432],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "pnpm install",
+  "postCreateCommand": "pnpm install && git submodule update --init",
 
   // Configure tool-specific properties.
   "customizations": {
@@ -22,6 +22,7 @@
       "extensions": ["biomejs.biome", "streetsidesoftware.code-spell-checker"]
     }
   }
+
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   // "remoteUser": "root"
 }
