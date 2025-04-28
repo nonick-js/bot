@@ -179,6 +179,7 @@ export class EmbedPagination {
     options: MessageCreateOptions = {},
     message?: Message,
   ) {
+    if (!channel.isSendable()) return;
     this.sendSetup();
     const msg = await channel.send(this.createMessageOption(options));
 

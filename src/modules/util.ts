@@ -146,6 +146,7 @@ const permissionTexts: Record<keyof PermissionFlags, string> = {
   Administrator: '管理者',
 
   ViewCreatorMonetizationAnalytics: '収益情報を表示',
+  UseExternalApps: '外部のアプリを使用',
 };
 
 export function permToText(...perms: (keyof PermissionFlags)[]) {
