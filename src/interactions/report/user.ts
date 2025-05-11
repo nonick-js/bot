@@ -1,20 +1,30 @@
 import { Modal, UserContext } from '@akki256/discord-interaction';
-import { dashboard } from '@const/links';
+import { red } from '@const/emojis';
+import { report } from '@database/src/schema/report';
 import { db } from '@modules/drizzle';
 import { scheduleField, userField } from '@modules/fields';
+import { formatEmoji } from '@modules/util';
 import {
   ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  Colors,
-  EmbedBuilder,
+  ContainerBuilder,
+  MessageFlags,
   ModalBuilder,
-  PermissionFlagsBits,
+  SectionBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
+  TextDisplayBuilder,
   TextInputBuilder,
   TextInputStyle,
-  hyperlink,
+  ThumbnailBuilder,
   roleMention,
 } from 'discord.js';
+import {
+  findAndCreateDuplicateReport,
+  isReportable,
+  isSendableReport,
+  progressButtonActionRow,
+  reportAuthorTextDisplay,
+} from './_function';
 
 const userContext = new UserContext(
   {
@@ -24,36 +34,10 @@ const userContext = new UserContext(
   async (interaction) => {
     if (!interaction.inCachedGuild()) return;
 
-    const setting = await db.query.reportSetting.findFirst({
-      where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
-    });
-
-    if (!setting?.channel) {
-      if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-        return interaction.reply({
-          content: `\`❌\` この機能を使用するには、ダッシュボードで${hyperlink('報告を受け取るチャンネルを設定', `<${dashboard}/guilds/${interaction.guild.id}/report>`)}する必要があります。`,
-          ephemeral: true,
-        });
-      }
+    const { ok, reason } = await isReportable(interaction);
+    if (!ok) {
       return interaction.reply({
-        content:
-          '`❌` 現在この機能を利用できません。サーバーの管理者に連絡してください。',
-        ephemeral: true,
-      });
-    }
-
-    const user = interaction.targetUser;
-
-    if (user.system || user.equals(interaction.client.user)) {
-      return interaction.reply({
-        content: '`❌` このユーザーを通報することはできません。',
-        ephemeral: true,
-      });
-    }
-
-    if (user.equals(interaction.user)) {
-      return interaction.reply({
-        content: '`❌` 自分自身を報告しようとしています。',
+        content: reason,
         ephemeral: true,
       });
     }
@@ -88,83 +72,117 @@ const userReportModal = new Modal(
     const setting = await db.query.reportSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
     });
+
     if (!setting?.channel) {
       return interaction.reply({
-        content: '`❌` 報告の送信中にエラーが発生しました',
+        content:
+          '`❌` 送信先のチャンネルが存在しないため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
         ephemeral: true,
       });
     }
 
-    const target = await interaction.client.users
+    const targetUser = await interaction.client.users
       .fetch(interaction.components[0].components[0].customId)
       .catch(() => null);
     const channel = await interaction.guild.channels
       .fetch(setting.channel)
       .catch(() => null);
+    const components = [];
 
-    if (!(target && channel?.isTextBased()))
+    if (!channel?.isTextBased()) return;
+    if (!targetUser)
       return interaction.reply({
         content: '`❌` 報告の送信中にエラーが発生しました',
         ephemeral: true,
       });
 
-    channel
-      .send({
-        content: setting.enableMention
-          ? setting.mentionRoles.map(roleMention).join()
-          : undefined,
-        embeds: [
-          new EmbedBuilder()
-            .setTitle('`📢` ユーザーの通報')
-            .setDescription(
-              [
-                userField(target, {
-                  emoji: 'edit',
-                  color: 'gray',
-                  label: '対象者',
-                }),
-                scheduleField(target.createdAt, {
-                  label: 'アカウント作成日',
-                }),
-                '',
-                userField(interaction.user, {
-                  color: 'blurple',
-                  label: '報告者',
-                }),
-              ].join('\n'),
-            )
-            .setColor(Colors.DarkButNotBlack)
-            .setThumbnail(target.displayAvatarURL())
-            .setFields({
-              name: '理由',
-              value: interaction.components[0].components[0].value,
-            }),
-        ],
-        components: [
-          new ActionRowBuilder<ButtonBuilder>().setComponents(
-            new ButtonBuilder()
-              .setCustomId('nonick-js:report-consider')
-              .setLabel('対処する')
-              .setStyle(ButtonStyle.Primary),
-          ),
-        ],
-      })
-      .then((message) => {
-        interaction.reply({
-          content:
-            '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました',
-          ephemeral: true,
-        });
-        message
-          .startThread({ name: `${target.username}への通報` })
-          .catch(() => {});
-      })
-      .catch(() =>
-        interaction.reply({
-          content: '`❌` 報告の送信中にエラーが発生しました',
-          ephemeral: true,
-        }),
+    const { ok, reason } = await isSendableReport(interaction, channel);
+    if (!ok) return interaction.reply({ content: reason, ephemeral: true });
+
+    const { requireCreateNewReport } = await findAndCreateDuplicateReport(
+      interaction,
+      setting,
+      'user',
+      targetUser,
+    );
+    if (!requireCreateNewReport) return;
+
+    if (setting.enableMention) {
+      components.push(
+        new TextDisplayBuilder().setContent(
+          setting.mentionRoles.map(roleMention).join(),
+        ),
       );
+    }
+
+    components.push(
+      new ContainerBuilder()
+        .addTextDisplayComponents([
+          new TextDisplayBuilder().setContent(
+            `## ${formatEmoji(red.flag)} ユーザーの報告`,
+          ),
+        ])
+        .addSeparatorComponents(
+          new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+        )
+        .addSectionComponents([
+          new SectionBuilder()
+            .addTextDisplayComponents([
+              new TextDisplayBuilder().setContent('### ユーザーの情報'),
+              new TextDisplayBuilder().setContent(
+                [
+                  userField(targetUser, { label: 'ユーザー' }),
+                  scheduleField(targetUser.createdAt, {
+                    label: 'アカウント作成日',
+                  }),
+                ].join('\n'),
+              ),
+            ])
+            .setThumbnailAccessory(
+              new ThumbnailBuilder().setURL(targetUser.displayAvatarURL()),
+            ),
+        ])
+        .addSeparatorComponents(
+          new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+        )
+        .addTextDisplayComponents([reportAuthorTextDisplay(interaction)]),
+    );
+
+    if (setting.showProgressButton) {
+      components.push(progressButtonActionRow);
+    }
+
+    // 報告の送信
+    try {
+      const createdThread = await channel
+        .send({
+          components,
+          flags: MessageFlags.IsComponentsV2,
+        })
+        .then((msg) =>
+          msg.startThread({
+            name: `${targetUser.username} [${targetUser.id}] への報告 `,
+          }),
+        );
+
+      await db.insert(report).values({
+        guildId: interaction.guildId,
+        channelId: channel.id,
+        threadId: createdThread.id,
+        targetUserId: targetUser.id,
+      });
+
+      interaction.reply({
+        content:
+          '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました。',
+        ephemeral: true,
+      });
+    } catch {
+      interaction.reply({
+        content: '`❌` 報告の送信中にエラーが発生しました',
+        ephemeral: true,
+      });
+    }
   },
 );
 

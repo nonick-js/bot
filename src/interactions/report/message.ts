@@ -1,6 +1,5 @@
 import { MessageContext, Modal } from '@akki256/discord-interaction';
-import { blurple, red } from '@const/emojis';
-import { dashboard } from '@const/links';
+import { red } from '@const/emojis';
 import { report } from '@database/src/schema/report';
 import { db } from '@modules/drizzle';
 import { channelField, scheduleField, userField } from '@modules/fields';
@@ -13,20 +12,22 @@ import {
   Message,
   MessageFlags,
   ModalBuilder,
-  PermissionFlagsBits,
   SectionBuilder,
   SeparatorBuilder,
   SeparatorSpacingSize,
-  TextChannel,
   TextDisplayBuilder,
   TextInputBuilder,
   TextInputStyle,
   ThumbnailBuilder,
-  escapeMarkdown,
-  hyperlink,
   roleMention,
 } from 'discord.js';
-import { and } from 'drizzle-orm';
+import {
+  findAndCreateDuplicateReport,
+  isReportable,
+  isSendableReport,
+  progressButtonActionRow,
+  reportAuthorTextDisplay,
+} from './_function';
 
 const messageContext = new MessageContext(
   {
@@ -36,43 +37,10 @@ const messageContext = new MessageContext(
   async (interaction) => {
     if (!interaction.inCachedGuild()) return;
 
-    const setting = await db.query.reportSetting.findFirst({
-      where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
-    });
-
-    if (!setting?.channel) {
-      if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-        return interaction.reply({
-          content: `\`❌\` この機能を使用するには、ダッシュボードで${hyperlink('報告を受け取るチャンネルを設定', `<${dashboard}/guilds/${interaction.guild.id}/report>`)}する必要があります。`,
-          ephemeral: true,
-        });
-      }
+    const { ok, reason } = await isReportable(interaction);
+    if (!ok) {
       return interaction.reply({
-        content:
-          '`❌` 現在この機能を利用できません。サーバーの管理者に連絡してください。',
-        ephemeral: true,
-      });
-    }
-
-    const message = interaction.targetMessage;
-    const user = message.author;
-
-    if (user.system || message.webhookId) {
-      return interaction.reply({
-        content: '`❌` システムメッセージやWebhookは報告できません。',
-        ephemeral: true,
-      });
-    }
-
-    if (user.equals(interaction.user)) {
-      return interaction.reply({
-        content: '`❌` 自分自身を報告しようとしています。',
-        ephemeral: true,
-      });
-    }
-    if (user.equals(interaction.client.user)) {
-      return interaction.reply({
-        content: `\`❌\` ${interaction.client.user.username}を報告することは出来ません。`,
+        content: reason,
         ephemeral: true,
       });
     }
@@ -116,7 +84,7 @@ const messageReportModal = new Modal(
       });
     }
 
-    const message = await interaction.channel.messages
+    const targetMessage = await interaction.channel.messages
       .fetch(interaction.components[0].components[0].customId)
       .catch(() => null);
     const channel = await interaction.guild.channels
@@ -124,7 +92,8 @@ const messageReportModal = new Modal(
       .catch(() => null);
     const components = [];
 
-    if (!(message instanceof Message)) {
+    if (!channel?.isTextBased()) return;
+    if (!(targetMessage instanceof Message)) {
       return interaction.reply({
         content:
           '`❌` 報告しようとしているメッセージは削除されたか、BOTがアクセスできませんでした。',
@@ -132,84 +101,16 @@ const messageReportModal = new Modal(
       });
     }
 
-    if (!channel?.isTextBased()) {
-      return interaction.reply({
-        content: '`❌` 報告の送信中にエラーが発生しました',
-        ephemeral: true,
-      });
-    }
-    if (
-      !channel
-        ?.permissionsFor(interaction.client.user)
-        ?.has([
-          PermissionFlagsBits.SendMessages,
-          PermissionFlagsBits.SendMessagesInThreads,
-          PermissionFlagsBits.ManageThreads,
-          PermissionFlagsBits.CreatePublicThreads,
-        ])
-    ) {
-      return interaction.reply({
-        content:
-          '`❌` 送信先のチャンネルの権限が不足していたため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
-        ephemeral: true,
-      });
-    }
+    const { ok, reason } = await isSendableReport(interaction, channel);
+    if (!ok) return interaction.reply({ content: reason, ephemeral: true });
 
-    /** `groupDuplicateReports`が有効かつ、重複した報告があった場合は、そのスレッドにメッセージを送信する */
-    const previousReport = await db.query.report.findFirst({
-      where: (r, { eq }) =>
-        and(
-          eq(r.guildId, interaction.guildId),
-          eq(r.targetChannelId, message.channelId),
-          eq(r.targetMessageId, message.id),
-        ),
-      orderBy: (r, { desc }) => [desc(r.createdAt)],
-    });
-
-    if (previousReport && setting.groupDuplicateReports) {
-      const previousReportChannel = await interaction.guild.channels
-        .fetch(previousReport.channelId)
-        .catch(() => null);
-      if (!(previousReportChannel instanceof TextChannel)) return;
-
-      const previousReportThread = await previousReportChannel.threads
-        .fetch(previousReport.threadId)
-        .catch(() => null);
-
-      return previousReportThread
-        ?.send({
-          components: [
-            new ContainerBuilder().addTextDisplayComponents([
-              new TextDisplayBuilder().setContent(
-                `### ${formatEmoji(red.flag)} 重複した報告`,
-              ),
-              new TextDisplayBuilder().setContent(
-                [
-                  userField(interaction.user, {
-                    color: 'blurple',
-                    label: '報告者',
-                  }),
-                  `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
-                ].join('\n'),
-              ),
-            ]),
-          ],
-          flags: MessageFlags.IsComponentsV2,
-        })
-        .then(() =>
-          interaction.reply({
-            content:
-              '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました。',
-            ephemeral: true,
-          }),
-        )
-        .catch(() =>
-          interaction.reply({
-            content: '`❌` 報告の送信中にエラーが発生しました',
-            ephemeral: true,
-          }),
-        );
-    }
+    const { requireCreateNewReport } = await findAndCreateDuplicateReport(
+      interaction,
+      setting,
+      'message',
+      targetMessage,
+    );
+    if (!requireCreateNewReport) return;
 
     if (setting.enableMention) {
       components.push(
@@ -235,53 +136,34 @@ const messageReportModal = new Modal(
               new TextDisplayBuilder().setContent('### メッセージの情報'),
               new TextDisplayBuilder().setContent(
                 [
-                  userField(message.author, { label: '送信者' }),
-                  channelField(message.channel),
-                  scheduleField(message.createdAt, { label: '送信時刻' }),
+                  userField(targetMessage.author, { label: '送信者' }),
+                  channelField(targetMessage.channel),
+                  scheduleField(targetMessage.createdAt, { label: '送信時刻' }),
                 ].join('\n'),
               ),
             ])
             .setThumbnailAccessory(
-              new ThumbnailBuilder().setURL(message.author.displayAvatarURL()),
+              new ThumbnailBuilder().setURL(
+                targetMessage.author.displayAvatarURL(),
+              ),
             ),
         ])
         .addActionRowComponents([
           new ActionRowBuilder<ButtonBuilder>().setComponents(
             new ButtonBuilder()
               .setLabel('メッセージにアクセス')
-              .setURL(message.url)
+              .setURL(targetMessage.url)
               .setStyle(ButtonStyle.Link),
           ),
         ])
         .addSeparatorComponents(
           new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
         )
-        .addTextDisplayComponents([
-          new TextDisplayBuilder().setContent(
-            [
-              userField(interaction.user, {
-                color: 'blurple',
-                label: '報告者',
-              }),
-              `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
-            ].join('\n'),
-          ),
-        ]),
+        .addTextDisplayComponents([reportAuthorTextDisplay(interaction)]),
     );
 
     if (setting.showProgressButton) {
-      components.push(
-        new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-completed')
-            .setLabel('対応済みにする')
-            .setStyle(ButtonStyle.Primary),
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-ignore')
-            .setLabel('無視')
-            .setStyle(ButtonStyle.Secondary),
-        ),
-      );
+      components.push(progressButtonActionRow);
     }
 
     // 報告の送信
@@ -293,19 +175,18 @@ const messageReportModal = new Modal(
         })
         .then((msg) =>
           msg.startThread({
-            name: `${message.author.username}への報告`,
+            name: `${targetMessage.author.username} [${targetMessage.author.id}] への報告`,
           }),
         );
 
-      createdThread.send({ forward: { message } });
+      createdThread.send({ forward: { message: targetMessage } });
 
       await db.insert(report).values({
         guildId: interaction.guildId,
         channelId: channel.id,
         threadId: createdThread.id,
-        targetUserId: message.author.id,
-        targetChannelId: message.channelId,
-        targetMessageId: message.id,
+        targetChannelId: targetMessage.channelId,
+        targetMessageId: targetMessage.id,
       });
 
       interaction.reply({
