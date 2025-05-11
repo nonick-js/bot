@@ -1,21 +1,26 @@
 import { MessageContext, Modal } from '@akki256/discord-interaction';
-import { gray } from '@const/emojis';
+import { blurple, red } from '@const/emojis';
 import { dashboard } from '@const/links';
 import { db } from '@modules/drizzle';
-import { countField, scheduleField, userField } from '@modules/fields';
+import { channelField, scheduleField, userField } from '@modules/fields';
 import { formatEmoji } from '@modules/util';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  Colors,
-  EmbedBuilder,
+  ContainerBuilder,
   Message,
+  MessageFlags,
   ModalBuilder,
   PermissionFlagsBits,
+  SectionBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
+  TextDisplayBuilder,
   TextInputBuilder,
   TextInputStyle,
-  escapeSpoiler,
+  ThumbnailBuilder,
+  escapeMarkdown,
   hyperlink,
   roleMention,
 } from 'discord.js';
@@ -128,64 +133,95 @@ const messageReportModal = new Modal(
       });
     }
 
+    const components = [];
+
+    if (setting.enableMention) {
+      components.push(
+        new TextDisplayBuilder().setContent(
+          setting.mentionRoles.map(roleMention).join(),
+        ),
+      );
+    }
+
+    components.push(
+      new ContainerBuilder()
+        .addTextDisplayComponents([
+          new TextDisplayBuilder().setContent(
+            `## ${formatEmoji(red.flag)} メッセージの報告`,
+          ),
+        ])
+        .addSeparatorComponents(
+          new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+        )
+        .addSectionComponents([
+          new SectionBuilder()
+            .addTextDisplayComponents([
+              new TextDisplayBuilder().setContent('### メッセージの情報'),
+              new TextDisplayBuilder().setContent(
+                [
+                  userField(message.author, { label: '送信者' }),
+                  channelField(message.channel),
+                  scheduleField(message.createdAt, { label: '送信時刻' }),
+                ].join('\n'),
+              ),
+            ])
+            .setThumbnailAccessory(
+              new ThumbnailBuilder().setURL(message.author.displayAvatarURL()),
+            ),
+        ])
+        .addSeparatorComponents(
+          new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+        )
+        .addTextDisplayComponents([
+          new TextDisplayBuilder().setContent(
+            [
+              userField(interaction.user, {
+                color: 'blurple',
+                label: '報告者',
+              }),
+              `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
+            ].join('\n'),
+          ),
+        ]),
+    );
+
+    if (setting.showProgressButton) {
+      components.push(
+        new ActionRowBuilder<ButtonBuilder>().setComponents(
+          new ButtonBuilder()
+            .setCustomId('nonick-js:report-consider')
+            .setLabel('対処する')
+            .setStyle(ButtonStyle.Primary),
+          new ButtonBuilder()
+            .setURL(message.url)
+            .setLabel('メッセージに移動')
+            .setStyle(ButtonStyle.Link),
+        ),
+      );
+    } else {
+      components.push(
+        new ActionRowBuilder<ButtonBuilder>().setComponents(
+          new ButtonBuilder()
+            .setURL(message.url)
+            .setLabel('メッセージに移動')
+            .setStyle(ButtonStyle.Link),
+        ),
+      );
+    }
+
     channel
       .send({
-        content: setting.enableMention
-          ? setting.mentionRoles.map(roleMention).join()
-          : undefined,
-        embeds: [
-          new EmbedBuilder()
-            .setTitle('`📢` メッセージの報告')
-            .setDescription(
-              [
-                userField(message.author, { label: '送信者' }),
-                `${formatEmoji(gray.channel)} **メッセージ:** ${message.url}`,
-                countField(message.attachments.size, {
-                  emoji: 'link',
-                  color: 'gray',
-                  label: '送付ファイル',
-                }),
-                scheduleField(message.createdAt, { label: '送信時刻' }),
-                '',
-                userField(interaction.user, {
-                  color: 'blurple',
-                  label: '報告者',
-                }),
-              ].join('\n'),
-            )
-            .setColor(Colors.DarkButNotBlack)
-            .setThumbnail(message.author.displayAvatarURL())
-            .setFields(
-              {
-                name: 'メッセージ',
-                value: escapeSpoiler(message.content || 'なし'),
-              },
-              {
-                name: '理由',
-                value: interaction.components[0].components[0].value,
-              },
-            ),
-        ],
-        components: [
-          new ActionRowBuilder<ButtonBuilder>().setComponents(
-            new ButtonBuilder()
-              .setCustomId('nonick-js:report-consider')
-              .setLabel('対処する')
-              .setStyle(ButtonStyle.Primary),
-          ),
-        ],
+        components,
+        flags: MessageFlags.IsComponentsV2,
       })
-      .then((msg) => {
+      .then(() => {
         interaction.reply({
           content:
             '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました',
           ephemeral: true,
         });
-        msg
-          .startThread({ name: `${message.author.username}への通報` })
-          .catch(() => {});
       })
-      .catch(() =>
+      .catch((v) =>
         interaction.reply({
           content: '`❌` 報告の送信中にエラーが発生しました',
           ephemeral: true,
