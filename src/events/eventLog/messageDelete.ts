@@ -31,11 +31,6 @@ export default new DiscordEventBuilder({
     const setting = await db.query.msgDeleteLogSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, message.guild.id),
     });
-    if (!(setting?.enabled && setting.channel)) return;
-    const channel = await getSendableChannel(
-      message.guild,
-      setting.channel,
-    ).catch(() => null);
 
     const embed = new EmbedBuilder()
       .setTitle('`💬` メッセージ削除')
@@ -75,6 +70,12 @@ export default new DiscordEventBuilder({
         { guild: message.guild, user: message.author, message },
         { embeds: [embed] },
       );
+
+    if (!(setting?.enabled && setting.channel)) return;
+    const channel = await getSendableChannel(
+      message.guild,
+      setting.channel,
+    ).catch(() => null);
 
     if (!channel) return;
     if (attachment) channel.send({ embeds: [embed], files: [attachment] });
