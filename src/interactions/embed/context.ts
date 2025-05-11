@@ -64,17 +64,17 @@ const context = new MessageContext(
               {
                 label: 'ロール付与(セレクトメニュー)を追加',
                 value: 'addRoleSelect',
-                emoji: white.role2,
+                emoji: white.addComponent,
               },
               {
                 label: 'ロール付与(ボタン)を追加',
                 value: 'addRoleButton',
-                emoji: white.role2,
+                emoji: white.addComponent,
               },
               {
                 label: 'URLボタンを追加',
                 value: 'addUrlButton',
-                emoji: white.link,
+                emoji: white.addComponent,
               },
               { label: 'コンポーネントの削除', value: 'delete', emoji: '🗑' },
             ),
@@ -151,7 +151,7 @@ const select = new SelectMenu(
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-roleButton-send')
               .setLabel('ボタンを作成')
-              .setEmoji(white.addMark)
+              .setEmoji(white.addCircle)
               .setStyle(ButtonStyle.Secondary),
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-roleButton-changeStyle')
@@ -175,7 +175,7 @@ const select = new SelectMenu(
             new ButtonBuilder()
               .setCustomId('nonick-js:embedMaker-linkButton-send')
               .setLabel('ボタンを作成')
-              .setEmoji(white.addMark)
+              .setEmoji(white.addCircle)
               .setStyle(ButtonStyle.Secondary),
           ),
         ],
