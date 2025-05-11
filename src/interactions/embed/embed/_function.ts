@@ -48,13 +48,13 @@ export function getBaseEmbedMakerButtons(embed: APIEmbed | Embed) {
       new ButtonBuilder()
         .setCustomId('nonick-js:embedMaker-addField')
         .setLabel('フィールド')
-        .setEmoji(white.addMark)
+        .setEmoji(white.addCircle)
         .setStyle(ButtonStyle.Secondary)
         .setDisabled(embed.fields?.length === 25),
       new ButtonBuilder()
         .setCustomId('nonick-js:embedMaker-removeField')
         .setLabel('フィールド')
-        .setEmoji(white.removeMark)
+        .setEmoji(white.minusCircle)
         .setStyle(ButtonStyle.Secondary)
         .setDisabled(!embed.fields?.length),
       new ButtonBuilder()

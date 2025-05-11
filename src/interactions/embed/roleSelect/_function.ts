@@ -12,12 +12,12 @@ export function getRoleSelectMakerButtons(
   return new ActionRowBuilder<ButtonBuilder>().setComponents(
     new ButtonBuilder()
       .setCustomId('nonick-js:embedMaker-selectRole-addRole')
-      .setEmoji(white.addMark)
+      .setEmoji(white.addCircle)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(selectMenu?.options?.length === 25),
     new ButtonBuilder()
       .setCustomId('nonick-js:embedMaker-selectRole-removeRole')
-      .setEmoji(white.removeMark)
+      .setEmoji(white.minusCircle)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(!selectMenu?.options?.length),
     new ButtonBuilder()
