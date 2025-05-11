@@ -169,7 +169,7 @@ const messageReportModal = new Modal(
           flags: MessageFlags.IsComponentsV2,
           allowedMentions: {
             users: [],
-            roles: setting.mentionRoles ? setting.mentionRoles : [],
+            roles: setting.mentionRoles,
           },
         })
         .then((msg) =>
