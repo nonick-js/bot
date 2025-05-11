@@ -1,11 +1,14 @@
 import { MessageContext, Modal } from '@akki256/discord-interaction';
 import { blurple, red } from '@const/emojis';
 import { dashboard } from '@const/links';
+import { report } from '@database/src/schema/report';
 import { db } from '@modules/drizzle';
 import { channelField, scheduleField, userField } from '@modules/fields';
 import { formatEmoji } from '@modules/util';
 import {
   ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   ContainerBuilder,
   Message,
   MessageFlags,
@@ -183,6 +186,14 @@ const messageReportModal = new Modal(
               new ThumbnailBuilder().setURL(message.author.displayAvatarURL()),
             ),
         ])
+        .addActionRowComponents([
+          new ActionRowBuilder<ButtonBuilder>().setComponents(
+            new ButtonBuilder()
+              .setLabel('メッセージにアクセス')
+              .setURL(message.url)
+              .setStyle(ButtonStyle.Link),
+          ),
+        ])
         .addSeparatorComponents(
           new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
         )
@@ -199,24 +210,56 @@ const messageReportModal = new Modal(
         ]),
     );
 
-    channel
-      .send({
-        components,
-        flags: MessageFlags.IsComponentsV2,
-      })
-      .then((message) => {
-        interaction.reply({
-          content:
-            '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました',
-          ephemeral: true,
-        });
-      })
-      .catch((v) =>
-        interaction.reply({
-          content: '`❌` 報告の送信中にエラーが発生しました',
-          ephemeral: true,
-        }),
+    if (setting.showProgressButton) {
+      components.push(
+        new ActionRowBuilder<ButtonBuilder>().setComponents(
+          new ButtonBuilder()
+            .setCustomId('nonick-js:report-completed')
+            .setLabel('対応済みにする')
+            .setStyle(ButtonStyle.Primary),
+          new ButtonBuilder()
+            .setCustomId('nonick-js:report-ignore')
+            .setLabel('無視')
+            .setStyle(ButtonStyle.Secondary),
+        ),
       );
+    }
+
+    // 報告の送信
+    try {
+      const createdThreadChannel = await channel
+        .send({
+          components,
+          flags: MessageFlags.IsComponentsV2,
+        })
+        .then((msg) =>
+          msg.startThread({
+            name: `${message.author.username}への報告`,
+          }),
+        );
+
+      createdThreadChannel.send({ forward: { message } });
+
+      await db.insert(report).values({
+        guildId: interaction.guildId,
+        channelId: channel.id,
+        threadId: createdThreadChannel.id,
+        targetUserId: message.author.id,
+        targetChannelId: message.channelId,
+        targetMessageId: message.id,
+      });
+
+      interaction.reply({
+        content:
+          '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました',
+        ephemeral: true,
+      });
+    } catch {
+      interaction.reply({
+        content: '`❌` 報告の送信中にエラーが発生しました',
+        ephemeral: true,
+      });
+    }
   },
 );
 
