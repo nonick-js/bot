@@ -6,8 +6,6 @@ import { channelField, scheduleField, userField } from '@modules/fields';
 import { formatEmoji } from '@modules/util';
 import {
   ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
   ContainerBuilder,
   Message,
   MessageFlags,
@@ -107,7 +105,8 @@ const messageReportModal = new Modal(
 
     if (!setting?.channel) {
       return interaction.reply({
-        content: '`❌` 報告の送信中にエラーが発生しました',
+        content:
+          '`❌` 送信先のチャンネルが存在しないため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
         ephemeral: true,
       });
     }
@@ -122,13 +121,28 @@ const messageReportModal = new Modal(
     if (!(message instanceof Message)) {
       return interaction.reply({
         content:
-          '`❌` 報告しようとしているメッセージは削除されたか、BOTがアクセスできませんでした',
+          '`❌` 報告しようとしているメッセージは削除されたか、BOTがアクセスできませんでした。',
         ephemeral: true,
       });
     }
     if (!channel?.isTextBased()) {
       return interaction.reply({
         content: '`❌` 報告の送信中にエラーが発生しました',
+        ephemeral: true,
+      });
+    }
+    if (
+      !channel
+        ?.permissionsFor(interaction.client.user)
+        ?.has([
+          PermissionFlagsBits.SendMessages,
+          PermissionFlagsBits.ManageThreads,
+          PermissionFlagsBits.CreatePublicThreads,
+        ])
+    ) {
+      return interaction.reply({
+        content:
+          '`❌` 送信先のチャンネルの権限が不足していたため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
         ephemeral: true,
       });
     }
@@ -185,36 +199,12 @@ const messageReportModal = new Modal(
         ]),
     );
 
-    if (setting.showProgressButton) {
-      components.push(
-        new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-consider')
-            .setLabel('対処する')
-            .setStyle(ButtonStyle.Primary),
-          new ButtonBuilder()
-            .setURL(message.url)
-            .setLabel('メッセージに移動')
-            .setStyle(ButtonStyle.Link),
-        ),
-      );
-    } else {
-      components.push(
-        new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setURL(message.url)
-            .setLabel('メッセージに移動')
-            .setStyle(ButtonStyle.Link),
-        ),
-      );
-    }
-
     channel
       .send({
         components,
         flags: MessageFlags.IsComponentsV2,
       })
-      .then(() => {
+      .then((message) => {
         interaction.reply({
           content:
             '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました',
