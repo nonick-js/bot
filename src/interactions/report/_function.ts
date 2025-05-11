@@ -1,21 +1,20 @@
-﻿import { blurple } from '@const/emojis';
-import { dashboard } from '@const/links';
+﻿import { dashboard } from '@const/links';
+import { report } from '@database/src/schema/report';
 import { db } from '@modules/drizzle';
-import { userField } from '@modules/fields';
-import { formatEmoji } from '@modules/util';
 import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
+  type BaseMessageOptions,
+  ChannelType,
+  type Guild,
   type GuildBasedChannel,
+  type Message,
   MessageContextMenuCommandInteraction,
   type ModalSubmitInteraction,
   PermissionFlagsBits,
-  TextDisplayBuilder,
+  type User,
   UserContextMenuCommandInteraction,
-  escapeMarkdown,
   hyperlink,
 } from 'discord.js';
+import { eq } from 'drizzle-orm';
 
 export async function isReportable(
   interaction:
@@ -104,28 +103,55 @@ export async function isSendableReport(
   return { ok: true };
 }
 
-export function reportAuthorTextDisplay(
-  interaction: ModalSubmitInteraction<'cached'>,
+export async function sendToOpenedReport(
+  { guild, user, message }: { guild: Guild; user: User; message?: Message },
+  logMessageOptions: BaseMessageOptions,
 ) {
-  return new TextDisplayBuilder().setContent(
-    [
-      userField(interaction.user, {
-        color: 'blurple',
-        label: '報告者',
-      }),
-      `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
-    ].join('\n'),
-  );
-}
+  const setting = await db.query.reportSetting.findFirst({
+    where: (setting, { eq }) => eq(setting.guildId, guild.id),
+  });
+  if (!setting?.showProgressButton || !setting?.showModerateLog) return;
 
-export const progressButtonActionRow =
-  new ActionRowBuilder<ButtonBuilder>().setComponents(
-    new ButtonBuilder()
-      .setCustomId('nonick-js:report-completed')
-      .setLabel('対応済みにする')
-      .setStyle(ButtonStyle.Primary),
-    new ButtonBuilder()
-      .setCustomId('nonick-js:report-ignore')
-      .setLabel('無視')
-      .setStyle(ButtonStyle.Secondary),
-  );
+  const reports = await db.query.report.findMany({
+    where: (report, { eq, and, isNull }) =>
+      and(
+        eq(report.guildId, guild.id),
+        eq(report.targetUserId, user.id),
+        message
+          ? and(
+              eq(report.targetChannelId, message.channelId),
+              eq(report.targetMessageId, message.id),
+            )
+          : undefined,
+        isNull(report.closedAt),
+      ),
+  });
+
+  for (const targetReport of reports) {
+    const channel = await guild.channels
+      .fetch(targetReport.channelId)
+      .catch(() => null);
+    if (!channel || channel.type !== ChannelType.GuildText) return;
+
+    const thread = await channel.threads
+      .fetch(targetReport.threadId)
+      .catch(() => null);
+    const starterMessage = await thread
+      ?.fetchStarterMessage()
+      .catch(() => null);
+
+    // メッセージやスレッドが存在しない場合は強制的にcloseする
+    if (
+      !thread ||
+      thread?.locked ||
+      (channel.type !== ChannelType.GuildText && !starterMessage)
+    ) {
+      return await db
+        .update(report)
+        .set({ closedAt: new Date() })
+        .where(eq(report.id, targetReport.id));
+    }
+
+    thread.send(logMessageOptions);
+  }
+}

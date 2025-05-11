@@ -9,6 +9,7 @@ import {
   Events,
   type GuildAuditLogsEntry,
 } from 'discord.js';
+import { sendToOpenedReport } from 'interactions/report/_function';
 
 export default new DiscordEventBuilder({
   type: Events.GuildAuditLogEntryCreate,
@@ -20,12 +21,8 @@ export default new DiscordEventBuilder({
     const setting = await db.query.kickLogSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, guild.id),
     });
-    if (!(setting?.enabled && setting.channel)) return;
-    const channel = await getSendableChannel(guild, setting.channel).catch(
-      () => null,
-    );
-    if (!channel) return;
-    channel.send({
+
+    const messageOptions = {
       embeds: [
         new EmbedBuilder()
           .setTitle('`🔨` Kick')
@@ -47,6 +44,15 @@ export default new DiscordEventBuilder({
           .setThumbnail(target.displayAvatarURL())
           .setTimestamp(),
       ],
-    });
+    };
+
+    sendToOpenedReport({ guild, user: await target.fetch() }, messageOptions);
+
+    if (!(setting?.enabled && setting.channel)) return;
+    const channel = await getSendableChannel(guild, setting.channel).catch(
+      () => null,
+    );
+    if (!channel) return;
+    channel.send(messageOptions);
   },
 });

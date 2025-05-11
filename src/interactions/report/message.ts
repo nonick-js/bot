@@ -1,5 +1,5 @@
 import { MessageContext, Modal } from '@akki256/discord-interaction';
-import { red } from '@const/emojis';
+import { blurple, red } from '@const/emojis';
 import { report } from '@database/src/schema/report';
 import { db } from '@modules/drizzle';
 import { channelField, scheduleField, userField } from '@modules/fields';
@@ -19,14 +19,10 @@ import {
   TextInputBuilder,
   TextInputStyle,
   ThumbnailBuilder,
+  escapeMarkdown,
   roleMention,
 } from 'discord.js';
-import {
-  isReportable,
-  isSendableReport,
-  progressButtonActionRow,
-  reportAuthorTextDisplay,
-} from './_function';
+import { isReportable, isSendableReport } from './_function';
 
 const messageContext = new MessageContext(
   {
@@ -154,11 +150,32 @@ const messageReportModal = new Modal(
         .addSeparatorComponents(
           new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
         )
-        .addTextDisplayComponents([reportAuthorTextDisplay(interaction)]),
+        .addTextDisplayComponents([
+          new TextDisplayBuilder().setContent(
+            [
+              userField(interaction.user, {
+                color: 'blurple',
+                label: '報告者',
+              }),
+              `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
+            ].join('\n'),
+          ),
+        ]),
     );
 
     if (setting.showProgressButton) {
-      components.push(progressButtonActionRow);
+      components.push(
+        new ActionRowBuilder<ButtonBuilder>().setComponents(
+          new ButtonBuilder()
+            .setCustomId('nonick-js:report-completed')
+            .setLabel('対応済みにする')
+            .setStyle(ButtonStyle.Primary),
+          new ButtonBuilder()
+            .setCustomId('nonick-js:report-ignore')
+            .setLabel('無視')
+            .setStyle(ButtonStyle.Secondary),
+        ),
+      );
     }
 
     // 報告の送信
@@ -184,6 +201,7 @@ const messageReportModal = new Modal(
         guildId: interaction.guildId,
         channelId: channel.id,
         threadId: createdThread.id,
+        targetUserId: targetMessage.author.id,
         targetChannelId: targetMessage.channelId,
         targetMessageId: targetMessage.id,
       });

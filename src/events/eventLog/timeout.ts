@@ -10,6 +10,7 @@ import {
   type GuildAuditLogsEntry,
   inlineCode,
 } from 'discord.js';
+import { sendToOpenedReport } from 'interactions/report/_function';
 
 export default new DiscordEventBuilder({
   type: Events.GuildAuditLogEntryCreate,
@@ -32,11 +33,7 @@ export default new DiscordEventBuilder({
     const setting = await db.query.timeoutLogSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, guild.id),
     });
-    if (!(setting?.enabled && setting.channel)) return;
-    const channel = await getSendableChannel(guild, setting.channel).catch(
-      () => null,
-    );
-    if (!channel) return;
+
     const field = [
       userField(await target.fetch(), { label: '対象者' }),
       scheduleField(member.communicationDisabledUntil ?? 0, {
@@ -53,7 +50,8 @@ export default new DiscordEventBuilder({
       }),
     ];
     if (isCancel) field.splice(1, 1);
-    channel.send({
+
+    const messageOptions = {
       embeds: [
         new EmbedBuilder()
           .setTitle(`${inlineCode('🛑')} タイムアウト${isCancel ? '解除' : ''}`)
@@ -62,6 +60,16 @@ export default new DiscordEventBuilder({
           .setThumbnail(target.displayAvatarURL())
           .setTimestamp(),
       ],
-    });
+    };
+
+    sendToOpenedReport({ guild, user: await target.fetch() }, messageOptions);
+
+    if (!(setting?.enabled && setting.channel)) return;
+    const channel = await getSendableChannel(guild, setting.channel).catch(
+      () => null,
+    );
+    if (!channel) return;
+
+    channel.send(messageOptions);
   },
 });

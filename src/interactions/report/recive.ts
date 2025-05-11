@@ -99,6 +99,7 @@ async function closeReport(
     })
     .then(() => {
       thread.setLocked();
+      thread.setArchived();
     });
 
   await db

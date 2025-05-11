@@ -10,6 +10,7 @@ import {
   type GuildAuditLogsEntry,
   inlineCode,
 } from 'discord.js';
+import { sendToOpenedReport } from 'interactions/report/_function';
 
 const state = [
   AuditLogEvent.MemberBanAdd,
@@ -23,16 +24,12 @@ export default new DiscordEventBuilder({
     const { executor, target, reason, actionType } = auditLogEntry;
     if (!(executor && target)) return;
     const isCancel = actionType === 'Create';
+
     const setting = await db.query.banLogSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, guild.id),
     });
-    if (!(setting?.enabled && setting.channel)) return;
-    const channel = await getSendableChannel(guild, setting.channel).catch(
-      () => null,
-    );
-    if (!channel) return;
 
-    channel.send({
+    const messageOptions = {
       embeds: [
         new EmbedBuilder()
           .setTitle(`${inlineCode('🔨')} BAN${isCancel ? '解除' : ''}`)
@@ -54,7 +51,17 @@ export default new DiscordEventBuilder({
           .setThumbnail(target.displayAvatarURL())
           .setTimestamp(),
       ],
-    });
+    };
+
+    sendToOpenedReport({ guild, user: await target.fetch() }, messageOptions);
+
+    if (!(setting?.enabled && setting.channel)) return;
+    const channel = await getSendableChannel(guild, setting.channel).catch(
+      () => null,
+    );
+    if (!channel) return;
+
+    channel.send(messageOptions);
   },
 });
 

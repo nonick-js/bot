@@ -10,6 +10,7 @@ import {
   Events,
 } from 'discord.js';
 import type { GuildAuditLogsEntry, Message } from 'discord.js';
+import { sendToOpenedReport } from 'interactions/report/_function';
 
 const lastLogs = new Collection<
   string,
@@ -35,7 +36,7 @@ export default new DiscordEventBuilder({
       message.guild,
       setting.channel,
     ).catch(() => null);
-    if (!channel) return;
+
     const embed = new EmbedBuilder()
       .setTitle('`💬` メッセージ削除')
       .setURL(beforeMsg?.url ?? null)
@@ -61,7 +62,21 @@ export default new DiscordEventBuilder({
         value: message.stickers.map((v) => v.name).join('\n'),
       });
     }
+
     const attachment = await createAttachment(message.attachments);
+
+    if (attachment)
+      sendToOpenedReport(
+        { guild: message.guild, user: message.author, message },
+        { embeds: [embed], files: [attachment] },
+      );
+    else
+      sendToOpenedReport(
+        { guild: message.guild, user: message.author, message },
+        { embeds: [embed] },
+      );
+
+    if (!channel) return;
     if (attachment) channel.send({ embeds: [embed], files: [attachment] });
     channel.send({ embeds: [embed] });
   },
