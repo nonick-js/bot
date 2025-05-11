@@ -64,7 +64,7 @@ const addRoleSelectButton = new Button(
         ephemeral: true,
       });
     if (
-      targetMessage.components[0].type === ComponentType.ActionRow &&
+      targetMessage.components[0]?.type === ComponentType.ActionRow &&
       targetMessage.components[0]?.components[0]?.type === ComponentType.Button
     )
       return interaction.reply({

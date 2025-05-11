@@ -146,7 +146,7 @@ const sendRoleButtonModal = new Modal(
         ephemeral: true,
       });
     if (
-      targetMessage.components[4].type === ComponentType.ActionRow &&
+      targetMessage.components[4]?.type === ComponentType.ActionRow &&
       targetMessage.components[4]?.components?.length === 5
     )
       return interaction.reply({
@@ -154,7 +154,7 @@ const sendRoleButtonModal = new Modal(
         ephemeral: true,
       });
     if (
-      targetMessage.components[0].type === ComponentType.ActionRow &&
+      targetMessage.components[0]?.type === ComponentType.ActionRow &&
       targetMessage.components[0]?.components[0]?.type ===
         ComponentType.StringSelect
     )
