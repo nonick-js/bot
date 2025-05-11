@@ -100,77 +100,64 @@ const userReportModal = new Modal(
         ephemeral: true,
       });
 
-    if (setting.enableMention) {
-      components.push(
-        new TextDisplayBuilder().setContent(
-          setting.mentionRoles.map(roleMention).join(),
-        ),
-      );
-    }
-
-    components.push(
-      new ContainerBuilder()
-        .addTextDisplayComponents([
-          new TextDisplayBuilder().setContent(
-            `## ${formatEmoji(red.flag)} ユーザーの報告`,
-          ),
-        ])
-        .addSeparatorComponents(
-          new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
-        )
-        .addSectionComponents([
-          new SectionBuilder()
-            .addTextDisplayComponents([
-              new TextDisplayBuilder().setContent('### ユーザーの情報'),
-              new TextDisplayBuilder().setContent(
-                [
-                  userField(targetUser, { label: 'ユーザー' }),
-                  scheduleField(targetUser.createdAt, {
-                    label: 'アカウント作成日',
-                  }),
-                ].join('\n'),
-              ),
-            ])
-            .setThumbnailAccessory(
-              new ThumbnailBuilder().setURL(targetUser.displayAvatarURL()),
-            ),
-        ])
-        .addSeparatorComponents(
-          new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
-        )
-        .addTextDisplayComponents([
-          new TextDisplayBuilder().setContent(
-            [
-              userField(interaction.user, {
-                color: 'blurple',
-                label: '報告者',
-              }),
-              `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
-            ].join('\n'),
-          ),
-        ]),
-    );
-
-    if (setting.showProgressButton) {
-      components.push(
-        new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-completed')
-            .setLabel('対応済みにする')
-            .setStyle(ButtonStyle.Primary),
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-ignore')
-            .setLabel('無視')
-            .setStyle(ButtonStyle.Secondary),
-        ),
-      );
-    }
-
     // 報告の送信
     try {
       const createdThread = await channel
         .send({
-          components,
+          components: [
+            new ContainerBuilder()
+              .addTextDisplayComponents([
+                new TextDisplayBuilder().setContent(
+                  `## ${formatEmoji(red.flag)} ユーザーの報告`,
+                ),
+              ])
+              .addSeparatorComponents(
+                new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+              )
+              .addSectionComponents([
+                new SectionBuilder()
+                  .addTextDisplayComponents([
+                    new TextDisplayBuilder().setContent('### ユーザーの情報'),
+                    new TextDisplayBuilder().setContent(
+                      [
+                        userField(targetUser, { label: 'ユーザー' }),
+                        scheduleField(targetUser.createdAt, {
+                          label: 'アカウント作成日',
+                        }),
+                      ].join('\n'),
+                    ),
+                  ])
+                  .setThumbnailAccessory(
+                    new ThumbnailBuilder().setURL(
+                      targetUser.displayAvatarURL(),
+                    ),
+                  ),
+              ])
+              .addSeparatorComponents(
+                new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+              )
+              .addTextDisplayComponents([
+                new TextDisplayBuilder().setContent(
+                  [
+                    userField(interaction.user, {
+                      color: 'blurple',
+                      label: '報告者',
+                    }),
+                    `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
+                  ].join('\n'),
+                ),
+              ]),
+            new ActionRowBuilder<ButtonBuilder>().setComponents(
+              new ButtonBuilder()
+                .setCustomId('nonick-js:report-completed')
+                .setLabel('対応済みにする')
+                .setStyle(ButtonStyle.Primary),
+              new ButtonBuilder()
+                .setCustomId('nonick-js:report-ignore')
+                .setLabel('無視')
+                .setStyle(ButtonStyle.Secondary),
+            ),
+          ],
           flags: MessageFlags.IsComponentsV2,
           allowedMentions: {
             users: [],
@@ -182,6 +169,12 @@ const userReportModal = new Modal(
             name: `${targetUser.username} [${targetUser.id}] への報告 `,
           }),
         );
+
+      if (setting.enableMention) {
+        createdThread.send({
+          content: setting.mentionRoles.map(roleMention).join(),
+        });
+      }
 
       await db.insert(report).values({
         guildId: interaction.guildId,

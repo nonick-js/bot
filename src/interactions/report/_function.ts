@@ -110,7 +110,7 @@ export async function sendToOpenedReport(
   const setting = await db.query.reportSetting.findFirst({
     where: (setting, { eq }) => eq(setting.guildId, guild.id),
   });
-  if (!setting?.showProgressButton || !setting?.showModerateLog) return;
+  if (!setting?.showModerateLog) return;
 
   const reports = await db.query.report.findMany({
     where: (report, { eq, and, isNull }) =>

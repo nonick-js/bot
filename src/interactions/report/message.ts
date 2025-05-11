@@ -103,86 +103,73 @@ const messageReportModal = new Modal(
         ephemeral: true,
       });
 
-    if (setting.enableMention) {
-      components.push(
-        new TextDisplayBuilder().setContent(
-          setting.mentionRoles.map(roleMention).join(),
-        ),
-      );
-    }
-
-    components.push(
-      new ContainerBuilder()
-        .addTextDisplayComponents([
-          new TextDisplayBuilder().setContent(
-            `## ${formatEmoji(red.flag)} メッセージの報告`,
-          ),
-        ])
-        .addSeparatorComponents(
-          new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
-        )
-        .addSectionComponents([
-          new SectionBuilder()
-            .addTextDisplayComponents([
-              new TextDisplayBuilder().setContent('### メッセージの情報'),
-              new TextDisplayBuilder().setContent(
-                [
-                  userField(targetMessage.author, { label: '送信者' }),
-                  channelField(targetMessage.channel),
-                  scheduleField(targetMessage.createdAt, { label: '送信時刻' }),
-                ].join('\n'),
-              ),
-            ])
-            .setThumbnailAccessory(
-              new ThumbnailBuilder().setURL(
-                targetMessage.author.displayAvatarURL(),
-              ),
-            ),
-        ])
-        .addActionRowComponents([
-          new ActionRowBuilder<ButtonBuilder>().setComponents(
-            new ButtonBuilder()
-              .setLabel('メッセージにアクセス')
-              .setURL(targetMessage.url)
-              .setStyle(ButtonStyle.Link),
-          ),
-        ])
-        .addSeparatorComponents(
-          new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
-        )
-        .addTextDisplayComponents([
-          new TextDisplayBuilder().setContent(
-            [
-              userField(interaction.user, {
-                color: 'blurple',
-                label: '報告者',
-              }),
-              `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
-            ].join('\n'),
-          ),
-        ]),
-    );
-
-    if (setting.showProgressButton) {
-      components.push(
-        new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-completed')
-            .setLabel('対応済みにする')
-            .setStyle(ButtonStyle.Primary),
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-ignore')
-            .setLabel('無視')
-            .setStyle(ButtonStyle.Secondary),
-        ),
-      );
-    }
-
     // 報告の送信
     try {
       const createdThread = await channel
         .send({
-          components,
+          components: [
+            new ContainerBuilder()
+              .addTextDisplayComponents([
+                new TextDisplayBuilder().setContent(
+                  `## ${formatEmoji(red.flag)} メッセージの報告`,
+                ),
+              ])
+              .addSeparatorComponents(
+                new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+              )
+              .addSectionComponents([
+                new SectionBuilder()
+                  .addTextDisplayComponents([
+                    new TextDisplayBuilder().setContent('### メッセージの情報'),
+                    new TextDisplayBuilder().setContent(
+                      [
+                        userField(targetMessage.author, { label: '送信者' }),
+                        channelField(targetMessage.channel),
+                        scheduleField(targetMessage.createdAt, {
+                          label: '送信時刻',
+                        }),
+                      ].join('\n'),
+                    ),
+                  ])
+                  .setThumbnailAccessory(
+                    new ThumbnailBuilder().setURL(
+                      targetMessage.author.displayAvatarURL(),
+                    ),
+                  ),
+              ])
+              .addActionRowComponents([
+                new ActionRowBuilder<ButtonBuilder>().setComponents(
+                  new ButtonBuilder()
+                    .setLabel('メッセージにアクセス')
+                    .setURL(targetMessage.url)
+                    .setStyle(ButtonStyle.Link),
+                ),
+              ])
+              .addSeparatorComponents(
+                new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+              )
+              .addTextDisplayComponents([
+                new TextDisplayBuilder().setContent(
+                  [
+                    userField(interaction.user, {
+                      color: 'blurple',
+                      label: '報告者',
+                    }),
+                    `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
+                  ].join('\n'),
+                ),
+              ]),
+            new ActionRowBuilder<ButtonBuilder>().setComponents(
+              new ButtonBuilder()
+                .setCustomId('nonick-js:report-completed')
+                .setLabel('対応済みにする')
+                .setStyle(ButtonStyle.Primary),
+              new ButtonBuilder()
+                .setCustomId('nonick-js:report-ignore')
+                .setLabel('無視')
+                .setStyle(ButtonStyle.Secondary),
+            ),
+          ],
           flags: MessageFlags.IsComponentsV2,
           allowedMentions: {
             users: [],
@@ -195,7 +182,21 @@ const messageReportModal = new Modal(
           }),
         );
 
-      createdThread.send({ forward: { message: targetMessage } });
+      if (setting.enableMention) {
+        createdThread.send({
+          forward: { message: targetMessage },
+          components: [
+            new TextDisplayBuilder().setContent(
+              setting.mentionRoles.map(roleMention).join(),
+            ),
+          ],
+          flags: MessageFlags.IsComponentsV2,
+        });
+      } else {
+        createdThread.send({
+          forward: { message: targetMessage },
+        });
+      }
 
       await db.insert(report).values({
         guildId: interaction.guildId,
