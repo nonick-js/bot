@@ -17,6 +17,7 @@ import {
   SectionBuilder,
   SeparatorBuilder,
   SeparatorSpacingSize,
+  TextChannel,
   TextDisplayBuilder,
   TextInputBuilder,
   TextInputStyle,
@@ -25,6 +26,7 @@ import {
   hyperlink,
   roleMention,
 } from 'discord.js';
+import { and } from 'drizzle-orm';
 
 const messageContext = new MessageContext(
   {
@@ -120,6 +122,7 @@ const messageReportModal = new Modal(
     const channel = await interaction.guild.channels
       .fetch(setting.channel)
       .catch(() => null);
+    const components = [];
 
     if (!(message instanceof Message)) {
       return interaction.reply({
@@ -128,6 +131,7 @@ const messageReportModal = new Modal(
         ephemeral: true,
       });
     }
+
     if (!channel?.isTextBased()) {
       return interaction.reply({
         content: '`❌` 報告の送信中にエラーが発生しました',
@@ -139,6 +143,7 @@ const messageReportModal = new Modal(
         ?.permissionsFor(interaction.client.user)
         ?.has([
           PermissionFlagsBits.SendMessages,
+          PermissionFlagsBits.SendMessagesInThreads,
           PermissionFlagsBits.ManageThreads,
           PermissionFlagsBits.CreatePublicThreads,
         ])
@@ -150,7 +155,61 @@ const messageReportModal = new Modal(
       });
     }
 
-    const components = [];
+    /** `groupDuplicateReports`が有効かつ、重複した報告があった場合は、そのスレッドにメッセージを送信する */
+    const previousReport = await db.query.report.findFirst({
+      where: (r, { eq }) =>
+        and(
+          eq(r.guildId, interaction.guildId),
+          eq(r.targetChannelId, message.channelId),
+          eq(r.targetMessageId, message.id),
+        ),
+      orderBy: (r, { desc }) => [desc(r.createdAt)],
+    });
+
+    if (previousReport && setting.groupDuplicateReports) {
+      const previousReportChannel = await interaction.guild.channels
+        .fetch(previousReport.channelId)
+        .catch(() => null);
+      if (!(previousReportChannel instanceof TextChannel)) return;
+
+      const previousReportThread = await previousReportChannel.threads
+        .fetch(previousReport.threadId)
+        .catch(() => null);
+
+      return previousReportThread
+        ?.send({
+          components: [
+            new ContainerBuilder().addTextDisplayComponents([
+              new TextDisplayBuilder().setContent(
+                `### ${formatEmoji(red.flag)} 重複した報告`,
+              ),
+              new TextDisplayBuilder().setContent(
+                [
+                  userField(interaction.user, {
+                    color: 'blurple',
+                    label: '報告者',
+                  }),
+                  `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
+                ].join('\n'),
+              ),
+            ]),
+          ],
+          flags: MessageFlags.IsComponentsV2,
+        })
+        .then(() =>
+          interaction.reply({
+            content:
+              '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました。',
+            ephemeral: true,
+          }),
+        )
+        .catch(() =>
+          interaction.reply({
+            content: '`❌` 報告の送信中にエラーが発生しました',
+            ephemeral: true,
+          }),
+        );
+    }
 
     if (setting.enableMention) {
       components.push(
@@ -227,7 +286,7 @@ const messageReportModal = new Modal(
 
     // 報告の送信
     try {
-      const createdThreadChannel = await channel
+      const createdThread = await channel
         .send({
           components,
           flags: MessageFlags.IsComponentsV2,
@@ -238,12 +297,12 @@ const messageReportModal = new Modal(
           }),
         );
 
-      createdThreadChannel.send({ forward: { message } });
+      createdThread.send({ forward: { message } });
 
       await db.insert(report).values({
         guildId: interaction.guildId,
         channelId: channel.id,
-        threadId: createdThreadChannel.id,
+        threadId: createdThread.id,
         targetUserId: message.author.id,
         targetChannelId: message.channelId,
         targetMessageId: message.id,
@@ -251,7 +310,7 @@ const messageReportModal = new Modal(
 
       interaction.reply({
         content:
-          '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました',
+          '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました。',
         ephemeral: true,
       });
     } catch {
