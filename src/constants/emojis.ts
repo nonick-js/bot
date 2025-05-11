@@ -146,8 +146,7 @@ type HasColor<
 export type EmojiColors<E extends Emojis> =
   | HasColor<E, 'white'>
   | HasColor<E, 'gray'>
-  | HasColor<E, 'blurple'>
-  | HasColor<E, 'red'>;
+  | HasColor<E, 'blurple'>;
 
 export function getColorEmoji<E extends Emojis>(
   emoji: E,
