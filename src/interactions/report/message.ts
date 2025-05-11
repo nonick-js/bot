@@ -172,6 +172,10 @@ const messageReportModal = new Modal(
         .send({
           components,
           flags: MessageFlags.IsComponentsV2,
+          allowedMentions: {
+            users: [],
+            roles: setting.mentionRoles ? setting.mentionRoles : [],
+          },
         })
         .then((msg) =>
           msg.startThread({

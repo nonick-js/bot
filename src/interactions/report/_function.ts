@@ -202,6 +202,7 @@ export async function findAndCreateDuplicateReport(
         ]),
       ],
       flags: MessageFlags.IsComponentsV2,
+      allowedMentions: { users: [] },
     })
     .then(() =>
       interaction.reply({
