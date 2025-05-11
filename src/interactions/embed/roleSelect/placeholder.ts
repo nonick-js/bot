@@ -12,6 +12,8 @@ import { getRoleSelectMakerButtons } from './_function';
 const selectEditButton = new Button(
   { customId: 'nonick-js:emberMaker-selectRole-placeholder' },
   (interaction) => {
+    if (interaction.message?.components[0].type !== ComponentType.ActionRow)
+      return;
     const select = interaction.message.components[0].components[0];
     if (select.type !== ComponentType.StringSelect) return;
 
@@ -38,6 +40,8 @@ const selectEditButton = new Button(
 const selectEditModal = new Modal(
   { customId: 'nonick-js:emberMaker-selectRole-placeholderModal' },
   (interaction) => {
+    if (interaction.message?.components[0].type !== ComponentType.ActionRow)
+      return;
     if (
       !interaction.isFromMessage() ||
       interaction.message.components[0].components[0]?.type !==

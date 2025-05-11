@@ -56,6 +56,7 @@ const sendLinkButtonModal = new Modal(
     if (
       !interaction.isFromMessage() ||
       !interaction.inCachedGuild() ||
+      interaction.message.components[0].type !== ComponentType.ActionRow ||
       interaction.message.components[0].components[0].type !==
         ComponentType.Button ||
       !interaction.channel
@@ -121,14 +122,18 @@ const sendLinkButtonModal = new Modal(
         content: '`❌` このメッセージは更新できません。',
         ephemeral: true,
       });
-    if (targetMessage.components[4]?.components?.length === 5)
+    if (
+      targetMessage.components[4].type === ComponentType.ActionRow &&
+      targetMessage.components[4]?.components?.length === 5
+    )
       return interaction.reply({
         content: '`❌` これ以上コンポーネントを追加できません！',
         ephemeral: true,
       });
     if (
+      targetMessage.components[0].type === ComponentType.ActionRow &&
       targetMessage.components[0]?.components[0]?.type ===
-      ComponentType.StringSelect
+        ComponentType.StringSelect
     )
       return interaction.reply({
         content:

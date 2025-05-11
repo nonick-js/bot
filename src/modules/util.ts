@@ -137,6 +137,7 @@ const permissionTexts: Record<keyof PermissionFlags, string> = {
 
   UseApplicationCommands: 'アプリコマンドを使う',
   UseEmbeddedActivities: 'ユーザーアクティビティ',
+  UseExternalApps: '外部のアプリを使用',
 
   RequestToSpeak: 'スピーカー参加をリクエスト',
 

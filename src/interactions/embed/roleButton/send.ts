@@ -63,6 +63,7 @@ const sendRoleButtonModal = new Modal(
     if (
       !interaction.isFromMessage() ||
       !interaction.inCachedGuild() ||
+      interaction.message.components[0].type !== ComponentType.ActionRow ||
       interaction.message.components[0].components[1].type !==
         ComponentType.Button ||
       !interaction.channel
@@ -144,14 +145,18 @@ const sendRoleButtonModal = new Modal(
         content: '`❌` このメッセージは更新できません。',
         ephemeral: true,
       });
-    if (targetMessage.components[4]?.components?.length === 5)
+    if (
+      targetMessage.components[4].type === ComponentType.ActionRow &&
+      targetMessage.components[4]?.components?.length === 5
+    )
       return interaction.reply({
         content: '`❌` これ以上コンポーネントを追加できません！',
         ephemeral: true,
       });
     if (
+      targetMessage.components[0].type === ComponentType.ActionRow &&
       targetMessage.components[0]?.components[0]?.type ===
-      ComponentType.StringSelect
+        ComponentType.StringSelect
     )
       return interaction.reply({
         content:
@@ -159,11 +164,12 @@ const sendRoleButtonModal = new Modal(
         ephemeral: true,
       });
     if (
-      targetMessage.components.some((v) =>
-        v.components
+      targetMessage.components.some((v) => {
+        if (v.type !== ComponentType.ActionRow) return false;
+        return v.components
           .map((i) => i.customId)
-          .includes(`nonick-js:roleButton-${role.id}`),
-      )
+          .includes(`nonick-js:roleButton-${role.id}`);
+      })
     )
       return interaction.reply({
         content: '`❌` そのロールのボタンは既に追加されています。',

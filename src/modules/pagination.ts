@@ -180,6 +180,7 @@ export class EmbedPagination {
     message?: Message,
   ) {
     this.sendSetup();
+    if (!channel.isSendable()) return;
     const msg = await channel.send(this.createMessageOption(options));
 
     const collector = msg.createMessageComponentCollector(
