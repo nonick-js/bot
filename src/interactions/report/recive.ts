@@ -1,4 +1,6 @@
 import { Button, Modal } from '@akki256/discord-interaction';
+import { report } from '@database/src/schema/report';
+import { db } from '@modules/drizzle';
 import {
   ActionRowBuilder,
   type ButtonInteraction,
@@ -13,6 +15,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from 'discord.js';
+import { and, eq } from 'drizzle-orm';
 
 const completeButton = new Button(
   { customId: 'nonick-js:report-completed' },
@@ -52,29 +55,37 @@ async function closeReport(
   isCompleted: boolean,
   reason?: string,
 ) {
+  if (!interaction.inCachedGuild()) return;
   if (
     interaction instanceof ModalSubmitInteraction &&
     !interaction.isFromMessage()
   )
     return;
 
+  const components = [];
   const thread = interaction.message.thread;
+  if (thread?.type !== ChannelType.PublicThread) return;
+
+  const mentionTextDisplay = interaction.message.components.find(
+    (component) => component.type === ComponentType.TextDisplay,
+  );
+
+  if (mentionTextDisplay) {
+    components.push(mentionTextDisplay);
+  }
+
   const container = interaction.message.components.find(
     (component) => component.type === ComponentType.Container,
   );
 
-  if (!container || thread?.type !== ChannelType.PublicThread) return;
+  if (!container) return;
+  components.push(
+    new ContainerBuilder(container.toJSON()).setAccentColor(
+      isCompleted ? Colors.Green : Colors.Red,
+    ),
+  );
 
-  interaction.update({
-    components: [
-      new ContainerBuilder(container.toJSON()).setAccentColor(
-        isCompleted ? Colors.Green : Colors.Red,
-      ),
-    ],
-    flags: MessageFlags.IsComponentsV2,
-  });
-
-  thread
+  await thread
     .send({
       embeds: [
         new EmbedBuilder()
@@ -89,6 +100,22 @@ async function closeReport(
     .then(() => {
       thread.setLocked();
     });
+
+  await db
+    .update(report)
+    .set({ closedAt: new Date() })
+    .where(
+      and(
+        eq(report.guildId, interaction.guildId),
+        eq(report.channelId, interaction.channelId),
+        eq(report.threadId, thread.id),
+      ),
+    );
+
+  interaction.update({
+    components,
+    flags: MessageFlags.IsComponentsV2,
+  });
 }
 
 export default [completeButton, ignoreButton, ignoreReasonModal];
