@@ -22,7 +22,6 @@ import {
   roleMention,
 } from 'discord.js';
 import {
-  findAndCreateDuplicateReport,
   isReportable,
   isSendableReport,
   progressButtonActionRow,
@@ -102,15 +101,11 @@ const messageReportModal = new Modal(
     }
 
     const { ok, reason } = await isSendableReport(interaction, channel);
-    if (!ok) return interaction.reply({ content: reason, ephemeral: true });
-
-    const { requireCreateNewReport } = await findAndCreateDuplicateReport(
-      interaction,
-      setting,
-      'message',
-      targetMessage,
-    );
-    if (!requireCreateNewReport) return;
+    if (!ok)
+      return interaction.reply({
+        content: reason,
+        ephemeral: true,
+      });
 
     if (setting.enableMention) {
       components.push(

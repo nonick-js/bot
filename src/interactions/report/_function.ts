@@ -1,7 +1,5 @@
-﻿import { blurple, red } from '@const/emojis';
+﻿import { blurple } from '@const/emojis';
 import { dashboard } from '@const/links';
-import type { report } from '@database/src/schema/report';
-import type { reportSetting } from '@database/src/schema/setting';
 import { db } from '@modules/drizzle';
 import { userField } from '@modules/fields';
 import { formatEmoji } from '@modules/util';
@@ -9,21 +7,15 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  ContainerBuilder,
   type GuildBasedChannel,
-  Message,
   MessageContextMenuCommandInteraction,
-  MessageFlags,
   type ModalSubmitInteraction,
   PermissionFlagsBits,
-  TextChannel,
   TextDisplayBuilder,
-  User,
   UserContextMenuCommandInteraction,
   escapeMarkdown,
   hyperlink,
 } from 'discord.js';
-import { and } from 'drizzle-orm';
 
 export async function isReportable(
   interaction:
@@ -137,86 +129,3 @@ export const progressButtonActionRow =
       .setLabel('無視')
       .setStyle(ButtonStyle.Secondary),
   );
-
-export async function findAndCreateDuplicateReport(
-  interaction: ModalSubmitInteraction<'cached'>,
-  setting: typeof reportSetting.$inferSelect,
-  reportType: 'message',
-  target: Message<true>,
-): Promise<{ requireCreateNewReport: boolean }>;
-export async function findAndCreateDuplicateReport(
-  interaction: ModalSubmitInteraction<'cached'>,
-  setting: typeof reportSetting.$inferSelect,
-  reportType: 'user',
-  target: User,
-): Promise<{ requireCreateNewReport: boolean }>;
-export async function findAndCreateDuplicateReport(
-  interaction: ModalSubmitInteraction<'cached'>,
-  setting: typeof reportSetting.$inferSelect,
-  reportType: 'message' | 'user',
-  target: Message<true> | User,
-): Promise<{ requireCreateNewReport: boolean }> {
-  let previousReport: typeof report.$inferSelect | undefined;
-
-  if (reportType === 'message' && target instanceof Message) {
-    previousReport = await db.query.report.findFirst({
-      where: (r, { eq }) =>
-        and(
-          eq(r.guildId, interaction.guildId),
-          eq(r.targetChannelId, target.channelId),
-          eq(r.targetMessageId, target.id),
-        ),
-      orderBy: (r, { desc }) => [desc(r.createdAt)],
-    });
-  } else if (reportType === 'user' && target instanceof User) {
-    previousReport = await db.query.report.findFirst({
-      where: (r, { eq }) =>
-        and(eq(r.guildId, interaction.guildId), eq(r.targetUserId, target.id)),
-      orderBy: (r, { desc }) => [desc(r.createdAt)],
-    });
-  }
-
-  if (!previousReport || !setting.groupDuplicateReports)
-    return { requireCreateNewReport: true };
-
-  const previousReportChannel = await interaction.guild.channels
-    .fetch(previousReport.channelId)
-    .catch(() => null);
-  if (!(previousReportChannel instanceof TextChannel))
-    return { requireCreateNewReport: false };
-
-  const previousReportThread = await previousReportChannel.threads
-    .fetch(previousReport.threadId)
-    .catch(() => null);
-  if (!previousReportThread || previousReportThread.locked)
-    return { requireCreateNewReport: false };
-
-  await previousReportThread
-    .send({
-      components: [
-        new ContainerBuilder().addTextDisplayComponents([
-          new TextDisplayBuilder().setContent(
-            `### ${formatEmoji(red.flag)} 重複した報告`,
-          ),
-          reportAuthorTextDisplay(interaction),
-        ]),
-      ],
-      flags: MessageFlags.IsComponentsV2,
-      allowedMentions: { users: [] },
-    })
-    .then(() =>
-      interaction.reply({
-        content:
-          '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました。',
-        ephemeral: true,
-      }),
-    )
-    .catch(() =>
-      interaction.reply({
-        content: '`❌` 報告の送信中にエラーが発生しました',
-        ephemeral: true,
-      }),
-    );
-
-  return { requireCreateNewReport: false };
-}
