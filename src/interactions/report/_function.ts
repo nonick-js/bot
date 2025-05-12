@@ -121,7 +121,7 @@ export async function sendToOpenedReport(
   if (!setting?.showModerateLog) return;
 
   const reports = await db.query.report.findMany({
-    where: (report, { eq, and, isNull }) =>
+    where: (report, { eq, and }) =>
       and(
         eq(report.guildId, guild.id),
         eq(report.targetUserId, user.id),
