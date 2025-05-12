@@ -8,9 +8,13 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ChannelType,
   ContainerBuilder,
+  type ForumThreadChannel,
+  type MessageCreateOptions,
   MessageFlags,
   ModalBuilder,
+  type PublicThreadChannel,
   SectionBuilder,
   SeparatorBuilder,
   SeparatorSpacingSize,
@@ -21,7 +25,11 @@ import {
   escapeMarkdown,
   roleMention,
 } from 'discord.js';
-import { isReportable, isSendableReport } from './_function';
+import {
+  getReportChannelId,
+  isReportable,
+  sendReportRequirePerissions,
+} from './_function';
 
 const userContext = new UserContext(
   {
@@ -69,8 +77,9 @@ const userReportModal = new Modal(
     const setting = await db.query.reportSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
     });
+    const channelId = getReportChannelId(setting);
 
-    if (!setting?.channel) {
+    if (!setting || !channelId) {
       return interaction.reply({
         content:
           '`❌` 送信先のチャンネルが存在しないため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
@@ -82,93 +91,111 @@ const userReportModal = new Modal(
       .fetch(interaction.components[0].components[0].customId)
       .catch(() => null);
     const channel = await interaction.guild.channels
-      .fetch(setting.channel)
+      .fetch(channelId)
       .catch(() => null);
-    const components = [];
 
-    if (!channel?.isTextBased()) return;
+    if (!channel) {
+      return interaction.reply({
+        content:
+          '`❌` 送信先のチャンネルが存在しないため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
+        ephemeral: true,
+      });
+    }
     if (!targetUser)
       return interaction.reply({
         content: '`❌` 報告の送信中にエラーが発生しました',
         ephemeral: true,
       });
-
-    const { ok, reason } = await isSendableReport(interaction, channel);
-    if (!ok)
+    if (
+      !channel
+        ?.permissionsFor(interaction.client.user)
+        ?.has(sendReportRequirePerissions)
+    ) {
       return interaction.reply({
-        content: reason,
+        content:
+          '`❌` 送信先のチャンネルの権限が不足していたため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
         ephemeral: true,
       });
+    }
 
-    // 報告の送信
-    try {
-      const createdThread = await channel
-        .send({
-          components: [
-            new ContainerBuilder()
+    const reportMessageOptions: MessageCreateOptions = {
+      components: [
+        new ContainerBuilder()
+          .addTextDisplayComponents([
+            new TextDisplayBuilder().setContent(
+              `## ${formatEmoji(red.flag)} ユーザーの報告`,
+            ),
+          ])
+          .addSeparatorComponents(
+            new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+          )
+          .addSectionComponents([
+            new SectionBuilder()
               .addTextDisplayComponents([
-                new TextDisplayBuilder().setContent(
-                  `## ${formatEmoji(red.flag)} ユーザーの報告`,
-                ),
-              ])
-              .addSeparatorComponents(
-                new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
-              )
-              .addSectionComponents([
-                new SectionBuilder()
-                  .addTextDisplayComponents([
-                    new TextDisplayBuilder().setContent('### ユーザーの情報'),
-                    new TextDisplayBuilder().setContent(
-                      [
-                        userField(targetUser, { label: 'ユーザー' }),
-                        scheduleField(targetUser.createdAt, {
-                          label: 'アカウント作成日',
-                        }),
-                      ].join('\n'),
-                    ),
-                  ])
-                  .setThumbnailAccessory(
-                    new ThumbnailBuilder().setURL(
-                      targetUser.displayAvatarURL(),
-                    ),
-                  ),
-              ])
-              .addSeparatorComponents(
-                new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
-              )
-              .addTextDisplayComponents([
+                new TextDisplayBuilder().setContent('### ユーザーの情報'),
                 new TextDisplayBuilder().setContent(
                   [
-                    userField(interaction.user, {
-                      color: 'blurple',
-                      label: '報告者',
+                    userField(targetUser, { label: 'ユーザー' }),
+                    scheduleField(targetUser.createdAt, {
+                      label: 'アカウント作成日',
                     }),
-                    `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
                   ].join('\n'),
                 ),
-              ]),
-            new ActionRowBuilder<ButtonBuilder>().setComponents(
-              new ButtonBuilder()
-                .setCustomId('nonick-js:report-completed')
-                .setLabel('対応済みにする')
-                .setStyle(ButtonStyle.Primary),
-              new ButtonBuilder()
-                .setCustomId('nonick-js:report-ignore')
-                .setLabel('無視')
-                .setStyle(ButtonStyle.Secondary),
+              ])
+              .setThumbnailAccessory(
+                new ThumbnailBuilder().setURL(targetUser.displayAvatarURL()),
+              ),
+          ])
+          .addSeparatorComponents(
+            new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+          )
+          .addTextDisplayComponents([
+            new TextDisplayBuilder().setContent(
+              [
+                userField(interaction.user, {
+                  color: 'blurple',
+                  label: '報告者',
+                }),
+                `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
+              ].join('\n'),
             ),
-          ],
-          flags: MessageFlags.IsComponentsV2,
-          allowedMentions: {
-            users: [],
-            roles: setting.mentionRoles,
-          },
-        })
-        .then((msg) =>
+          ]),
+        new ActionRowBuilder<ButtonBuilder>().setComponents(
+          new ButtonBuilder()
+            .setCustomId('nonick-js:report-completed')
+            .setLabel('対応済みにする')
+            .setStyle(ButtonStyle.Primary),
+          new ButtonBuilder()
+            .setCustomId('nonick-js:report-ignore')
+            .setLabel('無視')
+            .setStyle(ButtonStyle.Secondary),
+        ),
+      ],
+      flags: MessageFlags.IsComponentsV2,
+      allowedMentions: {
+        parse: ['roles'],
+      },
+    };
+
+    try {
+      let createdThread: PublicThreadChannel | ForumThreadChannel | null = null;
+
+      if (channel?.type === ChannelType.GuildText) {
+        createdThread = await channel.send(reportMessageOptions).then((msg) =>
           msg.startThread({
-            name: `${targetUser.username} [${targetUser.id}] への報告 `,
+            name: `${targetUser.username} [${targetUser.id}] への報告`,
           }),
         );
+      }
+
+      if (channel?.type === ChannelType.GuildForum) {
+        createdThread = await channel.threads.create({
+          name: `${targetUser.username} [${targetUser.id}] への報告`,
+          message: reportMessageOptions,
+        });
+      }
+
+      if (!createdThread) throw new Error('Invalid ChannelType');
 
       if (setting.enableMention) {
         createdThread.send({

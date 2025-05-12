@@ -9,9 +9,10 @@ import {
   ComponentType,
   ContainerBuilder,
   EmbedBuilder,
+  InteractionType,
   MessageFlags,
   ModalBuilder,
-  ModalSubmitInteraction,
+  type ModalSubmitInteraction,
   TextInputBuilder,
   TextInputStyle,
 } from 'discord.js';
@@ -57,22 +58,16 @@ async function closeReport(
 ) {
   if (!interaction.inCachedGuild()) return;
   if (
-    interaction instanceof ModalSubmitInteraction &&
+    interaction.type === InteractionType.ModalSubmit &&
     !interaction.isFromMessage()
   )
     return;
 
   const components = [];
-  const thread = interaction.message.thread;
+  const thread = interaction.channel?.isThread()
+    ? interaction.channel
+    : interaction.message.thread;
   if (thread?.type !== ChannelType.PublicThread) return;
-
-  const mentionTextDisplay = interaction.message.components.find(
-    (component) => component.type === ComponentType.TextDisplay,
-  );
-
-  if (mentionTextDisplay) {
-    components.push(mentionTextDisplay);
-  }
 
   const container = interaction.message.components.find(
     (component) => component.type === ComponentType.Container,
@@ -97,8 +92,8 @@ async function closeReport(
           .setColor(isCompleted ? Colors.Green : Colors.Red),
       ],
     })
-    .then(() => {
-      thread.setLocked();
+    .then(async () => {
+      await thread.setLocked();
       thread.setArchived();
     });
 
