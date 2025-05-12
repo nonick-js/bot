@@ -131,7 +131,6 @@ export async function sendToOpenedReport(
               eq(report.targetMessageId, message.id),
             )
           : undefined,
-        isNull(report.closedAt),
       ),
   });
 
@@ -155,13 +154,9 @@ export async function sendToOpenedReport(
     // メッセージやスレッドが存在しない場合は強制的にcloseする
     if (
       !thread ||
-      thread?.locked ||
       (channel.type === ChannelType.GuildText && !starterMessage)
     ) {
-      return await db
-        .update(report)
-        .set({ closedAt: new Date() })
-        .where(eq(report.id, targetReport.id));
+      return await db.delete(report).where(eq(report.id, targetReport.id));
     }
 
     thread.send(logMessageOptions);

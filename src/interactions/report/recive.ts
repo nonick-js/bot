@@ -90,8 +90,7 @@ const deleteReportButton = new Button(
     }
 
     await db
-      .update(report)
-      .set({ closedAt: new Date() })
+      .delete(report)
       .where(
         and(
           eq(report.guildId, interaction.guildId),
@@ -149,8 +148,7 @@ async function closeReport(
     });
 
   await db
-    .update(report)
-    .set({ closedAt: new Date() })
+    .delete(report)
     .where(
       and(
         eq(report.guildId, interaction.guildId),
