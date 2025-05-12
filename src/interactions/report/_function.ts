@@ -1,15 +1,12 @@
 ﻿import { dashboard } from '@const/links';
 import { report } from '@database/src/schema/report';
-import type { reportSetting } from '@database/src/schema/setting';
 import { db } from '@modules/drizzle';
 import {
   type BaseMessageOptions,
   ChannelType,
   type Guild,
-  type GuildBasedChannel,
   type Message,
   MessageContextMenuCommandInteraction,
-  type ModalSubmitInteraction,
   PermissionFlagsBits,
   type User,
   UserContextMenuCommandInteraction,
@@ -26,9 +23,7 @@ export async function isReportable(
     where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
   });
 
-  const channelId = getReportChannelId(setting);
-
-  if (!setting || !channelId) {
+  if (!setting?.channel) {
     if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
       return {
         ok: false,
@@ -83,34 +78,6 @@ export async function isReportable(
   return { ok: true };
 }
 
-export async function isSendableReport(
-  interaction: ModalSubmitInteraction,
-  channel: GuildBasedChannel | null,
-): Promise<{ ok: false; reason: string } | { ok: true; reason?: string }> {
-  if (!channel)
-    return {
-      ok: false,
-      reason: '',
-    };
-  if (
-    !channel
-      ?.permissionsFor(interaction.client.user)
-      ?.has([
-        PermissionFlagsBits.SendMessages,
-        PermissionFlagsBits.SendMessagesInThreads,
-        PermissionFlagsBits.ManageThreads,
-        PermissionFlagsBits.CreatePublicThreads,
-      ])
-  ) {
-    return {
-      ok: false,
-      reason:
-        '`❌` 送信先のチャンネルの権限が不足していたため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
-    };
-  }
-  return { ok: true };
-}
-
 export async function sendToOpenedReport(
   { guild, user, message }: { guild: Guild; user: User; message?: Message },
   logMessageOptions: BaseMessageOptions,
@@ -160,22 +127,6 @@ export async function sendToOpenedReport(
     }
 
     thread.send(logMessageOptions);
-  }
-}
-
-export function getReportChannelId(
-  setting?: typeof reportSetting.$inferSelect,
-) {
-  if (!setting) return null;
-  const type = setting?.channelType;
-
-  switch (type) {
-    case 'forum':
-      return setting?.forumChannel;
-    case 'text':
-      return setting?.channel;
-    default:
-      return null;
   }
 }
 

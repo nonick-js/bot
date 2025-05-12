@@ -113,6 +113,11 @@ async function closeReport(
   )
     return;
 
+  const setting = await db.query.reportSetting.findFirst({
+    where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
+  });
+  if (!setting) return;
+
   const components = [];
   const thread = interaction.channel?.isThread()
     ? interaction.channel
@@ -123,12 +128,19 @@ async function closeReport(
     (component) => component.type === ComponentType.Container,
   );
 
-  if (!container) return;
-  components.push(
-    new ContainerBuilder(container.toJSON()).setAccentColor(
-      isCompleted ? Colors.Green : Colors.Red,
-    ),
-  );
+  if (
+    thread.parent?.type === ChannelType.GuildForum &&
+    thread.parentId === setting.channel
+  ) {
+    if (isCompleted && setting.forumCompletedTag)
+      await thread
+        .setAppliedTags([...thread.appliedTags, setting.forumCompletedTag])
+        .catch(() => {});
+    if (!isCompleted && setting.forumIgnoredTag)
+      await thread
+        .setAppliedTags([...thread.appliedTags, setting.forumIgnoredTag])
+        .catch(() => {});
+  }
 
   await thread
     .send({
@@ -156,6 +168,13 @@ async function closeReport(
         eq(report.threadId, thread.id),
       ),
     );
+
+  if (!container) return;
+  components.push(
+    new ContainerBuilder(container.toJSON()).setAccentColor(
+      isCompleted ? Colors.Green : Colors.Red,
+    ),
+  );
 
   interaction.update({
     components,

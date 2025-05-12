@@ -26,11 +26,7 @@ import {
   escapeMarkdown,
   roleMention,
 } from 'discord.js';
-import {
-  getReportChannelId,
-  isReportable,
-  sendReportRequirePerissions,
-} from './_function';
+import { isReportable, sendReportRequirePerissions } from './_function';
 
 const messageContext = new MessageContext(
   {
@@ -78,9 +74,8 @@ const messageReportModal = new Modal(
     const setting = await db.query.reportSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
     });
-    const channelId = getReportChannelId(setting);
 
-    if (!setting || !channelId) {
+    if (!setting?.channel) {
       return interaction.reply({
         content:
           '`❌` 送信先のチャンネルが存在しないため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
@@ -92,20 +87,20 @@ const messageReportModal = new Modal(
       .fetch(interaction.components[0].components[0].customId)
       .catch(() => null);
     const channel = await interaction.guild.channels
-      .fetch(channelId)
+      .fetch(setting.channel)
       .catch(() => null);
 
-    if (!channel) {
-      return interaction.reply({
-        content:
-          '`❌` 送信先のチャンネルが存在しないため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
-        ephemeral: true,
-      });
-    }
     if (!(targetMessage instanceof Message)) {
       return interaction.reply({
         content:
           '`❌` 報告しようとしているメッセージは削除されたか、BOTがアクセスできませんでした。',
+        ephemeral: true,
+      });
+    }
+    if (!channel) {
+      return interaction.reply({
+        content:
+          '`❌` 送信先のチャンネルが存在しないため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
         ephemeral: true,
       });
     }
