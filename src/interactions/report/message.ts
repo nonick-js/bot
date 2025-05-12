@@ -183,6 +183,10 @@ const messageReportModal = new Modal(
             .setCustomId('nonick-js:report-ignore')
             .setLabel('無視')
             .setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder()
+            .setCustomId('nonick-js:report-delete')
+            .setLabel('削除')
+            .setStyle(ButtonStyle.Danger),
         ),
       ],
       flags: MessageFlags.IsComponentsV2,
