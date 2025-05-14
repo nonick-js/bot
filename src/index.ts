@@ -66,7 +66,7 @@ client.once(Events.ClientReady, async () => {
   });
 
   client.user?.setActivity({
-    name: `${(await client.application?.fetch())?.approximateGuildCount} サーバー`,
+    name: `/help | ${(await client.application?.fetch())?.approximateGuildCount} servers`,
     type: ActivityType.Competing,
   });
 

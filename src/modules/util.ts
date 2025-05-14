@@ -88,7 +88,7 @@ export async function getSendableChannel(guild: Guild, channelId: string) {
   return channel;
 }
 
-const permissionTexts: Record<keyof PermissionFlags, string> = {
+export const permissionTexts: Record<keyof PermissionFlags, string> = {
   ViewChannel: 'チャンネルを見る',
   ManageChannels: 'チャンネルの管理',
   ManageRoles: 'ロールの管理',
@@ -137,6 +137,7 @@ const permissionTexts: Record<keyof PermissionFlags, string> = {
 
   UseApplicationCommands: 'アプリコマンドを使う',
   UseEmbeddedActivities: 'ユーザーアクティビティ',
+  UseExternalApps: '外部のアプリを使用',
 
   RequestToSpeak: 'スピーカー参加をリクエスト',
 

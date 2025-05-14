@@ -1,7 +1,8 @@
+import { blurple, red } from '@const/emojis';
 import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { scheduleField, textField, userField } from '@modules/fields';
-import { getSendableChannel } from '@modules/util';
+import { formatEmoji, getSendableChannel } from '@modules/util';
 import {
   AuditLogEvent,
   Colors,
@@ -9,7 +10,9 @@ import {
   Events,
   type GuildAuditLogsEntry,
   inlineCode,
+  time,
 } from 'discord.js';
+import { sendLogToRelatedReport } from './_function';
 
 export default new DiscordEventBuilder({
   type: Events.GuildAuditLogEntryCreate,
@@ -22,6 +25,7 @@ export default new DiscordEventBuilder({
     const { executor, target, reason } =
       auditLogEntry as GuildAuditLogsEntry<AuditLogEvent.MemberUpdate>;
     if (!(executor && target)) return;
+    const fetchedExecutor = await executor.fetch();
     const member = await guild.members
       .fetch(await target.fetch())
       .catch(() => null);
@@ -32,18 +36,38 @@ export default new DiscordEventBuilder({
     const setting = await db.query.timeoutLogSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, guild.id),
     });
-    if (!(setting?.enabled && setting.channel)) return;
+
+    sendLogToRelatedReport(guild, member.user, null, {
+      embeds: [
+        new EmbedBuilder()
+          .setAuthor({
+            name: fetchedExecutor.username,
+            iconURL: fetchedExecutor.displayAvatarURL(),
+          })
+          .setDescription(
+            isCancel
+              ? `${formatEmoji(blurple.time)} ${member.user}のタイムアウトを解除しました`
+              : `${formatEmoji(red.time)} ${member.user}を${time(new Date(member.communicationDisabledUntil ?? 0))}までタイムアウトしました`,
+          )
+          .setColor(isCancel ? Colors.Blue : null)
+          .setTimestamp(),
+      ],
+    });
+
+    if (!setting?.enabled || !setting.channel) return;
+
     const channel = await getSendableChannel(guild, setting.channel).catch(
       () => null,
     );
     if (!channel) return;
+
     const field = [
       userField(await target.fetch(), { label: '対象者' }),
       scheduleField(member.communicationDisabledUntil ?? 0, {
         label: '解除される時間',
       }),
       '',
-      userField(await executor.fetch(), {
+      userField(fetchedExecutor, {
         label: '実行者',
         color: 'blurple',
       }),
@@ -53,6 +77,7 @@ export default new DiscordEventBuilder({
       }),
     ];
     if (isCancel) field.splice(1, 1);
+
     channel.send({
       embeds: [
         new EmbedBuilder()

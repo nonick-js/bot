@@ -9,6 +9,8 @@ import { getRoleSelectMakerButtons } from './_function';
 const changeSelectMode = new Button(
   { customId: /^nonick-js:embedMaker-selectRole-selectMode-(single|multi)$/ },
   (interaction) => {
+    if (interaction.message.components[0].type !== ComponentType.ActionRow)
+      return;
     const select = interaction.message.components[0].components[0];
     const isSingleMode =
       interaction.customId ===

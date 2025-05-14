@@ -11,6 +11,11 @@ const addRoleSelectButton = new Button(
   { customId: 'nonick-js:embedMaker-selectRole-sendComponent' },
   async (interaction) => {
     if (!interaction.inCachedGuild() || !interaction.channel) return;
+    if (
+      interaction.message.components[0].type !== ComponentType.ActionRow ||
+      interaction.message.components[1].type !== ComponentType.ActionRow
+    )
+      return;
 
     if (
       interaction.message.components[0].components[0].type !==
@@ -59,6 +64,7 @@ const addRoleSelectButton = new Button(
         ephemeral: true,
       });
     if (
+      targetMessage.components[0]?.type === ComponentType.ActionRow &&
       targetMessage.components[0]?.components[0]?.type === ComponentType.Button
     )
       return interaction.reply({

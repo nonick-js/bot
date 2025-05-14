@@ -1,70 +1,41 @@
 import { Button, Modal } from '@akki256/discord-interaction';
-import { blurple } from '@const/emojis';
-import { userField } from '@modules/fields';
+import { report } from '@database/src/schema/report';
+import { db } from '@modules/drizzle';
 import {
   ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
+  type ButtonInteraction,
+  ChannelType,
   Colors,
   ComponentType,
+  ContainerBuilder,
   EmbedBuilder,
+  InteractionType,
+  MessageFlags,
   ModalBuilder,
+  type ModalSubmitInteraction,
   TextInputBuilder,
   TextInputStyle,
-  formatEmoji,
+  escapeMarkdown,
 } from 'discord.js';
+import { and, eq } from 'drizzle-orm';
 
-const considerButton = new Button(
-  { customId: 'nonick-js:report-consider' },
-  (interaction) => {
-    const embed = interaction.message.embeds[0];
-    interaction.update({
-      embeds: [
-        EmbedBuilder.from(embed)
-          .setDescription(
-            [
-              `${embed.description}`,
-              userField(interaction.user, {
-                color: 'blurple',
-                label: '対処者',
-              }),
-            ].join('\n'),
-          )
-          .setColor('Yellow'),
-      ],
-      components: [
-        new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-completed')
-            .setLabel('対処済み')
-            .setStyle(ButtonStyle.Success),
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-ignore')
-            .setLabel('無視')
-            .setStyle(ButtonStyle.Danger),
-        ),
-      ],
-    });
-  },
+const completeButton = new Button(
+  { customId: 'nonick-js:report-completed' },
+  (interaction) => closeReport(interaction, true),
 );
 
-const actionButton = new Button(
-  { customId: /^nonick-js:report-(completed|ignore)$/ },
+const ignoreButton = new Button(
+  { customId: 'nonick-js:report-ignore' },
   (interaction): void => {
-    const isCompleteButton =
-      interaction.customId.replace('nonick-js:report-', '') === 'completed';
-
     interaction.showModal(
       new ModalBuilder()
-        .setCustomId('nonick-js:report-actionModal')
-        .setTitle(`${isCompleteButton ? '対処済み' : '対処無し'}としてマーク`)
+        .setCustomId('nonick-js:report-ignoreReasonModal')
+        .setTitle('対応なしとしてマーク')
         .setComponents(
           new ActionRowBuilder<TextInputBuilder>().addComponents(
             new TextInputBuilder()
-              .setCustomId(isCompleteButton ? 'action' : 'reason')
-              .setLabel(
-                isCompleteButton ? '行った対処・処罰' : '対処なしの理由',
-              )
+              .setCustomId('reason')
+              .setLabel('対応なしに設定する理由')
               .setMaxLength(100)
               .setStyle(TextInputStyle.Short),
           ),
@@ -73,38 +44,91 @@ const actionButton = new Button(
   },
 );
 
-const actionModal = new Modal(
-  { customId: 'nonick-js:report-actionModal' },
+const ignoreReasonModal = new Modal(
+  { customId: 'nonick-js:report-ignoreReasonModal' },
   async (interaction) => {
-    if (
-      !interaction.isFromMessage() ||
-      interaction.components[0].components[0].type !== ComponentType.TextInput
-    )
-      return;
-
-    const embed = interaction.message.embeds[0];
-    const isAction =
-      interaction.components[0].components[0].customId === 'action';
-    const categoryValue = interaction.components[0].components[0].value;
-
-    await interaction.update({
-      embeds: [
-        EmbedBuilder.from(interaction.message.embeds[0])
-          .setTitle(`${embed.title} ${isAction ? '[対応済み]' : '[対応なし]'}`)
-          .setDescription(
-            [
-              `${embed.description}`,
-              `${formatEmoji(blurple.admin)} **${isAction ? '行った処罰' : '対応なしの理由'}:** ${categoryValue}`,
-            ].join('\n'),
-          )
-          .setColor(isAction ? Colors.Green : Colors.Red),
-      ],
-      components: [],
-    });
-
-    if (interaction.message.hasThread)
-      await interaction.message.thread?.setLocked(true).catch(() => {});
+    const reason = interaction.fields.getTextInputValue('reason');
+    closeReport(interaction, false, reason);
   },
 );
 
-export default [actionButton, actionModal, considerButton];
+async function closeReport(
+  interaction: ButtonInteraction | ModalSubmitInteraction,
+  isCompleted: boolean,
+  reason?: string,
+) {
+  if (!interaction.inCachedGuild()) return;
+  if (
+    interaction.type === InteractionType.ModalSubmit &&
+    !interaction.isFromMessage()
+  )
+    return;
+
+  const setting = await db.query.reportSetting.findFirst({
+    where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
+  });
+  if (!setting) return;
+
+  const thread = interaction.channel?.isThread()
+    ? interaction.channel
+    : interaction.message.thread;
+
+  if (!thread?.parentId) return;
+  const parentChannelId = thread.parentId;
+
+  const container = interaction.message.components[0];
+  if (container.type !== ComponentType.Container) return;
+
+  const embed = new EmbedBuilder()
+    .setAuthor({
+      name: `${interaction.user.username}が報告を${isCompleted ? '対応済み' : '対応なし'}としてマークしました`,
+      iconURL: interaction.user.displayAvatarURL(),
+    })
+    .setColor(isCompleted ? Colors.Green : Colors.Red);
+  if (!isCompleted)
+    embed.setFooter({ text: `理由: ${escapeMarkdown(reason ?? '')}` });
+
+  await interaction.update({
+    components: [
+      new ContainerBuilder(container.toJSON()).setAccentColor(
+        isCompleted ? Colors.Green : Colors.Red,
+      ),
+    ],
+    flags: MessageFlags.IsComponentsV2,
+  });
+
+  if (
+    thread.parent?.type === ChannelType.GuildForum &&
+    thread.parentId === setting.channel
+  ) {
+    if (isCompleted && setting.forumCompletedTag)
+      await thread
+        .setAppliedTags([...thread.appliedTags, setting.forumCompletedTag])
+        .catch(() => {});
+    if (!isCompleted && setting.forumIgnoredTag)
+      await thread
+        .setAppliedTags([...thread.appliedTags, setting.forumIgnoredTag])
+        .catch(() => {});
+  }
+
+  await db
+    .delete(report)
+    .where(
+      and(
+        eq(report.guildId, interaction.guildId),
+        eq(report.channelId, parentChannelId),
+        eq(report.threadId, thread.id),
+      ),
+    );
+
+  await thread
+    .send({
+      embeds: [embed],
+    })
+    .then(async () => {
+      await thread.setLocked();
+      thread.setArchived();
+    });
+}
+
+export default [completeButton, ignoreButton, ignoreReasonModal];

@@ -23,6 +23,8 @@ const addRole = [
   new Button(
     { customId: 'nonick-js:embedMaker-selectRole-addRole' },
     async (interaction) => {
+      if (interaction.message.components[0].type !== ComponentType.ActionRow)
+        return;
       const firstComponent = interaction.message.components[0].components[0];
       if (
         firstComponent.type === ComponentType.StringSelect &&
@@ -80,6 +82,7 @@ const addRole = [
       if (
         !interaction.inCachedGuild() ||
         !interaction.isFromMessage() ||
+        interaction.message.components[0].type !== ComponentType.ActionRow ||
         interaction.message.components[0].components[0].customId ===
           'nonick-js:embedMaker-selectRole-removeRoleSelect'
       )
@@ -193,6 +196,8 @@ const removeRole = [
   new Button(
     { customId: 'nonick-js:embedMaker-selectRole-removeRole' },
     async (interaction) => {
+      if (interaction.message.components[0].type !== ComponentType.ActionRow)
+        return;
       const select = interaction.message.components[0].components[0];
 
       if (select.type !== ComponentType.StringSelect) return;
