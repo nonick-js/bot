@@ -1,7 +1,6 @@
 import { Button, Modal } from '@akki256/discord-interaction';
 import { report } from '@database/src/schema/report';
 import { db } from '@modules/drizzle';
-import { permissionTexts } from '@modules/util';
 import {
   ActionRowBuilder,
   type ButtonInteraction,
@@ -14,10 +13,9 @@ import {
   MessageFlags,
   ModalBuilder,
   type ModalSubmitInteraction,
-  PermissionFlagsBits,
   TextInputBuilder,
   TextInputStyle,
-  inlineCode,
+  escapeMarkdown,
 } from 'discord.js';
 import { and, eq } from 'drizzle-orm';
 
@@ -51,53 +49,6 @@ const ignoreReasonModal = new Modal(
   async (interaction) => {
     const reason = interaction.fields.getTextInputValue('reason');
     closeReport(interaction, false, reason);
-  },
-);
-
-const deleteReportButton = new Button(
-  { customId: 'nonick-js:report-delete' },
-  async (interaction) => {
-    if (!interaction.inCachedGuild()) return;
-
-    if (
-      !interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)
-    ) {
-      return interaction.reply({
-        content: `\`❌\`この操作を実行するためには、このチャンネルの${inlineCode(permissionTexts.ManageMessages)}権限を所持している必要があります。`,
-        ephemeral: true,
-      });
-    }
-    if (
-      !interaction.appPermissions.has([
-        PermissionFlagsBits.ManageMessages,
-        PermissionFlagsBits.ManageThreads,
-      ])
-    ) {
-      return interaction.reply({
-        content: `\`❌\`この操作を実行するためには、NoNICK.jsに${inlineCode(permissionTexts.ManageMessages)}および${inlineCode(permissionTexts.ManageThreads)}`,
-        ephemeral: true,
-      });
-    }
-
-    const thread = interaction.channel?.isThread()
-      ? interaction.channel
-      : interaction.message.thread;
-    if (thread?.type !== ChannelType.PublicThread) return;
-
-    await thread.delete(`${interaction.user.username}が報告を削除しました`);
-    if (interaction.channel?.type === ChannelType.GuildText) {
-      await interaction.message.delete();
-    }
-
-    await db
-      .delete(report)
-      .where(
-        and(
-          eq(report.guildId, interaction.guildId),
-          eq(report.channelId, interaction.channelId),
-          eq(report.threadId, thread.id),
-        ),
-      );
   },
 );
 
@@ -142,17 +93,21 @@ async function closeReport(
         .catch(() => {});
   }
 
+  const embed = new EmbedBuilder()
+    .setAuthor({
+      name: interaction.user.username,
+      iconURL: interaction.user.displayAvatarURL(),
+    })
+    .setDescription(
+      `報告を${isCompleted ? '対応済み' : '対応なし'}としてマークしました`,
+    )
+    .setColor(isCompleted ? Colors.Green : Colors.Red);
+  if (!isCompleted)
+    embed.setFooter({ text: `理由: ${escapeMarkdown(reason ?? '')}` });
+
   await thread
     .send({
-      embeds: [
-        new EmbedBuilder()
-          .setAuthor({
-            name: `${interaction.user.username} が報告を${isCompleted ? '対応済み' : '対応なし'}としてマークしました`,
-            iconURL: interaction.user.displayAvatarURL(),
-          })
-          .setDescription(reason ?? null)
-          .setColor(isCompleted ? Colors.Green : Colors.Red),
-      ],
+      embeds: [embed],
     })
     .then(async () => {
       await thread.setLocked();
@@ -182,9 +137,4 @@ async function closeReport(
   });
 }
 
-export default [
-  completeButton,
-  ignoreButton,
-  ignoreReasonModal,
-  deleteReportButton,
-];
+export default [completeButton, ignoreButton, ignoreReasonModal];

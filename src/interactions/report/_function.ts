@@ -1,82 +1,13 @@
-﻿import { dashboard } from '@const/links';
-import { report } from '@database/src/schema/report';
+﻿import { report } from '@database/src/schema/report';
 import { db } from '@modules/drizzle';
 import {
   type BaseMessageOptions,
   ChannelType,
   type Guild,
   type Message,
-  MessageContextMenuCommandInteraction,
-  PermissionFlagsBits,
   type User,
-  UserContextMenuCommandInteraction,
-  hyperlink,
 } from 'discord.js';
 import { eq } from 'drizzle-orm';
-
-export async function isReportable(
-  interaction:
-    | MessageContextMenuCommandInteraction<'cached'>
-    | UserContextMenuCommandInteraction<'cached'>,
-): Promise<{ ok: false; reason: string } | { ok: true; reason?: string }> {
-  const setting = await db.query.reportSetting.findFirst({
-    where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
-  });
-
-  if (!setting?.channel) {
-    if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-      return {
-        ok: false,
-        reason: `\`❌\` この機能を使用するには、ダッシュボードで${hyperlink('報告を受け取るチャンネルを設定', `<${dashboard}/guilds/${interaction.guild.id}/report>`)}する必要があります。`,
-      };
-    }
-    return {
-      ok: false,
-      reason:
-        '`❌` 現在この機能を利用できません。サーバーの管理者に連絡してください。',
-    };
-  }
-
-  const targetUser =
-    interaction instanceof UserContextMenuCommandInteraction
-      ? interaction.targetUser
-      : interaction.targetMessage.author;
-  const targetMember = await interaction.guild.members
-    .fetch(targetUser.id)
-    .catch(() => null);
-
-  if (targetUser.id === interaction.user.id) {
-    return { ok: false, reason: '`❌` 自分自身を報告しようとしています。' };
-  }
-  if (
-    targetUser.system ||
-    targetUser.bot ||
-    targetUser.id === interaction.client.user.id
-  ) {
-    return {
-      ok: false,
-      reason: '`❌` このユーザーを通報することはできません。',
-    };
-  }
-  if (
-    !setting.includeModerator &&
-    targetMember?.permissions.has(PermissionFlagsBits.ModerateMembers)
-  ) {
-    return {
-      ok: false,
-      reason: '`❌` モデレーターを通報することはできません。',
-    };
-  }
-
-  if (interaction instanceof MessageContextMenuCommandInteraction) {
-    const targetMessage = interaction.targetMessage;
-    if (targetMessage.webhookId) {
-      return { ok: false, reason: '`❌` Webhookを報告することはできません。' };
-    }
-  }
-
-  return { ok: true };
-}
 
 export async function sendToOpenedReport(
   { guild, user, message }: { guild: Guild; user: User; message?: Message },
@@ -102,6 +33,8 @@ export async function sendToOpenedReport(
   });
 
   for (const targetReport of reports) {
+    if (targetReport.channelId !== setting.channel) return;
+
     const channel = await guild.channels
       .fetch(targetReport.channelId)
       .catch(() => null);
@@ -129,10 +62,3 @@ export async function sendToOpenedReport(
     thread.send(logMessageOptions);
   }
 }
-
-export const sendReportRequirePerissions = [
-  PermissionFlagsBits.SendMessages,
-  PermissionFlagsBits.SendMessagesInThreads,
-  PermissionFlagsBits.ManageThreads,
-  PermissionFlagsBits.CreatePublicThreads,
-];

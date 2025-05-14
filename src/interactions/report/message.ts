@@ -1,5 +1,6 @@
 import { MessageContext, Modal } from '@akki256/discord-interaction';
 import { blurple, red } from '@const/emojis';
+import { dashboard } from '@const/links';
 import { report } from '@database/src/schema/report';
 import { db } from '@modules/drizzle';
 import { channelField, scheduleField, userField } from '@modules/fields';
@@ -15,6 +16,7 @@ import {
   type MessageCreateOptions,
   MessageFlags,
   ModalBuilder,
+  PermissionFlagsBits,
   type PublicThreadChannel,
   SectionBuilder,
   SeparatorBuilder,
@@ -24,9 +26,9 @@ import {
   TextInputStyle,
   ThumbnailBuilder,
   escapeMarkdown,
+  hyperlink,
   roleMention,
 } from 'discord.js';
-import { isReportable, sendReportRequirePerissions } from './_function';
 
 const messageContext = new MessageContext(
   {
@@ -36,11 +38,56 @@ const messageContext = new MessageContext(
   async (interaction) => {
     if (!interaction.inCachedGuild()) return;
 
-    const { ok, reason } = await isReportable(interaction);
-    if (!ok) {
+    const setting = await db.query.reportSetting.findFirst({
+      where: (setting, { eq }) => eq(setting.guildId, interaction.guildId),
+    });
+
+    if (!setting?.channel) {
+      if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
+        return interaction.reply({
+          content: `\`❌\` この機能を使用するには、ダッシュボードで${hyperlink('報告を受け取るチャンネルを設定', `<${dashboard}/guilds/${interaction.guild.id}/report>`)}する必要があります。`,
+          flags: MessageFlags.Ephemeral,
+        });
+      }
       return interaction.reply({
-        content: reason,
-        ephemeral: true,
+        content:
+          '`❌` 現在この機能を利用できません。サーバーの管理者に連絡してください。',
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
+    const targetMember = interaction.targetMessage.member;
+    const targetUser = interaction.targetMessage.author;
+
+    if (targetUser.id === interaction.user.id) {
+      return interaction.reply({
+        content: '`❌` 自分自身を報告しようとしています。',
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+    if (
+      targetUser.system ||
+      targetUser.bot ||
+      targetUser.id === interaction.client.user.id
+    ) {
+      return interaction.reply({
+        content: '`❌` このユーザーを通報することはできません。',
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+    if (
+      !setting.includeModerator &&
+      targetMember?.permissions.has(PermissionFlagsBits.ModerateMembers)
+    ) {
+      return interaction.reply({
+        content: '`❌` モデレーターを通報することはできません。',
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+    if (interaction.targetMessage.webhookId) {
+      return interaction.reply({
+        content: '`❌` Webhookを報告することはできません。',
+        flags: MessageFlags.Ephemeral,
       });
     }
 
@@ -107,7 +154,12 @@ const messageReportModal = new Modal(
     if (
       !channel
         ?.permissionsFor(interaction.client.user)
-        ?.has(sendReportRequirePerissions)
+        ?.has([
+          PermissionFlagsBits.SendMessages,
+          PermissionFlagsBits.SendMessagesInThreads,
+          PermissionFlagsBits.ManageThreads,
+          PermissionFlagsBits.CreatePublicThreads,
+        ])
     ) {
       return interaction.reply({
         content:
@@ -134,7 +186,7 @@ const messageReportModal = new Modal(
                 new TextDisplayBuilder().setContent(
                   [
                     userField(targetMessage.author, { label: '送信者' }),
-                    channelField(targetMessage.channel),
+                    channelField(targetMessage.channel, { label: '送信先' }),
                     scheduleField(targetMessage.createdAt, {
                       label: '送信時刻',
                     }),
@@ -178,10 +230,6 @@ const messageReportModal = new Modal(
             .setCustomId('nonick-js:report-ignore')
             .setLabel('無視')
             .setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-delete')
-            .setLabel('削除')
-            .setStyle(ButtonStyle.Danger),
         ),
       ],
       flags: MessageFlags.IsComponentsV2,
