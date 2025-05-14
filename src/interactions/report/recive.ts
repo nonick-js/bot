@@ -69,15 +69,33 @@ async function closeReport(
   });
   if (!setting) return;
 
-  const components = [];
   const thread = interaction.channel?.isThread()
     ? interaction.channel
     : interaction.message.thread;
-  if (thread?.type !== ChannelType.PublicThread) return;
 
-  const container = interaction.message.components.find(
-    (component) => component.type === ComponentType.Container,
-  );
+  if (!thread?.parentId) return;
+  const parentChannelId = thread.parentId;
+
+  const container = interaction.message.components[0];
+  if (container.type !== ComponentType.Container) return;
+
+  const embed = new EmbedBuilder()
+    .setAuthor({
+      name: `${interaction.user.username}が報告を${isCompleted ? '対応済み' : '対応なし'}としてマークしました`,
+      iconURL: interaction.user.displayAvatarURL(),
+    })
+    .setColor(isCompleted ? Colors.Green : Colors.Red);
+  if (!isCompleted)
+    embed.setFooter({ text: `理由: ${escapeMarkdown(reason ?? '')}` });
+
+  await interaction.update({
+    components: [
+      new ContainerBuilder(container.toJSON()).setAccentColor(
+        isCompleted ? Colors.Green : Colors.Red,
+      ),
+    ],
+    flags: MessageFlags.IsComponentsV2,
+  });
 
   if (
     thread.parent?.type === ChannelType.GuildForum &&
@@ -93,14 +111,15 @@ async function closeReport(
         .catch(() => {});
   }
 
-  const embed = new EmbedBuilder()
-    .setAuthor({
-      name: `${interaction.user.username}が報告を${isCompleted ? '対応済み' : '対応なし'}としてマークしました`,
-      iconURL: interaction.user.displayAvatarURL(),
-    })
-    .setColor(isCompleted ? Colors.Green : Colors.Red);
-  if (!isCompleted)
-    embed.setFooter({ text: `理由: ${escapeMarkdown(reason ?? '')}` });
+  await db
+    .delete(report)
+    .where(
+      and(
+        eq(report.guildId, interaction.guildId),
+        eq(report.channelId, parentChannelId),
+        eq(report.threadId, thread.id),
+      ),
+    );
 
   await thread
     .send({
@@ -110,28 +129,6 @@ async function closeReport(
       await thread.setLocked();
       thread.setArchived();
     });
-
-  await db
-    .delete(report)
-    .where(
-      and(
-        eq(report.guildId, interaction.guildId),
-        eq(report.channelId, interaction.channelId),
-        eq(report.threadId, thread.id),
-      ),
-    );
-
-  if (!container) return;
-  components.push(
-    new ContainerBuilder(container.toJSON()).setAccentColor(
-      isCompleted ? Colors.Green : Colors.Red,
-    ),
-  );
-
-  interaction.update({
-    components,
-    flags: MessageFlags.IsComponentsV2,
-  });
 }
 
 export default [completeButton, ignoreButton, ignoreReasonModal];
