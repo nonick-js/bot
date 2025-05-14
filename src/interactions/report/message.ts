@@ -198,14 +198,6 @@ const messageReportModal = new Modal(
                 ),
               ),
           ])
-          .addActionRowComponents([
-            new ActionRowBuilder<ButtonBuilder>().setComponents(
-              new ButtonBuilder()
-                .setLabel('メッセージにアクセス')
-                .setURL(targetMessage.url)
-                .setStyle(ButtonStyle.Link),
-            ),
-          ])
           .addSeparatorComponents(
             new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
           )
@@ -220,16 +212,22 @@ const messageReportModal = new Modal(
               ].join('\n'),
             ),
           ]),
-        new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-completed')
-            .setLabel('対応済みにする')
-            .setStyle(ButtonStyle.Primary),
-          new ButtonBuilder()
-            .setCustomId('nonick-js:report-ignore')
-            .setLabel('無視')
-            .setStyle(ButtonStyle.Secondary),
-        ),
+        new ContainerBuilder().addActionRowComponents([
+          new ActionRowBuilder<ButtonBuilder>().setComponents(
+            new ButtonBuilder()
+              .setCustomId('nonick-js:report-completed')
+              .setLabel('対応済みにする')
+              .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
+              .setCustomId('nonick-js:report-ignore')
+              .setLabel('無視')
+              .setStyle(ButtonStyle.Danger),
+            new ButtonBuilder()
+              .setLabel('メッセージを確認')
+              .setURL(targetMessage.url)
+              .setStyle(ButtonStyle.Link),
+          ),
+        ]),
       ],
       flags: MessageFlags.IsComponentsV2,
       allowedMentions: {
@@ -262,7 +260,7 @@ const messageReportModal = new Modal(
           forward: { message: targetMessage },
           components: [
             new TextDisplayBuilder().setContent(
-              setting.mentionRoles.map(roleMention).join(),
+              `🔔${setting.mentionRoles.map(roleMention).join()}`,
             ),
           ],
           flags: MessageFlags.IsComponentsV2,
