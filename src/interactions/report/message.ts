@@ -176,7 +176,9 @@ const messageReportModal = new Modal(
             ),
           ])
           .addSeparatorComponents(
-            new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+            new SeparatorBuilder()
+              .setSpacing(SeparatorSpacingSize.Small)
+              .setDivider(false),
           )
           .addSectionComponents([
             new SectionBuilder()
@@ -235,6 +237,8 @@ const messageReportModal = new Modal(
       },
     };
 
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
     try {
       let createdThread: PublicThreadChannel | ForumThreadChannel | null = null;
 
@@ -280,15 +284,15 @@ const messageReportModal = new Modal(
         targetMessageId: targetMessage.id,
       });
 
-      interaction.reply({
+      interaction.followUp({
         content:
           '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました。',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } catch {
-      interaction.reply({
+      interaction.followUp({
         content: '`❌` 報告の送信中にエラーが発生しました',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },
