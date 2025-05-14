@@ -5,9 +5,9 @@ import { db } from '@modules/drizzle';
 import { lt } from 'drizzle-orm';
 
 export default new CronBuilder({ minute: 0, hour: 0 }, async () => {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const expireDate = new Date();
+  expireDate.setDate(expireDate.getDate() - 28);
 
-  await db.delete(auditLog).where(lt(auditLog.createdAt, thirtyDaysAgo));
-  await db.delete(report).where(lt(report.createdAt, thirtyDaysAgo));
+  await db.delete(auditLog).where(lt(auditLog.createdAt, expireDate));
+  await db.delete(report).where(lt(report.createdAt, expireDate));
 });
