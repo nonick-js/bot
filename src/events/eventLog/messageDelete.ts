@@ -1,7 +1,12 @@
+import { red } from '@const/emojis';
 import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { channelField, scheduleField, userField } from '@modules/fields';
-import { createAttachment, getSendableChannel } from '@modules/util';
+import {
+  createAttachment,
+  formatEmoji,
+  getSendableChannel,
+} from '@modules/util';
 import {
   AuditLogEvent,
   Collection,
@@ -10,6 +15,7 @@ import {
   Events,
 } from 'discord.js';
 import type { GuildAuditLogsEntry, Message } from 'discord.js';
+import { sendLogToRelatedReport } from './_function';
 
 const lastLogs = new Collection<
   string,
@@ -30,12 +36,23 @@ export default new DiscordEventBuilder({
     const setting = await db.query.msgDeleteLogSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, message.guild.id),
     });
-    if (!(setting?.enabled && setting.channel)) return;
-    const channel = await getSendableChannel(
-      message.guild,
-      setting.channel,
-    ).catch(() => null);
-    if (!channel) return;
+
+    if (executor) {
+      sendLogToRelatedReport(message.guild, message.author, message, {
+        embeds: [
+          new EmbedBuilder()
+            .setAuthor({
+              name: executor.username,
+              iconURL: executor.displayAvatarURL(),
+            })
+            .setDescription(
+              `${formatEmoji(red.binTrash)} メッセージを削除しました`,
+            )
+            .setTimestamp(),
+        ],
+      });
+    }
+
     const embed = new EmbedBuilder()
       .setTitle('`💬` メッセージ削除')
       .setURL(beforeMsg?.url ?? null)
@@ -61,7 +78,16 @@ export default new DiscordEventBuilder({
         value: message.stickers.map((v) => v.name).join('\n'),
       });
     }
+
     const attachment = await createAttachment(message.attachments);
+
+    if (!(setting?.enabled && setting.channel)) return;
+    const channel = await getSendableChannel(
+      message.guild,
+      setting.channel,
+    ).catch(() => null);
+
+    if (!channel) return;
     if (attachment) channel.send({ embeds: [embed], files: [attachment] });
     channel.send({ embeds: [embed] });
   },

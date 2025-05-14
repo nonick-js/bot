@@ -5,6 +5,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ComponentType,
   type Embed,
   type MessageComponentInteraction,
   ModalSubmitInteraction,
@@ -108,6 +109,9 @@ export function reloadEmbedMaker(
     return;
 
   const components = getBaseEmbedMakerButtons(embed);
+  if (interaction.message.components[1].type !== ComponentType.ActionRow)
+    return;
+
   components[1].addComponents(
     ButtonBuilder.from(
       interaction.message.components[1].components[3] as APIButtonComponent,

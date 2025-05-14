@@ -32,7 +32,7 @@
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
     "discord-api-types": "0.37.83",
-    "discord.js": "^14.15.3",
+    "discord.js": "^14.19.3",
     "dotenv": "^16.4.5",
     "drizzle-kit": "^0.31.0",
     "drizzle-orm": "^0.43.1",
@@ -43,13 +43,5 @@
     "ts-node-dev": "^2.0.0",
     "zod": "^3.24.3",
     "zod-i18n-map": "^2.27.0"
-  },
-  "overrides": {
-    "discord-api-types": "0.37.83"
-  },
-  "pnpm": {
-    "overrides": {
-      "discord-api-types": "0.37.83"
-    }
   }
 }

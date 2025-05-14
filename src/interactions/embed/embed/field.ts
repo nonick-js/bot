@@ -5,6 +5,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ComponentType,
   EmbedBuilder,
   ModalBuilder,
   StringSelectMenuBuilder,
@@ -128,6 +129,8 @@ const removeField = [
           time: 180_000,
         })
         .then((i) => {
+          if (components[1].type !== ComponentType.ActionRow) return;
+
           if (i.customId === indexSelectCustomId && i.isStringSelectMenu()) {
             const newEmbed = EmbedBuilder.from(embed).setFields(
               embed.fields.filter((v, index) => Number(i.values[0]) !== index),
