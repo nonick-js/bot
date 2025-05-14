@@ -7,7 +7,8 @@
     "start": "node dist/index.js",
     "build": "tsc -p . && pnpm run copy-assets",
     "prepare": "ts-patch install",
-    "copy-assets": "shx cp -r src/fonts dist/fonts"
+    "copy-assets": "shx cp -r src/fonts dist/fonts",
+    "studio": "drizzle-kit studio --port=4984"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
