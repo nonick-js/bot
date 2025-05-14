@@ -29,6 +29,7 @@ import {
   hyperlink,
   roleMention,
 } from 'discord.js';
+import { eq } from 'drizzle-orm';
 
 const messageContext = new MessageContext(
   {
@@ -153,6 +154,16 @@ const messageReportModal = new Modal(
       });
     }
     if (
+      channel.type !== ChannelType.GuildText &&
+      channel.type !== ChannelType.GuildForum
+    ) {
+      return interaction.reply({
+        content:
+          '`❌` 送信先のチャンネルは報告の送信に対応していないため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
+        ephemeral: true,
+      });
+    }
+    if (
       !(
         permission?.has(PermissionFlagsBits.SendMessages) &&
         permission.has(PermissionFlagsBits.SendMessagesInThreads) &&
@@ -165,6 +176,79 @@ const messageReportModal = new Modal(
           '`❌` 送信先のチャンネルの権限が不足していたため、報告を送信できませんでした。サーバーの管理者に連絡してください。',
         ephemeral: true,
       });
+    }
+
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+    const duplicateReport = await db.query.report.findFirst({
+      where: (report, { eq, and }) =>
+        and(
+          eq(report.guildId, interaction.guildId),
+          eq(report.targetChannelId, targetMessage.channelId),
+          eq(report.targetMessageId, targetMessage.id),
+        ),
+    });
+
+    if (duplicateReport) {
+      const thread = await channel.threads
+        .fetch(duplicateReport.threadId)
+        .catch(() => null);
+      const starterMesasge = await thread
+        ?.fetchStarterMessage()
+        .catch(() => null);
+
+      if (
+        !thread ||
+        (channel.type === ChannelType.GuildText && !starterMesasge)
+      ) {
+        // チャンネルが削除されていた場合、データベース上から削除する
+        await db.delete(report).where(eq(report.id, duplicateReport.id));
+      } else {
+        // 重複した報告がある場合はパネルを新規作成せず、既存のスレッドに通知する
+        return thread
+          .send({
+            components: [
+              new ContainerBuilder()
+                .addTextDisplayComponents([
+                  new TextDisplayBuilder().setContent(
+                    `### ${formatEmoji(red.flag)} メッセージの報告 (重複)`,
+                  ),
+                ])
+                .addSeparatorComponents([
+                  new SeparatorBuilder()
+                    .setSpacing(SeparatorSpacingSize.Small)
+                    .setDivider(false),
+                ])
+                .addTextDisplayComponents([
+                  new TextDisplayBuilder().setContent(
+                    [
+                      userField(interaction.user, {
+                        color: 'blurple',
+                        label: '報告者',
+                      }),
+                      `${formatEmoji(blurple.text)} **報告理由:** ${escapeMarkdown(interaction.components[0].components[0].value)}`,
+                    ].join('\n'),
+                  ),
+                ]),
+            ],
+            flags: MessageFlags.IsComponentsV2,
+            allowedMentions: { parse: [] },
+          })
+          .then(() =>
+            interaction.followUp({
+              content:
+                '`✅` **報告ありがとうございます！** サーバー運営に報告を送信しました。',
+              flags: MessageFlags.Ephemeral,
+            }),
+          )
+          .catch(() =>
+            interaction.followUp({
+              content:
+                '`❌` 報告の送信中にエラーが発生しました。時間をおいて再度送信してください。',
+              flags: MessageFlags.Ephemeral,
+            }),
+          );
+      }
     }
 
     const reportMessageOptions: MessageCreateOptions = {
@@ -232,47 +316,37 @@ const messageReportModal = new Modal(
         ]),
       ],
       flags: MessageFlags.IsComponentsV2,
-      allowedMentions: {
-        parse: ['roles'],
-      },
+      allowedMentions: { parse: [] },
     };
-
-    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     try {
       let createdThread: PublicThreadChannel | ForumThreadChannel | null = null;
 
-      if (channel?.type === ChannelType.GuildText) {
-        createdThread = await channel.send(reportMessageOptions).then((msg) =>
-          msg.startThread({
+      switch (channel.type) {
+        case ChannelType.GuildText:
+          createdThread = await channel.send(reportMessageOptions).then((msg) =>
+            msg.startThread({
+              name: `${targetMessage.author.username} [${targetMessage.author.id}] への報告`,
+            }),
+          );
+          break;
+        case ChannelType.GuildForum:
+          createdThread = await channel.threads.create({
             name: `${targetMessage.author.username} [${targetMessage.author.id}] への報告`,
-          }),
-        );
+            message: reportMessageOptions,
+          });
+          break;
       }
+      if (!createdThread) throw new TypeError('invalid channel type');
 
-      if (channel?.type === ChannelType.GuildForum) {
-        createdThread = await channel.threads.create({
-          name: `${targetMessage.author.username} [${targetMessage.author.id}] への報告`,
-          message: reportMessageOptions,
-        });
-      }
-
-      if (!createdThread) throw new Error('Invalid ChannelType');
+      await createdThread.send({
+        forward: { message: targetMessage },
+      });
 
       if (setting.enableMention) {
-        createdThread.send({
-          forward: { message: targetMessage },
-          components: [
-            new TextDisplayBuilder().setContent(
-              `🔔${setting.mentionRoles.map(roleMention).join()}`,
-            ),
-          ],
-          flags: MessageFlags.IsComponentsV2,
-        });
-      } else {
-        createdThread.send({
-          forward: { message: targetMessage },
-        });
+        await createdThread.send(
+          `🔔${setting.mentionRoles.map(roleMention).join()}`,
+        );
       }
 
       await db.insert(report).values({
@@ -291,7 +365,8 @@ const messageReportModal = new Modal(
       });
     } catch {
       interaction.followUp({
-        content: '`❌` 報告の送信中にエラーが発生しました',
+        content:
+          '`❌` 報告の送信中にエラーが発生しました。時間をおいて再度送信してください。',
         flags: MessageFlags.Ephemeral,
       });
     }
