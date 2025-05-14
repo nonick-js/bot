@@ -1,7 +1,12 @@
+import { red } from '@const/emojis';
 import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { channelField, scheduleField, userField } from '@modules/fields';
-import { createAttachment, getSendableChannel } from '@modules/util';
+import {
+  createAttachment,
+  formatEmoji,
+  getSendableChannel,
+} from '@modules/util';
 import {
   AuditLogEvent,
   Collection,
@@ -10,7 +15,7 @@ import {
   Events,
 } from 'discord.js';
 import type { GuildAuditLogsEntry, Message } from 'discord.js';
-import { sendToOpenedReport } from 'interactions/report/_function';
+import { sendLogToRelatedReport } from './_function';
 
 const lastLogs = new Collection<
   string,
@@ -31,6 +36,22 @@ export default new DiscordEventBuilder({
     const setting = await db.query.msgDeleteLogSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, message.guild.id),
     });
+
+    if (executor) {
+      sendLogToRelatedReport(message.guild, message.author, message, {
+        embeds: [
+          new EmbedBuilder()
+            .setAuthor({
+              name: executor.username,
+              iconURL: executor.displayAvatarURL(),
+            })
+            .setDescription(
+              `${formatEmoji(red.binTrash)} メッセージを削除しました`,
+            )
+            .setTimestamp(),
+        ],
+      });
+    }
 
     const embed = new EmbedBuilder()
       .setTitle('`💬` メッセージ削除')
@@ -59,17 +80,6 @@ export default new DiscordEventBuilder({
     }
 
     const attachment = await createAttachment(message.attachments);
-
-    if (attachment)
-      sendToOpenedReport(
-        { guild: message.guild, user: message.author, message },
-        { embeds: [embed], files: [attachment] },
-      );
-    else
-      sendToOpenedReport(
-        { guild: message.guild, user: message.author, message },
-        { embeds: [embed] },
-      );
 
     if (!(setting?.enabled && setting.channel)) return;
     const channel = await getSendableChannel(

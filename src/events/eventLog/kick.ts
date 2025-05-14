@@ -1,7 +1,8 @@
+import { red } from '@const/emojis';
 import { db } from '@modules/drizzle';
 import { DiscordEventBuilder } from '@modules/events';
 import { textField, userField } from '@modules/fields';
-import { getSendableChannel } from '@modules/util';
+import { formatEmoji, getSendableChannel } from '@modules/util';
 import {
   AuditLogEvent,
   Colors,
@@ -9,7 +10,7 @@ import {
   Events,
   type GuildAuditLogsEntry,
 } from 'discord.js';
-import { sendToOpenedReport } from 'interactions/report/_function';
+import { sendLogToRelatedReport } from './_function';
 
 export default new DiscordEventBuilder({
   type: Events.GuildAuditLogEntryCreate,
@@ -18,19 +19,42 @@ export default new DiscordEventBuilder({
     const { executor, target, reason } =
       auditLogEntry as GuildAuditLogsEntry<AuditLogEvent.MemberKick>;
     if (!(executor && target)) return;
+    const fetchedTarget = await target.fetch();
+    const fetchedExecutor = await executor.fetch();
+
     const setting = await db.query.kickLogSetting.findFirst({
       where: (setting, { eq }) => eq(setting.guildId, guild.id),
     });
 
-    const messageOptions = {
+    sendLogToRelatedReport(guild, fetchedTarget, null, {
+      embeds: [
+        new EmbedBuilder()
+          .setAuthor({
+            name: fetchedExecutor.username,
+            iconURL: fetchedExecutor.displayAvatarURL(),
+          })
+          .setDescription(
+            `${formatEmoji(red.hammer)} ${fetchedTarget}をキックしました`,
+          )
+          .setTimestamp(),
+      ],
+    });
+
+    if (!(setting?.enabled && setting.channel)) return;
+    const channel = await getSendableChannel(guild, setting.channel).catch(
+      () => null,
+    );
+    if (!channel) return;
+
+    channel.send({
       embeds: [
         new EmbedBuilder()
           .setTitle('`🔨` Kick')
           .setDescription(
             [
-              userField(await target.fetch(), { label: '対象者' }),
+              userField(fetchedTarget, { label: '対象者' }),
               '',
-              userField(await executor.fetch(), {
+              userField(fetchedExecutor, {
                 label: '実行者',
                 color: 'blurple',
               }),
@@ -44,15 +68,6 @@ export default new DiscordEventBuilder({
           .setThumbnail(target.displayAvatarURL())
           .setTimestamp(),
       ],
-    };
-
-    sendToOpenedReport({ guild, user: await target.fetch() }, messageOptions);
-
-    if (!(setting?.enabled && setting.channel)) return;
-    const channel = await getSendableChannel(guild, setting.channel).catch(
-      () => null,
-    );
-    if (!channel) return;
-    channel.send(messageOptions);
+    });
   },
 });

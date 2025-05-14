@@ -95,12 +95,9 @@ async function closeReport(
 
   const embed = new EmbedBuilder()
     .setAuthor({
-      name: interaction.user.username,
+      name: `${interaction.user.username}が報告を${isCompleted ? '対応済み' : '対応なし'}としてマークしました`,
       iconURL: interaction.user.displayAvatarURL(),
     })
-    .setDescription(
-      `報告を${isCompleted ? '対応済み' : '対応なし'}としてマークしました`,
-    )
     .setColor(isCompleted ? Colors.Green : Colors.Red);
   if (!isCompleted)
     embed.setFooter({ text: `理由: ${escapeMarkdown(reason ?? '')}` });

@@ -20,6 +20,7 @@ export const white = process.env.DEV_MODE
       addComponent: '1371026348776357888',
       setting: '1371026130156388352',
       home: '1371026222397526026',
+      time: '1372100217553293322',
     }
   : {
       addCircle: '1371022342452547625',
@@ -40,6 +41,7 @@ export const white = process.env.DEV_MODE
       addComponent: '1371027626180739072',
       setting: '1371027658787520583',
       home: '1371027691708485652',
+      time: '1372109876293140560',
     };
 
 export const gray = process.env.DEV_MODE
@@ -64,22 +66,28 @@ export const blurple = process.env.DEV_MODE
   ? {
       member: '1371035046424739851',
       text: '1371035177266057276',
-      admin: '1371035255867179058',
+      hammer: '1371035255867179058',
+      time: '1372113598192812033',
     }
   : {
       member: '1371035329980792852',
       text: '1371035367209173052',
-      admin: '1371035400902017136',
+      hammer: '1371035400902017136',
+      time: '1372113774991118356',
     };
 
 export const red = process.env.DEV_MODE
   ? {
       flag: '1371028192428560414',
-      timeout: '1371028258115682357',
+      time: '1371028258115682357',
+      hammer: '1372118963143577661',
+      binTrash: '1372124748171186186',
     }
   : {
       flag: '1371028135767834745',
-      timeout: '1371028535837327510',
+      time: '1371028535837327510',
+      hammer: '1372116893699412031',
+      binTrash: '1372124956346814474',
     };
 
 export const space = process.env.DEV_MODE

@@ -136,6 +136,7 @@ const messageReportModal = new Modal(
     const channel = await interaction.guild.channels
       .fetch(setting.channel)
       .catch(() => null);
+    const permission = channel?.permissionsFor(interaction.client.user);
 
     if (!(targetMessage instanceof Message)) {
       return interaction.reply({
@@ -152,14 +153,12 @@ const messageReportModal = new Modal(
       });
     }
     if (
-      !channel
-        ?.permissionsFor(interaction.client.user)
-        ?.has([
-          PermissionFlagsBits.SendMessages,
-          PermissionFlagsBits.SendMessagesInThreads,
-          PermissionFlagsBits.ManageThreads,
-          PermissionFlagsBits.CreatePublicThreads,
-        ])
+      !(
+        permission?.has(PermissionFlagsBits.SendMessages) &&
+        permission.has(PermissionFlagsBits.SendMessagesInThreads) &&
+        permission.has(PermissionFlagsBits.ManageThreads) &&
+        permission.has(PermissionFlagsBits.CreatePublicThreads)
+      )
     ) {
       return interaction.reply({
         content:
