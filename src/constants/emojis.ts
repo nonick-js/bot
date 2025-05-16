@@ -94,6 +94,10 @@ export const space = process.env.DEV_MODE
   ? '1371031893574815817'
   : '1371031995525627964';
 
+export const success = process.env.DEV_MODE
+  ? '1372813931520852029'
+  : '1372814080569770014';
+
 export const userFlag: Partial<Record<UserFlagsString, string>> = process.env
   .DEV_MODE
   ? {
