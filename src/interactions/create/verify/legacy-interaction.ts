@@ -1,9 +1,6 @@
 import { Button } from '@akki256/discord-interaction';
 import { GuildMemberRoleManager, inlineCode } from 'discord.js';
-import {
-  verifyForButtonCaptcha,
-  verifyForImageCaptcha,
-} from 'interactions/create/verify/_function';
+import { verifyForButtonCaptcha, verifyForImageCaptcha } from './_function';
 
 const verifyButton = new Button(
   {
