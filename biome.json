@@ -8,7 +8,7 @@
   },
   "linter": {
     "enabled": true,
-    "ignore": [".github", ".vscode", ".next", "node_modules"],
+    "ignore": [".github", ".vscode", ".next", "node_modules", "dist"],
     "rules": {
       "recommended": true,
       "correctness": {
@@ -20,7 +20,7 @@
   },
   "formatter": {
     "enabled": true,
-    "ignore": [".github", ".vscode", ".next", "node_modules"],
+    "ignore": [".github", ".vscode", ".next", "node_modules", "dist"],
     "formatWithErrors": true,
     "indentStyle": "space"
   },
