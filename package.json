@@ -36,12 +36,9 @@
     "dotenv": "^16.4.5",
     "drizzle-kit": "^0.31.0",
     "drizzle-orm": "^0.43.1",
-    "drizzle-zod": "^0.7.1",
     "i18next": "^25.0.1",
     "node-cron": "^3.0.3",
     "pg": "^8.15.6",
-    "ts-node-dev": "^2.0.0",
-    "zod": "^3.24.3",
-    "zod-i18n-map": "^2.27.0"
+    "ts-node-dev": "^2.0.0"
   }
 }

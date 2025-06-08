@@ -38,9 +38,6 @@ importers:
       drizzle-orm:
         specifier: ^0.43.1
         version: 0.43.1(pg@8.15.6)
-      drizzle-zod:
-        specifier: ^0.7.1
-        version: 0.7.1(drizzle-orm@0.43.1(pg@8.15.6))(zod@3.24.3)
       i18next:
         specifier: ^25.0.1
         version: 25.0.1(typescript@5.5.4)
@@ -53,12 +50,6 @@ importers:
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@swc/core@1.7.42(@swc/helpers@0.5.13))(@types/node@22.8.6)(typescript@5.5.4)
-      zod:
-        specifier: ^3.24.3
-        version: 3.24.3
-      zod-i18n-map:
-        specifier: ^2.27.0
-        version: 2.27.0(i18next@25.0.1(typescript@5.5.4))(zod@3.24.3)
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.9.4
@@ -901,12 +892,6 @@ packages:
       sqlite3:
         optional: true
 
-  drizzle-zod@0.7.1:
-    resolution: {integrity: sha512-nZzALOdz44/AL2U005UlmMqaQ1qe5JfanvLujiTHiiT8+vZJTBFhj3pY4Vk+L6UWyKFfNmLhk602Hn4kCTynKQ==}
-    peerDependencies:
-      drizzle-orm: '>=0.36.0'
-      zod: '>=3.0.0'
-
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
@@ -1389,15 +1374,6 @@ packages:
   yn@3.1.1:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
-
-  zod-i18n-map@2.27.0:
-    resolution: {integrity: sha512-ORu9XpiVh3WDiEUs5Cr9siGgnpeODoBsTIgSD8sQCH9B//f9KowlzqHUEdPYb3vFonaSH8yPvPCOFM4niwp3Sg==}
-    peerDependencies:
-      i18next: '>=21.3.0'
-      zod: '>=3.17.0'
-
-  zod@3.24.3:
-    resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
 
 snapshots:
 
@@ -1935,11 +1911,6 @@ snapshots:
     optionalDependencies:
       pg: 8.15.6
 
-  drizzle-zod@0.7.1(drizzle-orm@0.43.1(pg@8.15.6))(zod@3.24.3):
-    dependencies:
-      drizzle-orm: 0.43.1(pg@8.15.6)
-      zod: 3.24.3
-
   dunder-proto@1.0.1:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -2419,10 +2390,3 @@ snapshots:
   xtend@4.0.2: {}
 
   yn@3.1.1: {}
-
-  zod-i18n-map@2.27.0(i18next@25.0.1(typescript@5.5.4))(zod@3.24.3):
-    dependencies:
-      i18next: 25.0.1(typescript@5.5.4)
-      zod: 3.24.3
-
-  zod@3.24.3: {}
