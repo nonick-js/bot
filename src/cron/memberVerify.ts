@@ -1,5 +1,5 @@
 import { guild } from '@database/src/schema/guild';
-import type { autoChangeVerifyLevelSettingSchema } from '@database/src/schema/setting';
+import type { autoChangeVerifyLevelSetting } from '@database/src/schema/setting';
 import { CronBuilder } from '@modules/cron';
 import { db } from '@modules/drizzle';
 import dayjs from 'dayjs';
@@ -13,7 +13,6 @@ import {
   inlineCode,
 } from 'discord.js';
 import { eq } from 'drizzle-orm';
-import type { z } from 'zod';
 import { client } from '../index';
 dayjs.extend(timezone);
 dayjs.extend(utc);
@@ -116,10 +115,7 @@ async function end(hour: number) {
 
 async function sendLog(
   guild: DiscordGuild,
-  {
-    enableLog,
-    logChannel,
-  }: z.infer<typeof autoChangeVerifyLevelSettingSchema.db>,
+  { enableLog, logChannel }: typeof autoChangeVerifyLevelSetting.$inferSelect,
   level: GuildVerificationLevel,
   label: string,
 ) {
